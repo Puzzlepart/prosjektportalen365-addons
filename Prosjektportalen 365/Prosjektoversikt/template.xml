@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema https://raw.githubusercontent.com/OfficeDev/PnP-Provisioning-Schema/master/OfficeDevPnP.ProvisioningSchema/ProvisioningSchema-2019-03.xsd">
+    <pnp:Preferences></pnp:Preferences>
+    <pnp:Templates ID="CONTAINER-TEMPLATE-PP-ADDONS-PROSJEKTOVERSIKT">
+        <pnp:ProvisioningTemplate ID="TEMPLATE-PP-ADDONS-PROSJEKTOVERSIKT" Version="1" Scope="RootSite">
+            <pnp:ClientSidePages>
+                <pnp:ClientSidePage PageName="Prosjektoversikt.aspx" PromoteAsNewsArticle="false" Overwrite="false" Layout="SingleWebPartAppPage" EnableComments="false" Title="Prosjektoversikt">
+                    <pnp:Sections>
+                        <pnp:Section Order="1" Type="OneColumn">
+                            <pnp:Controls>
+                                <pnp:CanvasControl WebPartType="Custom" JsonControlData="" ControlId="ed0a0ef4-8301-46cf-8a3d-d7021b4c0526" Order="1" Column="1" />
+                            </pnp:Controls>
+                        </pnp:Section>
+                    </pnp:Sections>
+                    <pnp:Header Type="None" />
+                </pnp:ClientSidePage>
+            </pnp:ClientSidePages>
+        </pnp:ProvisioningTemplate>
+    </pnp:Templates>
+</pnp:Provisioning>
