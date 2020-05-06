@@ -1,6 +1,5 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-console */
-import { ITypedHash } from '@pnp/common';
 import moment from 'moment';
 import { filter, find } from 'underscore';
 import { capitalize, endsWith, startsWith } from 'underscore.string';
@@ -56,7 +55,7 @@ export class ProjectStatusModel {
 
   constructor(
     private _status: IProjectStatusItem,
-    private _columnConfigurations: ITypedHash<any>,
+    private _columnConfigurations: { [key: string]: { name: string; iconName: string; colors: any } },
     private _statusSections: Array<IStatusSectionItem>,
   ) {
     this.siteId = this._status.GtSiteId;

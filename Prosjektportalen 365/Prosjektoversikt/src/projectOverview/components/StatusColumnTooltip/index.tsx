@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
-import { IStatusColumnProps } from './IStatusColumnProps';
+import { IStatusColumnTooltipProps } from './IStatusColumnTooltipProps';
 import styles from './StatusColumnTooltip.module.scss';
 
-export const StatusColumnTooltip = ({ status }: IStatusColumnProps): JSX.Element => {
+export const StatusColumnTooltip = ({ status }: IStatusColumnTooltipProps): JSX.Element => {
     return (
         <div className={styles.root}>
             {status.sections.map(({

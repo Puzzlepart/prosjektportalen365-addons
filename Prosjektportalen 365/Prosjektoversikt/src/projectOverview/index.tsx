@@ -1,24 +1,32 @@
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart, IPropertyPaneConfiguration, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-webpart-base';
-import { sp } from '@pnp/pnpjs';
+import { dateAdd } from '@pnp/common';
+import { sp } from '@pnp/sp';
+import { taxonomy } from '@pnp/sp-taxonomy';
 import moment from 'moment';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { filter } from 'underscore';
-import ProjectOverview from './components/ProjectOverview';
+import { filter, pick } from 'underscore';
+import { ProjectOverview } from './components/ProjectOverview';
 import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
 import { IStatusSectionItem } from './models/IStatusSectionItem';
 import { IProjectItem, ProjectModel } from './models/ProjectModel';
 import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
 import { ProjectOverviewContext } from './ProjectOverviewContext';
-import { IProjectOverviewWebPartProps } from './types';
+import { IProjectOverviewWebPartProps, Phases } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
   private projects: Array<ProjectModel>;
+  private phases: Phases;
 
   public render(): void {
     const element = (
-      <ProjectOverviewContext.Provider value={{ properties: this.properties, projects: this.projects }}>
+      <ProjectOverviewContext.Provider
+        value={{
+          properties: this.properties,
+          projects: this.projects,
+          phases: this.phases,
+        }}>
         <ProjectOverview />
       </ProjectOverviewContext.Provider>
     )
@@ -34,19 +42,20 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   protected async getData() {
     sp.setup({
       spfxContext: this.context,
-      pageContext: this.context.pageContext,
-      defaultCachingTimeoutSeconds: 1000000,
+      defaultCachingStore: 'session',
     });
-    const [_projects, _status, _columnConfigurations, _statusSections] = await Promise.all([
+    const expiration = dateAdd(new Date(), 'hour', 1);
+    const { TermSetId } = await sp.web.fields.getByInternalNameOrTitle('GtProjectPhase').select('TermSetId').get<{ TermSetId: string }>();
+    const [_projects, _status, _columnConfigurations, _statusSections, _phases] = await Promise.all([
       sp.web.lists.getByTitle('Prosjekter')
         .items
-        .usingCaching()
         .top(500)
+        .usingCaching({ key: this.makeStorageKey('projects'), expiration })
         .get<IProjectItem[]>(),
       sp.web.lists.getByTitle('Prosjektstatus')
         .items
         .top(500)
-        .usingCaching()
+        .usingCaching({ key: this.makeStorageKey('project_status'), expiration })
         .get<IProjectStatusItem[]>(),
       sp.web.lists.getByTitle('Prosjektkolonnekonfigurasjon')
         .items
@@ -60,7 +69,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
         // eslint-disable-next-line quotes
         .filter(`startswith(GtPortfolioColumn/GtInternalName,'GtStatus')`)
         .top(500)
-        .usingCaching()
+        .usingCaching({ key: this.makeStorageKey('configurations'), expiration })
         .get<IPortfolioColumnConfigurationItem[]>(),
       sp.web.lists.getByTitle('Statusseksjoner')
         .items
@@ -69,8 +78,9 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
           'GtSecIcon',
         )
         .top(10)
-        .usingCaching()
+        .usingCaching({ key: this.makeStorageKey('status_sections'), expiration })
         .get<IStatusSectionItem[]>(),
+      taxonomy.getDefaultKeywordTermStore().getTermSetById(TermSetId).terms.get(),
     ]);
     const columnConfigurations = _columnConfigurations.reduce((obj, item) => {
       const key = item.GtPortfolioColumn.GtInternalName;
@@ -82,6 +92,13 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     }, {});
     const status = _status.map(item => new ProjectStatusModel(item, columnConfigurations, _statusSections));
     this.projects = _projects.map(item => new ProjectModel(item, filter(status, s => s.siteId === item.GtSiteId)));
+    this.phases = filter(_phases, p => {
+      return p.LocalCustomProperties.ShowOnFrontpage !== 'false';
+    }).map(p => pick(p, 'Name', 'LocalCustomProperties') as any);
+  }
+
+  protected makeStorageKey(key: string) {
+    return `${this.manifest.alias}_data_${key}`.toLowerCase();
   }
 
   protected onDispose(): void {
@@ -116,7 +133,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
                   label: 'Vis tooltip',
                 }),
               ]
-            }
+            },
           ]
         }
       ]

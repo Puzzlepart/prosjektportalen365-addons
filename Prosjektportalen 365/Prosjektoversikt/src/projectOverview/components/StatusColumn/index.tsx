@@ -2,10 +2,10 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { TooltipDelay, TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
-import { ProjectOverviewContext } from '../ProjectOverviewContext';
+import { ProjectOverviewContext } from '../../ProjectOverviewContext';
+import { StatusColumnTooltip } from '../StatusColumnTooltip';
 import { IStatusColumnProps } from './IStatusColumnProps';
 import styles from './StatusColumn.module.scss';
-import { StatusColumnTooltip } from './StatusColumnTooltip';
 
 export const StatusColumn = ({ status }: IStatusColumnProps) => {
     const { properties } = React.useContext(ProjectOverviewContext);
