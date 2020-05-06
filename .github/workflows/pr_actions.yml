@@ -6,7 +6,7 @@ on:
       - master
       - dev
 jobs:
-  build:
+  Prosjektoversikt:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,6 +22,12 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
-      - name: Package SPFx
+        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
+      - name: Build SPFx
         run: |
           gulp default --ship
+        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
+      - name: Package SPFx
+        run: |
+          gulp package-solution --ship
+        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
