@@ -32,3 +32,4 @@ obj
 *.scss.ts
 
 .vscode/launch.json
+pnpm-lock.yaml
