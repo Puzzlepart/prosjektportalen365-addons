@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as React from 'react';
+import FadeIn from 'react-fade-in';
 import { IStatusColumnTooltipProps } from './IStatusColumnTooltipProps';
 import styles from './StatusColumnTooltip.module.scss';
 
 export const StatusColumnTooltip = ({ status }: IStatusColumnTooltipProps): JSX.Element => {
     return (
-        <div className={styles.root}>
+        <FadeIn className={styles.root} delay={250} transitionDuration={300}>
             {status.sections.map(({
                 fieldName,
                 name,
@@ -33,6 +34,6 @@ export const StatusColumnTooltip = ({ status }: IStatusColumnTooltipProps): JSX.
                     </div>
                 ))}
             <div className={styles.footer}>Status rapportert {status.created}</div>
-        </div>
+        </FadeIn>
     );
 };

@@ -42,6 +42,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   }
 
   public async onInit() {
+    await super.onInit();
     moment.locale('nb');
     this.cacheKeys = {
       phaseTermSetId: this.makeStorageKey('phase_term_set_id'),
@@ -50,13 +51,21 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
       columnConfigurations: this.makeStorageKey('column_configurations'),
       statusSections: this.makeStorageKey('status_sections'),
     }
-    await super.onInit();
     await this.getData();
   }
 
   protected async getData() {
     sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
-    const expiration = dateAdd(new Date(), 'hour', 1);
+    let expiration = dateAdd(new Date(), 'hour', this.properties.cacheUnits);
+    try {
+      expiration = dateAdd(
+        new Date(),
+        this.properties.cacheInterval.split('|')[1] as DateAddInterval,
+        this.properties.cacheUnits,
+      );
+    } catch (error) {
+      expiration = dateAdd(new Date(), 'minute', 1);
+    }
     const { TermSetId } = await sp
       .web
       .fields

@@ -2,6 +2,7 @@
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { TooltipDelay, TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
+import FadeIn from 'react-fade-in';
 import { ProjectOverviewContext } from '../../ProjectOverviewContext';
 import { StatusColumnTooltip } from '../StatusColumnTooltip';
 import { IStatusColumnProps } from './IStatusColumnProps';
@@ -17,14 +18,14 @@ export const StatusColumn = ({ status }: IStatusColumnProps) => {
             }}
             delay={TooltipDelay.long}
             closeDelay={TooltipDelay.long}
-            calloutProps={{ gapSpace: 0 }}        >
-            <div className={styles.root}>
+            calloutProps={{ gapSpace: 0 }} >
+            <FadeIn className={styles.root} delay={100} transitionDuration={400}>
                 {status.sections.map(({ fieldName, iconName, color }) => (
                     <span key={fieldName} className={styles.iconContainer}>
                         <Icon iconName={iconName} styles={{ root: { color, fontSize: properties.columnIconSize } }} />
                     </span>
                 ))}
-            </div>
+            </FadeIn>
         </TooltipHost>
     );
 }
