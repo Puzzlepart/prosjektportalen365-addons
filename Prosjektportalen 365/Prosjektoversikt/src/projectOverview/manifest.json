@@ -3,7 +3,7 @@
   "id": "ed0a0ef4-8301-46cf-8a3d-d7021b4c0526",
   "alias": "ProjectOverviewWebPart",
   "componentType": "WebPart",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "manifestVersion": 2,
   "requiresCustomScript": false,
   "supportedHosts": [

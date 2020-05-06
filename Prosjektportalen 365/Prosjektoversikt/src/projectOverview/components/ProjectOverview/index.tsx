@@ -44,7 +44,7 @@ export const ProjectOverview = () => {
       <div className={styles.container}>
         <DetailsList
           layoutMode={DetailsListLayoutMode.justified}
-          constrainMode={ConstrainMode.horizontalConstrained}
+          constrainMode={ConstrainMode.unconstrained}
           selectionMode={SelectionMode.none}
           items={projects}
           columns={columns(phases, properties)}

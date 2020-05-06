@@ -2,25 +2,20 @@ import { Version } from '@microsoft/sp-core-library';
 import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { dateAdd, DateAddInterval } from '@pnp/common';
-import { sp } from '@pnp/sp';
-import { taxonomy } from '@pnp/sp-taxonomy';
 import moment from 'moment';
 import React from 'react';
 import ReactDom from 'react-dom';
-import { filter, first, pick } from 'underscore';
+import { first } from 'underscore';
 import { ProjectOverview } from './components/ProjectOverview';
-import config from './config';
-import { getColumnConfigurations, getPhaseFieldTermSetId, searchSitesInHub } from './data';
-import { IStatusSectionItem } from './models/IStatusSectionItem';
-import { IProjectItem, ProjectModel } from './models/ProjectModel';
-import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
+import { DataAdapter } from './data';
+import { ProjectModel } from './models/ProjectModel';
 import { ProjectOverviewContext } from './ProjectOverviewContext';
-import { IPhase, IProjectOverviewWebPartCacheKeys, IProjectOverviewWebPartProps } from './types';
+import { IPhase, IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
-  private cacheKeys: IProjectOverviewWebPartCacheKeys;
   private projects: Array<ProjectModel>;
   private phases: Array<IPhase>;
+  private dataAdapter: DataAdapter;
 
   public render(): void {
     const element = (
@@ -39,59 +34,16 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   public async onInit() {
     await super.onInit();
     moment.locale('nb');
-    this.cacheKeys = {
+    this.dataAdapter = new DataAdapter(this.context, {
       phaseTermSetId: this.createCacheKey('phase_term_set_id'),
       projects: this.createCacheKey('projects'),
       projectStatus: this.createCacheKey('project_status'),
       columnConfigurations: this.createCacheKey('column_configurations'),
       statusSections: this.createCacheKey('status_sections'),
-    }
-    await this.getData();
-  }
-
-  protected async getData() {
-    sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
-    const expiration = this.getCacheExpiry();
-    const phaseTermSetId = await getPhaseFieldTermSetId(expiration, this.cacheKeys.phaseTermSetId);
-    const [
-      _sites,
-      _projects,
-      _status,
-      _columnConfigurations,
-      _statusSections,
-      _phases,
-    ] = await Promise.all([
-      searchSitesInHub(this.context.pageContext.site.id.toString()),
-      sp.web.lists.getByTitle(config.PROJECTS_LIST_NAME)
-        .items
-        .top(500)
-        .usingCaching({ key: this.cacheKeys.projects })
-        .get<IProjectItem[]>(),
-      sp.web.lists.getByTitle(config.PROJECT_STATUS_LIST_NAME)
-        .items
-        .top(500)
-        .usingCaching({ key: this.cacheKeys.projectStatus, expiration })
-        .get<IProjectStatusItem[]>(),
-      getColumnConfigurations(expiration, this.cacheKeys.columnConfigurations),
-      sp.web.lists.getByTitle(config.STATUS_SECTIONS_LIST_NAME)
-        .items
-        .select('GtSecFieldName', 'GtSecIcon')
-        .top(10)
-        .usingCaching({ key: this.cacheKeys.statusSections, expiration })
-        .get<IStatusSectionItem[]>(),
-      taxonomy.getDefaultKeywordTermStore().getTermSetById(phaseTermSetId).terms.get(),
-    ]);
-    const status = _status.map(item => new ProjectStatusModel(item, _columnConfigurations, _statusSections));
-    this.projects = _projects
-      .map(item => {
-        const project = new ProjectModel(item, filter(status, s => s.siteId === item.GtSiteId));
-        if (!_sites[project.siteId]) return null;
-        return project.setTitle(_sites[project.siteId]);
-      })
-      .filter(p => p);
-    this.phases = filter(_phases, p => {
-      return p.LocalCustomProperties.ShowOnFrontpage !== 'false';
-    }).map(p => pick(p, 'Name', 'LocalCustomProperties') as any);
+    })
+    const { projects, phases } = await this.dataAdapter.fetchData(this.getCacheExpiry());
+    this.projects = projects;
+    this.phases = phases;
   }
 
   protected createCacheKey(key: string) {
@@ -192,7 +144,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
                 PropertyPaneButton('cacheUnits', {
                   text: 'Tøm hurtigbuffer',
                   onClick: () => {
-                    Object.keys(this.cacheKeys).forEach(key => sessionStorage.removeItem(this.cacheKeys[key]));
+                    this.dataAdapter.clearCache();
                     document.location.reload();
                   }
                 }),
