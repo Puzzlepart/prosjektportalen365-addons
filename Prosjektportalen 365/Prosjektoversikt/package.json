@@ -13,7 +13,8 @@
     "postversion": "gulp dist",
     "test": "./node_modules/.bin/jest --config ./config/jest.config.json",
     "test:watch": "./node_modules/.bin/jest --config ./config/jest.config.json --watchAll",
-    "lint": "eslint --ext .ts,.tsx ./src --color --fix"
+    "lint": "eslint --ext .ts,.tsx ./src --color --fix",
+    "clean": "gulp clean"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "1.9.1",
