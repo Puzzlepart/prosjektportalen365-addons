@@ -4,73 +4,67 @@ import * as React from 'react';
 import { isObject } from 'underscore';
 import { ProjectModel } from '../models/ProjectModel';
 import { ProjectOverviewContext } from '../ProjectOverviewContext';
+import { IProjectOverviewWebPartProps } from '../types';
 import styles from './ProjectOverview.module.scss';
 import { StatusColumn } from './StatusColumn';
 
-const columns: IColumn[] = [
+const columns = ({ statusColumnMinWidth }: IProjectOverviewWebPartProps): IColumn[] => [
   {
     key: 'title',
     name: 'Prosjekt',
-    minWidth: 100,
-    maxWidth: 250,
+    minWidth: 200,
+    maxWidth: 220,
   } as IColumn,
   {
     key: 'projectType',
     name: 'Prosjekttype',
-    minWidth: 100,
-    maxWidth: 150,
+    minWidth: 150,
     isMultiline: true,
   } as IColumn,
   {
     key: 'serviceArea',
     name: 'Tjenesteområde',
-    minWidth: 100,
-    maxWidth: 150,
+    minWidth: 150,
     isMultiline: true,
   } as IColumn,
   {
     key: 'Konsept',
     name: 'Konsept',
-    minWidth: 100,
-    maxWidth: 200,
+    minWidth: statusColumnMinWidth,
   } as IColumn,
   {
     key: 'Planlegge',
     name: 'Planlegge',
-    minWidth: 100,
-    maxWidth: 200,
+    minWidth: statusColumnMinWidth,
   } as IColumn,
   {
     key: 'Gjennomføre',
     name: 'Gjennomføre',
-    minWidth: 100,
-    maxWidth: 200,
+    minWidth: statusColumnMinWidth,
   } as IColumn,
   {
     key: 'Avslutte',
     name: 'Avslutte',
-    minWidth: 100,
-    maxWidth: 200,
+    minWidth: statusColumnMinWidth,
   } as IColumn,
   {
     key: 'Realisere',
     name: 'Realisere',
-    minWidth: 100,
-    maxWidth: 200,
+    minWidth: statusColumnMinWidth,
   } as IColumn,
 ].map(col => ({ ...col, isResizable: true }));
 
 export default () => {
-  const { projects } = React.useContext(ProjectOverviewContext);
+  const { projects, properties } = React.useContext(ProjectOverviewContext);
   return (
     <div className={styles.projectOverview} >
       <div className={styles.container}>
         <DetailsList
           layoutMode={DetailsListLayoutMode.justified}
-          constrainMode={ConstrainMode.unconstrained}
+          constrainMode={ConstrainMode.horizontalConstrained}
           selectionMode={SelectionMode.none}
           items={projects}
-          columns={columns}
+          columns={columns(properties)}
           onRenderItemColumn={(item: ProjectModel, _index: number, col: IColumn) => {
             const colValue = item[col.key];
             if (!colValue) return null;

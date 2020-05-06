@@ -23,6 +23,7 @@
       },
       "officeFabricIconFontName": "ProjectCollection",
       "properties": {
+        "statusColumnMinWidth": 150,
         "columnIconSize": 14,
         "showTooltip": true
       }

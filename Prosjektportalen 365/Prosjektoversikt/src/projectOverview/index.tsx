@@ -100,6 +100,12 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
             {
               groupName: 'Utseende',
               groupFields: [
+                PropertyPaneSlider('statusColumnMinWidth', {
+                  label: 'Minimum bredde for statuskolonner',
+                  min: 100,
+                  max: 250,
+                  step: 5,
+                }),
                 PropertyPaneSlider('columnIconSize', {
                   label: 'Størrelse for statusikoner i kolonnene',
                   min: 10,

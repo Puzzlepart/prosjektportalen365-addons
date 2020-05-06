@@ -5,8 +5,8 @@
     "project-overview-web-part": {
       "components": [
         {
-          "entrypoint": "./lib/webparts/projectOverview/index.js",
-          "manifest": "./src/webparts/projectOverview/manifest.json"
+          "entrypoint": "./lib/projectOverview/index.js",
+          "manifest": "./src/projectOverview/manifest.json"
         }
       ]
     }
