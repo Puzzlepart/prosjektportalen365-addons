@@ -4,8 +4,8 @@ import * as React from 'react';
 import { isObject } from 'underscore';
 import { ProjectModel } from '../../models/ProjectModel';
 import { ProjectOverviewContext } from '../../ProjectOverviewContext';
+import { IProjectOverviewWebPartProps, Phases } from '../../types';
 import { StatusColumn } from '../StatusColumn';
-import { IProjectOverviewWebPartProps, Phases } from '../types';
 import styles from './ProjectOverview.module.scss';
 
 const columns = (phases: Phases, { statusColumnMinWidth }: IProjectOverviewWebPartProps): IColumn[] => [
