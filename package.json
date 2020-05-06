@@ -1,6 +1,6 @@
 {
   "name": "prosjektportalen-addons",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Addons for Prosjektportalen og Prosjektportalen 365",
   "main": "index.js",
   "scripts": {
