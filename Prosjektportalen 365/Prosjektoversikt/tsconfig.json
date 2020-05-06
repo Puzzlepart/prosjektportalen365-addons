@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "es5",
     "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react",

@@ -7,4 +7,4 @@ services
 utils
 views
 app.js
-webpack.config.js
+gulpfile.js

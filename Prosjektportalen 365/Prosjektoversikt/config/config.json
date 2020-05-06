@@ -5,15 +5,12 @@
     "project-overview-web-part": {
       "components": [
         {
-          "entrypoint": "./lib/webparts/projectOverview/ProjectOverviewWebPart.js",
-          "manifest": "./src/webparts/projectOverview/ProjectOverviewWebPart.manifest.json"
+          "entrypoint": "./lib/webparts/projectOverview/index.js",
+          "manifest": "./src/webparts/projectOverview/manifest.json"
         }
       ]
     }
   },
   "externals": {},
-  "localizedResources": {
-    "ProjectOverviewWebPartStrings": "lib/webparts/projectOverview/loc/{locale}.js",
-    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
-  }
+  "localizedResources": {}
 }

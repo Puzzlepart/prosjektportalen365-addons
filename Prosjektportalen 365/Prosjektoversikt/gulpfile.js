@@ -25,5 +25,5 @@ gulp.task('dev', gulpSequence('clean', 'bundle', 'package-solution'));
  * Custom Framework Specific gulp tasks
  */
 
-
+build.tslintCmd.enabled = false;
 build.initialize(gulp);

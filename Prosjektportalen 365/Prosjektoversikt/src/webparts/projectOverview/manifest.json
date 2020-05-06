@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "ed0a0ef4-8301-46cf-8a3d-d7021b4c0526",
+  "alias": "ProjectOverviewWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart"
+  ],
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": {
+        "default": "Other"
+      },
+      "title": {
+        "default": "Prosjektoversikt"
+      },
+      "description": {
+        "default": "Prosjektoversikt for Prosjektportalen 365"
+      },
+      "officeFabricIconFontName": "ProjectCollection",
+      "properties": {}
+    }
+  ],
+  "hiddenFromToolbox": true
+}
