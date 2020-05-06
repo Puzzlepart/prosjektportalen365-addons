@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "prosjektoversikt-client-side-solution",
+    "id": "b1bfc72e-3914-448d-9b26-6e6ec031c784",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "isDomainIsolated": false
+  },
+  "paths": {
+    "zippedPackage": "solution/prosjektoversikt.sppkg"
+  }
+}
