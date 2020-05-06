@@ -22,7 +22,10 @@
         "default": "Prosjektoversikt for Prosjektportalen 365"
       },
       "officeFabricIconFontName": "ProjectCollection",
-      "properties": {}
+      "properties": {
+        "columnIconSize": 14,
+        "showTooltip": true
+      }
     }
   ],
   "hiddenFromToolbox": true

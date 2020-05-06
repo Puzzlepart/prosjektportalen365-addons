@@ -1,30 +1,27 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import { Version } from '@microsoft/sp-core-library';
-import { BaseClientSideWebPart, IPropertyPaneConfiguration } from '@microsoft/sp-webpart-base';
+import { BaseClientSideWebPart, IPropertyPaneConfiguration, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-webpart-base';
 import { sp } from '@pnp/pnpjs';
 import moment from 'moment';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { filter } from 'underscore';
-import { IProjectOverviewProps } from './components/IProjectOverviewProps';
 import ProjectOverview from './components/ProjectOverview';
 import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
 import { IStatusSectionItem } from './models/IStatusSectionItem';
 import { IProjectItem, ProjectModel } from './models/ProjectModel';
 import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
-
-export interface IProjectOverviewWebPartProps { }
+import { ProjectOverviewContext } from './ProjectOverviewContext';
+import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
   private projects: Array<ProjectModel>;
 
   public render(): void {
-    const element: React.ReactElement<IProjectOverviewProps> = React.createElement(
-      ProjectOverview,
-      { projects: this.projects }
-    );
-
+    const element = (
+      <ProjectOverviewContext.Provider value={{ properties: this.properties, projects: this.projects }}>
+        <ProjectOverview />
+      </ProjectOverviewContext.Provider>
+    )
     ReactDom.render(element, this.domElement);
   }
 
@@ -75,7 +72,6 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
         .usingCaching()
         .get<IStatusSectionItem[]>(),
     ]);
-    console.log(_statusSections);
     const columnConfigurations = _columnConfigurations.reduce((obj, item) => {
       const key = item.GtPortfolioColumn.GtInternalName;
       obj[key] = obj[key] || {};
@@ -98,7 +94,26 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
-      pages: []
+      pages: [
+        {
+          groups: [
+            {
+              groupName: 'Utseende',
+              groupFields: [
+                PropertyPaneSlider('columnIconSize', {
+                  label: 'Størrelse for statusikoner i kolonnene',
+                  min: 10,
+                  max: 25,
+                  step: 1,
+                }),
+                PropertyPaneToggle('showTooltip', {
+                  label: 'Vis tooltip',
+                }),
+              ]
+            }
+          ]
+        }
+      ]
     };
   }
 }
