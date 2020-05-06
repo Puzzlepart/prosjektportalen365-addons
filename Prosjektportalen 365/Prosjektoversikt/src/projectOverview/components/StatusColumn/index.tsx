@@ -18,12 +18,19 @@ export const StatusColumn = ({ status }: IStatusColumnProps) => {
             }}
             delay={TooltipDelay.long}
             closeDelay={TooltipDelay.long}
-            calloutProps={{ gapSpace: 0 }} >
+            calloutProps={{ gapSpace: 10 }} >
             <FadeIn className={styles.root} delay={100} transitionDuration={400}>
                 {status.sections.map(({ fieldName, iconName, color }) => (
-                    <span key={fieldName} className={styles.iconContainer}>
-                        <Icon iconName={iconName} styles={{ root: { color, fontSize: properties.columnIconSize } }} />
-                    </span>
+                    <Icon
+                        key={fieldName}
+                        iconName={iconName}
+                        styles={{
+                            root: {
+                                color,
+                                paddingRight: properties.columnIconGap || 8,
+                                fontSize: properties.columnIconSize,
+                            }
+                        }} />
                 ))}
             </FadeIn>
         </TooltipHost>

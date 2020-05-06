@@ -1,5 +1,6 @@
 import { Version } from '@microsoft/sp-core-library';
-import { BaseClientSideWebPart, IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-webpart-base';
+import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { dateAdd, DateAddInterval } from '@pnp/common';
 import { sp } from '@pnp/sp';
 import { taxonomy } from '@pnp/sp-taxonomy';
@@ -9,7 +10,7 @@ import ReactDom from 'react-dom';
 import { filter, first, pick } from 'underscore';
 import { ProjectOverview } from './components/ProjectOverview';
 import config from './config';
-import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
+import { getColumnConfigurations, getPhaseFieldTermSetId, searchSitesInHub } from './data';
 import { IStatusSectionItem } from './models/IStatusSectionItem';
 import { IProjectItem, ProjectModel } from './models/ProjectModel';
 import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
@@ -17,12 +18,6 @@ import { ProjectOverviewContext } from './ProjectOverviewContext';
 import { IPhase, IProjectOverviewWebPartCacheKeys, IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
-  private lists = {
-    projects: sp.web.lists.getByTitle(config.PROJECTS_LIST_NAME),
-    projectColumConfiguration: sp.web.lists.getByTitle(config.PROJECT_COLUMN_CONFIGURATION_LIST_NAME),
-    projectStatus: sp.web.lists.getByTitle(config.PROJECT_STATUS_LIST_NAME),
-    statusSections: sp.web.lists.getByTitle(config.STATUS_SECTIONS_LIST_NAME),
-  };
   private cacheKeys: IProjectOverviewWebPartCacheKeys;
   private projects: Array<ProjectModel>;
   private phases: Array<IPhase>;
@@ -45,17 +40,65 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     await super.onInit();
     moment.locale('nb');
     this.cacheKeys = {
-      phaseTermSetId: this.makeStorageKey('phase_term_set_id'),
-      projects: this.makeStorageKey('projects'),
-      projectStatus: this.makeStorageKey('project_status'),
-      columnConfigurations: this.makeStorageKey('column_configurations'),
-      statusSections: this.makeStorageKey('status_sections'),
+      phaseTermSetId: this.createCacheKey('phase_term_set_id'),
+      projects: this.createCacheKey('projects'),
+      projectStatus: this.createCacheKey('project_status'),
+      columnConfigurations: this.createCacheKey('column_configurations'),
+      statusSections: this.createCacheKey('status_sections'),
     }
     await this.getData();
   }
 
   protected async getData() {
     sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
+    const expiration = this.getCacheExpiry();
+    const phaseTermSetId = await getPhaseFieldTermSetId(expiration, this.cacheKeys.phaseTermSetId);
+    const [
+      _sites,
+      _projects,
+      _status,
+      _columnConfigurations,
+      _statusSections,
+      _phases,
+    ] = await Promise.all([
+      searchSitesInHub(this.context.pageContext.site.id.toString()),
+      sp.web.lists.getByTitle(config.PROJECTS_LIST_NAME)
+        .items
+        .top(500)
+        .usingCaching({ key: this.cacheKeys.projects })
+        .get<IProjectItem[]>(),
+      sp.web.lists.getByTitle(config.PROJECT_STATUS_LIST_NAME)
+        .items
+        .top(500)
+        .usingCaching({ key: this.cacheKeys.projectStatus, expiration })
+        .get<IProjectStatusItem[]>(),
+      getColumnConfigurations(expiration, this.cacheKeys.columnConfigurations),
+      sp.web.lists.getByTitle(config.STATUS_SECTIONS_LIST_NAME)
+        .items
+        .select('GtSecFieldName', 'GtSecIcon')
+        .top(10)
+        .usingCaching({ key: this.cacheKeys.statusSections, expiration })
+        .get<IStatusSectionItem[]>(),
+      taxonomy.getDefaultKeywordTermStore().getTermSetById(phaseTermSetId).terms.get(),
+    ]);
+    const status = _status.map(item => new ProjectStatusModel(item, _columnConfigurations, _statusSections));
+    this.projects = _projects
+      .map(item => {
+        const project = new ProjectModel(item, filter(status, s => s.siteId === item.GtSiteId));
+        if (!_sites[project.siteId]) return null;
+        return project.setTitle(_sites[project.siteId]);
+      })
+      .filter(p => p);
+    this.phases = filter(_phases, p => {
+      return p.LocalCustomProperties.ShowOnFrontpage !== 'false';
+    }).map(p => pick(p, 'Name', 'LocalCustomProperties') as any);
+  }
+
+  protected createCacheKey(key: string) {
+    return `${this.manifest.alias}_data_${key}`.toLowerCase();
+  }
+
+  protected getCacheExpiry() {
     let expiration = dateAdd(new Date(), 'hour', this.properties.cacheUnits);
     try {
       expiration = dateAdd(
@@ -66,66 +109,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     } catch (error) {
       expiration = dateAdd(new Date(), 'minute', 1);
     }
-    const { TermSetId } = await sp
-      .web
-      .fields
-      .getByInternalNameOrTitle(config.PHASE_FIELD_NAME)
-      .select('TermSetId')
-      .usingCaching({ key: this.cacheKeys.phaseTermSetId, expiration })
-      .get<{ TermSetId: string }>();
-    const [_projects, _status, _columnConfigurations, _statusSections, _phases] = await Promise.all([
-      this.lists.projects
-        .items
-        .top(500)
-        .usingCaching({ key: this.cacheKeys.projects })
-        .get<IProjectItem[]>(),
-      this.lists.projectStatus
-        .items
-        .top(500)
-        .usingCaching({ key: this.cacheKeys.projectStatus, expiration })
-        .get<IProjectStatusItem[]>(),
-      this.lists.projectColumConfiguration
-        .items
-        .select(
-          'GtPortfolioColumnColor',
-          'GtPortfolioColumnValue',
-          'GtPortfolioColumn/Title',
-          'GtPortfolioColumn/GtInternalName'
-        )
-        .expand('GtPortfolioColumn')
-        // eslint-disable-next-line quotes
-        .filter(`startswith(GtPortfolioColumn/GtInternalName,'GtStatus')`)
-        .top(500)
-        .usingCaching({ key: this.cacheKeys.columnConfigurations, expiration })
-        .get<IPortfolioColumnConfigurationItem[]>(),
-      this.lists.statusSections
-        .items
-        .select(
-          'GtSecFieldName',
-          'GtSecIcon',
-        )
-        .top(10)
-        .usingCaching({ key: this.cacheKeys.statusSections, expiration })
-        .get<IStatusSectionItem[]>(),
-      taxonomy.getDefaultKeywordTermStore().getTermSetById(TermSetId).terms.get(),
-    ]);
-    const columnConfigurations = _columnConfigurations.reduce((obj, item) => {
-      const key = item.GtPortfolioColumn.GtInternalName;
-      obj[key] = obj[key] || {};
-      obj[key].name = obj[key].name || item.GtPortfolioColumn.Title;
-      obj[key].colors = obj[key].colors || {};
-      obj[key].colors[item.GtPortfolioColumnValue] = item.GtPortfolioColumnColor;
-      return obj;
-    }, {});
-    const status = _status.map(item => new ProjectStatusModel(item, columnConfigurations, _statusSections));
-    this.projects = _projects.map(item => new ProjectModel(item, filter(status, s => s.siteId === item.GtSiteId)));
-    this.phases = filter(_phases, p => {
-      return p.LocalCustomProperties.ShowOnFrontpage !== 'false';
-    }).map(p => pick(p, 'Name', 'LocalCustomProperties') as any);
-  }
-
-  protected makeStorageKey(key: string) {
-    return `${this.manifest.alias}_data_${key}`.toLowerCase();
+    return expiration;
   }
 
   protected onDispose(): void {
@@ -160,8 +144,17 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
                   max: 25,
                   step: 1,
                 }),
+                PropertyPaneSlider('columnIconGap', {
+                  label: 'Avstand mellom statusikoner i kolonnene',
+                  min: 5,
+                  max: 15,
+                  step: 1,
+                }),
                 PropertyPaneToggle('showTooltip', {
                   label: 'Vis tooltip',
+                }),
+                PropertyPaneLabel('showTooltip', {
+                  text: 'Bestem om det skal vises en tooltip med oppsummering av statusrapporten.',
                 }),
               ]
             },

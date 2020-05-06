@@ -1,9 +1,9 @@
 /* eslint-disable max-classes-per-file */
-/* eslint-disable no-console */
 import moment from 'moment';
 import { filter, find } from 'underscore';
 import { capitalize, endsWith, startsWith } from 'underscore.string';
 import { IStatusSectionItem } from './IStatusSectionItem';
+import { ProjectStatusSection } from './ProjectStatusSection';
 
 export interface IProjectStatusItem {
   Id: number;
@@ -39,43 +39,32 @@ export interface IProjectStatusItem {
   GUID: string;
 }
 
-export class ProjectStatusSection {
-  constructor(
-    public fieldName: string,
-    public name: string,
-    public iconName: string,
-    public value: string,
-    public comment: string,
-    public color: string
-  ) { }
-}
-
 export class ProjectStatusModel {
   public siteId: string;
 
   constructor(
-    private _status: IProjectStatusItem,
+    private _item: IProjectStatusItem,
     private _columnConfigurations: { [key: string]: { name: string; iconName: string; colors: any } },
     private _statusSections: Array<IStatusSectionItem>,
   ) {
-    this.siteId = this._status.GtSiteId;
+    this.siteId = this._item.GtSiteId;
   }
 
   public get test(): string {
-    return this._status.GtStatusTime;
+    return this._item.GtStatusTime;
   }
 
   public get created(): string {
-    return moment(this._status.Created).format('LL');
+    return moment(this._item.Created).format('LL');
   }
 
   public get sections(): Array<ProjectStatusSection> {
-    const statusKeys = filter(Object.keys(this._status), key => startsWith(key, 'GtStatus') && !endsWith(key, 'Comment'));
+    const statusKeys = filter(Object.keys(this._item), key => startsWith(key, 'GtStatus') && !endsWith(key, 'Comment'));
     return statusKeys.map(key => {
       const name = capitalize(this._columnConfigurations[key].name.split(' ')[1]);
       const iconName = (find(this._statusSections, s => s.GtSecFieldName === key) || {}).GtSecIcon;
-      const value = this._status[key];
-      const comment = this._status[`${key}Comment`];
+      const value = this._item[key];
+      const comment = this._item[`${key}Comment`];
       const color = this._columnConfigurations[key].colors[value];
       return new ProjectStatusSection(
         key,

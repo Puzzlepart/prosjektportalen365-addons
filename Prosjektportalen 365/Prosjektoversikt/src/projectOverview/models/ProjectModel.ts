@@ -42,17 +42,24 @@ export interface IProjectItem {
 }
 
 export class ProjectModel {
+    public siteId: string;
     public title: string;
     public phase: string;
     public projectType: string;
     public serviceArea: string;
 
-    constructor(project: IProjectItem, public status: Array<ProjectStatusModel>) {
-        this.title = project.Title;
-        this.phase = project.GtProjectPhaseText;
-        this.projectType = project.GtProjectTypeText;
-        this.serviceArea = project.GtProjectServiceAreaText;
+    constructor(item: IProjectItem, public status: Array<ProjectStatusModel>) {
+        this.siteId = item.GtSiteId;
+        this.title = item.Title;
+        this.phase = item.GtProjectPhaseText;
+        this.projectType = item.GtProjectTypeText;
+        this.serviceArea = item.GtProjectServiceAreaText;
         // TODO: Need to return the latest status, returning the first for now (it might be correct if we sort correctly)
         this[this.phase] = first(status);
+    }
+
+    public setTitle(_title: string): ProjectModel {
+        this.title = _title;
+        return this;
     }
 }

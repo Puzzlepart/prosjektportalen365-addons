@@ -10,6 +10,11 @@ export interface IProjectOverviewWebPartProps {
     columnIconSize: number;
 
     /**
+    * Icon gap in columns
+    */
+    columnIconGap: number;
+
+    /**
      * Show tooltip on hover on status columns
      */
     showTooltip: boolean;
