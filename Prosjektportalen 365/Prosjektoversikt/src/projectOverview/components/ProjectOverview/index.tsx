@@ -4,11 +4,11 @@ import * as React from 'react';
 import { isObject } from 'underscore';
 import { ProjectModel } from '../../models/ProjectModel';
 import { ProjectOverviewContext } from '../../ProjectOverviewContext';
-import { IProjectOverviewWebPartProps, Phases } from '../../types';
+import { IPhase, IProjectOverviewWebPartProps } from '../../types';
 import { StatusColumn } from '../StatusColumn';
 import styles from './ProjectOverview.module.scss';
 
-const columns = (phases: Phases, { statusColumnMinWidth }: IProjectOverviewWebPartProps): IColumn[] => [
+const columns = (phases: Array<IPhase>, { statusColumnMinWidth }: IProjectOverviewWebPartProps): IColumn[] => [
   {
     key: 'title',
     name: 'Prosjekt',
@@ -48,12 +48,12 @@ export const ProjectOverview = () => {
           items={projects}
           columns={columns(phases, properties)}
           onRenderItemColumn={(item: ProjectModel, _index: number, col: IColumn) => {
-            const colValue = item[col.key];
+            const colValue: string | Record<any, any> = item[col.key];
             if (!colValue) return null;
             switch (col.key) {
               case 'title': return colValue;
-              case 'projectType': return colValue.split(';').map((str, idx) => <div key={idx}>{str}</div>);
-              case 'serviceArea': return colValue.split(';').map((str, idx) => <div key={idx}>{str}</div>);
+              case 'projectType': return (colValue as string).split(';').map((str, idx) => <div key={idx}>{str}</div>);
+              case 'serviceArea': return (colValue as string).split(';').map((str, idx) => <div key={idx}>{str}</div>);
               default: {
                 if (isObject(colValue)) {
                   return <StatusColumn status={item[col.key]} />;
