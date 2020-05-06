@@ -22,6 +22,8 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
+        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
       - name: Package SPFx
         run: |
           gulp default --ship
+        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
