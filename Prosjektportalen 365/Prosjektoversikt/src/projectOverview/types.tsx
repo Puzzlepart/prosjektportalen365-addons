@@ -2,7 +2,7 @@ export interface IProjectOverviewWebPartProps {
     /**
      * Min width for status columns
      */
-    statusColumnMinWidth: number;
+    statusColumnWidth: number;
 
     /**
     * Icon size in columns

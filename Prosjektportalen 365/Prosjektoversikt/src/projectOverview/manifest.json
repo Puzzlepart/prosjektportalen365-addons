@@ -3,7 +3,7 @@
   "id": "ed0a0ef4-8301-46cf-8a3d-d7021b4c0526",
   "alias": "ProjectOverviewWebPart",
   "componentType": "WebPart",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "manifestVersion": 2,
   "requiresCustomScript": false,
   "supportedHosts": [
@@ -23,7 +23,7 @@
       },
       "officeFabricIconFontName": "ProjectCollection",
       "properties": {
-        "statusColumnMinWidth": 150,
+        "statusColumnWidth": 150,
         "columnIconSize": 14,
         "columnIconGap": 8,
         "showTooltip": true,

@@ -9,7 +9,7 @@
                     <pnp:Sections>
                         <pnp:Section Order="1" Type="OneColumn">
                             <pnp:Controls>
-                                <pnp:CanvasControl WebPartType="Custom" JsonControlData="{&quot;properties&quot;:{&quot;statusColumnMinWidth&quot;:175,&quot;columnIconSize&quot;:16,&quot;showTooltip&quot;:true}}" ControlId="ed0a0ef4-8301-46cf-8a3d-d7021b4c0526" Order="1" Column="1" />
+                                <pnp:CanvasControl WebPartType="Custom" JsonControlData="{&quot;properties&quot;:{&quot;statusColumnWidth&quot;:175,&quot;columnIconSize&quot;:16,&quot;showTooltip&quot;:true}}" ControlId="ed0a0ef4-8301-46cf-8a3d-d7021b4c0526" Order="1" Column="1" />
                             </pnp:Controls>
                         </pnp:Section>
                     </pnp:Sections>

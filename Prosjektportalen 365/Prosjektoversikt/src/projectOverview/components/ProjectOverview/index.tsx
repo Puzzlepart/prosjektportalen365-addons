@@ -8,7 +8,7 @@ import { IPhase, IProjectOverviewWebPartProps } from '../../types';
 import { StatusColumn } from '../StatusColumn';
 import styles from './ProjectOverview.module.scss';
 
-const columns = (phases: Array<IPhase>, { statusColumnMinWidth }: IProjectOverviewWebPartProps): IColumn[] => [
+const columns = (phases: Array<IPhase>, { statusColumnWidth }: IProjectOverviewWebPartProps): IColumn[] => [
   {
     key: 'title',
     name: 'Prosjekt',
@@ -32,7 +32,8 @@ const columns = (phases: Array<IPhase>, { statusColumnMinWidth }: IProjectOvervi
   ...phases.map(({ Name }) => ({
     key: Name,
     name: Name,
-    minWidth: statusColumnMinWidth,
+    minWidth: statusColumnWidth,
+    maxWidth: statusColumnWidth,
   })),
 ].map(col => ({ ...col, isResizable: true }));
 
