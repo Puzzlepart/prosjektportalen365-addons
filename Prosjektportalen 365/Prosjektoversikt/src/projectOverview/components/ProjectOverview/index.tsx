@@ -1,28 +1,32 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+//#region imports
+import { ContextualMenu } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { ConstrainMode, DetailsList, DetailsListLayoutMode, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
 import * as React from 'react';
 import { filter } from 'underscore';
 import { ActionBar } from '../ActionBar';
 import { FilterPanel } from '../FilterPanel';
 import { getColumns } from './columns';
+import { onColumnHeaderContextMenu } from './onColumnHeaderContextMenu';
 import { onRenderItemColumn } from './onRenderItemColumn';
 import styles from './ProjectOverview.module.scss';
-import { ProjectOverviewContext } from './ProjectOverviewContext';
+import { IProjectOverviewContext, ProjectOverviewContext } from './ProjectOverviewContext';
 import reducer from './ProjectOverviewReducer';
+//#endregion
 
 export const ProjectOverview = () => {
   const context = React.useContext(ProjectOverviewContext);
   const [state, dispatch] = React.useReducer(reducer, {
     filters: [...context.filters],
+    projects: [...context.projects],
+    columns: getColumns(context),
   });
 
-  const contextValue = React.useMemo(() => {
+  const contextValue: IProjectOverviewContext = React.useMemo(() => {
     return { ...context, filters: state.filters, dispatch };
   }, [state, dispatch]);
 
   const items = filter(
-    context.projects,
+    state.projects,
     project => project.matchFilters(state.filters)
   );
 
@@ -37,11 +41,20 @@ export const ProjectOverview = () => {
             constrainMode={ConstrainMode.unconstrained}
             selectionMode={SelectionMode.none}
             items={items}
-            columns={getColumns(context)}
+            columns={state.columns}
             onRenderItemColumn={onRenderItemColumn}
+            onColumnHeaderClick={(
+              event,
+              col
+            ) => onColumnHeaderContextMenu(col, event, contextValue)}
+            onColumnHeaderContextMenu={(
+              col,
+              event
+            ) => onColumnHeaderContextMenu(col, event, contextValue)}
           />
         </div>
       </div>
+      {state.columnMenu && <ContextualMenu {...state.columnMenu} />}
     </ProjectOverviewContext.Provider>
   );
 }

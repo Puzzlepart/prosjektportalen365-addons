@@ -7,6 +7,7 @@ export const getColumns = ({ phases, properties }: IProjectOverviewContext): ICo
         name: 'Prosjekt',
         minWidth: 200,
         maxWidth: 220,
+        data: { isSortable: true }
     } as IColumn,
     {
         key: 'projectType',
@@ -14,6 +15,7 @@ export const getColumns = ({ phases, properties }: IProjectOverviewContext): ICo
         minWidth: 120,
         maxWidth: 180,
         isMultiline: true,
+        data: { isSortable: true }
     } as IColumn,
     {
         key: 'serviceArea',
@@ -21,11 +23,13 @@ export const getColumns = ({ phases, properties }: IProjectOverviewContext): ICo
         minWidth: 120,
         maxWidth: 180,
         isMultiline: true,
+        data: { isSortable: true }
     } as IColumn,
     ...phases.map(({ Name }) => ({
         key: Name,
         name: Name,
         minWidth: properties.statusColumnWidth,
         maxWidth: properties.statusColumnWidth,
+        data: {},
     })),
 ].map(col => ({ ...col, isResizable: true }));

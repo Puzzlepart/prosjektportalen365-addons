@@ -1,5 +1,6 @@
 import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import * as React from 'react';
+import styles from './FilterItem.module.scss';
 import { IFilterItemProps } from './IFilterItemProps';
 
 /**
@@ -8,14 +9,19 @@ import { IFilterItemProps } from './IFilterItemProps';
 export const FilterItem = ({ filter, onFilterUpdated: filterUpdated }: IFilterItemProps) => {
     const selectedKeys = filter.selected.map(f => f.key);
     return (
-        <div key={filter.key} style={{ marginTop: 15 }}>
+        <div
+            key={filter.key}
+            className={styles.root}>
             <h4>{filter.name}</h4>
             {filter.items.map(item => (
-                <Checkbox
+                <div
                     key={item.key}
-                    label={item.value}
-                    checked={selectedKeys.indexOf(item.key) !== -1}
-                    onChange={(_, checked) => filterUpdated(filter, item, checked)} />
+                    className={styles.item}>
+                    <Checkbox
+                        label={item.value}
+                        checked={selectedKeys.indexOf(item.key) !== -1}
+                        onChange={(_, checked) => filterUpdated(filter, item, checked)} />
+                </div>
             ))}
         </div>
     );
