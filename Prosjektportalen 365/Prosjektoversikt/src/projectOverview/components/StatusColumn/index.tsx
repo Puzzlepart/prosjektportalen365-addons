@@ -4,7 +4,7 @@ import { TooltipDelay, TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
 import FadeIn from 'react-fade-in';
 import { ProjectStatusModel } from '../../models/ProjectStatusModel';
-import { ProjectOverviewContext } from '../../ProjectOverviewContext';
+import { ProjectOverviewContext } from '../ProjectOverview/ProjectOverviewContext';
 import { StatusColumnTooltipContent } from '../StatusColumnTooltipContent';
 import styles from './StatusColumn.module.scss';
 

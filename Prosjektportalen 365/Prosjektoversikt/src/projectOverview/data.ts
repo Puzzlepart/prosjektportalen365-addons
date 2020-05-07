@@ -1,19 +1,26 @@
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { sp } from '@pnp/sp';
 import { taxonomy } from '@pnp/sp-taxonomy';
-import { filter, pick } from 'underscore';
+import { filter, map, pick } from 'underscore';
 import config from './config';
 import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
 import { IStatusSectionItem } from './models/IStatusSectionItem';
 import { IProjectItem, ProjectModel } from './models/ProjectModel';
 import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
+import { IPhase } from './types';
 
 export interface IDataAdapterCacheKeys {
     phaseTermSetId: string;
     projects: string;
     projectStatus: string;
     columnConfigurations: string;
+    projectColumns: string;
     statusSections: string;
+}
+
+export interface IDataAdapterFetchResult {
+    projects: ProjectModel[];
+    phases: IPhase[];
 }
 
 export class DataAdapter {
@@ -49,7 +56,7 @@ export class DataAdapter {
         return sites;
     }
 
-    private async getColumnConfigurations(expiration: Date, key: string) {
+    private async getColumnConfigurations(expiration: Date) {
         const items = await sp.web.lists.getByTitle(config.PROJECT_COLUMN_CONFIGURATION_LIST_NAME)
             .items
             .select(
@@ -62,7 +69,7 @@ export class DataAdapter {
             // eslint-disable-next-line quotes
             .filter(`startswith(GtPortfolioColumn/GtInternalName,'GtStatus')`)
             .top(500)
-            .usingCaching({ key, expiration })
+            .usingCaching({ key: this.cacheKeys.columnConfigurations, expiration })
             .get<IPortfolioColumnConfigurationItem[]>();
         const columnConfigurations = items.reduce((obj, item) => {
             const key = item.GtPortfolioColumn.GtInternalName;
@@ -80,9 +87,7 @@ export class DataAdapter {
             .forEach(key => sessionStorage.removeItem(this.cacheKeys[key]));
     }
 
-    public async fetchData(
-        expiration: Date,
-    ) {
+    public async fetchData(expiration: Date): Promise<IDataAdapterFetchResult> {
         const projectsList = sp.web.lists.getByTitle(config.PROJECTS_LIST_NAME);
         const projectStatusList = sp.web.lists.getByTitle(config.PROJECT_STATUS_LIST_NAME);
         const statusSectionsList = sp.web.lists.getByTitle(config.STATUS_SECTIONS_LIST_NAME);
@@ -107,7 +112,7 @@ export class DataAdapter {
                 .orderBy('Id', false)
                 .usingCaching({ key: this.cacheKeys.projectStatus, expiration })
                 .get<IProjectStatusItem[]>(),
-            this.getColumnConfigurations(expiration, this.cacheKeys.columnConfigurations),
+            this.getColumnConfigurations(expiration),
             statusSectionsList
                 .items
                 .select('GtSecFieldName', 'GtSecIcon')
@@ -122,6 +127,7 @@ export class DataAdapter {
             _columnConfigurations,
             _statusSections,
         ));
+
         const projects = _projects
             .map(item => {
                 const project = new ProjectModel(item, filter(status, s => s.siteId === item.GtSiteId));
@@ -129,9 +135,13 @@ export class DataAdapter {
                 return project.setTitle(_sites[project.siteId]);
             })
             .filter(p => p);
-        const phases = filter(_phases, p => {
-            return p.LocalCustomProperties.ShowOnFrontpage !== 'false';
-        }).map(p => pick(p, 'Name', 'LocalCustomProperties') as any);
+
+        const phases =
+            map(
+                filter(_phases, p => p.LocalCustomProperties.ShowOnFrontpage !== 'false'),
+                p => pick(p, 'Name', 'LocalCustomProperties') as any
+            );
+
         return { projects, phases };
     }
 }

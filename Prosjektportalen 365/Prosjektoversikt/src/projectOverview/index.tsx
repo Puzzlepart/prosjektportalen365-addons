@@ -6,24 +6,23 @@ import moment from 'moment';
 import React from 'react';
 import ReactDom from 'react-dom';
 import { first } from 'underscore';
-import { ProjectOverview } from './components/ProjectOverview';
-import { DataAdapter } from './data';
-import { ProjectModel } from './models/ProjectModel';
-import { ProjectOverviewContext } from './ProjectOverviewContext';
-import { IPhase, IProjectOverviewWebPartProps } from './types';
+import { Filter } from './components/FilterPanel';
+import { ProjectOverview, ProjectOverviewContext } from './components/ProjectOverview';
+import { DataAdapter, IDataAdapterFetchResult } from './data';
+import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
-  private projects: Array<ProjectModel>;
-  private phases: Array<IPhase>;
+  private data: IDataAdapterFetchResult;
   private dataAdapter: DataAdapter;
 
   public render(): void {
     const element = (
       <ProjectOverviewContext.Provider
         value={{
+          phases: this.data.phases,
+          projects: this.data.projects,
+          filters: this.getFilters(),
           properties: this.properties,
-          projects: this.projects,
-          phases: this.phases,
         }}>
         <ProjectOverview />
       </ProjectOverviewContext.Provider>
@@ -39,11 +38,17 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
       projects: this.createCacheKey('projects'),
       projectStatus: this.createCacheKey('project_status'),
       columnConfigurations: this.createCacheKey('column_configurations'),
+      projectColumns: this.createCacheKey('project_columns'),
       statusSections: this.createCacheKey('status_sections'),
     })
-    const { projects, phases } = await this.dataAdapter.fetchData(this.getCacheExpiry());
-    this.projects = projects;
-    this.phases = phases;
+    this.data = await this.dataAdapter.fetchData(this.getCacheExpiry());
+  }
+
+  protected getFilters() {
+    return [
+      new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
+      new Filter('GtProjectTypeText', 'Prosjekttype'),
+    ].map(filter => filter.populate(this.data.projects.map(p => p.getItem())));
   }
 
   protected createCacheKey(key: string) {
@@ -77,6 +82,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     if (this.properties.cacheInterval && this.properties.cacheUnits) {
       cacheLabel = `Hurtigbuffer er satt til å vare i ${this.properties.cacheUnits} ${first(this.properties.cacheInterval.split('|'))}`;
     }
+
     return {
       pages: [
         {
