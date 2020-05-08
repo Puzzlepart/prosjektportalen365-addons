@@ -1,7 +1,7 @@
 import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { IProjectOverviewContext } from './ProjectOverviewContext';
 
-export const getColumns = ({ phases, properties }: IProjectOverviewContext): IColumn[] => [
+export const getColumns = ({ state, properties }: IProjectOverviewContext): IColumn[] => [
     {
         key: 'title',
         name: 'Prosjekt',
@@ -25,7 +25,7 @@ export const getColumns = ({ phases, properties }: IProjectOverviewContext): ICo
         isMultiline: true,
         data: { isSortable: true }
     } as IColumn,
-    ...phases.map(({ Name }) => ({
+    ...(state.phases || []).map(({ Name }) => ({
         key: Name,
         name: Name,
         minWidth: properties.statusColumnWidth,

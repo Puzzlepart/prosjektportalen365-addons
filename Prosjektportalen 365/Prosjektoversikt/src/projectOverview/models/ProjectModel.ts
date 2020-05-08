@@ -51,7 +51,7 @@ export class ProjectModel {
     public projectType: string;
     public serviceArea: string;
 
-    constructor(private item: IProjectItem, public status: Array<ProjectStatusModel>) {
+    constructor(private item: IProjectItem, public status: ProjectStatusModel[]) {
         this.siteId = item.GtSiteId;
         this.siteUrl = item.GtSiteUrl;
         this.title = item.Title;
@@ -67,10 +67,13 @@ export class ProjectModel {
     }
 
     /**
-     * Get the SharePoint item
+     * Get the SharePoint item for the project merged with the latest status report
     */
-    public getItem(): IProjectItem {
-        return this.item;
+    public getMergedItem(): IProjectItem {
+        return {
+            ...this.status.length > 0 ? first(this.status).getItem() : {},
+            ...this.item,
+        };
     }
 
     /**
@@ -79,10 +82,11 @@ export class ProjectModel {
      * @param {IFilter[]} filters Filters
      */
     public matchFilters(filters: IFilter[]): boolean {
+        const _item = this.getMergedItem();
         for (let i = 0; i < filters.length; i++) {
             const filter = filters[i]
             if (filter.selected.length === 0) continue;
-            const value = this.item[filter.key];
+            const value = _item[filter.key];
             const match = find(filter.selected, s => contains(value, s.value));
             if (!match) return false;
         }

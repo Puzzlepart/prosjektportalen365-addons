@@ -1,8 +1,12 @@
-export default {
-    PHASE_FIELD_NAME: 'GtProjectPhase',
-    PROJECTS_LIST_NAME: 'Prosjekter',
-    PROJECT_STATUS_LIST_NAME: 'Prosjektstatus',
-    PROJECT_COLUMN_CONFIGURATION_LIST_NAME: 'Prosjektkolonnekonfigurasjon',
-    PROJECT_COLUMN_LIST_NAME: 'Prosjektkolonner',
-    STATUS_SECTIONS_LIST_NAME: 'Statusseksjoner',
-}
+
+export const CONFIG_LIST_NAME = 'Prosjektoversiktkonfigurasjon';
+export const PHASE_FIELD_NAME = 'GtProjectPhase';
+export const PROJECTS_LIST_NAME = 'Prosjekter';
+export const PROJECT_STATUS_LIST_NAME = 'Prosjektstatus';
+export const PROJECT_COLUMN_CONFIGURATION_LIST_NAME = 'Prosjektkolonnekonfigurasjon';
+export const PROJECT_COLUMN_LIST_NAME = 'Prosjektkolonner';
+export const STATUS_SECTIONS_LIST_NAME = 'Statusseksjoner';
+export const FILTERS = [
+    ['GtProjectServiceAreaText', 'Tjenesteområde'],
+    ['GtProjectTypeText', 'Prosjekttype'],
+]

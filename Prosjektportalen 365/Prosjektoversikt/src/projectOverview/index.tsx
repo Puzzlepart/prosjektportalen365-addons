@@ -1,27 +1,36 @@
 import { Version } from '@microsoft/sp-core-library';
-import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { dateAdd, DateAddInterval } from '@pnp/common';
+import { ConsoleListener, Logger, LogLevel } from '@pnp/logging';
+import { sp } from '@pnp/sp';
 import moment from 'moment';
 import React from 'react';
 import ReactDom from 'react-dom';
 import { first } from 'underscore';
-import { Filter } from './components/FilterPanel';
 import { ProjectOverview, ProjectOverviewContext } from './components/ProjectOverview';
-import { DataAdapter, IDataAdapterFetchResult } from './data';
+import { DataAdapter } from './data-adapter';
+import { Portfolio } from './models/Portfolio';
 import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
-  private data: IDataAdapterFetchResult;
   private dataAdapter: DataAdapter;
+  private portfolios: Portfolio[];
+
+  public constructor() {
+    super();
+    Logger.activeLogLevel = LogLevel.Info;
+    Logger.subscribe(new ConsoleListener());
+  }
 
   public render(): void {
     const element = (
       <ProjectOverviewContext.Provider
         value={{
-          phases: this.data.phases,
-          projects: this.data.projects,
-          filters: this.getFilters(),
+          state: {},
+          dataAdapter: this.dataAdapter,
+          portfolios: this.portfolios,
+          defaultConfiguration: first(this.portfolios),
           properties: this.properties,
         }}>
         <ProjectOverview />
@@ -33,26 +42,12 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   public async onInit() {
     await super.onInit();
     moment.locale('nb');
-    this.dataAdapter = new DataAdapter(this.context, {
-      phaseTermSetId: this.createCacheKey('phase_term_set_id'),
-      projects: this.createCacheKey('projects'),
-      projectStatus: this.createCacheKey('project_status'),
-      columnConfigurations: this.createCacheKey('column_configurations'),
-      projectColumns: this.createCacheKey('project_columns'),
-      statusSections: this.createCacheKey('status_sections'),
-    })
-    this.data = await this.dataAdapter.fetchData(this.getCacheExpiry());
-  }
-
-  protected getFilters() {
-    return [
-      new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
-      new Filter('GtProjectTypeText', 'Prosjekttype'),
-    ].map(filter => filter.populate(this.data.projects.map(p => p.getItem())));
-  }
-
-  protected createCacheKey(key: string) {
-    return `${this.manifest.alias}_data_${key}`.toLowerCase();
+    sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
+    this.dataAdapter = new DataAdapter().usingCaching({
+      expiration: this.getCacheExpiry(),
+      alias: this.manifest.alias,
+    });
+    this.portfolios = await this.dataAdapter.getPortfolios();
   }
 
   protected getCacheExpiry() {
@@ -147,13 +142,6 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
                   step: 1,
                 }),
                 PropertyPaneLabel('cacheUnits', { text: cacheLabel }),
-                PropertyPaneButton('cacheUnits', {
-                  text: 'Tøm hurtigbuffer',
-                  onClick: () => {
-                    this.dataAdapter.clearCache();
-                    document.location.reload();
-                  }
-                }),
               ]
             },
           ]

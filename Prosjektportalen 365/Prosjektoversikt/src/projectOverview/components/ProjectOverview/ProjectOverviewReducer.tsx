@@ -1,40 +1,29 @@
-import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { sortBy } from 'underscore';
-import { ProjectModel } from '../../models/ProjectModel';
-import { IFilter } from '../FilterPanel';
-
-export interface IProjectOverviewState {
-    columns: IColumn[];
-    filters: IFilter[];
-    projects: ProjectModel[];
-    showFilterPanel?: boolean;
-    columnMenu?: IContextualMenuProps;
-}
-
-export type ProjectOverviewAction =
-    {
-        type: 'TOGGLE_FILTER_PANEL';
-    }
-    |
-    {
-        type: 'FILTERS_UPDATED';
-        payload: IFilter[];
-    }
-    |
-    {
-        type: 'SET_COLUMN_MENU';
-        payload: IContextualMenuProps;
-    }
-    |
-    {
-        type: 'ON_COLUMN_SORT';
-        payload: { key: string; sortDesencing: boolean };
-    };
+import { FILTERS } from '../../config';
+import { Filter } from '../FilterPanel';
+import { IProjectOverviewState } from './IProjectOverviewState';
+import { ProjectOverviewAction } from './ProjectOverviewAction';
 
 export default (state: IProjectOverviewState, action: ProjectOverviewAction): IProjectOverviewState => {
-    const newState = { ...state };
+    let newState = { ...state };
     switch (action.type) {
+        case 'DATA_FETCHED': {
+            newState = { ...newState, ...action.payload };
+            const data = newState.projects.map(p => p.getMergedItem());
+            newState.filters = FILTERS.map(([fieldName, name]) => new Filter(fieldName, name).populate(data));
+            newState.loading = null;
+        }
+            break;
+
+        case 'CHANGE_CONFIGURATION': {
+            newState.loading = {
+                label: `Laster inn prosjektportfølje for ${action.payload.title}`,
+                description: 'Vennligst vent...',
+            };
+            newState.selectedPortfolio = action.payload;
+        }
+            break;
+
         case 'TOGGLE_FILTER_PANEL': {
             newState.showFilterPanel = !newState.showFilterPanel;
         }

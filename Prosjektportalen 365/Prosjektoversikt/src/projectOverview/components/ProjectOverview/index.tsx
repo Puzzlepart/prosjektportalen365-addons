@@ -1,6 +1,9 @@
 //#region imports
 import { ContextualMenu } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { ConstrainMode, DetailsList, DetailsListLayoutMode, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
+import { ConstrainMode, DetailsListLayoutMode, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
+import { ShimmeredDetailsList } from 'office-ui-fabric-react/lib/ShimmeredDetailsList';
 import React from 'react';
 import { filter } from 'underscore';
 import { ActionBar } from '../ActionBar';
@@ -16,14 +19,24 @@ import reducer from './ProjectOverviewReducer';
 export const ProjectOverview = () => {
   const context = React.useContext(ProjectOverviewContext);
   const [state, dispatch] = React.useReducer(reducer, {
-    filters: [...context.filters],
-    projects: [...context.projects],
+    loading: {},
+    filters: [],
+    projects: [],
     columns: getColumns(context),
+    selectedPortfolio: context.defaultConfiguration,
   });
 
-  const contextValue: IProjectOverviewContext = React.useMemo(() => {
-    return { ...context, filters: state.filters, dispatch };
-  }, [state, dispatch]);
+  React.useEffect(() => {
+    context.dataAdapter.fetchData(state.selectedPortfolio).then(data => {
+      dispatch({ type: 'DATA_FETCHED', payload: data });
+    });
+  }, [state.selectedPortfolio]);
+
+  const contextValue: IProjectOverviewContext = React.useMemo(() => ({
+    ...context,
+    state,
+    dispatch,
+  }), [state, dispatch]);
 
   const items = filter(
     state.projects,
@@ -35,13 +48,26 @@ export const ProjectOverview = () => {
       <div className={styles.root} >
         <ActionBar />
         <div className={styles.container}>
+          {!state.loading
+            ? (
+              <div className={styles.header}>
+                <span><Icon className={state.selectedPortfolio.iconName} /></span>
+                <span>{state.selectedPortfolio.title}</span>
+              </div>
+            )
+            : (
+              <div className={styles.progressContainer}>
+                <ProgressIndicator {...state.loading} />
+              </div>
+            )}
           <FilterPanel isOpen={state.showFilterPanel} />
-          <DetailsList
+          <ShimmeredDetailsList
+            enableShimmer={!!state.loading}
             layoutMode={DetailsListLayoutMode.justified}
             constrainMode={ConstrainMode.unconstrained}
             selectionMode={SelectionMode.none}
             items={items}
-            columns={state.columns}
+            columns={getColumns(contextValue)}
             onRenderItemColumn={onRenderItemColumn}
             onColumnHeaderClick={(
               event,

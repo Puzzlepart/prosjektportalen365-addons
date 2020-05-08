@@ -1,43 +1,43 @@
-import { WebPartContext } from '@microsoft/sp-webpart-base';
-import { sp } from '@pnp/sp';
+import { Logger, LogLevel } from '@pnp/logging';
+import { ICachingOptions } from '@pnp/odata';
+import { Site, sp } from '@pnp/sp';
 import { taxonomy } from '@pnp/sp-taxonomy';
+import format from 'string-format';
 import { filter, map, pick } from 'underscore';
-import config from './config';
-import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
-import { IStatusSectionItem } from './models/IStatusSectionItem';
-import { IProjectItem, ProjectModel } from './models/ProjectModel';
-import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
-import { IPhase } from './types';
-
-export interface IDataAdapterCacheKeys {
-    phaseTermSetId: string;
-    projects: string;
-    projectStatus: string;
-    columnConfigurations: string;
-    projectColumns: string;
-    statusSections: string;
-}
-
-export interface IDataAdapterFetchResult {
-    projects: ProjectModel[];
-    phases: IPhase[];
-}
+import { CONFIG_LIST_NAME, PHASE_FIELD_NAME, PROJECTS_LIST_NAME, PROJECT_COLUMN_CONFIGURATION_LIST_NAME, PROJECT_STATUS_LIST_NAME, STATUS_SECTIONS_LIST_NAME } from '../config';
+import { IPortfolioColumnConfigurationItem, IPortfolioItem, IProjectItem, IProjectStatusItem, IStatusSectionItem, Portfolio, ProjectModel, ProjectStatusModel } from '../models';
+import { IDataAdapterFetchResult } from './IDataAdapterFetchResult';
 
 export class DataAdapter {
-    constructor(
-        private context: WebPartContext,
-        private cacheKeys: IDataAdapterCacheKeys,
-    ) {
-        sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
+    private cacheOptions: ICachingOptions = null;
+    private site: Site;
+    private current: Portfolio;
+    private cacheKeys = [];
+
+    public usingCaching({ expiration, alias }) {
+        this.cacheOptions = {
+            expiration,
+            key: `${alias}_{0}_{1}`,
+        }
+        return this;
     }
 
-    private async getPhaseFieldTermSetId(expiration: Date, key: string): Promise<string> {
+    protected getCacheOptions(key: string) {
+        const cacheKey = format(this.cacheOptions.key, this.current.id, key);
+        this.cacheKeys.push(cacheKey);
+        return {
+            ...this.cacheOptions,
+            key: cacheKey,
+        }
+    }
+
+    private async getPhaseFieldTermSetId(): Promise<string> {
         const { TermSetId } = await sp
             .web
             .fields
-            .getByInternalNameOrTitle(config.PHASE_FIELD_NAME)
+            .getByInternalNameOrTitle(PHASE_FIELD_NAME)
             .select('TermSetId')
-            .usingCaching({ key, expiration })
+            .usingCaching(this.getCacheOptions('phase_term_set_id'))
             .get<{ TermSetId: string }>();
         return TermSetId;
     }
@@ -56,18 +56,8 @@ export class DataAdapter {
         return sites;
     }
 
-    private async getSite(url: string) {
-        const { PrimarySearchResults } = await sp.search({
-            Querytext: `Path:${url} contentclass:STS_Site`,
-            TrimDuplicates: false,
-            RowLimit: 500,
-            SelectProperties: ['SiteId', 'Title'],
-        });
-        return PrimarySearchResults;
-    }
-
-    private async getColumnConfigurations(expiration: Date) {
-        const items = await sp.web.lists.getByTitle(config.PROJECT_COLUMN_CONFIGURATION_LIST_NAME)
+    private async getColumnConfigurations() {
+        const items = await this.site.rootWeb.lists.getByTitle(PROJECT_COLUMN_CONFIGURATION_LIST_NAME)
             .items
             .select(
                 'GtPortfolioColumnColor',
@@ -78,7 +68,7 @@ export class DataAdapter {
             .expand('GtPortfolioColumn')
             .filter('startswith(GtPortfolioColumn/GtInternalName,\'GtStatus\')')
             .top(500)
-            .usingCaching({ key: this.cacheKeys.columnConfigurations, expiration })
+            .usingCaching(this.getCacheOptions('column_configuration'))
             .get<IPortfolioColumnConfigurationItem[]>();
         const columnConfigurations = items.reduce((obj, item) => {
             const key = item.GtPortfolioColumn.GtInternalName;
@@ -91,16 +81,26 @@ export class DataAdapter {
         return columnConfigurations;
     }
 
-    public clearCache() {
-        Object.keys(this.cacheKeys)
-            .forEach(key => sessionStorage.removeItem(this.cacheKeys[key]));
+    public async getPortfolios(): Promise<Portfolio[]> {
+        const list = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
+        const items = await list
+            .items
+            .top(500)
+            .select('ID', 'Title', 'URL', 'IconName')
+            .get<IPortfolioItem[]>();
+        return items.map(item => new Portfolio(item));
     }
 
-    public async fetchData(expiration: Date): Promise<IDataAdapterFetchResult> {
-        const projectsList = sp.web.lists.getByTitle(config.PROJECTS_LIST_NAME);
-        const projectStatusList = sp.web.lists.getByTitle(config.PROJECT_STATUS_LIST_NAME);
-        const statusSectionsList = sp.web.lists.getByTitle(config.STATUS_SECTIONS_LIST_NAME);
-        const phaseTermSetId = await this.getPhaseFieldTermSetId(expiration, this.cacheKeys.phaseTermSetId);
+    public async fetchData(config: Portfolio): Promise<IDataAdapterFetchResult> {
+        Logger.log({ message: '(projectOverview/DataAdapter) Fetching data', data: config, level: LogLevel.Info });
+        this.current = config;
+        this.site = new Site(this.current.url);
+        const { Id: siteId } = await this.site.select('Id').get<{ Id: string }>();
+        const _phaseTermSetId = await this.getPhaseFieldTermSetId();
+        const projectsList = this.site.rootWeb.lists.getByTitle(PROJECTS_LIST_NAME);
+        const projectStatusList = this.site.rootWeb.lists.getByTitle(PROJECT_STATUS_LIST_NAME);
+        const statusSectionsList = this.site.rootWeb.lists.getByTitle(STATUS_SECTIONS_LIST_NAME);
+
         const [
             _sites,
             _projects,
@@ -109,27 +109,28 @@ export class DataAdapter {
             _statusSections,
             _phases,
         ] = await Promise.all([
-            this.searchSitesInHub(this.context.pageContext.site.id.toString()),
+            this.searchSitesInHub(siteId),
             projectsList
                 .items
                 .top(500)
-                .usingCaching({ key: this.cacheKeys.projects, expiration })
+                .usingCaching(this.getCacheOptions('projects'))
                 .get<IProjectItem[]>(),
             projectStatusList
                 .items
                 .top(500)
                 .orderBy('Id', false)
-                .usingCaching({ key: this.cacheKeys.projectStatus, expiration })
+                .usingCaching(this.getCacheOptions('project_status'))
                 .get<IProjectStatusItem[]>(),
-            this.getColumnConfigurations(expiration),
+            this.getColumnConfigurations(),
             statusSectionsList
                 .items
                 .select('GtSecFieldName', 'GtSecIcon')
                 .top(10)
-                .usingCaching({ key: this.cacheKeys.statusSections, expiration })
+                .usingCaching(this.getCacheOptions('status_sections'))
                 .get<IStatusSectionItem[]>(),
-            taxonomy.getDefaultKeywordTermStore().getTermSetById(phaseTermSetId).terms.get(),
+            taxonomy.getDefaultKeywordTermStore().getTermSetById(_phaseTermSetId).terms.get(),
         ]);
+
 
         const status = _status.map(item => new ProjectStatusModel(
             item,
