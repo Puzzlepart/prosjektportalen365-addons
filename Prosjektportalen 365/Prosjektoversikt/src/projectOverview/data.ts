@@ -56,6 +56,16 @@ export class DataAdapter {
         return sites;
     }
 
+    private async getSite(url: string) {
+        const { PrimarySearchResults } = await sp.search({
+            Querytext: `Path:${url} contentclass:STS_Site`,
+            TrimDuplicates: false,
+            RowLimit: 500,
+            SelectProperties: ['SiteId', 'Title'],
+        });
+        return PrimarySearchResults;
+    }
+
     private async getColumnConfigurations(expiration: Date) {
         const items = await sp.web.lists.getByTitle(config.PROJECT_COLUMN_CONFIGURATION_LIST_NAME)
             .items
@@ -66,8 +76,7 @@ export class DataAdapter {
                 'GtPortfolioColumn/GtInternalName'
             )
             .expand('GtPortfolioColumn')
-            // eslint-disable-next-line quotes
-            .filter(`startswith(GtPortfolioColumn/GtInternalName,'GtStatus')`)
+            .filter('startswith(GtPortfolioColumn/GtInternalName,\'GtStatus\')')
             .top(500)
             .usingCaching({ key: this.cacheKeys.columnConfigurations, expiration })
             .get<IPortfolioColumnConfigurationItem[]>();

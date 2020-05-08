@@ -1,5 +1,5 @@
 import { Panel } from 'office-ui-fabric-react/lib/Panel';
-import * as React from 'react';
+import React from 'react';
 import { ProjectOverviewContext } from '../ProjectOverview/ProjectOverviewContext';
 import { FilterItem } from './FilterItem';
 import { IFilter, IFilterItem, IFilterPanelProps } from './types';

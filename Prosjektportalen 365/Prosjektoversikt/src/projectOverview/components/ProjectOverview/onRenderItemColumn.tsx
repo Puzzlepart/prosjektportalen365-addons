@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { Link } from 'office-ui-fabric-react/lib/Link';
-import * as React from 'react';
+import React from 'react';
 import { isObject } from 'underscore';
 import { ProjectModel } from '../../models/ProjectModel';
 import { StatusColumn } from '../StatusColumn';

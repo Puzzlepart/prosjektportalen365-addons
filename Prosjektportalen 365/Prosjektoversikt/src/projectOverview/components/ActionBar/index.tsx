@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
-import * as React from 'react';
+import React from 'react';
 import { ProjectOverviewContext } from '../ProjectOverview/ProjectOverviewContext';
-import styles from './ProjectOverview.module.scss';
+import styles from './ActionBar.module.scss';
 
 export const ActionBar = () => {
     const { dispatch } = React.useContext(ProjectOverviewContext);

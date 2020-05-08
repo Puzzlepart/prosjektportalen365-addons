@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import * as React from 'react';
+import React from 'react';
 import FadeIn from 'react-fade-in';
 import { IStatusColumnProps } from '../StatusColumn/IStatusColumnProps';
 import styles from './StatusColumnTooltipContent.module.scss';

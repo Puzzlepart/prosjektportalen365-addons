@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { IDataAdapterFetchResult } from '../../data';
 import { IProjectOverviewWebPartProps } from '../../types';
 import { IFilter } from '../FilterPanel';

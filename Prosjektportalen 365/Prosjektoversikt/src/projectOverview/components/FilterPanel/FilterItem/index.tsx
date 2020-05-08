@@ -1,5 +1,5 @@
 import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
-import * as React from 'react';
+import React from 'react';
 import styles from './FilterItem.module.scss';
 import { IFilterItemProps } from './IFilterItemProps';
 
