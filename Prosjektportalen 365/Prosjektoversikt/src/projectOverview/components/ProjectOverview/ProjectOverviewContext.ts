@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataAdapter } from '../../data';
-import { PortfolioConfiguration } from '../../models/PortfolioConfiguration';
+import { Portfolio } from '../../models/Portfolio';
 import { IProjectOverviewWebPartProps } from '../../types';
 import { IProjectOverviewState } from './IProjectOverviewState';
 import { ProjectOverviewAction } from './ProjectOverviewAction';
@@ -9,8 +9,8 @@ export interface IProjectOverviewContext {
     properties: IProjectOverviewWebPartProps;
     dataAdapter?: DataAdapter;
     dispatch?: React.Dispatch<ProjectOverviewAction>;
-    configurations: PortfolioConfiguration[];
-    defaultConfiguration?: PortfolioConfiguration;
+    configurations: Portfolio[];
+    defaultConfiguration?: Portfolio;
     state?: IProjectOverviewState;
 }
 

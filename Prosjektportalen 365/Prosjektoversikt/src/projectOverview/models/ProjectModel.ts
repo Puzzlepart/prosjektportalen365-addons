@@ -51,7 +51,7 @@ export class ProjectModel {
     public projectType: string;
     public serviceArea: string;
 
-    constructor(private item: IProjectItem, public status: Array<ProjectStatusModel>) {
+    constructor(private item: IProjectItem, public status: ProjectStatusModel[]) {
         this.siteId = item.GtSiteId;
         this.siteUrl = item.GtSiteUrl;
         this.title = item.Title;
@@ -67,10 +67,13 @@ export class ProjectModel {
     }
 
     /**
-     * Get the SharePoint item
+     * Get the SharePoint item for the project merged with the latest status report
     */
-    public getItem(): IProjectItem {
-        return this.item;
+    public getMergedItem(): IProjectItem {
+        return {
+            ...this.status.length > 0 ? first(this.status).getItem() : {},
+            ...this.item,
+        };
     }
 
     /**

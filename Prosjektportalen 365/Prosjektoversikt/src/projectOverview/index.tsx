@@ -8,13 +8,13 @@ import ReactDom from 'react-dom';
 import { first } from 'underscore';
 import { ProjectOverview, ProjectOverviewContext } from './components/ProjectOverview';
 import { DataAdapter } from './data';
-import { PortfolioConfiguration } from './models/PortfolioConfiguration';
+import { Portfolio } from './models/Portfolio';
 import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
   private dataAdapter: DataAdapter;
-  private configurations: PortfolioConfiguration[];
-  private defaultConfiguration: PortfolioConfiguration;
+  private configurations: Portfolio[];
+  private defaultConfiguration: Portfolio;
 
   public render(): void {
     const element = (

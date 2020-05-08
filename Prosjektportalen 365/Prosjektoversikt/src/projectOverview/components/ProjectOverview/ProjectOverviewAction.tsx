@@ -1,12 +1,12 @@
 import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { IDataAdapterFetchResult } from '../../IDataAdapterFetchResult';
-import { PortfolioConfiguration } from '../../models/PortfolioConfiguration';
+import { Portfolio } from '../../models/Portfolio';
 import { IFilter } from '../FilterPanel';
 
 export type ProjectOverviewAction =
     {
         type: 'CHANGE_CONFIGURATION';
-        payload: PortfolioConfiguration;
+        payload: Portfolio;
     } |
     {
         type: 'DATA_FETCHED';

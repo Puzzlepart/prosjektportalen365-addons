@@ -8,15 +8,15 @@ import { CONFIG_LIST_NAME, PHASE_FIELD_NAME, PROJECTS_LIST_NAME, PROJECT_COLUMN_
 import { IDataAdapterFetchResult } from './IDataAdapterFetchResult';
 import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
 import { IStatusSectionItem } from './models/IStatusSectionItem';
-import { IPortfolioConfigurationItem, PortfolioConfiguration } from './models/PortfolioConfiguration';
+import { IPortfolioItem, Portfolio } from './models/Portfolio';
 import { IProjectItem, ProjectModel } from './models/ProjectModel';
 import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
 
 export class DataAdapter {
     private cacheOptions: ICachingOptions = null;
     private site: Site;
-    private configuration: PortfolioConfiguration[];
-    private current: PortfolioConfiguration;
+    private configuration: Portfolio[];
+    private current: Portfolio;
     private cacheKeys = [];
 
     constructor(private context: WebPartContext) {
@@ -94,17 +94,17 @@ export class DataAdapter {
         this.cacheKeys.forEach(key => sessionStorage.removeItem(key));
     }
 
-    public async getConfigurations(): Promise<PortfolioConfiguration[]> {
+    public async getConfigurations(): Promise<Portfolio[]> {
         const configList = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
         const _configuration = await configList
             .items
             .top(500)
             .select('ID', 'Title', 'URL', 'IconName')
-            .get<IPortfolioConfigurationItem[]>();
-        return this.configuration = _configuration.map(item => new PortfolioConfiguration(item));
+            .get<IPortfolioItem[]>();
+        return this.configuration = _configuration.map(item => new Portfolio(item));
     }
 
-    public async fetchData(config: PortfolioConfiguration): Promise<IDataAdapterFetchResult> {
+    public async fetchData(config: Portfolio): Promise<IDataAdapterFetchResult> {
         this.current = config;
         this.site = new Site(this.current.url);
         const { Id: siteId } = await this.site.select('Id').get<{ Id: string }>();

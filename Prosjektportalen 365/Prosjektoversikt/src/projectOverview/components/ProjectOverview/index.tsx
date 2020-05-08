@@ -1,6 +1,7 @@
 //#region imports
 import { ContextualMenu } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { ConstrainMode, DetailsListLayoutMode, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 import { ShimmeredDetailsList } from 'office-ui-fabric-react/lib/ShimmeredDetailsList';
 import React from 'react';
@@ -22,14 +23,14 @@ export const ProjectOverview = () => {
     filters: [],
     projects: [],
     columns: getColumns(context),
-    selectedConfiguration: context.defaultConfiguration,
+    selectedPortfolio: context.defaultConfiguration,
   });
 
   React.useEffect(() => {
-    context.dataAdapter.fetchData(state.selectedConfiguration).then(data => {
+    context.dataAdapter.fetchData(state.selectedPortfolio).then(data => {
       dispatch({ type: 'DATA_FETCHED', payload: data });
     });
-  }, [state.selectedConfiguration]);
+  }, [state.selectedPortfolio]);
 
   const contextValue: IProjectOverviewContext = React.useMemo(() => ({
     ...context,
@@ -50,7 +51,8 @@ export const ProjectOverview = () => {
           {!state.loading
             ? (
               <div className={styles.header}>
-                {state.selectedConfiguration.title}
+                <span><Icon className={state.selectedPortfolio.iconName} /></span>
+                <span>{state.selectedPortfolio.title}</span>
               </div>
             )
             : (

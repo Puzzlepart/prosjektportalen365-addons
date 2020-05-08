@@ -43,29 +43,32 @@ export class ProjectStatusModel {
   public siteId: string;
 
   constructor(
-    private _item: IProjectStatusItem,
-    private _columnConfigurations: { [key: string]: { name: string; iconName: string; colors: any } },
-    private _statusSections: Array<IStatusSectionItem>,
+    private item: IProjectStatusItem,
+    private columnConfigurations: { [key: string]: { name: string; iconName: string; colors: any } },
+    private statusSections: Array<IStatusSectionItem>,
   ) {
-    this.siteId = this._item.GtSiteId;
+    this.siteId = this.item.GtSiteId;
   }
 
-  public get test(): string {
-    return this._item.GtStatusTime;
+  /**
+   * Get the SharePoint item for the project status
+  */
+  public getItem(): IProjectStatusItem {
+    return this.item;
   }
 
   public get created(): string {
-    return moment(this._item.Created).format('LL');
+    return moment(this.item.Created).format('LL');
   }
 
   public get sections(): Array<ProjectStatusSection> {
-    const statusKeys = filter(Object.keys(this._item), key => startsWith(key, 'GtStatus') && !endsWith(key, 'Comment'));
+    const statusKeys = filter(Object.keys(this.item), key => startsWith(key, 'GtStatus') && !endsWith(key, 'Comment'));
     return statusKeys.map(key => {
-      const name = capitalize(this._columnConfigurations[key].name.split(' ')[1]);
-      const iconName = (find(this._statusSections, s => s.GtSecFieldName === key) || {}).GtSecIcon;
-      const value = this._item[key];
-      const comment = this._item[`${key}Comment`];
-      const color = this._columnConfigurations[key].colors[value];
+      const name = capitalize(this.columnConfigurations[key].name.split(' ')[1]);
+      const iconName = (find(this.statusSections, s => s.GtSecFieldName === key) || {}).GtSecIcon;
+      const value = this.item[key];
+      const comment = this.item[`${key}Comment`];
+      const color = this.columnConfigurations[key].colors[value];
       return new ProjectStatusSection(
         key,
         name,

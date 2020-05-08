@@ -21,7 +21,7 @@ const PortfolioSelector = ({
                 name: conf.title,
                 iconProps: { iconName: conf.iconName },
                 canCheck: true,
-                checked: conf.id === state.selectedConfiguration.id,
+                checked: conf.id === state.selectedPortfolio.id,
                 onClick: () => {
                     dispatch({ type: 'CHANGE_CONFIGURATION', payload: conf });
                 },

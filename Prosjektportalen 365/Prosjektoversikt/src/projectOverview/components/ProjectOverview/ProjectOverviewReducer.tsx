@@ -13,7 +13,7 @@ export default (state: IProjectOverviewState, action: ProjectOverviewAction): IP
             newState.filters = [
                 new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
                 new Filter('GtProjectTypeText', 'Prosjekttype'),
-            ].map(filter => filter.populate(newState.projects.map(p => p.getItem())));
+            ].map(filter => filter.populate(newState.projects.map(p => p.getMergedItem())));
             newState.loading = null;
         }
             break;
@@ -23,7 +23,7 @@ export default (state: IProjectOverviewState, action: ProjectOverviewAction): IP
                 label: `Laster inn prosjektportfølje for ${action.payload.title}`,
                 description: 'Vennligst vent...',
             };
-            newState.selectedConfiguration = action.payload;
+            newState.selectedPortfolio = action.payload;
         }
             break;
 
