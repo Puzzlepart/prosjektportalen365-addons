@@ -5,21 +5,21 @@ import { FilterItem } from './FilterItem';
 import { IFilter, IFilterItem, IFilterPanelProps } from './types';
 
 export const FilterPanel = (props: IFilterPanelProps) => {
-    const context = React.useContext(ProjectOverviewContext);
+    const { dispatch, state } = React.useContext(ProjectOverviewContext);
 
     const onFilterUpdated = (filter: IFilter, item: IFilterItem, checked: boolean) => {
         if (checked) filter.selected.push(item);
         else filter.selected = filter.selected.filter(f => f.key !== item.key);
-        const updatedFilters = context.filters.map(f => f.key === filter.key ? filter : f);
-        context.dispatch({ type: 'FILTERS_UPDATED', payload: updatedFilters })
+        const updatedFilters = state.filters.map(f => f.key === filter.key ? filter : f);
+        dispatch({ type: 'FILTERS_UPDATED', payload: updatedFilters })
     }
 
     return (
         <Panel
             isOpen={props.isOpen}
             isLightDismiss={true}
-            onDismiss={() => context.dispatch({ type: 'TOGGLE_FILTER_PANEL' })}>
-            {context.filters
+            onDismiss={() => dispatch({ type: 'TOGGLE_FILTER_PANEL' })}>
+            {state.filters
                 .filter(filter => filter.items.length > 1)
                 .map(filter => (
                     <FilterItem

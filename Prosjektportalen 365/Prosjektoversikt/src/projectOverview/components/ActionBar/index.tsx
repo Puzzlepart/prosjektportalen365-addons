@@ -8,7 +8,7 @@ import styles from './ActionBar.module.scss';
 const PortfolioSelector = ({
     dispatch,
     configurations,
-    selectedConfiguration,
+    state,
 }: IProjectOverviewContext): IContextualMenuItem => ({
     key: 'PORTFOLIO_SELECTOR',
     itemType: ContextualMenuItemType.Header,
@@ -21,7 +21,7 @@ const PortfolioSelector = ({
                 name: conf.title,
                 iconProps: { iconName: conf.iconName },
                 canCheck: true,
-                checked: conf.id === selectedConfiguration.id,
+                checked: conf.id === state.selectedConfiguration.id,
                 onClick: () => {
                     dispatch({ type: 'CHANGE_CONFIGURATION', payload: conf });
                 },

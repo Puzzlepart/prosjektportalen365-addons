@@ -1,12 +1,29 @@
+/* eslint-disable no-console */
 import { sortBy } from 'underscore';
+import { Filter } from '../FilterPanel';
 import { IProjectOverviewState } from './IProjectOverviewState';
 import { ProjectOverviewAction } from './ProjectOverviewAction';
 
 export default (state: IProjectOverviewState, action: ProjectOverviewAction): IProjectOverviewState => {
-    const newState = { ...state };
+    let newState = { ...state };
     switch (action.type) {
-        case 'CHANGE_CONFIGURATION': {
+        case 'DATA_FETCHED': {
             console.log(action);
+            newState = { ...newState, ...action.payload };
+            newState.filters = [
+                new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
+                new Filter('GtProjectTypeText', 'Prosjekttype'),
+            ].map(filter => filter.populate(newState.projects.map(p => p.getItem())));
+            newState.loading = null;
+        }
+            break;
+
+        case 'CHANGE_CONFIGURATION': {
+            newState.loading = {
+                label: `Laster inn prosjektportfølje for ${action.payload.title}`,
+                description: 'Vennligst vent...',
+            };
+            newState.selectedConfiguration = action.payload;
         }
             break;
 

@@ -1,5 +1,5 @@
 import { Version } from '@microsoft/sp-core-library';
-import { IPropertyPaneConfiguration, PropertyPaneButton, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { dateAdd, DateAddInterval } from '@pnp/common';
 import moment from 'moment';
@@ -8,12 +8,10 @@ import ReactDom from 'react-dom';
 import { first } from 'underscore';
 import { ProjectOverview, ProjectOverviewContext } from './components/ProjectOverview';
 import { DataAdapter } from './data';
-import { IDataAdapterFetchResult } from './IDataAdapterFetchResult';
 import { PortfolioConfiguration } from './models/PortfolioConfiguration';
 import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
-  private data: IDataAdapterFetchResult;
   private dataAdapter: DataAdapter;
   private configurations: PortfolioConfiguration[];
   private defaultConfiguration: PortfolioConfiguration;
@@ -22,8 +20,8 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     const element = (
       <ProjectOverviewContext.Provider
         value={{
-          phases: this.data.phases,
-          projects: this.data.projects,
+          state: {},
+          dataAdapter: this.dataAdapter,
           configurations: this.configurations,
           defaultConfiguration: this.defaultConfiguration,
           properties: this.properties,
@@ -41,6 +39,7 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     this.configurations = await this.dataAdapter.getConfigurations();
     this.defaultConfiguration = first(this.configurations);
   }
+
   protected getCacheExpiry() {
     let expiration = dateAdd(new Date(), 'hour', this.properties.cacheUnits);
     try {
@@ -133,13 +132,6 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
                   step: 1,
                 }),
                 PropertyPaneLabel('cacheUnits', { text: cacheLabel }),
-                PropertyPaneButton('cacheUnits', {
-                  text: 'Tøm hurtigbuffer',
-                  onClick: () => {
-                    this.dataAdapter.clearCache();
-                    document.location.reload();
-                  }
-                }),
               ]
             },
           ]

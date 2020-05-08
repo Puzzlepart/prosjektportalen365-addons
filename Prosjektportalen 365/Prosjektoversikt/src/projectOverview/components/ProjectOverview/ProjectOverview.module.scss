@@ -3,5 +3,18 @@
 .root {
   .container {
     padding: 15px 32px 0 32px;
+
+    .progressContainer {
+      padding: 12px 0 40px 10px;
+      height: 80px;
+      box-sizing: border-box;
+    }
+
+    .header {
+      padding: 12px 0 40px 10px;
+      font-size: 21px;
+      height: 80px;
+      box-sizing: border-box;
+    }
   }
 }

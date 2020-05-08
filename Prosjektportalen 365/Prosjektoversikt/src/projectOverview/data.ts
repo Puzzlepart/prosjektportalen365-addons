@@ -164,6 +164,6 @@ export class DataAdapter {
                 p => pick(p, 'Name', 'LocalCustomProperties') as any
             );
 
-        return { projects, phases, configurations: this.configuration };
+        return { projects, phases };
     }
 }

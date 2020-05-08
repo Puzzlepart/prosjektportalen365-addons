@@ -1,10 +1,12 @@
 //#region imports
 import { ContextualMenu } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { ConstrainMode, DetailsList, DetailsListLayoutMode, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
+import { ConstrainMode, DetailsListLayoutMode, SelectionMode } from 'office-ui-fabric-react/lib/DetailsList';
+import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
+import { ShimmeredDetailsList } from 'office-ui-fabric-react/lib/ShimmeredDetailsList';
 import React from 'react';
 import { filter } from 'underscore';
 import { ActionBar } from '../ActionBar';
-import { Filter, FilterPanel } from '../FilterPanel';
+import { FilterPanel } from '../FilterPanel';
 import { getColumns } from './columns';
 import { onColumnHeaderContextMenu } from './onColumnHeaderContextMenu';
 import { onRenderItemColumn } from './onRenderItemColumn';
@@ -15,29 +17,25 @@ import reducer from './ProjectOverviewReducer';
 
 export const ProjectOverview = () => {
   const context = React.useContext(ProjectOverviewContext);
-  const filters = [
-    new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
-    new Filter('GtProjectTypeText', 'Prosjekttype'),
-  ].map(filter => filter.populate(context.projects.map(p => p.getItem())));
   const [state, dispatch] = React.useReducer(reducer, {
-    filters: filters,
-    projects: [...context.projects],
+    loading: {},
+    filters: [],
+    projects: [],
     columns: getColumns(context),
     selectedConfiguration: context.defaultConfiguration,
   });
 
   React.useEffect(() => {
-    console.log('hello changed');
+    context.dataAdapter.fetchData(state.selectedConfiguration).then(data => {
+      dispatch({ type: 'DATA_FETCHED', payload: data });
+    });
   }, [state.selectedConfiguration]);
 
-  const contextValue: IProjectOverviewContext = React.useMemo(() => {
-    return {
-      ...context,
-      filters: state.filters,
-      selectedConfiguration: state.selectedConfiguration,
-      dispatch,
-    };
-  }, [state, dispatch]);
+  const contextValue: IProjectOverviewContext = React.useMemo(() => ({
+    ...context,
+    state,
+    dispatch,
+  }), [state, dispatch]);
 
   const items = filter(
     state.projects,
@@ -49,13 +47,25 @@ export const ProjectOverview = () => {
       <div className={styles.root} >
         <ActionBar />
         <div className={styles.container}>
+          {!state.loading
+            ? (
+              <div className={styles.header}>
+                {state.selectedConfiguration.title}
+              </div>
+            )
+            : (
+              <div className={styles.progressContainer}>
+                <ProgressIndicator {...state.loading} />
+              </div>
+            )}
           <FilterPanel isOpen={state.showFilterPanel} />
-          <DetailsList
+          <ShimmeredDetailsList
+            enableShimmer={!!state.loading}
             layoutMode={DetailsListLayoutMode.justified}
             constrainMode={ConstrainMode.unconstrained}
             selectionMode={SelectionMode.none}
             items={items}
-            columns={state.columns}
+            columns={getColumns(contextValue)}
             onRenderItemColumn={onRenderItemColumn}
             onColumnHeaderClick={(
               event,

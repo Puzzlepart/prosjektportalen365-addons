@@ -1,4 +1,5 @@
 import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { IDataAdapterFetchResult } from '../../IDataAdapterFetchResult';
 import { PortfolioConfiguration } from '../../models/PortfolioConfiguration';
 import { IFilter } from '../FilterPanel';
 
@@ -6,6 +7,10 @@ export type ProjectOverviewAction =
     {
         type: 'CHANGE_CONFIGURATION';
         payload: PortfolioConfiguration;
+    } |
+    {
+        type: 'DATA_FETCHED';
+        payload: IDataAdapterFetchResult;
     } |
     {
         type: 'TOGGLE_FILTER_PANEL';
