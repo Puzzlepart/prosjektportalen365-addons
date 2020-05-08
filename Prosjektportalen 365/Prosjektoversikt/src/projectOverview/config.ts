@@ -9,5 +9,4 @@ export const STATUS_SECTIONS_LIST_NAME = 'Statusseksjoner';
 export const FILTERS = [
     ['GtProjectServiceAreaText', 'Tjenesteområde'],
     ['GtProjectTypeText', 'Prosjekttype'],
-    ['GtStatusTime', 'Status fremdrift']
 ]

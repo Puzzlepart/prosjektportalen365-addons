@@ -82,10 +82,11 @@ export class ProjectModel {
      * @param {IFilter[]} filters Filters
      */
     public matchFilters(filters: IFilter[]): boolean {
+        const _item = this.getMergedItem();
         for (let i = 0; i < filters.length; i++) {
             const filter = filters[i]
             if (filter.selected.length === 0) continue;
-            const value = this.item[filter.key];
+            const value = _item[filter.key];
             const match = find(filter.selected, s => contains(value, s.value));
             if (!match) return false;
         }
