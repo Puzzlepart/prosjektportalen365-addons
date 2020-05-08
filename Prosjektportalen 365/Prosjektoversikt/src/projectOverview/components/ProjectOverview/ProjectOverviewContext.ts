@@ -1,13 +1,14 @@
 import React from 'react';
-import { IDataAdapterFetchResult } from '../../data';
+import { IDataAdapterFetchResult } from '../../IDataAdapterFetchResult';
+import { PortfolioConfiguration } from '../../models/PortfolioConfiguration';
 import { IProjectOverviewWebPartProps } from '../../types';
-import { IFilter } from '../FilterPanel';
-import { ProjectOverviewAction } from './ProjectOverviewReducer';
+import { IProjectOverviewState } from './IProjectOverviewState';
+import { ProjectOverviewAction } from './ProjectOverviewAction';
 
-export interface IProjectOverviewContext extends IDataAdapterFetchResult {
+export interface IProjectOverviewContext extends IDataAdapterFetchResult, IProjectOverviewState {
     properties: IProjectOverviewWebPartProps;
-    filters: IFilter[];
     dispatch?: React.Dispatch<ProjectOverviewAction>;
+    defaultConfiguration?: PortfolioConfiguration;
 }
 
 export const ProjectOverviewContext = React.createContext<IProjectOverviewContext>(null);

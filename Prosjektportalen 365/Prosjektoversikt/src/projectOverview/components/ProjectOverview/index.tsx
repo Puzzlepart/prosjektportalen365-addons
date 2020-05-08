@@ -4,7 +4,7 @@ import { ConstrainMode, DetailsList, DetailsListLayoutMode, SelectionMode } from
 import React from 'react';
 import { filter } from 'underscore';
 import { ActionBar } from '../ActionBar';
-import { FilterPanel } from '../FilterPanel';
+import { Filter, FilterPanel } from '../FilterPanel';
 import { getColumns } from './columns';
 import { onColumnHeaderContextMenu } from './onColumnHeaderContextMenu';
 import { onRenderItemColumn } from './onRenderItemColumn';
@@ -15,14 +15,28 @@ import reducer from './ProjectOverviewReducer';
 
 export const ProjectOverview = () => {
   const context = React.useContext(ProjectOverviewContext);
+  const filters = [
+    new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
+    new Filter('GtProjectTypeText', 'Prosjekttype'),
+  ].map(filter => filter.populate(context.projects.map(p => p.getItem())));
   const [state, dispatch] = React.useReducer(reducer, {
-    filters: [...context.filters],
+    filters: filters,
     projects: [...context.projects],
     columns: getColumns(context),
+    selectedConfiguration: context.defaultConfiguration,
   });
 
+  React.useEffect(() => {
+    console.log('hello changed');
+  }, [state.selectedConfiguration]);
+
   const contextValue: IProjectOverviewContext = React.useMemo(() => {
-    return { ...context, filters: state.filters, dispatch };
+    return {
+      ...context,
+      filters: state.filters,
+      selectedConfiguration: state.selectedConfiguration,
+      dispatch,
+    };
   }, [state, dispatch]);
 
   const items = filter(

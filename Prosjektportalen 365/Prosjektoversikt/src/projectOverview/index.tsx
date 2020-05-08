@@ -6,14 +6,17 @@ import moment from 'moment';
 import React from 'react';
 import ReactDom from 'react-dom';
 import { first } from 'underscore';
-import { Filter } from './components/FilterPanel';
 import { ProjectOverview, ProjectOverviewContext } from './components/ProjectOverview';
-import { DataAdapter, IDataAdapterFetchResult } from './data';
+import { DataAdapter } from './data';
+import { IDataAdapterFetchResult } from './IDataAdapterFetchResult';
+import { PortfolioConfiguration } from './models/PortfolioConfiguration';
 import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
   private data: IDataAdapterFetchResult;
   private dataAdapter: DataAdapter;
+  private configurations: PortfolioConfiguration[];
+  private defaultConfiguration: PortfolioConfiguration;
 
   public render(): void {
     const element = (
@@ -21,7 +24,8 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
         value={{
           phases: this.data.phases,
           projects: this.data.projects,
-          filters: this.getFilters(),
+          configurations: this.configurations,
+          defaultConfiguration: this.defaultConfiguration,
           properties: this.properties,
         }}>
         <ProjectOverview />
@@ -33,28 +37,10 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   public async onInit() {
     await super.onInit();
     moment.locale('nb');
-    this.dataAdapter = new DataAdapter(this.context, {
-      phaseTermSetId: this.createCacheKey('phase_term_set_id'),
-      projects: this.createCacheKey('projects'),
-      projectStatus: this.createCacheKey('project_status'),
-      columnConfigurations: this.createCacheKey('column_configurations'),
-      projectColumns: this.createCacheKey('project_columns'),
-      statusSections: this.createCacheKey('status_sections'),
-    })
-    this.data = await this.dataAdapter.fetchData(this.getCacheExpiry());
+    this.dataAdapter = new DataAdapter(this.context).usingCaching({ expiration: this.getCacheExpiry(), alias: this.manifest.alias });
+    this.configurations = await this.dataAdapter.getConfigurations();
+    this.defaultConfiguration = first(this.configurations);
   }
-
-  protected getFilters() {
-    return [
-      new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
-      new Filter('GtProjectTypeText', 'Prosjekttype'),
-    ].map(filter => filter.populate(this.data.projects.map(p => p.getItem())));
-  }
-
-  protected createCacheKey(key: string) {
-    return `${this.manifest.alias}_data_${key}`.toLowerCase();
-  }
-
   protected getCacheExpiry() {
     let expiration = dateAdd(new Date(), 'hour', this.properties.cacheUnits);
     try {

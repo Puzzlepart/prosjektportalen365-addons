@@ -1,40 +1,15 @@
-import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { sortBy } from 'underscore';
-import { ProjectModel } from '../../models/ProjectModel';
-import { IFilter } from '../FilterPanel';
-
-export interface IProjectOverviewState {
-    columns: IColumn[];
-    filters: IFilter[];
-    projects: ProjectModel[];
-    showFilterPanel?: boolean;
-    columnMenu?: IContextualMenuProps;
-}
-
-export type ProjectOverviewAction =
-    {
-        type: 'TOGGLE_FILTER_PANEL';
-    }
-    |
-    {
-        type: 'FILTERS_UPDATED';
-        payload: IFilter[];
-    }
-    |
-    {
-        type: 'SET_COLUMN_MENU';
-        payload: IContextualMenuProps;
-    }
-    |
-    {
-        type: 'ON_COLUMN_SORT';
-        payload: { key: string; sortDesencing: boolean };
-    };
+import { IProjectOverviewState } from './IProjectOverviewState';
+import { ProjectOverviewAction } from './ProjectOverviewAction';
 
 export default (state: IProjectOverviewState, action: ProjectOverviewAction): IProjectOverviewState => {
     const newState = { ...state };
     switch (action.type) {
+        case 'CHANGE_CONFIGURATION': {
+            console.log(action);
+        }
+            break;
+
         case 'TOGGLE_FILTER_PANEL': {
             newState.showFilterPanel = !newState.showFilterPanel;
         }
