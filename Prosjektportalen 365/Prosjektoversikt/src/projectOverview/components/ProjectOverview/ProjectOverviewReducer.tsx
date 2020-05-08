@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 import { sortBy } from 'underscore';
+import { FILTERS } from '../../config';
 import { Filter } from '../FilterPanel';
 import { IProjectOverviewState } from './IProjectOverviewState';
 import { ProjectOverviewAction } from './ProjectOverviewAction';
@@ -8,12 +8,9 @@ export default (state: IProjectOverviewState, action: ProjectOverviewAction): IP
     let newState = { ...state };
     switch (action.type) {
         case 'DATA_FETCHED': {
-            console.log(action);
             newState = { ...newState, ...action.payload };
-            newState.filters = [
-                new Filter('GtProjectServiceAreaText', 'Tjenesteområde'),
-                new Filter('GtProjectTypeText', 'Prosjekttype'),
-            ].map(filter => filter.populate(newState.projects.map(p => p.getMergedItem())));
+            const data = newState.projects.map(p => p.getMergedItem());
+            newState.filters = FILTERS.map(([fieldName, name]) => new Filter(fieldName, name).populate(data));
             newState.loading = null;
         }
             break;

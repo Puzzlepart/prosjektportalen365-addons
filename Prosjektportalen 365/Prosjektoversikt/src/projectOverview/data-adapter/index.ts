@@ -1,4 +1,4 @@
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { Logger, LogLevel } from '@pnp/logging';
 import { ICachingOptions } from '@pnp/odata';
 import { Site, sp } from '@pnp/sp';
 import { taxonomy } from '@pnp/sp-taxonomy';
@@ -13,10 +13,6 @@ export class DataAdapter {
     private site: Site;
     private current: Portfolio;
     private cacheKeys = [];
-
-    constructor(private context: WebPartContext) {
-        sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
-    }
 
     public usingCaching({ expiration, alias }) {
         this.cacheOptions = {
@@ -85,21 +81,18 @@ export class DataAdapter {
         return columnConfigurations;
     }
 
-    public clearCache() {
-        this.cacheKeys.forEach(key => sessionStorage.removeItem(key));
-    }
-
-    public async getConfigurations(): Promise<Portfolio[]> {
-        const configList = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
-        const _configuration = await configList
+    public async getPortfolios(): Promise<Portfolio[]> {
+        const list = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
+        const items = await list
             .items
             .top(500)
             .select('ID', 'Title', 'URL', 'IconName')
             .get<IPortfolioItem[]>();
-        return _configuration.map(item => new Portfolio(item));
+        return items.map(item => new Portfolio(item));
     }
 
     public async fetchData(config: Portfolio): Promise<IDataAdapterFetchResult> {
+        Logger.log({ message: '(projectOverview/DataAdapter) Fetching data', data: config, level: LogLevel.Info });
         this.current = config;
         this.site = new Site(this.current.url);
         const { Id: siteId } = await this.site.select('Id').get<{ Id: string }>();

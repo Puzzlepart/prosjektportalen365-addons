@@ -2,6 +2,8 @@ import { Version } from '@microsoft/sp-core-library';
 import { IPropertyPaneConfiguration, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { dateAdd, DateAddInterval } from '@pnp/common';
+import { ConsoleListener, Logger, LogLevel } from '@pnp/logging';
+import { sp } from '@pnp/sp';
 import moment from 'moment';
 import React from 'react';
 import ReactDom from 'react-dom';
@@ -13,8 +15,13 @@ import { IProjectOverviewWebPartProps } from './types';
 
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
   private dataAdapter: DataAdapter;
-  private configurations: Portfolio[];
-  private defaultConfiguration: Portfolio;
+  private portfolios: Portfolio[];
+
+  public constructor() {
+    super();
+    Logger.activeLogLevel = LogLevel.Info;
+    Logger.subscribe(new ConsoleListener());
+  }
 
   public render(): void {
     const element = (
@@ -22,8 +29,8 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
         value={{
           state: {},
           dataAdapter: this.dataAdapter,
-          configurations: this.configurations,
-          defaultConfiguration: this.defaultConfiguration,
+          portfolios: this.portfolios,
+          defaultConfiguration: first(this.portfolios),
           properties: this.properties,
         }}>
         <ProjectOverview />
@@ -35,9 +42,12 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   public async onInit() {
     await super.onInit();
     moment.locale('nb');
-    this.dataAdapter = new DataAdapter(this.context).usingCaching({ expiration: this.getCacheExpiry(), alias: this.manifest.alias });
-    this.configurations = await this.dataAdapter.getConfigurations();
-    this.defaultConfiguration = first(this.configurations);
+    sp.setup({ spfxContext: this.context, defaultCachingStore: 'session' });
+    this.dataAdapter = new DataAdapter().usingCaching({
+      expiration: this.getCacheExpiry(),
+      alias: this.manifest.alias,
+    });
+    this.portfolios = await this.dataAdapter.getPortfolios();
   }
 
   protected getCacheExpiry() {

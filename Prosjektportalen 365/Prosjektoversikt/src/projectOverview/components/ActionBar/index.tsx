@@ -7,7 +7,7 @@ import styles from './ActionBar.module.scss';
 
 const PortfolioSelector = ({
     dispatch,
-    configurations,
+    portfolios: configurations,
     state,
 }: IProjectOverviewContext): IContextualMenuItem => ({
     key: 'PORTFOLIO_SELECTOR',

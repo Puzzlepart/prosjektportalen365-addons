@@ -6,3 +6,8 @@ export const PROJECT_STATUS_LIST_NAME = 'Prosjektstatus';
 export const PROJECT_COLUMN_CONFIGURATION_LIST_NAME = 'Prosjektkolonnekonfigurasjon';
 export const PROJECT_COLUMN_LIST_NAME = 'Prosjektkolonner';
 export const STATUS_SECTIONS_LIST_NAME = 'Statusseksjoner';
+export const FILTERS = [
+    ['GtProjectServiceAreaText', 'Tjenesteområde'],
+    ['GtProjectTypeText', 'Prosjekttype'],
+    ['GtStatusTime', 'Status fremdrift']
+]

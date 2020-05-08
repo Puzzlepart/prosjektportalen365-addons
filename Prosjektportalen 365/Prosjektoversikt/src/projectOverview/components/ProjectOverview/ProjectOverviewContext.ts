@@ -9,7 +9,7 @@ export interface IProjectOverviewContext {
     properties: IProjectOverviewWebPartProps;
     dataAdapter?: DataAdapter;
     dispatch?: React.Dispatch<ProjectOverviewAction>;
-    configurations: Portfolio[];
+    portfolios: Portfolio[];
     defaultConfiguration?: Portfolio;
     state?: IProjectOverviewState;
 }

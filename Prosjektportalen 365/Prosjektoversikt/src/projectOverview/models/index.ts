@@ -1,4 +1,3 @@
-export * from './index';
 export * from './IPortfolioColumnConfigurationItem';
 export * from './IStatusSectionItem';
 export * from './Portfolio';

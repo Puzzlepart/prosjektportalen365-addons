@@ -15,6 +15,6 @@ export class Portfolio {
         this.id = item.ID;
         this.title = item.Title;
         this.url = item.URL;
-        this.iconName = item.IconName || 'Page';
+        this.iconName = item.IconName;
     }
 }
