@@ -1,6 +1,6 @@
 {
   "name": "prosjektoversikt",
-  "version": "0.4.13",
+  "version": "0.5.0",
   "private": true,
   "main": "lib/index.js",
   "engines": {
@@ -9,12 +9,14 @@
   "scripts": {
     "watch": "concurrently \"gulp serve --nobrowser\" \"livereload ./dist -e js -w 250\"",
     "makePatch": "pnpm version patch",
+    "makeMinor": "pnpm version minor",
     "preversion": "node ./tools/pre-version.js",
     "postversion": "gulp dist",
     "test": "./node_modules/.bin/jest --config ./config/jest.config.json",
     "test:watch": "./node_modules/.bin/jest --config ./config/jest.config.json --watchAll",
     "lint": "eslint --ext .ts,.tsx ./src --color --fix",
-    "clean": "gulp clean"
+    "clean": "gulp clean",
+    "dist": "gulp dist"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "1.9.1",
