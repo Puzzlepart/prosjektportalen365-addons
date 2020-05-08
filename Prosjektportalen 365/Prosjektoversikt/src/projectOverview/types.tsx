@@ -34,11 +34,3 @@ export interface IPhase {
     Name: string;
     LocalCustomProperties: { [key: string]: string };
 }
-
-export interface IProjectOverviewWebPartCacheKeys {
-    phaseTermSetId: string;
-    projects: string;
-    projectStatus: string;
-    columnConfigurations: string;
-    statusSections: string;
-}

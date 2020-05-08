@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import * as React from 'react';
+import React from 'react';
 import FadeIn from 'react-fade-in';
-import { IStatusColumnTooltipProps } from './IStatusColumnTooltipProps';
-import styles from './StatusColumnTooltip.module.scss';
+import { IStatusColumnProps } from '../StatusColumn/IStatusColumnProps';
+import styles from './StatusColumnTooltipContent.module.scss';
 
-export const StatusColumnTooltip = ({ status }: IStatusColumnTooltipProps): JSX.Element => {
+export const StatusColumnTooltipContent = ({ status }: IStatusColumnProps): JSX.Element => {
     return (
         <FadeIn className={styles.root} delay={250} transitionDuration={300}>
             {status.sections.map(({
@@ -17,15 +17,9 @@ export const StatusColumnTooltip = ({ status }: IStatusColumnTooltipProps): JSX.
                 color,
             }) => (
                     <div key={fieldName} className={styles.section}>
-                        {/*
-                            float left 80px 
-                    */}
                         <div className={styles.iconContainer}>
                             <Icon iconName={iconName} styles={{ root: { color } }} />
                         </div>
-                        {/*
-                          Resterende
-                    */}
                         <div className={styles.body}>
                             <div className={styles.name}>{name}</div>
                             <div className={styles.value}>{value}</div>

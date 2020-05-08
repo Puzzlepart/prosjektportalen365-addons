@@ -1,4 +1,6 @@
-import { first } from 'underscore';
+import { find, first } from 'underscore';
+import { contains } from 'underscore.string';
+import { IFilter } from '../components/FilterPanel';
 import { ProjectStatusModel } from './ProjectStatusModel';
 
 export interface IProjectItem {
@@ -43,23 +45,47 @@ export interface IProjectItem {
 
 export class ProjectModel {
     public siteId: string;
+    public siteUrl: string;
     public title: string;
     public phase: string;
     public projectType: string;
     public serviceArea: string;
 
-    constructor(item: IProjectItem, public status: Array<ProjectStatusModel>) {
+    constructor(private item: IProjectItem, public status: Array<ProjectStatusModel>) {
         this.siteId = item.GtSiteId;
+        this.siteUrl = item.GtSiteUrl;
         this.title = item.Title;
         this.phase = item.GtProjectPhaseText;
         this.projectType = item.GtProjectTypeText;
         this.serviceArea = item.GtProjectServiceAreaText;
-        // TODO: Need to return the latest status, returning the first for now (it might be correct if we sort correctly)
         this[this.phase] = first(status);
     }
 
     public setTitle(_title: string): ProjectModel {
         this.title = _title;
         return this;
+    }
+
+    /**
+     * Get the SharePoint item
+    */
+    public getItem(): IProjectItem {
+        return this.item;
+    }
+
+    /**
+     * Check if the project matches the specified filters
+     * 
+     * @param {IFilter[]} filters Filters
+     */
+    public matchFilters(filters: IFilter[]): boolean {
+        for (let i = 0; i < filters.length; i++) {
+            const filter = filters[i]
+            if (filter.selected.length === 0) continue;
+            const value = this.item[filter.key];
+            const match = find(filter.selected, s => contains(value, s.value));
+            if (!match) return false;
+        }
+        return true;
     }
 }
