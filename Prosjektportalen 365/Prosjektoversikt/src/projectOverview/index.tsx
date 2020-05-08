@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { first } from 'underscore';
 import { ProjectOverview, ProjectOverviewContext } from './components/ProjectOverview';
-import { DataAdapter } from './data';
+import { DataAdapter } from './data-adapter';
 import { Portfolio } from './models/Portfolio';
 import { IProjectOverviewWebPartProps } from './types';
 

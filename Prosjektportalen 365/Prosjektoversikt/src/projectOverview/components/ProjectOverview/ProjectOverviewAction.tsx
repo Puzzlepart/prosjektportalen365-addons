@@ -1,5 +1,5 @@
 import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { IDataAdapterFetchResult } from '../../IDataAdapterFetchResult';
+import { IDataAdapterFetchResult } from '../../data-adapter/IDataAdapterFetchResult';
 import { Portfolio } from '../../models/Portfolio';
 import { IFilter } from '../FilterPanel';
 

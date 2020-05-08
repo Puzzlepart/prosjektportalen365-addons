@@ -4,18 +4,13 @@ import { Site, sp } from '@pnp/sp';
 import { taxonomy } from '@pnp/sp-taxonomy';
 import format from 'string-format';
 import { filter, map, pick } from 'underscore';
-import { CONFIG_LIST_NAME, PHASE_FIELD_NAME, PROJECTS_LIST_NAME, PROJECT_COLUMN_CONFIGURATION_LIST_NAME, PROJECT_STATUS_LIST_NAME, STATUS_SECTIONS_LIST_NAME } from './config';
+import { CONFIG_LIST_NAME, PHASE_FIELD_NAME, PROJECTS_LIST_NAME, PROJECT_COLUMN_CONFIGURATION_LIST_NAME, PROJECT_STATUS_LIST_NAME, STATUS_SECTIONS_LIST_NAME } from '../config';
+import { IPortfolioColumnConfigurationItem, IPortfolioItem, IProjectItem, IProjectStatusItem, IStatusSectionItem, Portfolio, ProjectModel, ProjectStatusModel } from '../models';
 import { IDataAdapterFetchResult } from './IDataAdapterFetchResult';
-import { IPortfolioColumnConfigurationItem } from './models/IPortfolioColumnConfigurationItem';
-import { IStatusSectionItem } from './models/IStatusSectionItem';
-import { IPortfolioItem, Portfolio } from './models/Portfolio';
-import { IProjectItem, ProjectModel } from './models/ProjectModel';
-import { IProjectStatusItem, ProjectStatusModel } from './models/ProjectStatusModel';
 
 export class DataAdapter {
     private cacheOptions: ICachingOptions = null;
     private site: Site;
-    private configuration: Portfolio[];
     private current: Portfolio;
     private cacheKeys = [];
 
@@ -101,7 +96,7 @@ export class DataAdapter {
             .top(500)
             .select('ID', 'Title', 'URL', 'IconName')
             .get<IPortfolioItem[]>();
-        return this.configuration = _configuration.map(item => new Portfolio(item));
+        return _configuration.map(item => new Portfolio(item));
     }
 
     public async fetchData(config: Portfolio): Promise<IDataAdapterFetchResult> {

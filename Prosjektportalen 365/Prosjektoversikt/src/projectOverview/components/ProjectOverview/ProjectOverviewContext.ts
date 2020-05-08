@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataAdapter } from '../../data';
+import { DataAdapter } from '../../data-adapter';
 import { Portfolio } from '../../models/Portfolio';
 import { IProjectOverviewWebPartProps } from '../../types';
 import { IProjectOverviewState } from './IProjectOverviewState';
