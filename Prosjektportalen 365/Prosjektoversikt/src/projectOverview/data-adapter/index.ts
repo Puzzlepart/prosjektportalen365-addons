@@ -32,8 +32,7 @@ export class DataAdapter {
     }
 
     private async getPhaseFieldTermSetId(): Promise<string> {
-        const { TermSetId } = await sp
-            .web
+        const { TermSetId } = await this.site.rootWeb
             .fields
             .getByInternalNameOrTitle(PHASE_FIELD_NAME)
             .select('TermSetId')
