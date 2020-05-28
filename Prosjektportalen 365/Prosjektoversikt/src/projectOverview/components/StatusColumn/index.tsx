@@ -19,9 +19,8 @@ export const StatusColumn = ({ status }: { status: ProjectStatusModel }): JSX.El
             }}
             delay={TooltipDelay.long}
             closeDelay={TooltipDelay.long}
-            calloutProps={{ gapSpace: 10, target: ref.current }} >
+            calloutProps={{ gapSpace: 10 }} >
             <div
-                ref={ref}
                 style={{ width: properties.statusColumnWidth }}>
                 <FadeIn
                     className={styles.root}

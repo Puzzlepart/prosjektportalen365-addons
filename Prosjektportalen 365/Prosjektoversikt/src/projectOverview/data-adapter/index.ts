@@ -140,8 +140,8 @@ export class DataAdapter {
         const projects = _projects
             .map(item => {
                 const project = new ProjectModel(item, filter(status, s => s.siteId === item.GtSiteId));
-                if (!_sites[project.siteId]) return null;
-                return project.setTitle(_sites[project.siteId]);
+                if (_sites[project.siteId]) return project.setTitle(_sites[project.siteId]);
+                return project;
             })
             .filter(p => p);
 
