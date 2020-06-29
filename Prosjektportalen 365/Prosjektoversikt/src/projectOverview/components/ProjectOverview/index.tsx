@@ -4,7 +4,7 @@ import { ConstrainMode, DetailsListLayoutMode, SelectionMode } from 'office-ui-f
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 import { ShimmeredDetailsList } from 'office-ui-fabric-react/lib/ShimmeredDetailsList';
-import React from 'react';
+import React, { useContext, useReducer, useMemo } from 'react';
 import { filter } from 'underscore';
 import { ActionBar } from '../ActionBar';
 import { FilterPanel } from '../FilterPanel';
@@ -12,13 +12,14 @@ import { getColumns } from './columns';
 import { onColumnHeaderContextMenu } from './onColumnHeaderContextMenu';
 import { onRenderItemColumn } from './onRenderItemColumn';
 import styles from './ProjectOverview.module.scss';
+import './ProjectOverview.scss';
 import { IProjectOverviewContext, ProjectOverviewContext } from './ProjectOverviewContext';
 import reducer from './ProjectOverviewReducer';
 //#endregion
 
 export const ProjectOverview = () => {
-  const context = React.useContext(ProjectOverviewContext);
-  const [state, dispatch] = React.useReducer(reducer, {
+  const context = useContext(ProjectOverviewContext);
+  const [state, dispatch] = useReducer(reducer, {
     loading: {},
     filters: [],
     projects: [],
@@ -32,7 +33,7 @@ export const ProjectOverview = () => {
     });
   }, [state.selectedPortfolio]);
 
-  const contextValue: IProjectOverviewContext = React.useMemo(() => ({
+  const contextValue: IProjectOverviewContext = useMemo(() => ({
     ...context,
     state,
     dispatch,
