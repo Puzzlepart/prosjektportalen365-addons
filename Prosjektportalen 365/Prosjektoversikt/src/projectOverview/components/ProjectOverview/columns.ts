@@ -1,5 +1,6 @@
 import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { IProjectOverviewContext } from './ProjectOverviewContext';
+import { classify } from 'underscore'
 
 export const getColumns = ({ state, properties }: IProjectOverviewContext): IColumn[] => [
     {
@@ -31,5 +32,6 @@ export const getColumns = ({ state, properties }: IProjectOverviewContext): ICol
         minWidth: properties.statusColumnWidth,
         maxWidth: properties.statusColumnWidth,
         data: {},
-    })),
+        headerClassName: Name,
+    } as IColumn)),
 ].map(col => ({ ...col, isResizable: true }));
