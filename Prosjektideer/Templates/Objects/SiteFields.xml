@@ -1,0 +1,19 @@
+<pnp:SiteFields xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema">
+    <Field ID="{8395f2db-f2fe-484f-a8e8-0a19d723360f}" Name="GtIdeaBackground" StaticName="GtProjectIdeaBackground" DisplayName="Bakgrunn" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{52782c1f-1fec-4f7a-9caf-bbb52551f0a1}" Name="GtIdeaIssue" StaticName="GtIdeaIssue" DisplayName="Problemstilling" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{0d9c7fc2-8c13-4c15-9738-9a451a021708}" Name="GtIdeaPossibleGains" StaticName="GtIdeaPossibleGains" DisplayName="Mulige gevinster" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{e2816df6-079d-402f-b7b3-eed772a9e3b4}" Name="GtIdeaAffectedParties" StaticName="GtAffectedParties" DisplayName="Berørte parter" Type="Text" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{2c8ee969-f532-4658-9338-894f0aaf0a11}" Name="GtIdeaSolutionProposals" StaticName="GtSolutionProposals" DisplayName="Forslag til løsning" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{0729ada6-fe3f-4fe5-b67f-d9f1c9bfad6c}" Name="GtIdeaExecutionPlan" StaticName="GtExecutionPlan" DisplayName="Overordnet gjennomføringsplan" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{75128bec-1b29-401a-88d7-bfecb6f686f1}" Name="GtIdeaCriticalSuccessFactors" StaticName="GtCriticalSuccessFactors" DisplayName="Kritiske suksessfaktorer" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{31fe864a-4642-4e0f-bea3-6c1e2a0286be}" Name="GtIdeaResourceRequirements" StaticName="GtResourceRequirements" DisplayName="Ressursbehov" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{ebb77296-0d25-42a3-b996-d7396f84d8ce}" Name="GtIdeaOtherComments" StaticName="GtIdeaOtherComments" DisplayName="Andre kommentarer" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{4a0afef0-8ddf-45a7-a3a3-07b0a8cd615a}" Name="GtIdeaRecommendationComment" StaticName="GtIdeaRecommendationComment" DisplayName="Kommentar til anbefaling" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{b6187d45-9848-4d13-89a2-e6049c7fbb9d}" Name="GtIdeaRecommendation" StaticName="GtIdeaRecommendation" DisplayName="Anbefaling" Type="Choice" Group="{parameter:SiteFields_Group}" Description="">
+        <CHOICES>
+            <CHOICE>Godkjent for detaljering av idé</CHOICE>
+            <CHOICE>Under vurdering</CHOICE>
+            <CHOICE>Avvist</CHOICE>
+        </CHOICES>
+    </Field>
+</pnp:SiteFields>
