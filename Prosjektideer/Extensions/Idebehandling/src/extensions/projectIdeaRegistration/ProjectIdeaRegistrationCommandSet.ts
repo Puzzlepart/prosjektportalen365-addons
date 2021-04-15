@@ -44,7 +44,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
       case 'COMMAND_1':
-        Dialog.alert(`${this.properties.sampleTextOne}`);
+        Dialog.alert(event.selectedRows[0].getValueByName("Title"));
         break;
       case 'COMMAND_2':
         Dialog.alert(`${this.properties.sampleTextTwo}`);

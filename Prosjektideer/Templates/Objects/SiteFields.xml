@@ -16,7 +16,6 @@
             <CHOICE>Avvist</CHOICE>
         </CHOICES>
     </Field>
-
     <Field ID="{f63038bc-55f4-4637-9709-bd10d8175f7c}" Name="GtRegistratedIdea"  StaticName="GtRegistratedIdea" DisplayName="Registrert idé" Type="Lookup" Group="{parameter:SiteFields_Group}" List="Idéregistrering" ShowField="Title" UnlimitedLengthInDocumentLibrary="TRUE" />
     <Field ID="{67eba603-1c39-49ae-a91a-29664f0824c8}" Name="GtIdeaOwner" StaticName="GtIdeaOwner" DisplayName="Idéeier" Type="User" Group="{parameter:SiteFields_Group}" Description="" />
     <Field ID="{a7e1a8b5-8c93-410f-a84d-45772f37293e}" Name="GtIdeaSolutionDescription" StaticName="GtIdeaSolutionDescription" DisplayName="Overordnet løsningsbeskrivelse" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />

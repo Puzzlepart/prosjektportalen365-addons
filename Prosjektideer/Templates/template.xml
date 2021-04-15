@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
+  <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.22.2006.2, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
+  <pnp:Templates ID="CONTAINER-TEMPLATE-FF496696067D43649FB681BB83CEFE92">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-FF496696067D43649FB681BB83CEFE92" Version="1" BaseSiteTemplate="STS#0" Scope="RootSite">
+      <pnp:Lists>
+        <pnp:ListInstance Title="Idébehandling" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Idebehandling" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" ContentTypesEnabled="true" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Idebehandling/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Idebehandling/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Idebehandling/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01000E7513A76B934F449CDB9B25FC172F44" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{1DD1F6FF-873C-4509-98D0-4F6CCF5C0C1C}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="AllItems" Url="{site}/Lists/Idebehandling/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Modified" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="GtIdeaOwner" />
+                <FieldRef Name="GtIdeaSolutionDescription" />
+                <FieldRef Name="GtIdeaExpectedGain" />
+                <FieldRef Name="GtIdeaExecutionPlanApproach" />
+                <FieldRef Name="GtIdeaExecutionResourceNeeds" />
+                <FieldRef Name="GtIdeaExecutionSuccessFactors" />
+                <FieldRef Name="GtIdeaReference" />
+                <FieldRef Name="GtIdeaDecision" />
+                <FieldRef Name="GtIdeaOtherComments" />
+                <FieldRef Name="GtIdeaDecisionComment" />
+                <FieldRef Name="Registrert_x0020_ide" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">100</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>hierarchytaskslist.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Lookup" DisplayName="Registrert ide" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Idéregistrering}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{8d97ef94-241e-4183-bdba-c5fe8bdeef6d}" SourceID="{{listid:Idébehandling}}" StaticName="Registrert_x0020_ide" Name="Registrert_x0020_ide" ColName="int3" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="67eba603-1c39-49ae-a91a-29664f0824c8" Name="GtIdeaOwner" DisplayName="Idéeier" />
+            <pnp:FieldRef ID="a7e1a8b5-8c93-410f-a84d-45772f37293e" Name="GtIdeaSolutionDescription" DisplayName="Overordnet løsningsbeskrivelse" />
+            <pnp:FieldRef ID="75dfa9cc-7e6b-4b71-bfca-bb1bee9e1f55" Name="GtIdeaExpectedGain" DisplayName="Forventede gevinster" />
+            <pnp:FieldRef ID="2081191c-6c4e-452c-9b50-12e80a5047fa" Name="GtIdeaExecutionPlanApproach" DisplayName="Gjennomføringsplan: Tilnærming" />
+            <pnp:FieldRef ID="70f7cd7a-1a5a-430c-9da6-1a2710de7eeb" Name="GtIdeaExecutionResourceNeeds" DisplayName="Gjennomføringsplan: Ressursbehov" />
+            <pnp:FieldRef ID="a43b99a2-1b4c-4993-a390-56343004895c" Name="GtIdeaExecutionSuccessFactors" DisplayName="Gjennomføringsplan: Suksessfaktorer" />
+            <pnp:FieldRef ID="df578dbf-fb10-4834-be61-6b9355dbc1a9" Name="GtIdeaReference" DisplayName="Referanse" />
+            <pnp:FieldRef ID="86e2c34f-3522-4715-a18b-d0964b5efeb5" Name="GtIdeaDecision" DisplayName="Beslutning" />
+            <pnp:FieldRef ID="ebb77296-0d25-42a3-b996-d7396f84d8ce" Name="GtIdeaOtherComments" DisplayName="Andre kommentarer" />
+            <pnp:FieldRef ID="01adb50d-0c5a-4e51-9ff6-01fbc71079a9" Name="GtIdeaDecisionComment" DisplayName="Kommentar til beslutning" />
+            <pnp:FieldRef ID="f63038bc-55f4-4637-9709-bd10d8175f7c" Name="GtRegistratedIdea" DisplayName="Registrert idé" />
+            <pnp:FieldRef ID="667960e8-b7d2-4910-a1bf-9114f4835392" Name="Registrert_x0020_ide0" DisplayName="Registrert ide" />
+          </pnp:FieldRefs>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://norwaywest1.pushnp.svc.ms/notifications?token=26fe04ee-4339-47c0-a9f0-7ee70269f962" ExpiresInDays="1" />
+          </pnp:Webhooks>
+        </pnp:ListInstance>
+      </pnp:Lists>
+    </pnp:ProvisioningTemplate>
+  </pnp:Templates>
+</pnp:Provisioning>

@@ -11,7 +11,7 @@
             </Query>
             <ViewFields>
                 <FieldRef Name="LinkTitle" />
-                <FieldRef Name="GtRegistratedIdea" />
+                <!-- <FieldRef Name="GtRegistratedIdea" /> -->
                 <FieldRef Name="GtIdeaOwner"/>
                 <FieldRef Name="GtIdeaSolutionDescription" />
                 <FieldRef Name="GtIdeaExpectedGain" />
