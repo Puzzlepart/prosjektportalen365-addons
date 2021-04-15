@@ -1,39 +1,33 @@
-import { override } from '@microsoft/decorators';
-import { Log } from '@microsoft/sp-core-library';
+import { override } from "@microsoft/decorators";
+import { Log } from "@microsoft/sp-core-library";
 import {
   BaseListViewCommandSet,
   Command,
   IListViewCommandSetListViewUpdatedParameters,
-  IListViewCommandSetExecuteEventParameters
-} from '@microsoft/sp-listview-extensibility';
-import { Dialog } from '@microsoft/sp-dialog';
+  IListViewCommandSetExecuteEventParameters,
+} from "@microsoft/sp-listview-extensibility";
+import { Dialog } from "@microsoft/sp-dialog";
+import { sp } from "@pnp/sp/presets/all";
+import { DialogPrompt } from "./Components/Dialog";
 
-import * as strings from 'ProjectIdeaRegistrationCommandSetStrings';
+import * as strings from "ProjectIdeaRegistrationCommandSetStrings";
 
-/**
- * If your command set uses the ClientSideComponentProperties JSON input,
- * it will be deserialized into the BaseExtension.properties object.
- * You can define an interface to describe it.
- */
-export interface IProjectIdeaRegistrationCommandSetProperties {
-  // This is an example; replace with your own properties
-  sampleTextOne: string;
-  sampleTextTwo: string;
-}
+const LOG_SOURCE: string = "ProjectIdeaRegistrationCommandSet";
 
-const LOG_SOURCE: string = 'ProjectIdeaRegistrationCommandSet';
-
-export default class ProjectIdeaRegistrationCommandSet extends BaseListViewCommandSet<IProjectIdeaRegistrationCommandSetProperties> {
-
+export default class ProjectIdeaRegistrationCommandSet extends BaseListViewCommandSet<any> {
   @override
   public onInit(): Promise<void> {
-    Log.info(LOG_SOURCE, 'Initialized ProjectIdeaRegistrationCommandSet');
+    Log.info(LOG_SOURCE, "Initialized ProjectIdeaRegistrationCommandSet");
     return Promise.resolve();
   }
 
   @override
-  public onListViewUpdated(event: IListViewCommandSetListViewUpdatedParameters): void {
-    const compareOneCommand: Command = this.tryGetCommand('COMMAND_1');
+  public onListViewUpdated(
+    event: IListViewCommandSetListViewUpdatedParameters
+  ): void {
+    const compareOneCommand: Command = this.tryGetCommand(
+      "RECOMMENDATION_COMMAND"
+    );
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible = event.selectedRows.length === 1;
@@ -43,14 +37,11 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
   @override
   public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
     switch (event.itemId) {
-      case 'COMMAND_1':
-        Dialog.alert(event.selectedRows[0].getValueByName("Title"));
-        break;
-      case 'COMMAND_2':
-        Dialog.alert(`${this.properties.sampleTextTwo}`);
+      case "RECOMMENDATION_COMMAND":
+        Dialog.prompt(event.selectedRows[0].getValueByName("Title"));
         break;
       default:
-        throw new Error('Unknown command');
+        throw new Error("Unknown command");
     }
   }
 }
