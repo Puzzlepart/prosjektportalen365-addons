@@ -1,3 +1,5 @@
 <pnp:Lists xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema">
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Lists/ProsjektIde.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Lists/Ideregistrering.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Lists/Idebehandling.xml" />
+
 </pnp:Lists>

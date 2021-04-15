@@ -16,4 +16,23 @@
             <CHOICE>Avvist</CHOICE>
         </CHOICES>
     </Field>
+
+    <Field ID="{f63038bc-55f4-4637-9709-bd10d8175f7c}" Name="GtRegistratedIdea"  StaticName="GtRegistratedIdea" DisplayName="Registrert idé" Type="Lookup" Group="{parameter:SiteFields_Group}" List="Idéregistrering" ShowField="Title" UnlimitedLengthInDocumentLibrary="TRUE" />
+    <Field ID="{67eba603-1c39-49ae-a91a-29664f0824c8}" Name="GtIdeaOwner" StaticName="GtIdeaOwner" DisplayName="Idéeier" Type="User" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{a7e1a8b5-8c93-410f-a84d-45772f37293e}" Name="GtIdeaSolutionDescription" StaticName="GtIdeaSolutionDescription" DisplayName="Overordnet løsningsbeskrivelse" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{75dfa9cc-7e6b-4b71-bfca-bb1bee9e1f55}" Name="GtIdeaExpectedGain" StaticName="GtIdeaExpectedGain" DisplayName="Forventede gevinster" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{2081191c-6c4e-452c-9b50-12e80a5047fa}" Name="GtIdeaExecutionPlanApproach" StaticName="GtIdeaExecutionPlanApproach" DisplayName="Gjennomføringsplan: Tilnærming" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{70f7cd7a-1a5a-430c-9da6-1a2710de7eeb}" Name="GtIdeaExecutionResourceNeeds" StaticName="GtIdeaExecutionResourceNeeds" DisplayName="Gjennomføringsplan: Ressursbehov" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{a43b99a2-1b4c-4993-a390-56343004895c}" Name="GtIdeaExecutionSuccessFactors" StaticName="GtIdeaExecutionSuccessFactors" DisplayName="Gjennomføringsplan: Suksessfaktorer" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{df578dbf-fb10-4834-be61-6b9355dbc1a9}" Name="GtIdeaReference" StaticName="GtIdeaReference" DisplayName="Referanse" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+    <Field ID="{86e2c34f-3522-4715-a18b-d0964b5efeb5}" Name="GtIdeaDecision" StaticName="GtIdeaDecision" DisplayName="Beslutning" Type="Choice" Group="{parameter:SiteFields_Group}" Description="" >
+        <CHOICES>
+            <CHOICE>Godkjent for konseptutredning</CHOICE>
+            <CHOICE>Under vurdering</CHOICE>
+            <CHOICE>Avvist</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field ID="{01adb50d-0c5a-4e51-9ff6-01fbc71079a9}" Name="GtIdeaDecisionComment" StaticName="GtIdeaDecisionComment" DisplayName="Kommentar til beslutning" Type="Note" Group="{parameter:SiteFields_Group}" Description="" />
+
+
 </pnp:SiteFields>
