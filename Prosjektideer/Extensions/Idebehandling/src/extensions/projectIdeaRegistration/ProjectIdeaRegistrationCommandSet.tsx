@@ -1,3 +1,5 @@
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { override } from "@microsoft/decorators";
 import { Log } from "@microsoft/sp-core-library";
 import {
@@ -8,7 +10,7 @@ import {
 } from "@microsoft/sp-listview-extensibility";
 import { Dialog } from "@microsoft/sp-dialog";
 import { sp } from "@pnp/sp/presets/all";
-import { DialogPrompt } from "./Components/Dialog";
+import DialogPrompt from "./Components/Dialog";
 
 import * as strings from "ProjectIdeaRegistrationCommandSetStrings";
 
@@ -35,10 +37,16 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
   }
 
   @override
-  public onExecute(event: IListViewCommandSetExecuteEventParameters): void {
+  public onExecute(event: IListViewCommandSetExecuteEventParameters): any {
     switch (event.itemId) {
       case "RECOMMENDATION_COMMAND":
-        Dialog.prompt(event.selectedRows[0].getValueByName("Title"));
+        Dialog.alert("Hello");
+        const dialog: DialogPrompt = new DialogPrompt();
+        dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
+        dialog.show().then((data) => {
+          console.log(dialog.comment)
+          console.log(dialog.selectedChoice)
+        });
         break;
       default:
         throw new Error("Unknown command");

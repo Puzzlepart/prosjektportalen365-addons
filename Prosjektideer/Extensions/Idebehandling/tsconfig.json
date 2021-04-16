@@ -31,7 +31,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/extensions/projectIdeaRegistration/ProjectIdeaRegistrationCommandSet.tsx"  ],
   "exclude": [
     "node_modules",
     "lib"
