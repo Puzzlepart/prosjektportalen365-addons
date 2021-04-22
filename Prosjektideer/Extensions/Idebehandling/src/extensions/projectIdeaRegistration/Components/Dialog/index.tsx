@@ -12,12 +12,10 @@ import {
   DefaultButton,
   TextField,
 } from "@fluentui/react";
-
+import { sp } from "@pnp/sp/presets/all";
 interface IDialogContentProps {
-  message: string;
   close: () => void;
   submit: (choice: string, comment: string) => void;
-  defaultColor?: IColor;
   ideaTitle?: string;
 }
 
@@ -30,8 +28,6 @@ class DialogPrompt extends React.Component<
   IDialogContentProps,
   IDialogContentState
 > {
-  private choice: string;
-
   constructor(props) {
     super(props);
 
@@ -111,7 +107,6 @@ export default class RecommendationDialog extends BaseDialog {
     ReactDOM.render(
       <DialogPrompt
         close={this.close}
-        message={this.message}
         submit={this._submit}
         ideaTitle={this.ideaTitle}
       />,
