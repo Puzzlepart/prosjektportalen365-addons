@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
     <CustomAction
-        Title="ProjectIdeaProcessing"
+        Title="ProjectIdeaRegistration"
         RegistrationId="100"
         RegistrationType="List"
         Location="ClientSideExtension.ListViewCommandSet.CommandBar"
-        ClientSideComponentId="5af28222-4bf8-419c-9533-5a31967b9f20"
+        ClientSideComponentId="c93a4a2a-f5f0-41ee-9ab6-04ad85004d20"
         ClientSideComponentProperties="{&quot;sampleTextOne&quot;:&quot;One item is selected in the list.&quot;, &quot;sampleTextTwo&quot;:&quot;This command is always visible.&quot;}">
     </CustomAction>
 </Elements>

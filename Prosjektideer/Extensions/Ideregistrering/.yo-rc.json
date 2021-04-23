@@ -2,7 +2,7 @@
   "@microsoft/generator-sharepoint": {
     "version": "1.10.0",
     "libraryName": "idebehandling",
-    "libraryId": "57b32396-6d00-4c53-9f80-a9524841d3f9",
+    "libraryId": "f5043a84-80bd-450e-9190-ec87a7e9010b",
     "environment": "spo",
     "packageManager": "npm",
     "isCreatingSolution": true,

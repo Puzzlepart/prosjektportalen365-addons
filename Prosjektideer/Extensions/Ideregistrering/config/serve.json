@@ -4,18 +4,18 @@
   "https": true,
   "serveConfigurations": {
     "default": {
-      "pageUrl": "https://martdev.sharepoint.com/sites/pp365/Lists/Idebehandling/AllItems.aspx",
+      "pageUrl": "https://martdev.sharepoint.com/sites/pp365/Lists/ideregistrering/AllItems.aspx",
       "customActions": {
-        "5af28222-4bf8-419c-9533-5a31967b9f20": {
+        "c93a4a2a-f5f0-41ee-9ab6-04ad85004d20": {
           "location": "ClientSideExtension.ListViewCommandSet.CommandBar",
           "properties": {}
         }
       }
     },
-    "projectIdeaProcessing": {
+    "projectIdeaRegistration": {
       "pageUrl": "https://contoso.sharepoint.com/sites/mySite/SitePages/myPage.aspx",
       "customActions": {
-        "5af28222-4bf8-419c-9533-5a31967b9f20": {
+        "c93a4a2a-f5f0-41ee-9ab6-04ad85004d20": {
           "location": "ClientSideExtension.ListViewCommandSet.CommandBar",
           "properties": {}
         }
