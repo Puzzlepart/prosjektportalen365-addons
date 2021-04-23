@@ -1,5 +1,3 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { override } from "@microsoft/decorators";
 import { Log } from "@microsoft/sp-core-library";
 import {
@@ -12,18 +10,26 @@ import {
 import { Dialog } from "@microsoft/sp-dialog";
 import { ClientsideText, sp } from "@pnp/sp/presets/all";
 import DialogPrompt from "./Components/Dialog";
+import { ConsoleListener, Logger, LogLevel } from "@pnp/logging";
 
-import * as strings from "ProjectIdeaRegistrationCommandSetStrings";
-import { getGUID } from "@pnp/common";
-
+Logger.subscribe(new ConsoleListener());
+Logger.activeLogLevel = DEBUG ? LogLevel.Info : LogLevel.Warning;
 const LOG_SOURCE: string = "ProjectIdeaRegistrationCommandSet";
 
+enum RecommendationType {
+  Accepted = "Godkjent for detaljering av idé",
+  Consideration = "Under vurdering",
+  Declined = "Avvist",
+}
+
 export default class ProjectIdeaRegistrationCommandSet extends BaseListViewCommandSet<any> {
-  private selectedRow: {} = null;
+  private userAuthorized: boolean;
 
   @override
-  public onInit(): Promise<void> {
+  public async onInit(): Promise<void> {
     Log.info(LOG_SOURCE, "Initialized ProjectIdeaRegistrationCommandSet");
+    this.userAuthorized = await this.isUserAuthorized();
+
     return Promise.resolve();
   }
 
@@ -37,7 +43,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible =
-        event.selectedRows.length === 1 && await this.isUserAuthorized();
+        event.selectedRows.length === 1 && this.userAuthorized;
     }
   }
 
@@ -55,14 +61,34 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
               dialog.comment,
               dialog.selectedChoice
             );
+          } else if (
+            dialog.comment &&
+            dialog.selectedChoice == "Under vurdering"
+          ) {
+            this.onSubmitConsideration(event.selectedRows[0], dialog.comment);
           } else {
-            console.log("Declined");
+            Logger.log({ message: "Declined", level: LogLevel.Info });
           }
         });
         break;
       default:
         throw new Error("Unknown command");
     }
+  }
+
+  private async onSubmitConsideration(
+    selectedRow: RowAccessor,
+    recComment: string
+  ) {
+    const rowId = selectedRow.getValueByName("ID");
+    sp.web.lists
+      .getByTitle("Idéregistrering")
+      .items.getById(rowId)
+      .update({
+        GtIdeaRecommendation: RecommendationType.Consideration,
+        GtIdeaRecommendationComment: recComment,
+      })
+      .then(() => console.log("Updated Idéregistrering"));
   }
 
   /**
@@ -79,7 +105,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
       .getByTitle("Idéregistrering")
       .items.getById(rowId)
       .update({
-        GtIdeaRecommendation: recChoice,
+        GtIdeaRecommendation: RecommendationType.Accepted,
         GtIdeaRecommendationComment: recComment,
       })
       .then(() => console.log("Updated Idéregistrering"));
@@ -101,6 +127,9 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
       .then(() => console.log("Items transferred to Idébehandling"));
   }
 
+  /**
+   * Example of sitepage creation
+   */
   private async createSitePage(row: RowAccessor) {
     const title = row.getValueByName("Title");
     console.log(row);
@@ -112,11 +141,6 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
     Problemstilling: ${row.getValueByName("GtIdeaIssue")} <br>
     Bakgrunn: ${row.getValueByName("GtIdeaPossibleGains")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
     `)
     );
 
