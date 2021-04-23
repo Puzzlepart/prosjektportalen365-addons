@@ -53,6 +53,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
       case "RECOMMENDATION_COMMAND":
         Dialog.alert("");
         const dialog: DialogPrompt = new DialogPrompt();
+
         dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
         dialog.show().then(() => {
           if (dialog.comment && dialog.selectedChoice == "Godkjenn") {
@@ -118,11 +119,16 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
    * Update the work list with selected values of the registration list
    */
   private updateWorkList(rowId: number, rowTitle: string) {
+    const url = rowTitle.replace(/ /g, "-");
+    const baseUrl = this.context.pageContext.web.absoluteUrl;
+    const ideaUrl = baseUrl.concat("/SitePages/", url, ".aspx");
+
     sp.web.lists
       .getByTitle("Idébehandling")
       .items.add({
         Title: rowTitle,
-        Registrert_x0020_ideId: rowId,
+        GtRegistratedIdeaId: rowId,
+        GtIdeaUrl: ideaUrl,
       })
       .then(() => console.log("Items transferred to Idébehandling"));
   }
@@ -131,10 +137,11 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
    * Example of sitepage creation
    */
   private async createSitePage(row: RowAccessor) {
-    const title = row.getValueByName("Title");
+    const title: string = row.getValueByName("Title");
     console.log(row);
-    const page = await sp.web.addClientsidePage(title, title, "Home");
 
+    const page = await sp.web.addClientsidePage(title, title, "Home");
+    
     page.addSection().addControl(
       new ClientsideText(`
     Tittel: ${row.getValueByName("Title")} <br>
@@ -143,7 +150,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     Bakgrunn: ${row.getValueByName("GtIdeaPossibleGains")} <br>
     `)
     );
-
+    
     const res = await page.save();
     console.log(res);
   }
