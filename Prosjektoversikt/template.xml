@@ -40,6 +40,13 @@
                         <Field DisplayName="URL" Format="Dropdown" MaxLength="255" Name="URL" Title="URL" Type="Text" ID="{0b20344b-bc06-4f89-b256-32f79d319c36}" SourceID="{{listid:Prosjektoversiktkonfigurasjon}}" StaticName="URL" ColName="nvarchar4" RowOrdinal="0" />
                         <Field DisplayName="IconName" Format="Dropdown" MaxLength="255" Name="IconName" Title="IconName" Type="Text" ID="{ffe24201-3acd-4933-bcdb-8e7d9c09a500}" SourceID="{{listid:Prosjektoversiktkonfigurasjon}}" StaticName="IconName" ColName="nvarchar5" RowOrdinal="0" />
                     </pnp:Fields>
+                    <pnp:DataRows UpdateBehavior="Skip" KeyColumn="URL">
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Prosjektportalen</pnp:DataValue>
+                            <pnp:DataValue FieldName="URL">{site}</pnp:DataValue>
+                            <pnp:DataValue FieldName="IconName">SecurityGroup</pnp:DataValue>
+                        </pnp:DataRow>
+                    </pnp:DataRows>
                 </pnp:ListInstance>
             </pnp:Lists>
         </pnp:ProvisioningTemplate>
