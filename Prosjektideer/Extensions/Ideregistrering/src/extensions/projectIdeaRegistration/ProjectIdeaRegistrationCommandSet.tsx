@@ -48,33 +48,35 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
   }
 
   @override
-  public onExecute(event: IListViewCommandSetExecuteEventParameters): any {
+  public async onExecute(
+    event: IListViewCommandSetExecuteEventParameters
+  ): Promise<any> {
     switch (event.itemId) {
       case "RECOMMENDATION_COMMAND":
         const dialog: DialogPrompt = new DialogPrompt();
 
         dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
         const row = event.selectedRows[0];
-        dialog.show().then(() => {
-          if (dialog.comment && dialog.selectedChoice == "Godkjenn") {
-            this.isIdeaRecommended(row)
-              ? Dialog.alert("Denne idéen er allerede godkjent")
-              : this.onSubmit(row, dialog.comment);
-          } else if (
-            dialog.comment &&
-            dialog.selectedChoice == "Under vurdering"
-          ) {
-            this.isIdeaRecommended(row)
-              ? Dialog.alert("Denne idéen er allerede godkjent")
-              : this.onSubmitConsideration(row, dialog.comment);
-          } else if (dialog.comment && dialog.selectedChoice == "Avvis") {
-            this.isIdeaRecommended(row)
-              ? Dialog.alert("Denne idéen er allerede godkjent")
-              : this.onSubmitDeclined(row, dialog.comment);
-          } else {
-            Logger.log({ message: "Declined", level: LogLevel.Info });
-          }
-        });
+        await dialog.show();
+        
+        if (dialog.comment && dialog.selectedChoice == "Godkjenn") {
+          this.isIdeaRecommended(row)
+            ? Dialog.alert("Denne idéen er allerede godkjent")
+            : this.onSubmit(row, dialog.comment);
+        } else if (
+          dialog.comment &&
+          dialog.selectedChoice == "Under vurdering"
+        ) {
+          this.isIdeaRecommended(row)
+            ? Dialog.alert("Denne idéen er allerede godkjent")
+            : this.onSubmitConsideration(row, dialog.comment);
+        } else if (dialog.comment && dialog.selectedChoice == "Avvis") {
+          this.isIdeaRecommended(row)
+            ? Dialog.alert("Denne idéen er allerede godkjent")
+            : this.onSubmitDeclined(row, dialog.comment);
+        } else {
+          Logger.log({ message: "Declined", level: LogLevel.Info });
+        }
         break;
       default:
         throw new Error("Unknown command");
