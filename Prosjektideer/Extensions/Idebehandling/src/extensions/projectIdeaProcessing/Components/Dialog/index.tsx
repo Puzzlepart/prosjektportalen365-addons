@@ -22,6 +22,7 @@ interface IDialogContentProps {
 interface IDialogContentState {
   choice: string;
   comment: string;
+  isSubmitDisabled: boolean;
 }
 
 class DialogPrompt extends React.Component<
@@ -34,6 +35,7 @@ class DialogPrompt extends React.Component<
     this.state = {
       choice: "",
       comment: "",
+      isSubmitDisabled: true,
     };
   }
 
@@ -76,6 +78,7 @@ class DialogPrompt extends React.Component<
             onClick={() => {
               this.props.submit(this.state.choice, this.state.comment);
             }}
+            disabled={this.state.comment.length > 0 && this.state.choice.length > 0 ? false : true}
           />
         </DialogFooter>
       </DialogContent>

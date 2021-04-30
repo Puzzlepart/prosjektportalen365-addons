@@ -51,22 +51,26 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
   public onExecute(event: IListViewCommandSetExecuteEventParameters): any {
     switch (event.itemId) {
       case "RECOMMENDATION_COMMAND":
-        Dialog.alert("");
         const dialog: DialogPrompt = new DialogPrompt();
 
         dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
+        const row = event.selectedRows[0];
         dialog.show().then(() => {
           if (dialog.comment && dialog.selectedChoice == "Godkjenn") {
-            this.onSubmit(
-              event.selectedRows[0],
-              dialog.comment,
-              dialog.selectedChoice
-            );
+            this.isIdeaRecommended(row)
+              ? Dialog.alert("Denne idéen er allerede godkjent")
+              : this.onSubmit(row, dialog.comment);
           } else if (
             dialog.comment &&
             dialog.selectedChoice == "Under vurdering"
           ) {
-            this.onSubmitConsideration(event.selectedRows[0], dialog.comment);
+            this.isIdeaRecommended(row)
+              ? Dialog.alert("Denne idéen er allerede godkjent")
+              : this.onSubmitConsideration(row, dialog.comment);
+          } else if (dialog.comment && dialog.selectedChoice == "Avvis") {
+            this.isIdeaRecommended(row)
+              ? Dialog.alert("Denne idéen er allerede godkjent")
+              : this.onSubmitDeclined(row, dialog.comment);
           } else {
             Logger.log({ message: "Declined", level: LogLevel.Info });
           }
@@ -75,6 +79,21 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
       default:
         throw new Error("Unknown command");
     }
+  }
+
+  /**
+   * On submit and declined
+   */
+  private async onSubmitDeclined(selectedRow: RowAccessor, recComment: string) {
+    const rowId = selectedRow.getValueByName("ID");
+    sp.web.lists
+      .getByTitle("Idéregistrering")
+      .items.getById(rowId)
+      .update({
+        GtIdeaRecommendation: RecommendationType.Declined,
+        GtIdeaRecommendationComment: recComment,
+      })
+      .then(() => console.log("Updated Idébehandling"));
   }
 
   private async onSubmitConsideration(
@@ -95,11 +114,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
   /**
    * When submit button of the dialog is pressed fields will be updated, written to a new list, then a sitepage will be created
    */
-  private async onSubmit(
-    selectedRow: RowAccessor,
-    recComment: string,
-    recChoice: string
-  ) {
+  private async onSubmit(selectedRow: RowAccessor, recComment: string) {
     const rowId = selectedRow.getValueByName("ID");
     const rowTitle = selectedRow.getValueByName("Title");
     sp.web.lists
@@ -141,7 +156,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     console.log(row);
 
     const page = await sp.web.addClientsidePage(title, title, "Home");
-    
+
     page.addSection().addControl(
       new ClientsideText(`
     Tittel: ${row.getValueByName("Title")} <br>
@@ -150,7 +165,6 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     Bakgrunn: ${row.getValueByName("GtIdeaPossibleGains")} <br>
     `)
     );
-    
     const res = await page.save();
     console.log(res);
   }
@@ -162,6 +176,16 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     const users = await sp.web.siteGroups.getByName("Idebehandlere").users();
     return users.some(
       (user) => user.Email == this.context.pageContext.user.email
+    );
+  }
+
+  /**
+   * Returns true if the idea is already recommended
+   */
+  private isIdeaRecommended(selectedRow: RowAccessor): boolean {
+    return (
+      selectedRow.getValueByName("GtIdeaRecommendation") ===
+      RecommendationType.Accepted
     );
   }
 }

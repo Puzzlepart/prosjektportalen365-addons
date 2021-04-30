@@ -8,7 +8,7 @@ import {
   RowAccessor,
 } from "@microsoft/sp-listview-extensibility";
 import { Dialog } from "@microsoft/sp-dialog";
-import { ClientsideText, sp } from "@pnp/sp/presets/all";
+import { sp } from "@pnp/sp/presets/all";
 import DialogPrompt from "./Components/Dialog";
 import { ConsoleListener, Logger, LogLevel } from "@pnp/logging";
 
@@ -51,7 +51,6 @@ export default class ProjectIdeaProcessCommandSet extends BaseListViewCommandSet
   public onExecute(event: IListViewCommandSetExecuteEventParameters): any {
     switch (event.itemId) {
       case "RECOMMENDATION_COMMAND":
-        Dialog.alert("");
         const dialog: DialogPrompt = new DialogPrompt();
 
         dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
@@ -67,6 +66,8 @@ export default class ProjectIdeaProcessCommandSet extends BaseListViewCommandSet
             dialog.selectedChoice == "Under vurdering"
           ) {
             this.onSubmitConsideration(event.selectedRows[0], dialog.comment);
+          } else if (dialog.comment && dialog.selectedChoice == "Avvis") {
+            this.onSubmitDeclined(event.selectedRows[0], dialog.comment);
           } else {
             Logger.log({ message: "Declined", level: LogLevel.Info });
           }
@@ -77,6 +78,24 @@ export default class ProjectIdeaProcessCommandSet extends BaseListViewCommandSet
     }
   }
 
+  /**
+   * On submit and declined
+   */
+  private async onSubmitDeclined(selectedRow: RowAccessor, recComment: string) {
+    const rowId = selectedRow.getValueByName("ID");
+    sp.web.lists
+      .getByTitle("Idébehandling")
+      .items.getById(rowId)
+      .update({
+        GtIdeaDecision: RecommendationType.Declined,
+        GtIdeaDecisionComment: recComment,
+      })
+      .then(() => console.log("Updated Idébehandling"));
+  }
+
+  /**
+   * On submit and concideration
+   */
   private async onSubmitConsideration(
     selectedRow: RowAccessor,
     recComment: string
@@ -86,14 +105,14 @@ export default class ProjectIdeaProcessCommandSet extends BaseListViewCommandSet
       .getByTitle("Idébehandling")
       .items.getById(rowId)
       .update({
-        GtIdeaRecommendation: RecommendationType.Consideration,
-        GtIdeaRecommendationComment: recComment,
+        GtIdeaDecision: RecommendationType.Consideration,
+        GtIdeaDecisionComment: recComment,
       })
       .then(() => console.log("Updated Idébehandling"));
   }
 
   /**
-   * When submit button of the dialog is pressed fields will be updated, written to a new list, then a sitepage will be created
+   * On submit and approved
    */
   private async onSubmit(
     selectedRow: RowAccessor,
@@ -101,7 +120,6 @@ export default class ProjectIdeaProcessCommandSet extends BaseListViewCommandSet
     recChoice: string
   ) {
     const rowId = selectedRow.getValueByName("ID");
-    const rowTitle = selectedRow.getValueByName("Title");
     sp.web.lists
       .getByTitle("Idébehandling")
       .items.getById(rowId)

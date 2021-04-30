@@ -76,6 +76,7 @@ class DialogPrompt extends React.Component<
             onClick={() => {
               this.props.submit(this.state.choice, this.state.comment);
             }}
+            disabled={this.state.comment.length > 0 && this.state.choice.length > 0 ? false : true}
           />
         </DialogFooter>
       </DialogContent>
