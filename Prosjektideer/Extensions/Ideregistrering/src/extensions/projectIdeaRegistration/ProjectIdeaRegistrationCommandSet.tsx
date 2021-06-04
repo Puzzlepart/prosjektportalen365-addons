@@ -58,7 +58,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
         dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
         const row = event.selectedRows[0];
         await dialog.show();
-        
+
         if (dialog.comment && dialog.selectedChoice == "Godkjenn") {
           this.isIdeaRecommended(row)
             ? Dialog.alert("Denne idéen er allerede godkjent")
