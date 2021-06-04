@@ -43,7 +43,9 @@ export default class ProjectIdeaProcessCommandSet extends BaseListViewCommandSet
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible =
-        event.selectedRows.length === 1 && this.userAuthorized;
+        event.selectedRows.length === 1 &&
+        this.userAuthorized &&
+        location.href.includes("Idebehandling");
     }
   }
 

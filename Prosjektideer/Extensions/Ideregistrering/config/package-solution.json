@@ -14,15 +14,12 @@
         "id": "562b35a2-65ac-4dc1-84d6-b0c03024b763",
         "version": "1.0.0.0",
         "assets": {
-          "elementManifests": [
-            "elements.xml",
-            "ClientSideInstance.xml"
-          ]
+          "elementManifests": ["elements.xml", "ClientSideInstance.xml"]
         }
       }
     ]
   },
   "paths": {
-    "zippedPackage": "solution/idebehandling.sppkg"
+    "zippedPackage": "solution/ideregistrering.sppkg"
   }
 }

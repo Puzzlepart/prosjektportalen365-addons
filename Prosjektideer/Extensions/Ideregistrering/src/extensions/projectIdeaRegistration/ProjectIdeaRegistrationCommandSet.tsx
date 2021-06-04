@@ -11,6 +11,7 @@ import { Dialog } from "@microsoft/sp-dialog";
 import { ClientsideText, sp } from "@pnp/sp/presets/all";
 import DialogPrompt from "./Components/Dialog";
 import { ConsoleListener, Logger, LogLevel } from "@pnp/logging";
+import { hasOverflow } from "@fluentui/utilities";
 
 Logger.subscribe(new ConsoleListener());
 Logger.activeLogLevel = DEBUG ? LogLevel.Info : LogLevel.Warning;
@@ -43,7 +44,9 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
     if (compareOneCommand) {
       // This command should be hidden unless exactly one row is selected.
       compareOneCommand.visible =
-        event.selectedRows.length === 1 && this.userAuthorized;
+        event.selectedRows.length === 1 &&
+        this.userAuthorized &&
+        location.href.includes("Ideregistrering");
     }
   }
 
