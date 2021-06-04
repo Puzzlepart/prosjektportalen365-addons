@@ -57,8 +57,9 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
 
         dialog.ideaTitle = event.selectedRows[0].getValueByName("Title");
         const row = event.selectedRows[0];
+        console.log(row);
+
         await dialog.show();
-        
         if (dialog.comment && dialog.selectedChoice == "Godkjenn") {
           this.isIdeaRecommended(row)
             ? Dialog.alert("Denne idéen er allerede godkjent")
@@ -95,7 +96,7 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
         GtIdeaRecommendation: RecommendationType.Declined,
         GtIdeaRecommendationComment: recComment,
       })
-      .then(() => console.log("Updated Idébehandling"));
+      .then(() => Log.info(LOG_SOURCE, "Updated Idéregistrering: Declined"));
   }
 
   private async onSubmitConsideration(
@@ -110,7 +111,9 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
         GtIdeaRecommendation: RecommendationType.Consideration,
         GtIdeaRecommendationComment: recComment,
       })
-      .then(() => console.log("Updated Idéregistrering"));
+      .then(() =>
+        Log.info(LOG_SOURCE, "Updated Idéregistrering: Consideration")
+      );
   }
 
   /**
@@ -126,7 +129,8 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
         GtIdeaRecommendation: RecommendationType.Accepted,
         GtIdeaRecommendationComment: recComment,
       })
-      .then(() => console.log("Updated Idéregistrering"));
+      .then(() => Log.info(LOG_SOURCE, "Updated Idéregistrering: Accepted"))
+      .catch((e) => Log.error(LOG_SOURCE, e));
 
     this.updateWorkList(rowId, rowTitle);
     this.createSitePage(selectedRow);
@@ -147,7 +151,8 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
         GtRegistratedIdeaId: rowId,
         GtIdeaUrl: ideaUrl,
       })
-      .then(() => console.log("Items transferred to Idébehandling"));
+      .then(() => Log.info(LOG_SOURCE, "Updated work lits"))
+      .catch((e) => Log.error(LOG_SOURCE, e));
   }
 
   /**
@@ -155,20 +160,77 @@ export default class ProjectIdeaRegistrationCommandSet extends BaseListViewComma
    */
   private async createSitePage(row: RowAccessor) {
     const title: string = row.getValueByName("Title");
-    console.log(row);
 
-    const page = await sp.web.addClientsidePage(title, title, "Home");
+    const page = await sp.web.addClientsidePage(title, title, "Article");
 
-    page.addSection().addControl(
-      new ClientsideText(`
-    Tittel: ${row.getValueByName("Title")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaBackground")} <br>
-    Problemstilling: ${row.getValueByName("GtIdeaIssue")} <br>
-    Bakgrunn: ${row.getValueByName("GtIdeaPossibleGains")} <br>
+    page
+      .addSection()
+      .addColumn(6)
+      .addControl(
+        new ClientsideText(`
+    <h3>Tittel </h3 <br>
+     ${row.getValueByName("Title")}
     `)
-    );
+      )
+      .addControl(
+        new ClientsideText(`
+      <h3>Bakgrunn </h2> <br>
+      ${row.getValueByName("GtIdeaBackground")}
+      `)
+      )
+      .addControl(
+        new ClientsideText(`
+      <h3>Forslag til løsning </h2> <br>
+      ${row.getValueByName("GtIdeaSolutionProposals")}
+      `)
+      )
+      .addControl(
+        new ClientsideText(`
+      <h3>Overordnet gjennomføringsplan </h2> <br>
+      ${row.getValueByName("GtIdeaExecutionPlan")}
+      `)
+      ).addControl(
+        new ClientsideText(`
+      <h3>Ressursbehov </h2> <br>
+      ${row.getValueByName("GtIdeaResourceRequirements")}
+      `)
+      );
+
+    page.sections[0]
+      .addColumn(6)
+      .addControl(
+        new ClientsideText(`
+        <h3>Problemstilling </h2> <br> 
+        ${row.getValueByName("GtIdeaIssue")}
+        `)
+      )
+      .addControl(
+        new ClientsideText(`
+          <h3>Mulige gevinster </h2> <br> 
+          ${row.getValueByName("GtIdeaPossibleGains")}
+          `)
+      )
+      .addControl(
+        new ClientsideText(`
+          <h3>Berørte parter </h2> <br> 
+          ${row.getValueByName("GtIdeaAffectedParties")}
+          `)
+      )
+      .addControl(
+        new ClientsideText(`
+              <h3>Kritiske suksessfaktorer </h2> <br> 
+              ${row.getValueByName("GtIdeaCriticalSuccessFactors")}
+              `)
+      ).addControl(
+        new ClientsideText(`
+              <h3>Andre kommentarer </h2> <br> 
+              ${row.getValueByName("GtIdeaOtherComments")}
+              `)
+      );
+
     const res = await page.save();
-    console.log(res);
+
+    Log.info(LOG_SOURCE, "Site created successfully");
   }
 
   /**
