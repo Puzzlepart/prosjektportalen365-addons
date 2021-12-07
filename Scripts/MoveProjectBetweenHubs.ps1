@@ -1,7 +1,7 @@
 Param(
     [string]$SourceHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365",
-    [string]$DestinationHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365_578908758",
-    [string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/Lykkepillen124c"
+    [string]$DestinationHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365_1543944126",
+    [string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/pp365_15"
 )
 
 function GetSPItemPropertiesValues($MatchingItem) {
