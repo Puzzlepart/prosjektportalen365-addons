@@ -1,7 +1,7 @@
 Param(
     [string]$SourceHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365",
     [string]$DestinationHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365_1543944126",
-    [string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/pp365_15"
+    [string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/Lykkepillen124d"
 )
 
 function GetSPItemPropertiesValues($MatchingItem) {
@@ -155,33 +155,20 @@ else {
     Write-Host "Cannot find project status objects in source site"
 }
 
-Write-Host "Copying complete. It is recommended to delete project properties and status reports for the project in the source site."
-Write-Host "You might want to verify that the project has been copied correctly first."
-do {
-    $YesOrNo = Read-Host "Do you want to delete project properties and status reports for the project in the source site? (y/n)"
-} 
-while ("y","n" -notcontains $YesOrNo)
-
-if ($YesOrNo -eq "y") {
-    $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -UseWebLogin -ReturnConnection
-    if ($null -ne $MatchingItem -and $MatchingItem.length -eq 1) {
-        Write-Host "Deleting project properties item with ID $($MatchingItem.Id)"
-        $MatchingItem.DeleteObject()
-        $MatchingItem.Update()
+# Deleting properties and status elements from source
+$SourceConn = Connect-PnPOnline -Url $SourceHubUrl -UseWebLogin -ReturnConnection
+if ($null -ne $MatchingItem -and $MatchingItem.length -eq 1) {
+    Write-Host "Deleting project properties item with ID $($MatchingItem.Id)"
+    Remove-PnPListItem -List "Prosjekter" -Identity $MatchingItem.Id -Force
+}
+if ($null -ne $MatchingReports -and $MatchingReports.length -eq 1) {
+    Write-Host "Deleting project status item with ID $($MatchingReports.Id)"
+    Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReports.Id -Force
+}
+elseif ($null -ne $MatchingReports -and $MatchingReports.length -gt 1) {
+    $MatchingReports | ForEach-Object {
+        $MatchingReport = $_
+        Write-Host "Deleting project status item with ID $($MatchingReport.Id)"
+        Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReport.Id -Force
     }
-    if ($null -ne $MatchingReports -and $MatchingReports.length -eq 1) {
-        Write-Host "Deleting project status item with ID $($MatchingReports.Id)"
-        $MatchingReports.DeleteObject()
-        $MatchingReports.Update()
-    }
-    elseif ($null -ne $MatchingReports -and $MatchingReports.length -gt 1) {
-        $MatchingReports | ForEach-Object {
-            $MatchingReport = $_
-            Write-Host "Deleting project status item with ID $($MatchingReport.Id)"
-            $MatchingReport.DeleteObject()
-            $MatchingReport.Update()
-
-        }
-    }
-    Invoke-PnPQuery
 }
