@@ -31,7 +31,7 @@ function GetSPItemPropertiesValues($MatchingItem) {
             }
             "Microsoft.SharePoint.Client.FieldUserValue" {
                 if ($SourceValue.Email -ne "") {
-                    $User = New-PnPUser -LoginName $SourceValue.Email
+                    $User = New-PnPUser -LoginName $SourceValue.Email -ErrorAction Ignore
                     if ($null -ne $User) {
                         $ProjectPropertiesValues[$fld] = $User.Email, $User.Id
                     }
