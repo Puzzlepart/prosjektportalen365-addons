@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es5",
     "forceConsistentCasingInFileNames": true,
-    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react",
@@ -19,14 +19,15 @@
       "./node_modules/@types",
       "./node_modules/@microsoft"
     ],
+    "types": [
+      "webpack-env"
+    ],
     "lib": [
       "es5",
       "dom",
       "es2015.collection",
       "es2015.promise"
-    ],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    ]
   },
   "include": [
     "src/**/*.ts",

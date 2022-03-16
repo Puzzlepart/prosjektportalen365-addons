@@ -12,7 +12,7 @@
       "privacyUrl": "",
       "termsOfUseUrl": "",
       "websiteUrl": "",
-      "mpnId": "Undefined-1.14.0"
+      "mpnId": ""
     },
     "metadata": {
       "shortDescription": {
@@ -27,7 +27,7 @@
     },
     "features": [
       {
-        "title": "prosjektoversikt Feature",
+        "title": "Prosjektoversikt",
         "description": "The feature that activates elements of the prosjektoversikt solution.",
         "id": "fc6517db-2f6b-44d8-866b-2ef6a1d10864",
         "version": "0.5.3.0"

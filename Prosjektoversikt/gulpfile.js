@@ -6,17 +6,11 @@ if (process.argv.indexOf('dist') !== -1) {
     process.argv.push('--ship');
 }
 
-const path = require('path');
 const gulp = require('gulp');
 const build = require('@microsoft/sp-build-web');
-const gulpSequence = require('gulp-sequence');
 
 build.addSuppression(`Warning - [sass] The local CSS class 'ms-Grid' is not camelCase and will not be type-safe.`);
-
-// Create clean distrubution package
-gulp.task('dist', gulpSequence('clean', 'bundle', 'package-solution'));
-// Create clean development package
-gulp.task('dev', gulpSequence('clean', 'bundle', 'package-solution'));
+build.addSuppression(`Warning - [sass] The local CSS class 'ms-DetailsHeader-cell' is not camelCase and will not be type-safe.`)
 
 var getTasks = build.rig.getTasks;
 build.rig.getTasks = function () {

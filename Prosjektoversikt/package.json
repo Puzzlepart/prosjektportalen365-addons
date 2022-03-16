@@ -5,16 +5,13 @@
   "main": "lib/index.js",
   "scripts": {
     "watch": "concurrently \"gulp serve --nobrowser\" \"livereload ./dist -e js -w 250\"",
+    "dist": "gulp clean && gulp bundle --ship && gulp package-solution --ship",
     "makePatch": "npm version patch",
     "makeMinor": "npm version minor",
     "preversion": "node ./tools/pre-version.js",
     "postversion": "gulp dist",
-    "test": "./node_modules/.bin/jest --config ./config/jest.config.json",
-    "test:watch": "./node_modules/.bin/jest --config ./config/jest.config.json --watchAll",
     "lint": "eslint --ext .ts,.tsx ./src --color --fix",
-    "clean": "gulp clean",
-    "dist": "gulp dist",
-    "preinstall": "npx npm-force-resolutions"
+    "clean": "gulp clean"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "1.14.0",
@@ -39,23 +36,23 @@
     "underscore.string": "3.3.5"
   },
   "resolutions": {
-    "@types/react": "16.8.8",
-    "graceful-fs": "^4.2.9"
+    "@types/react": "16.8.8"
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-3.9": "0.4.47",
     "@microsoft/sp-build-web": "1.14.0",
     "@microsoft/sp-module-interfaces": "1.14.0",
+    "@types/react": "^17.0.40",
     "@types/underscore": "1.10.0",
     "@types/underscore.string": "0.0.38",
+    "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "2.30.0",
     "@typescript-eslint/parser": "2.30.0",
     "ajv": "~5.2.2",
     "concurrently": "5.2.0",
     "eslint": "6.8.0",
     "eslint-plugin-react": "7.19.0",
-    "gulp": "~3.9.1",
-    "gulp-sequence": "1.0.0",
+    "gulp": "~4.0.2",
     "livereload": "0.9.1",
     "lodash": "^4.17.15",
     "typescript": "~3.7.x"
