@@ -3,6 +3,9 @@
   "version": "0.5.3",
   "private": true,
   "main": "lib/index.js",
+  "engines": {
+    "node": "12.19.0"
+  },
   "scripts": {
     "watch": "gulp serve-deprecated --nobrowser",
     "dist": "gulp clean && gulp bundle --ship && gulp package-solution --ship",
