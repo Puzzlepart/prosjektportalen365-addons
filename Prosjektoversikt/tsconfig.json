@@ -19,9 +19,6 @@
       "./node_modules/@types",
       "./node_modules/@microsoft"
     ],
-    "types": [
-      "webpack-env"
-    ],
     "lib": [
       "es5",
       "dom",
@@ -32,7 +29,7 @@
     "esModuleInterop": true
   },
   "include": [
-    "src/**/*.ts", "src/webparts/projectOverview/index.tsx",
+    "src/**/*.ts",
     "src/**/*.tsx"
   ]
 }
