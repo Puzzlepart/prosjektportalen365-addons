@@ -20,7 +20,7 @@
     "componentType": "webpart",
     "framework": "react",
     "isCreatingSolution": true,
-    "version": "1.9.1",
+    "version": "1.14.0",
     "libraryName": "prosjektoversikt",
     "libraryId": "b1bfc72e-3914-448d-9b26-6e6ec031c784",
     "packageManager": "npm",
