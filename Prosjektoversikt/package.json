@@ -4,7 +4,7 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
-    "watch": "concurrently \"gulp serve --nobrowser\" \"livereload ./dist -e js -w 250\"",
+    "watch": "gulp serve-deprecated --nobrowser",
     "dist": "gulp clean && gulp bundle --ship && gulp package-solution --ship",
     "makePatch": "npm version patch",
     "makeMinor": "npm version minor",
@@ -49,12 +49,10 @@
     "@typescript-eslint/eslint-plugin": "2.30.0",
     "@typescript-eslint/parser": "2.30.0",
     "ajv": "~5.2.2",
-    "concurrently": "5.2.0",
     "eslint": "6.8.0",
     "eslint-plugin-react": "7.19.0",
     "gulp": "~4.0.2",
-    "livereload": "0.9.1",
     "lodash": "^4.17.15",
-    "typescript": "~3.7.x"
+    "typescript": "3.9.10"
   }
 }
