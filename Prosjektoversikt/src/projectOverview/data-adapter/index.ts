@@ -65,7 +65,7 @@ export class DataAdapter {
                 'GtPortfolioColumn/GtInternalName'
             )
             .expand('GtPortfolioColumn')
-            .filter('startswith(GtPortfolioColumn/GtInternalName,\'GtStatus\')')
+            .filter('startswith(GtPortfolioColumn/GtInternalName,\'GtStatus\') or startswith(GtPortfolioColumn/GtInternalName,\'GtOverallStatus\')')
             .top(500)
             .usingCaching(this.getCacheOptions('column_configuration'))
             .get<IPortfolioColumnConfigurationItem[]>();
