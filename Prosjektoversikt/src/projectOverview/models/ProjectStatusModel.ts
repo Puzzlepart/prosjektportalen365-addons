@@ -62,7 +62,7 @@ export class ProjectStatusModel {
   }
 
   public get sections(): Array<ProjectStatusSection> {
-    const statusKeys = filter(Object.keys(this.item), key => (startsWith(key, 'GtStatus')) && !endsWith(key, 'Comment'));
+    const statusKeys = filter(Object.keys(this.item), key => (startsWith(key, 'GtStatus') || startsWith(key, 'GtOverallStatus')) && !endsWith(key, 'Comment'));
     return statusKeys.map(key => {
       const name = capitalize(this.columnConfigurations[key]?.name.split(' ')[1]);
       const iconName = (find(this.statusSections, s => s.GtSecFieldName === key) || {}).GtSecIcon;
