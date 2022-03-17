@@ -6,7 +6,33 @@
     "version": "0.5.3.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
-    "isDomainIsolated": false
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "websiteUrl": "",
+      "mpnId": ""
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "prosjektoversikt description"
+      },
+      "longDescription": {
+        "default": "prosjektoversikt description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "Prosjektoversikt",
+        "description": "The feature that activates elements of the prosjektoversikt solution.",
+        "id": "fc6517db-2f6b-44d8-866b-2ef6a1d10864",
+        "version": "0.5.3.0"
+      }
+    ]
   },
   "paths": {
     "zippedPackage": "solution/pp-addons-prosjektoversikt.sppkg"
