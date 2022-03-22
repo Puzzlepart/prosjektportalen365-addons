@@ -41,6 +41,7 @@ export interface IProjectItem {
     OData__UIVersionString: string;
     Attachments: boolean;
     GUID: string;
+    Path: string; 
 }
 
 export class ProjectModel {
@@ -50,6 +51,8 @@ export class ProjectModel {
     public phase: string;
     public projectType: string;
     public serviceArea: string;
+    public path: string;
+    public hoverData: any;
 
     constructor(private item: IProjectItem, public status: ProjectStatusModel[]) {
         this.siteId = item.GtSiteId;
@@ -58,7 +61,9 @@ export class ProjectModel {
         this.phase = item.GtProjectPhaseText;
         this.projectType = item.GtProjectTypeText;
         this.serviceArea = item.GtProjectServiceAreaText;
+        this.path = item.Path;
         this[this.phase] = first(status);
+        this.hoverData = item
     }
 
     public setTitle(_title: string): ProjectModel {

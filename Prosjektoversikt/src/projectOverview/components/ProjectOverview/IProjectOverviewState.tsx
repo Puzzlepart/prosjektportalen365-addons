@@ -9,6 +9,7 @@ import { IFilter } from '../FilterPanel';
 export interface IProjectOverviewState extends IDataAdapterFetchResult {
     loading?: IProgressIndicatorProps;
     projects?: ProjectModel[];
+    projectInfo?: any[];
     filters?: IFilter[];
     showFilterPanel?: boolean;
     columns?: IColumn[];
