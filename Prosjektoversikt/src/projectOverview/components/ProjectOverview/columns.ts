@@ -1,6 +1,5 @@
 import { IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { IProjectOverviewContext } from './ProjectOverviewContext';
-import { classify } from 'underscore'
 
 export const getColumns = ({ state, properties }: IProjectOverviewContext): IColumn[] => [
     {

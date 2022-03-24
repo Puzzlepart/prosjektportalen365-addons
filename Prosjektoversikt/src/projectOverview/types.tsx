@@ -28,6 +28,11 @@ export interface IProjectOverviewWebPartProps {
      * Cache units
      */
     cacheUnits: number;
+
+    /**
+     * Project list name
+     */
+    selectedHoverFields: string;
 }
 
 export interface IPhase {

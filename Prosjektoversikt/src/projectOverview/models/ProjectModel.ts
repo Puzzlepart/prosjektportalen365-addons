@@ -54,7 +54,7 @@ export class ProjectModel {
     public path: string;
     public hoverData: any;
 
-    constructor(private item: IProjectItem, public status: ProjectStatusModel[]) {
+    constructor(private item: IProjectItem, public status: ProjectStatusModel[], hoverData?: IProjectItem) {
         this.siteId = item.GtSiteId;
         this.siteUrl = item.GtSiteUrl;
         this.title = item.Title;
@@ -63,7 +63,7 @@ export class ProjectModel {
         this.serviceArea = item.GtProjectServiceAreaText;
         this.path = item.Path;
         this[this.phase] = first(status);
-        this.hoverData = item
+        this.hoverData = hoverData
     }
 
     public setTitle(_title: string): ProjectModel {

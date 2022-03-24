@@ -1,27 +1,27 @@
 //#region imports
-import { ContextualMenu } from "office-ui-fabric-react/lib/ContextualMenu";
+import { ContextualMenu } from 'office-ui-fabric-react/lib/ContextualMenu';
 import {
   ConstrainMode,
   DetailsListLayoutMode,
   SelectionMode,
-} from "office-ui-fabric-react/lib/DetailsList";
-import { Icon } from "office-ui-fabric-react/lib/Icon";
-import { ProgressIndicator } from "office-ui-fabric-react/lib/ProgressIndicator";
-import { ShimmeredDetailsList } from "office-ui-fabric-react/lib/ShimmeredDetailsList";
-import React, { useContext, useReducer, useMemo } from "react";
-import { filter } from "underscore";
-import { ActionBar } from "../ActionBar";
-import { FilterPanel } from "../FilterPanel";
-import { getColumns } from "./columns";
-import { onColumnHeaderContextMenu } from "./onColumnHeaderContextMenu";
-import { onRenderItemColumn } from "./onRenderItemColumn";
-import styles from "./ProjectOverview.module.scss";
-import "./ProjectOverview.scss";
+} from 'office-ui-fabric-react/lib/DetailsList';
+import { Icon } from 'office-ui-fabric-react/lib/Icon';
+import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
+import { ShimmeredDetailsList } from 'office-ui-fabric-react/lib/ShimmeredDetailsList';
+import React, { useContext, useReducer, useMemo } from 'react';
+import { filter } from 'underscore';
+import { ActionBar } from '../ActionBar';
+import { FilterPanel } from '../FilterPanel';
+import { getColumns } from './columns';
+import { onColumnHeaderContextMenu } from './onColumnHeaderContextMenu';
+import { onRenderItemColumn } from './onRenderItemColumn';
+import styles from './ProjectOverview.module.scss';
+import './ProjectOverview.scss';
 import {
   IProjectOverviewContext,
   ProjectOverviewContext,
-} from "./ProjectOverviewContext";
-import reducer from "./ProjectOverviewReducer";
+} from './ProjectOverviewContext';
+import reducer from './ProjectOverviewReducer';
 
 //#endregion
 
@@ -34,11 +34,10 @@ export const ProjectOverview = () => {
     projectInfo: [],
     columns: getColumns(context),
     selectedPortfolio: context.defaultConfiguration,
-  });  
-
+  });
   React.useEffect(() => {
-    context.dataAdapter.fetchData(state.selectedPortfolio).then((data) => {
-      dispatch({ type: "DATA_FETCHED", payload: data });
+    context.dataAdapter.fetchData(state.selectedPortfolio, context.hoverColumns).then((data) => {
+      dispatch({ type: 'DATA_FETCHED', payload: data });
     });
   }, [state.selectedPortfolio]);
 
@@ -53,6 +52,16 @@ export const ProjectOverview = () => {
   const items = filter(state.projects, (project) =>
     project.matchFilters(state.filters)
   );
+
+  const onRenderItemColumnParent = (item, index, col) => {
+    return onRenderItemColumn(
+      item,
+      index,
+      col,
+      context.properties.selectedHoverFields.split(','),
+      context.hoverColumns
+    );
+  };
 
   return (
     <ProjectOverviewContext.Provider value={contextValue}>
@@ -79,7 +88,7 @@ export const ProjectOverview = () => {
             selectionMode={SelectionMode.none}
             items={items}
             columns={getColumns(contextValue)}
-            onRenderItemColumn= {onRenderItemColumn}
+            onRenderItemColumn={onRenderItemColumnParent}
             onColumnHeaderClick={(event, col) =>
               onColumnHeaderContextMenu(col, event, contextValue)
             }

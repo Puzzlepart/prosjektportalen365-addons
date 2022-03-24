@@ -1,5 +1,5 @@
 import { Version } from '@microsoft/sp-core-library';
-import { IPropertyPaneConfiguration, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneToggle } from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneDropdown, PropertyPaneLabel, PropertyPaneSlider, PropertyPaneTextField, PropertyPaneToggle } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { dateAdd, DateAddInterval } from '@pnp/common';
 import { ConsoleListener, Logger, LogLevel } from '@pnp/logging';
@@ -16,6 +16,7 @@ import { IProjectOverviewWebPartProps } from './types';
 export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProjectOverviewWebPartProps> {
   private dataAdapter: DataAdapter;
   private portfolios: Portfolio[];
+  private hoverColumns: any[];
 
   public constructor() {
     super();
@@ -24,11 +25,13 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
   }
 
   public render(): void {
+    
     const element = (
       <ProjectOverviewContext.Provider
         value={{
           state: {},
           dataAdapter: this.dataAdapter,
+          hoverColumns: this.hoverColumns,
           portfolios: this.portfolios,
           defaultConfiguration: first(this.portfolios),
           properties: this.properties,
@@ -37,6 +40,29 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
       </ProjectOverviewContext.Provider>
     )
     ReactDom.render(element, this.domElement);
+  }
+
+  private filterHoverColumns() { 
+    const filteredCols = []
+    this.hoverColumns.forEach((col) => {
+        this.properties.selectedHoverFields.split(',').forEach((field) => {
+        if (field === col.InternalName) {
+          if (col['odata.type'] === 'SP.Taxonomy.TaxonomyField') {
+            const [textField] = (this.hoverColumns.filter((column) => {
+              return column.InternalName === `${col.InternalName}Text`
+            })
+            )
+            filteredCols.push(textField)
+          } else {
+            const [filteredColumn] = this.hoverColumns.filter((column) => {
+              return column.InternalName === col.InternalName
+            })
+            filteredCols.push(filteredColumn)
+          }
+        } 
+      })
+    });
+    this.hoverColumns = filteredCols;
   }
 
   public async onInit() {
@@ -48,6 +74,8 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
       alias: this.manifest.alias,
     });
     this.portfolios = await this.dataAdapter.getPortfolios();
+    this.hoverColumns = await this.dataAdapter.getHoverColumns();
+    this.filterHoverColumns()
   }
 
   protected getCacheExpiry() {
@@ -108,6 +136,10 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
                 }),
                 PropertyPaneLabel('showTooltip', {
                   text: 'Bestem om det skal vises en tooltip med oppsummering av statusrapporten.',
+                }),
+                PropertyPaneTextField('selectedHoverFields', {
+                  label: 'Hover felt',
+                  description: 'Egenskaper som skal vises når musen holder over en kolonne.',
                 }),
               ]
             },
