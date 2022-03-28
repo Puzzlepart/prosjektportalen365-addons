@@ -10,6 +10,7 @@ export interface IProjectOverviewContext {
     dataAdapter?: DataAdapter;
     dispatch?: React.Dispatch<ProjectOverviewAction>;
     portfolios: Portfolio[];
+    hoverColumns: any;
     defaultConfiguration?: Portfolio;
     state?: IProjectOverviewState;
 }
