@@ -3,6 +3,19 @@
   color: #0072c6;
 }
 
+.ms-TooltipHost {
+  width: 500px;
+  .ms-TooltipHost-inner {
+    padding: 30px;
+    .title {
+      font-weight: normal;
+      word-wrap: break-word;
+      max-width: 400px;
+    }
+  }
+}
+
+
 .ms-DetailsHeader-cell.Planlegge,
 .ms-DetailsHeader-cell.Gjennomføre,
 .ms-DetailsHeader-cell.Avslutte {

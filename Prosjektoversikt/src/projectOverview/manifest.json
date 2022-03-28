@@ -28,7 +28,8 @@
         "columnIconGap": 8,
         "showTooltip": true,
         "cacheInterval": "minutter|minute",
-        "cacheUnits": 15
+        "cacheUnits": 15,
+        "selectedHoverFields": "GtProjectPhase,GtProjectTypeText,GtProjectServiceAreaText,GtProjectLifecycleStatus,GtProjectManager"
       }
     }
   ],

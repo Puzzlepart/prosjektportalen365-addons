@@ -6,6 +6,7 @@ import { isObject } from 'underscore';
 import { ProjectModel } from '../../models/ProjectModel';
 import { StatusColumn } from '../StatusColumn';
 import { TooltipHost } from 'office-ui-fabric-react';
+import styles from '../FilterPanel/FilterItem/FilterItem.module.scss';
 
 const renderToolTipField =(column, item) => {
   if (!item) return 'Ikke satt'
@@ -30,22 +31,19 @@ export const onRenderItemColumn = (
       return (
         <span>
           <TooltipHost
+            className='ms-TooltipHost'
             content={
               <div
-                style={{
-                  width: '300px',
-                  padding: '20px',
-                }}
+              className='ms-TooltipHost-inner'
               >
-                <h2>{item.title}</h2>
+                <h1 className='title'>{item.title}</h1>
                 {
                   allColumns.map(column => {
                     return (
                       <>
-                      <h3>{column.Title.toLowerCase().includes('(text)') ? column.Title.replace('(text)', '') : column.Title}</h3>
+                      {column.Title.toLowerCase().includes('(text)') ? <h4>{column.Title.replace('(text)', '')}</h4> : column.Title.toLowerCase().includes('(tekst)') ? <h4>{column.Title.replace('(tekst)', '')}</h4> : <h4>{column.Title}</h4>}
                       {renderToolTipField(column, item.hoverData[column.InternalName])}
-                      </>
-                      
+                      </>                     
                     ) 
                   })
                 }
