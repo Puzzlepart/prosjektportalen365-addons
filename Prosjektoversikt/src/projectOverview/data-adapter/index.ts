@@ -97,20 +97,10 @@ export class DataAdapter {
       obj[key] = obj[key] || {};
       obj[key].name = obj[key].name || item.GtPortfolioColumn.Title;
       obj[key].colors = obj[key].colors || {};
-      obj[key].colors[item.GtPortfolioColumnValue] =
-        item.GtPortfolioColumnColor;
+      obj[key].colors[item.GtPortfolioColumnValue] = item.GtPortfolioColumnColor;
       return obj;
     }, {});
     return columnConfigurations;
-  }
-
-  public async getHoverColumns() {
-    try {
-    const items = await sp.web.lists
-      .getByTitle(PROJECTS_LIST_NAME).fields.filter('Hidden eq false and ReadOnlyField eq false').get()
-    return items;
-    } catch {
-    }
   }
 
   public async getPortfolios(): Promise<Portfolio[]> {
@@ -121,8 +111,31 @@ export class DataAdapter {
       .get<IPortfolioItem[]>();
     return items.map((item) => new Portfolio(item));
   }
+  
+  private filterHoverColumns(hoverColumns, selectedHoverFields) { 
+    const filteredCols = []
+    hoverColumns.forEach((col) => {
+        selectedHoverFields.split(',').forEach((field) => {
+        if (field === col.InternalName) {
+          if (col['odata.type'] === 'SP.Taxonomy.TaxonomyField') {
+            const [textField] = (hoverColumns.filter((column) => {
+              return column.InternalName === `${col.InternalName}Text`
+            })
+            )
+            filteredCols.push(textField)
+          } else {
+            const [filteredColumn] = hoverColumns.filter((column) => {
+              return column.InternalName === col.InternalName
+            })
+            filteredCols.push(filteredColumn)
+          }
+        } 
+      })
+    });
+    return filteredCols;
+  }
 
-  public async fetchData(config: Portfolio, hoverColumns: any): Promise<IDataAdapterFetchResult> {
+  public async fetchData(config: Portfolio, selectedHoverFields): Promise<IDataAdapterFetchResult> {
     Logger.log({
       message: '(projectOverview/DataAdapter) Fetching data',
       data: config,
@@ -133,24 +146,24 @@ export class DataAdapter {
     const { Id: siteId } = await this.site.select('Id').get<{ Id: string }>();
     const _phaseTermSetId = await this.getPhaseFieldTermSetId();
     const projectsList = this.site.rootWeb.lists.getByTitle(PROJECTS_LIST_NAME);
-    const projectStatusList = this.site.rootWeb.lists.getByTitle(
-      PROJECT_STATUS_LIST_NAME
-    );
-    const statusSectionsList = this.site.rootWeb.lists.getByTitle(
-      STATUS_SECTIONS_LIST_NAME
-    );
+    const projectStatusList = this.site.rootWeb.lists.getByTitle(PROJECT_STATUS_LIST_NAME);
+    const statusSectionsList = this.site.rootWeb.lists.getByTitle(STATUS_SECTIONS_LIST_NAME);
+
+    const projectColumns = await this.site.rootWeb.lists
+    .getByTitle(PROJECTS_LIST_NAME).fields.filter('Hidden eq false and ReadOnlyField eq false').get();
+    const hoverColumns = this.filterHoverColumns(projectColumns, selectedHoverFields)
 
     const selectHoverColumns = hoverColumns.map(field => {
-      if (field['odata.type'] === 'SP.FieldUser'){
+      if (field['odata.type'] === 'SP.FieldUser') {
         return `${field.InternalName}/Title`
       } else {
         return field.InternalName
       }
     })
-    
+
     const expandHoverColumns = hoverColumns.filter(column => {
-       return column['odata.type'] === 'SP.FieldUser'
-     }).map(field => {return field.InternalName})
+      return column['odata.type'] === 'SP.FieldUser'
+    }).map(field => { return field.InternalName })
 
     const [
       _sites,
@@ -181,7 +194,7 @@ export class DataAdapter {
         .getDefaultKeywordTermStore()
         .getTermSetById(_phaseTermSetId)
         .terms.get(),
-        projectsList.items.select(selectHoverColumns.join(',').toString()).expand(expandHoverColumns.join(',').toString())
+      projectsList.items.select(selectHoverColumns.join(',').toString()).expand(expandHoverColumns.join(',').toString())
         .usingCaching(this.getCacheOptions('project_details'))
         .top(500)
         .get<IProjectItem[]>(),
@@ -212,6 +225,6 @@ export class DataAdapter {
       (p) => pick(p, 'Name', 'LocalCustomProperties') as any
     );
 
-    return { projects, phases };
+    return { projects, phases, hoverColumns };
   }
 }

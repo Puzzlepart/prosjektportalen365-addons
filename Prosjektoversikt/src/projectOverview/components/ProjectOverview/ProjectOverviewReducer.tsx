@@ -11,6 +11,7 @@ export default (state: IProjectOverviewState, action: ProjectOverviewAction): IP
             newState = { ...newState, ...action.payload };
             const data = newState.projects.map(p => p.getMergedItem());
             newState.filters = FILTERS.map(([fieldName, name]) => new Filter(fieldName, name).populate(data));
+            newState.hoverColumns = action.payload.hoverColumns;
             newState.loading = null;
         }
             break;

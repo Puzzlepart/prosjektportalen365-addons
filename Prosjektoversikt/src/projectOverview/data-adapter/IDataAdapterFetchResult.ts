@@ -5,4 +5,5 @@ export interface IDataAdapterFetchResult {
     projects?: ProjectModel[];
     phases?: IPhase[];
     hoverData?: any[];
+    hoverColumns?: any[];
 }

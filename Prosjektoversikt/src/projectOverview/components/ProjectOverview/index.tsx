@@ -32,11 +32,13 @@ export const ProjectOverview = () => {
     filters: [],
     projects: [],
     projectInfo: [],
+    hoverColumns: [],
     columns: getColumns(context),
     selectedPortfolio: context.defaultConfiguration,
   });
+
   React.useEffect(() => {
-    context.dataAdapter.fetchData(state.selectedPortfolio, context.hoverColumns).then((data) => {
+    context.dataAdapter.fetchData(state.selectedPortfolio, context.properties.selectedHoverFields).then((data) => {
       dispatch({ type: 'DATA_FETCHED', payload: data });
     });
   }, [state.selectedPortfolio]);
@@ -59,7 +61,7 @@ export const ProjectOverview = () => {
       index,
       col,
       context.properties.selectedHoverFields.split(','),
-      context.hoverColumns
+      state.hoverColumns
     );
   };
 

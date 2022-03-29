@@ -15,4 +15,5 @@ export interface IProjectOverviewState extends IDataAdapterFetchResult {
     columns?: IColumn[];
     columnMenu?: IContextualMenuProps;
     selectedPortfolio?: Portfolio;
+    hoverColumns?: any[];
 }

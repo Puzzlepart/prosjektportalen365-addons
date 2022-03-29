@@ -42,29 +42,6 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
     ReactDom.render(element, this.domElement);
   }
 
-  private filterHoverColumns() { 
-    const filteredCols = []
-    this.hoverColumns.forEach((col) => {
-        this.properties.selectedHoverFields.split(',').forEach((field) => {
-        if (field === col.InternalName) {
-          if (col['odata.type'] === 'SP.Taxonomy.TaxonomyField') {
-            const [textField] = (this.hoverColumns.filter((column) => {
-              return column.InternalName === `${col.InternalName}Text`
-            })
-            )
-            filteredCols.push(textField)
-          } else {
-            const [filteredColumn] = this.hoverColumns.filter((column) => {
-              return column.InternalName === col.InternalName
-            })
-            filteredCols.push(filteredColumn)
-          }
-        } 
-      })
-    });
-    this.hoverColumns = filteredCols;
-  }
-
   public async onInit() {
     await super.onInit();
     moment.locale('nb');
@@ -74,8 +51,6 @@ export default class ProjectOverviewWebPart extends BaseClientSideWebPart<IProje
       alias: this.manifest.alias,
     });
     this.portfolios = await this.dataAdapter.getPortfolios();
-    this.hoverColumns = await this.dataAdapter.getHoverColumns();
-    this.filterHoverColumns()
   }
 
   protected getCacheExpiry() {
