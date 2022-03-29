@@ -25,6 +25,7 @@ export interface IProjectItem {
   GtStartDate?: any;
   GtEndDate?: any;
   GtProjectGoals?: any;
+  GtProjectDescription?: any;
   GtGroupId: string;
   GtSiteId: string;
   GtSiteUrl: string;
