@@ -197,6 +197,7 @@ export class DataAdapter {
         .getTermSetById(_phaseTermSetId)
         .terms.get(),
       projectsList.items.select(selectHoverColumns.join(',').toString()).expand(expandHoverColumns.join(',').toString())
+        .filter("GtProjectLifecycleStatus eq 'Aktivt'")
         .usingCaching(this.getCacheOptions('project_details'))
         .top(500)
         .get<IProjectItem[]>(),
