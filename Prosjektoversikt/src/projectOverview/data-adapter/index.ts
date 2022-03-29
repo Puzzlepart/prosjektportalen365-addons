@@ -177,10 +177,12 @@ export class DataAdapter {
       this.searchSitesInHub(siteId),
       projectsList.items
         .top(500)
+        .filter("GtProjectLifecycleStatus eq 'Aktivt'")
         .usingCaching(this.getCacheOptions('projects'))
         .get<IProjectItem[]>(),
       projectStatusList.items
         .top(500)
+        .filter("GtModerationStatus eq 'Publisert'")
         .orderBy('Id', false)
         .usingCaching(this.getCacheOptions('project_status'))
         .get<IProjectStatusItem[]>(),
