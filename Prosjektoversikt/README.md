@@ -6,7 +6,10 @@ Denne webdelen viser alle prosjekter i Prosjektportalen 365, uavhengig av rettig
 
 ## Hvordan installere
 
-1. Last ned release-pakken fra [Releases](https://github.com/Puzzlepart/prosjektportalen365-addons/releases).
-2. Pakk ut releasen
-3. Sikre at du har en versjon av PnP PowerShell kjørende. Skriptet som ligger der nå fungerer med SharePointPnPPowerShellOnline (som er deprecated nå, men kan fortsatt brukes). Du kan for eksempel laste denne modulen fra Install-folderen til Prosjektportalen 365. Skriptet kan evt. tweakes noe for å støtte PnP.PowerShell (ved å bytte ut Apply-PnPProvisioningTemplate med Invoke-PnPSiteTemplate)
-4. Kjør Install.ps1 med -Url (URL til området du skal installere webdelen i) og -AppCatalogUrl (URL til app catalog området)
+1. Last ned release-pakken fra [Releases](https://github.com/Puzzlepart/prosjektportalen365-addons/releases) og pakk den ut lokalt
+2. Sikre at du har en versjon av PnP PowerShell kjørende. Skriptet som ligger der nå fungerer med SharePointPnPPowerShellOnline (som er deprecated nå, men kan fortsatt brukes). Du kan for eksempel laste denne modulen fra Install-folderen til Prosjektportalen 365.
+3. Kjør Install.ps1 med -Url (URL til området du skal installere webdelen i)
+4. Verifiser at porteføljen(e) som skal vises er riktige på stien /Lists/Prosjektoversiktkonfigurasjon
+5. Appen er tilgjengelig på /SitePages/Prosjektoversikt.aspx
+
+![install-screenshot](./install-screenshot.png)
