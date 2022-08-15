@@ -67,7 +67,7 @@ jobs:
           name: Idebehandling-release
           path:  |
             ./Prosjektideer/Extensions/Idebehandling/**/sharepoint/solution/*.sppkg
-            ./Prosjektideer/Extensions/Idebehandling/Templates
+            ./Prosjektideer/Templates
 
   Ideregistrering:
     runs-on: ubuntu-latest
@@ -99,4 +99,59 @@ jobs:
           name: Ideregistrering-release
           path:  |
             ./Prosjektideer/Extensions/Ideregistrering/**/sharepoint/solution/*.sppkg
-            ./Prosjektideer/Extensions/Ideregistrering/Templates
+            ./Prosjektideer/Templates
+  
+  UploadRelease:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+
+      - name: ZIP release package
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'Ideregistrering-release.zip'
+          path: etc/usr/artifacts/Ideregistrering-release
+      
+      - name: ZIP release package
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'Idebehandling-release.zip'
+          path: etc/usr/artifacts/Idebehandling-release
+
+      - name: ZIP release package
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'Prosjektoversikt-release.zip'
+          path: etc/usr/artifacts/Prosjektoversikt-release
+
+      - name: (Prosjektoversikt) Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: Prosjektoversikt-release.zip
+          asset_name: Prosjektoversikt-release.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: ""
+
+      - name: (Prosjektideer Ideregistrering) Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: Ideregistrering-release.zip
+          asset_name: Ideregistrering-release.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: ""
+          
+
+      - name: (Prosjektideer Idebehandling) Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: Idebehandling-release.zip
+          asset_name: Idebehandling-release.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: ""
