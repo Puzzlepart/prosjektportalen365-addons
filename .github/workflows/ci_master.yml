@@ -1,0 +1,102 @@
+name: Build release (master)
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  Prosjektoversikt:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install npm packages
+        run: |
+          npm install
+        working-directory: ./Prosjektoversikt/
+      - name: Build SPFx
+        run: |
+          gulp default --ship
+        working-directory: ./Prosjektoversikt/
+      - name: Package SPFx
+        run: |
+          gulp package-solution --ship
+        working-directory: ./Prosjektoversikt/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Prosjektoversikt-release
+          path:  |
+            Prosjektoversikt/template.xml
+            Prosjektoversikt/Install.ps1
+            Prosjektoversikt/**/sharepoint/solution/*.sppkg
+
+  Idebehandling:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install npm packages
+        run: |
+          npm install
+        working-directory: ./Prosjektideer/Extensions/Idebehandling
+      - name: Build SPFx
+        run: |
+          gulp default --ship
+        working-directory: ./Prosjektideer/Extensions/Idebehandling
+      - name: Package SPFx
+        run: |
+          gulp package-solution --ship
+        working-directory: ./Prosjektideer/Extensions/Idebehandling
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Idebehandling-release
+          path:  |
+            ./Prosjektideer/Extensions/Idebehandling/**/sharepoint/solution/*.sppkg
+            ./Prosjektideer/Extensions/Idebehandling/Templates
+
+  Ideregistrering:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install npm packages
+        run: |
+          npm install
+        working-directory: ./Prosjektideer/Extensions/Ideregistrering
+      - name: Build SPFx
+        run: |
+          gulp default --ship
+        working-directory: ./Prosjektideer/Extensions/Ideregistrering
+      - name: Package SPFx
+        run: |
+          gulp package-solution --ship
+        working-directory: ./Prosjektideer/Extensions/Ideregistrering
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Ideregistrering-release
+          path:  |
+            ./Prosjektideer/Extensions/Ideregistrering/**/sharepoint/solution/*.sppkg
+            ./Prosjektideer/Extensions/Ideregistrering/Templates
