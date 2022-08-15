@@ -35,7 +35,7 @@ jobs:
           path:  |
             Prosjektoversikt/template.xml
             Prosjektoversikt/Install.ps1
-            Prosjektoversikt/**/sharepoint/solution/*.sppkg
+            Prosjektoversikt/sharepoint/solution/pp-addons-prosjektoversikt.sppkg
 
   Idebehandling:
     runs-on: ubuntu-latest
@@ -64,9 +64,9 @@ jobs:
         working-directory: ./Prosjektideer/Extensions/Idebehandling
       - uses: actions/upload-artifact@v3
         with:
-          name: Idebehandling-release
+          name: Prosjektideer-release
           path:  |
-            ./Prosjektideer/Extensions/Idebehandling/**/sharepoint/solution/*.sppkg
+            ./Prosjektideer/Extensions/Idebehandling/sharepoint/solution/idebehandling.sppkg
             ./Prosjektideer/Templates
 
   Ideregistrering:
@@ -96,10 +96,9 @@ jobs:
         working-directory: ./Prosjektideer/Extensions/Ideregistrering
       - uses: actions/upload-artifact@v3
         with:
-          name: Ideregistrering-release
+          name: Prosjektideer-release
           path:  |
-            ./Prosjektideer/Extensions/Ideregistrering/**/sharepoint/solution/*.sppkg
-            ./Prosjektideer/Templates
+            ./Prosjektideer/Extensions/Ideregistrering/sharepoint/solution/ideregistrering.sppkg
   
   UploadRelease:
     runs-on: ubuntu-latest
@@ -109,17 +108,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
-      - name: ZIP release package
-        uses: thedoctor0/zip-release@master
-        with:
-          filename: 'Ideregistrering-release.zip'
-          path: Ideregistrering-release
       
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
-          filename: 'Idebehandling-release.zip'
-          path: Idebehandling-release
+          filename: 'Prosjektideer-release.zip'
+          path: Prosjektideer-release
 
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
@@ -137,23 +131,12 @@ jobs:
           overwrite: true
           body: ""
 
-      - name: (Prosjektideer Ideregistrering) Upload binaries to release
+      - name: (Prosjektideer) Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: Ideregistrering-release.zip
-          asset_name: Ideregistrering-$tag-release.zip
-          tag: ${{ github.ref }}
-          overwrite: true
-          body: ""
-
-
-      - name: (Prosjektideer Idebehandling) Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: Idebehandling-release.zip
-          asset_name: Idebehandling-$tag-release.zip
+          file: Prosjektideer-release.zip
+          asset_name: Prosjektideer-$tag-release.zip
           tag: ${{ github.ref }}
           overwrite: true
           body: ""
