@@ -22,15 +22,15 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
-        working-directory: ./prosjektportalen365-addons/Prosjektoversikt/
+        working-directory: ./Prosjektoversikt/
       - name: Build SPFx
         run: |
           gulp default --ship
-        working-directory: ./prosjektportalen365-addons/Prosjektoversikt/
+        working-directory: ./Prosjektoversikt/
       - name: Package SPFx
         run: |
           gulp package-solution --ship
-        working-directory: ./prosjektportalen365-addons/Prosjektoversikt/
+        working-directory: ./Prosjektoversikt/
   Idebehandling:
     runs-on: ubuntu-latest
     strategy:
@@ -47,15 +47,15 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
-        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Idebehandling
+        working-directory: ./Prosjektideer/Extensions/Idebehandling
       - name: Build SPFx
         run: |
           gulp default --ship
-        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Idebehandling
+        working-directory: ./Prosjektideer/Extensions/Idebehandling
       - name: Package SPFx
         run: |
           gulp package-solution --ship
-        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Idebehandling
+        working-directory: ./Prosjektideer/Extensions/Idebehandling
   Ideregistering:
     runs-on: ubuntu-latest
     strategy:
@@ -72,13 +72,13 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
-        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Ideregistering
+        working-directory: ./Prosjektideer/Extensions/Ideregistering
       - name: Build SPFx
         run: |
           gulp default --ship
-        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Ideregistering
+        working-directory: ./Prosjektideer/Extensions/Ideregistering
       - name: Package SPFx
         run: |
           gulp package-solution --ship
-        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Ideregistering
+        working-directory: ./Prosjektideer/Extensions/Ideregistering
 
