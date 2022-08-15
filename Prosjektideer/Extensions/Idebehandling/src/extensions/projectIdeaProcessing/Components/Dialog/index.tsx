@@ -90,14 +90,14 @@ class DialogPrompt extends React.Component<
     choice: IDropdownOption
   ) => {
     this.setState({ choice: choice.text });
-  };
+  }
 
   private _onCommentChange = (
     ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     comment: string
   ) => {
     this.setState({ comment: comment });
-  };
+  }
 }
 
 export default class RecommendationDialog extends BaseDialog {
@@ -134,5 +134,5 @@ export default class RecommendationDialog extends BaseDialog {
     this.selectedChoice = choice;
     this.comment = comment;
     this.close();
-  };
+  }
 }

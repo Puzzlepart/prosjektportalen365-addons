@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v1
         with:
@@ -56,11 +56,11 @@ jobs:
         run: |
           gulp package-solution --ship
         working-directory: ./Prosjektideer/Extensions/Idebehandling
-  Ideregistering:
+  Ideregistrering:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [12.x]
     steps:
       - uses: actions/checkout@v1
         with:
@@ -72,13 +72,13 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
-        working-directory: ./Prosjektideer/Extensions/Ideregistering
+        working-directory: ./Prosjektideer/Extensions/Ideregistrering
       - name: Build SPFx
         run: |
           gulp default --ship
-        working-directory: ./Prosjektideer/Extensions/Ideregistering
+        working-directory: ./Prosjektideer/Extensions/Ideregistrering
       - name: Package SPFx
         run: |
           gulp package-solution --ship
-        working-directory: ./Prosjektideer/Extensions/Ideregistering
+        working-directory: ./Prosjektideer/Extensions/Ideregistrering
 
