@@ -1,9 +1,9 @@
 {
-  "extends": "./node_modules/@microsoft/rush-stack-compiler-3.7/includes/tsconfig-web.json",
+  "extends": "./node_modules/@microsoft/rush-stack-compiler-3.9/includes/tsconfig-web.json",
   "compilerOptions": {
     "target": "es5",
     "forceConsistentCasingInFileNames": true,
-    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "react",
@@ -20,23 +20,17 @@
       "./node_modules/@microsoft"
     ],
     "types": [
-      "es6-promise",
       "webpack-env"
     ],
     "lib": [
       "es5",
       "dom",
-      "es2015.collection"
-    ],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+      "es2015.collection",
+      "es2015.promise"
+    ]
   },
   "include": [
-    "src/**/*.ts", "src/webparts/projectOverview/index.tsx",
+    "src/**/*.ts",
     "src/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib"
   ]
 }

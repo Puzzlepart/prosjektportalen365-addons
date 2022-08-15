@@ -10,6 +10,7 @@ export class Portfolio {
     public title: string;
     public url: string;
     public iconName: string;
+    public hoverColumns: any[];
 
     constructor(item: IPortfolioItem) {
         this.id = item.ID;

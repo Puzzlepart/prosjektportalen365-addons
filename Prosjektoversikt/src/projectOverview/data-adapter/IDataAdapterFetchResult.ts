@@ -4,4 +4,6 @@ import { IPhase } from '../types';
 export interface IDataAdapterFetchResult {
     projects?: ProjectModel[];
     phases?: IPhase[];
+    hoverData?: any[];
+    hoverColumns?: any[];
 }
