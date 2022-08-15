@@ -10,7 +10,7 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
       - name: Use Node.js ${{ matrix.node-version }}
@@ -43,7 +43,7 @@ jobs:
       matrix:
         node-version: [10.x]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
       - name: Use Node.js ${{ matrix.node-version }}
@@ -75,7 +75,7 @@ jobs:
       matrix:
         node-version: [10.x]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
       - name: Use Node.js ${{ matrix.node-version }}
@@ -109,7 +109,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
-
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
@@ -120,7 +119,7 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Idebehandling-release.zip'
-          path: /Idebehandling-release
+          path: Idebehandling-release
 
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
