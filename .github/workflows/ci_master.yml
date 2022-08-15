@@ -65,9 +65,12 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Prosjektideer-release
-          path:  |
-            ./Prosjektideer/Extensions/Idebehandling/sharepoint/solution/idebehandling.sppkg
-            ./Prosjektideer/Templates
+          path: ./Prosjektideer/Extensions/Idebehandling/sharepoint/solution/idebehandling.sppkg
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Prosjektideer-release
+          path: ./Prosjektideer/Templates
 
   Ideregistrering:
     runs-on: ubuntu-latest
@@ -97,8 +100,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Prosjektideer-release
-          path:  |
-            ./Prosjektideer/Extensions/Ideregistrering/sharepoint/solution/ideregistrering.sppkg
+          path: ./Prosjektideer/Extensions/Ideregistrering/sharepoint/solution/ideregistrering.sppkg
   
   UploadRelease:
     runs-on: ubuntu-latest
