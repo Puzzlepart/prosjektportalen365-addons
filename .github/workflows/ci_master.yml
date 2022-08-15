@@ -114,19 +114,19 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Ideregistrering-release.zip'
-          path: ${{ github.workspace }}/Ideregistrering-release
+          path: Ideregistrering-release
       
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Idebehandling-release.zip'
-          path: ${{ github.workspace }}/Idebehandling-release
+          path:/Idebehandling-release
 
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Prosjektoversikt-release.zip'
-          path: ${{ github.workspace }}/Prosjektoversikt-release
+          path: Prosjektoversikt-release
 
       - name: (Prosjektoversikt) Upload binaries to release
         uses: svenstaro/upload-release-action@v2
