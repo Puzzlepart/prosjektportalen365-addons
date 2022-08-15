@@ -22,12 +22,63 @@ jobs:
       - name: Install npm packages
         run: |
           npm install
-        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
+        working-directory: ./prosjektportalen365-addons/Prosjektoversikt/
       - name: Build SPFx
         run: |
           gulp default --ship
-        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
+        working-directory: ./prosjektportalen365-addons/Prosjektoversikt/
       - name: Package SPFx
         run: |
           gulp package-solution --ship
-        working-directory: ./Prosjektportalen 365/Prosjektoversikt/
+        working-directory: ./prosjektportalen365-addons/Prosjektoversikt/
+  Idebehandling:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install npm packages
+        run: |
+          npm install
+        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Idebehandling
+      - name: Build SPFx
+        run: |
+          gulp default --ship
+        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Idebehandling
+      - name: Package SPFx
+        run: |
+          gulp package-solution --ship
+        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Idebehandling
+  Ideregistering:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install npm packages
+        run: |
+          npm install
+        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Ideregistering
+      - name: Build SPFx
+        run: |
+          gulp default --ship
+        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Ideregistering
+      - name: Package SPFx
+        run: |
+          gulp package-solution --ship
+        working-directory: ./prosjektportalen365-addons/Prosjektideer/Extensions/Ideregistering
+
