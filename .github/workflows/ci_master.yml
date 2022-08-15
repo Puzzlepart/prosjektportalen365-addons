@@ -112,19 +112,19 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Ideregistrering-release.zip'
-          path: etc/usr/artifacts/Ideregistrering-release
+          path: prosjektportalen365-addons/Ideregistrering-release
       
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Idebehandling-release.zip'
-          path: etc/usr/artifacts/Idebehandling-release
+          path: prosjektportalen365-addons/Idebehandling-release
 
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Prosjektoversikt-release.zip'
-          path: etc/usr/artifacts/Prosjektoversikt-release
+          path: prosjektportalen365-addons/Prosjektoversikt-release
 
       - name: (Prosjektoversikt) Upload binaries to release
         uses: svenstaro/upload-release-action@v2
