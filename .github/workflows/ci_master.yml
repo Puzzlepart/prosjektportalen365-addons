@@ -36,6 +36,10 @@ jobs:
             Prosjektoversikt/template.xml
             Prosjektoversikt/Install.ps1
             Prosjektoversikt/sharepoint/solution/pp-addons-prosjektoversikt.sppkg
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Prosjektoversikt-release
+          path: Prosjektoversikt/sharepoint/solution/pp-addons-prosjektoversikt.sppkg
 
   Idebehandling:
     runs-on: ubuntu-latest
