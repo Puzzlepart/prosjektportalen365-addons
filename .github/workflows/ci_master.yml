@@ -104,6 +104,8 @@ jobs:
   UploadRelease:
     runs-on: ubuntu-latest
     needs: [Prosjektoversikt,Ideregistrering,Idebehandling]
+    env:
+      SHA8: ${GITHUB_SHA::8}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v3
@@ -112,26 +114,26 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Ideregistrering-release.zip'
-          path: prosjektportalen365-addons/Ideregistrering-release
+          path: ${{ github.workspace }}/Ideregistrering-release
       
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Idebehandling-release.zip'
-          path: prosjektportalen365-addons/Idebehandling-release
+          path: ${{ github.workspace }}/Idebehandling-release
 
       - name: ZIP release package
         uses: thedoctor0/zip-release@master
         with:
           filename: 'Prosjektoversikt-release.zip'
-          path: prosjektportalen365-addons/Prosjektoversikt-release
+          path: ${{ github.workspace }}/Prosjektoversikt-release
 
       - name: (Prosjektoversikt) Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: Prosjektoversikt-release.zip
-          asset_name: Prosjektoversikt-release.zip
+          asset_name: Prosjektoversikt-$tag-release.zip
           tag: ${{ github.ref }}
           overwrite: true
           body: ""
@@ -141,7 +143,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: Ideregistrering-release.zip
-          asset_name: Ideregistrering-release.zip
+          asset_name: Ideregistrering-$tag-release.zip
           tag: ${{ github.ref }}
           overwrite: true
           body: ""
@@ -152,7 +154,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: Idebehandling-release.zip
-          asset_name: Idebehandling-release.zip
+          asset_name: Idebehandling-$tag-release.zip
           tag: ${{ github.ref }}
           overwrite: true
           body: ""
