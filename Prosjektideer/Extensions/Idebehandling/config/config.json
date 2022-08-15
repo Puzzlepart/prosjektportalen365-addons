@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "project-idea-processing-command-set": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/projectIdeaProcessing/ProjectIdeaProcessingCommandSet.js",
+          "manifest": "./src/extensions/projectIdeaProcessing/ProjectIdeaProcessingCommandSet.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "ProjectIdeaProcessingCommandSetStrings": "lib/extensions/projectIdeaProcessing/loc/{locale}.js"
+  }
+}
