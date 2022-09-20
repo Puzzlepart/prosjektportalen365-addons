@@ -1,5 +1,4 @@
-<pnp:Preferences 
-    xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema">
+<pnp:Preferences xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema">
     <pnp:Parameters>
         <pnp:Parameter Key="SiteFields_Group">Prosjektportalen områdekolonner (Prosjektideer)</pnp:Parameter>
         <pnp:Parameter Key="ContentTypes_Group">Prosjektideer innholdstyper</pnp:Parameter>

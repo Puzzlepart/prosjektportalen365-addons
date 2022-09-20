@@ -1,8 +1,9 @@
-<pnp:ListInstance Title="Idébehandling" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Idebehandling" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" ContentTypesEnabled="false" RemoveExistingContentTypes="true" EnableFolderCreation="false" EnableAttachments="false" xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema">
+<pnp:ListInstance Title="Idébehandling" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Idebehandling" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" ContentTypesEnabled="false" RemoveExistingContentTypes="true" EnableFolderCreation="false" EnableAttachments="false"
+    xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema">
     <pnp:ContentTypeBindings>
         <pnp:ContentTypeBinding ContentTypeID="0x01000e7513a76b934f449cdb9b25fc172f44" Default="true" />
     </pnp:ContentTypeBindings>
-        <pnp:Views RemoveExistingViews="true">
+    <pnp:Views RemoveExistingViews="true">
         <View DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="AllItems" Url="Lists/Idebehandling/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x">
             <Query>
                 <OrderBy>

@@ -4,4 +4,4 @@ Vi vil samle åpne løsninger for [Prosjektportalen 365](https://github.com/Puzz
 
 Se mer informasjon og skjermbilder i de respektive mappene.
 
-Ta kontakt med oss på prosjektportalen@puzzlepart.com for spørsmål. 
+Ta kontakt med oss på prosjektportalen@puzzlepart.com for spørsmål.

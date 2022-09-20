@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "project-data-command-set": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/projectData/ProjectDataCommandSet.js",
+          "manifest": "./src/extensions/projectData/ProjectDataCommandSet.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "ProjectDataCommandSetStrings": "lib/extensions/projectData/loc/{locale}.js"
+  }
+}
