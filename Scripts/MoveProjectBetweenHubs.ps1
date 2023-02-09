@@ -4,6 +4,24 @@ Param(
     [string]$ProjectUrl
 )
 
+function VerifyUser($UserObject) {
+    if ($SourceValue.Email -ne "") {                    
+        try {
+            $User = New-PnPUser -LoginName $UserObject.Email -ErrorAction SilentlyContinue
+        
+            if ($null -ne $User) {
+                $ADUser = Get-AzureADUser -ObjectId $UserObject.Email -ErrorAction SilentlyContinue
+
+                if ($null -ne $ADUser -and $ADUser.AccountEnabled) {
+                    return $UserObject.Email
+                }
+            }
+        }
+        catch {}
+    }
+    Write-Host "`t`tUser $($UserObject.Email) does not exist anymore" -ForegroundColor Yellow
+    return $null
+}
 function GetSPItemPropertiesValues($MatchingItem) {
     $SourceRawProperties = @{}
     foreach ($key in $MatchingItem.FieldValues.Keys) { 
@@ -30,23 +48,20 @@ function GetSPItemPropertiesValues($MatchingItem) {
                 }
             }
             "Microsoft.SharePoint.Client.FieldUserValue" {
-                if ($SourceValue.Email -ne "") {
-                    try {
-                        $User = New-PnPUser -LoginName $SourceValue.Email -ErrorAction Continue
-                        
-                        if ($null -ne $User) {
-                            $ADUser = Get-AzureADUser -ObjectId $SourceValue.Email -ErrorAction Continue
-
-                            if ($null -ne $ADUser -and $ADUser.AccountEnabled) {
-                                $ProjectPropertiesValues[$fld] = $User.Email, $User.Id
-                            }
-                        }
-
-                    }
-                    catch {
-                        Write-Host "`t`tUser $($SourceValue.Email) does not exist anymore" -ForegroundColor Yellow
+                $User = VerifyUser -UserObject $SourceValue
+                if ($null -ne $User) {                    
+                    $ProjectPropertiesValues[$fld] = $User
+                }
+            }
+            "Microsoft.SharePoint.Client.FieldUserValue[]" {
+                $VerifiedUsers = @()
+                $SourceValue | ForEach-Object {
+                    $User = VerifyUser -UserObject $_
+                    if ($null -ne $User) {
+                        $VerifiedUsers += $User
                     }
                 }
+                $ProjectPropertiesValues[$fld] = $VerifiedUsers
             }
             default {
                 $ProjectPropertiesValues[$fld] = $SourceValue;
@@ -80,8 +95,6 @@ Function Copy-ListItemAttachments() {
 }  
 $ErrorActionPreference = "Stop"
 Set-PnPTraceLog -Off
-
-Start-Transcript -Path "$PSScriptRoot/MoveSites_Log-$((Get-Date).ToString('yyyy-MM-dd-HH-mm')).txt"
 
 try { 
     $AzureADCommand = Get-AzureADTenantDetail 
@@ -201,5 +214,3 @@ elseif ($null -ne $MatchingReports -and $MatchingReports.length -gt 1) {
 }
 
 Disconnect-PnPOnline
-#Disconnect-AzureAD
-Stop-Transcript
