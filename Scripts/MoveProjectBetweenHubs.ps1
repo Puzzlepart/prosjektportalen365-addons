@@ -25,7 +25,7 @@ function VerifyUser($UserObject) {
 function GetSPItemPropertiesValues($MatchingItem) {
     $SourceRawProperties = @{}
     foreach ($key in $MatchingItem.FieldValues.Keys) { 
-        if ($key.startswith("Gt") -or $key -eq "Title" -or $key -eq "Created" -or $key -eq "Modified" -or $key -eq "Author" -or $key -eq "Editor") {
+        if (($key.startswith("Gt") -or $key -eq "Title" -or $key -eq "Created" -or $key -eq "Modified" -or $key -eq "Author" -or $key -eq "Editor") -and ($key -ne "GtcProjectCategory")) {
             $SourceRawProperties[$key] = $MatchingItem.FieldValues[$key]
         }
     }
@@ -212,5 +212,3 @@ elseif ($null -ne $MatchingReports -and $MatchingReports.length -gt 1) {
         $RemovedItem = Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReport.Id -Force -Recycle -Connection $SourceConn
     }
 }
-
-Disconnect-PnPOnline
