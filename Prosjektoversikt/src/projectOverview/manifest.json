@@ -3,10 +3,12 @@
   "id": "ed0a0ef4-8301-46cf-8a3d-d7021b4c0526",
   "alias": "ProjectOverviewWebPart",
   "componentType": "WebPart",
-  "version": "0.5.3",
+  "version": "0.8.0",
   "manifestVersion": 2,
   "requiresCustomScript": false,
-  "supportedHosts": ["SharePointWebPart"],
+  "supportedHosts": [
+    "SharePointWebPart"
+  ],
   "preconfiguredEntries": [
     {
       "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
