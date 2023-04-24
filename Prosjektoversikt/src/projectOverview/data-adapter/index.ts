@@ -107,7 +107,7 @@ export class DataAdapter {
     const list = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
     const items = await list.items
       .top(500)
-      .select('ID', 'Title', 'URL', 'IconName')
+      .select('ID', 'Title', 'URL', 'IconName', 'GtODataQuery')
       .get<IPortfolioItem[]>();
     return items.map((item) => new Portfolio(item));
   }
@@ -177,7 +177,7 @@ export class DataAdapter {
       this.searchSitesInHub(siteId),
       projectsList.items
         .top(500)
-        .filter("GtProjectLifecycleStatus eq 'Aktivt'")
+        .filter(this.current.dataQuery || "GtProjectLifecycleStatus eq 'Aktivt'")
         .usingCaching(this.getCacheOptions('projects'))
         .get<IProjectItem[]>(),
       projectStatusList.items
