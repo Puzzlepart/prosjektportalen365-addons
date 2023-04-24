@@ -21,7 +21,7 @@ $App = Add-PnPApp -Path .\pp-addons-prosjektoversikt.sppkg -Scope Tenant -Publis
 
 Write-Host "Adding page and app to $Url"
 Connect-PnPOnline -Url $Url -UseWebLogin
-Apply-PnPProvisioningTemplate -Path .\template.xml
+Apply-PnPProvisioningTemplate -Path .\Templates\Template.xml
 
 Write-Host "Installation completed. The app is available at $($Url + "/SitePages/Prosjektoversikt.aspx")"
 Write-Host "Verify that the correct portfolio(s) is configured at $($Url + "/Lists/Prosjektoversiktkonfigurasjon/AllItems.aspx")"

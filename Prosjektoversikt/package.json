@@ -8,6 +8,8 @@
   },
   "scripts": {
     "watch": "gulp serve-deprecated --nobrowser",
+    "serve": "gulp serve-deprecated --locale=nb-no",
+    "package": "gulp clean && gulp default --ship && gulp package-solution --ship",
     "dist": "gulp clean && gulp bundle --ship && gulp package-solution --ship",
     "makePatch": "npm version patch",
     "makeMinor": "npm version minor",

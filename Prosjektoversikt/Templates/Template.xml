@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema https://raw.githubusercontent.com/OfficeDev/PnP-Provisioning-Schema/master/OfficeDevPnP.ProvisioningSchema/ProvisioningSchema-2019-03.xsd">
+    <pnp:Preferences></pnp:Preferences>
+    <pnp:Templates ID="CONTAINER-TEMPLATE-PP-ADDONS-PROSJEKTOVERSIKT">
+        <pnp:ProvisioningTemplate ID="TEMPLATE-PP-ADDONS-PROSJEKTOVERSIKT" Version="1" Scope="RootSite">
+            <pnp:ClientSidePages>
+                <pnp:ClientSidePage PageName="Prosjektoversikt.aspx" PromoteAsNewsArticle="false" Overwrite="false" Layout="SingleWebPartAppPage" EnableComments="false" Title="Prosjektoversikt">
+                    <pnp:Sections>
+                        <pnp:Section Order="1" Type="OneColumn">
+                            <pnp:Controls>
+                                <pnp:CanvasControl WebPartType="Custom" JsonControlData="{&quot;properties&quot;:{&quot;statusColumnWidth&quot;:175,&quot;columnIconSize&quot;:16,&quot;showTooltip&quot;:true}}" ControlId="ed0a0ef4-8301-46cf-8a3d-d7021b4c0526" Order="1" Column="1" />
+                            </pnp:Controls>
+                        </pnp:Section>
+                    </pnp:Sections>
+                    <pnp:Header Type="None" />
+                </pnp:ClientSidePage>
+            </pnp:ClientSidePages>
+            <pnp:SiteFields>
+
+                <pnp:Lists>
+                    <pnp:ListInstance Title="Prosjektoversiktkonfigurasjon" Description="Liste for å registrere prosjektportføljer for webdelen Prosjektoversikt" Hidden="true" DocumentTemplate="" TemplateType="100" Url="Lists/Prosjektoversiktkonfigurasjon" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0">
+                        <pnp:Views>
+                            <View DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Alle elementer" Url="{site}/Lists/Prosjektoversiktkonfigurasjon/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+                                <Query>
+                                    <OrderBy>
+                                        <FieldRef Name="ID" />
+                                    </OrderBy>
+                                </Query>
+                                <ViewFields>
+                                    <FieldRef Name="ID" />
+                                    <FieldRef Name="LinkTitle" />
+                                    <FieldRef Name="URL" />
+                                    <FieldRef Name="IconName" />
+                                    <FieldRef Name="GtODataQuery" />
+                                </ViewFields>
+                                <RowLimit Paged="TRUE">30</RowLimit>
+                                <JSLink>clienttemplates.js</JSLink>
+                                <CustomFormatter />
+                            </View>
+                        </pnp:Views>
+                        <pnp:Fields>
+                            <Field DisplayName="URL" Format="Dropdown" MaxLength="255" Name="URL" Title="URL" Type="Text" ID="{0b20344b-bc06-4f89-b256-32f79d319c36}" SourceID="{{listid:Prosjektoversiktkonfigurasjon}}" StaticName="URL" ColName="nvarchar4" RowOrdinal="0" />
+                            <Field DisplayName="IconName" Format="Dropdown" MaxLength="255" Name="IconName" Title="IconName" Type="Text" ID="{ffe24201-3acd-4933-bcdb-8e7d9c09a500}" SourceID="{{listid:Prosjektoversiktkonfigurasjon}}" StaticName="IconName" ColName="nvarchar5" RowOrdinal="0" />
+                            <Field Type="Note" DisplayName="Prosjekt OData-spørring" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" Sortable="FALSE" ID="{40b5cbd9-4d0a-42eb-a790-65d83b9c7035}" StaticName="GtODataQuery" Name="GtODataQuery" />
+                        </pnp:Fields>
+                        <pnp:DataRows UpdateBehavior="Skip" KeyColumn="URL">
+                            <pnp:DataRow>
+                                <pnp:DataValue FieldName="Title">Prosjektportalen</pnp:DataValue>
+                                <pnp:DataValue FieldName="URL">{site}</pnp:DataValue>
+                                <pnp:DataValue FieldName="IconName">SecurityGroup</pnp:DataValue>
+                                <pnp:DataValue FieldName="GtODataQuery">GtProjectLifecycleStatus eq 'Aktivt'</pnp:DataValue>
+                            </pnp:DataRow>
+                        </pnp:DataRows>
+                    </pnp:ListInstance>
+                    <pnp:ListInstance Title="Prosjektkolonnekonfigurasjon" Description="Liste for å registrere elementer fra prosjektstatusen som skal vises i prosjektoversikt på porteføljenivået" DocumentTemplate="" Hidden="true" TemplateType="100" Url="Lists/Prosjektkolonnekonfigurasjon" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="5000" DraftVersionVisibility="0" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false">
+                        <pnp:ContentTypeBindings>
+                            <pnp:ContentTypeBinding ContentTypeID="0x01005CC009F95743674DAF31B3531CFFA586" Default="true" />
+                        </pnp:ContentTypeBindings>
+                        <pnp:Views>
+                            <View DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Alle elementer" Url="{site}/Lists/Prosjektkolonnekonfigurasjon/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x">
+                                <Query>
+                                    <OrderBy>
+                                        <FieldRef Name="ID" />
+                                    </OrderBy>
+                                </Query>
+                                <ViewFields>
+                                    <FieldRef Name="GtPortfolioColumn" />
+                                    <FieldRef Name="GtPortfolioColumnValue" />
+                                    <FieldRef Name="GtPortfolioColumnColor" />
+                                    <FieldRef Name="GtPortfolioColumnIconName" />
+                                </ViewFields>
+                                <RowLimit Paged="TRUE">100</RowLimit>
+                                <Aggregations Value="Off" />
+                                <JSLink>hierarchytaskslist.js</JSLink>
+                            </View>
+                        </pnp:Views>
+                        <pnp:FieldRefs>
+                            <pnp:FieldRef ID="6aefa59f-4300-4c22-94af-d77d05d792f6" Name="GtPortfolioColumn" Required="true" />
+                            <pnp:FieldRef ID="bb6eac2d-9253-4cb9-a934-a9343ce875d2" Name="GtPortfolioColumnValue" Required="true" />
+                            <pnp:FieldRef ID="4cfafd35-e26f-44cf-bb90-47aa65a41827" Name="GtPortfolioColumnColor" Required="true" />
+                            <pnp:FieldRef ID="d066062c-2fd0-486a-a30a-44bcb3bead4a" Name="GtPortfolioColumnIconName" Required="true" />
+                        </pnp:FieldRefs>
+                        <pnp:DataRows KeyColumn="GtPortfolioColumn" UpdateBehavior="Overwrite">
+                            <pnp:DataRow>
+                                <pnp:DataValue FieldName="Title">Overordnet Status</pnp:DataValue>
+                                <pnp:DataValue FieldName="GtPortfolioColumn">18</pnp:DataValue>
+                                <pnp:DataValue FieldName="GtPortfolioColumnValue">Overordnet Status</pnp:DataValue>
+                                <pnp:DataValue FieldName="GtPortfolioColumnColor">#000000</pnp:DataValue>
+                                <pnp:DataValue FieldName="GtPortfolioColumnIconName">CircleFill</pnp:DataValue>
+                            </pnp:DataRow>
+                        </pnp:DataRows>
+                    </pnp:ListInstance>
+                </pnp:Lists>
+            </pnp:ProvisioningTemplate>
+        </pnp:Templates>
+    </pnp:Provisioning>
