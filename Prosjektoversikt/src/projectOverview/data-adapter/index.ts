@@ -75,6 +75,33 @@ export class DataAdapter {
     return sites;
   }
 
+  private async searchProjectsInHub(
+    siteId: string
+  ): Promise<{ [key: string]: string }> {
+    const queryText = `DepartmentId:{${siteId}} ContentTypeId:0x0100805E9E4FEAAB4F0EABAB2600D30DB70C* -GtProjectLifecycleStatusOWSCHCS="Avsluttet"`
+    const { PrimarySearchResults } = await sp.search({
+      Querytext: this.current.searchQuery || queryText,
+      TrimDuplicates: false,
+      RowLimit: 500,
+      SelectProperties: ['Title',
+        'GtProjectServiceArea',
+        'GtProjectType',
+        'GtProjectPhase',
+        'GtSiteIdOWSTEXT',
+        'GtProjectLifecycleStatusOWSCHCS',
+        'GtProjectPhaseTextOWSTEXT',
+        'GtProjectServiceAreaTextOWSTEXT',
+        'GtProjectTypeTextOWSTEXT'],
+    });
+    const sites = PrimarySearchResults.reduce(
+      (obj, siteResult) => ({
+        ...obj,
+        [siteResult['GtSiteIdOWSTEXT']]: siteResult['Title'],
+      }),
+      {} as { [key: string]: string }
+    );
+    return sites;
+  }
 
   private async getColumnConfigurations() {
     const items = await this.site.rootWeb.lists
@@ -107,15 +134,15 @@ export class DataAdapter {
     const list = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
     const items = await list.items
       .top(500)
-      .select('ID', 'Title', 'URL', 'IconName', 'GtODataQuery')
+      .select('ID', 'Title', 'URL', 'IconName', 'GtSearchQuery')
       .get<IPortfolioItem[]>();
     return items.map((item) => new Portfolio(item));
   }
-  
-  private filterHoverColumns(hoverColumns, selectedHoverFields) { 
+
+  private filterHoverColumns(hoverColumns, selectedHoverFields) {
     const filteredCols = []
     hoverColumns.forEach((col) => {
-        selectedHoverFields.split(',').forEach((field) => {
+      selectedHoverFields.split(',').forEach((field) => {
         if (field === col.InternalName) {
           if (col['odata.type'] === 'SP.Taxonomy.TaxonomyField') {
             const [textField] = (hoverColumns.filter((column) => {
@@ -129,7 +156,7 @@ export class DataAdapter {
             })
             filteredCols.push(filteredColumn)
           }
-        } 
+        }
       })
     });
     return filteredCols;
@@ -150,7 +177,7 @@ export class DataAdapter {
     const statusSectionsList = this.site.rootWeb.lists.getByTitle(STATUS_SECTIONS_LIST_NAME);
 
     const projectColumns = await this.site.rootWeb.lists
-    .getByTitle(PROJECTS_LIST_NAME).fields.filter('Hidden eq false and ReadOnlyField eq false').get();
+      .getByTitle(PROJECTS_LIST_NAME).fields.filter('Hidden eq false and ReadOnlyField eq false').get();
     const hoverColumns = this.filterHoverColumns(projectColumns, selectedHoverFields)
 
     const selectHoverColumns = hoverColumns.map(field => {
@@ -167,6 +194,7 @@ export class DataAdapter {
 
     const [
       _sites,
+      _filteredProjects,
       _projects,
       _status,
       _columnConfigurations,
@@ -175,9 +203,10 @@ export class DataAdapter {
       _projectDetails
     ] = await Promise.all([
       this.searchSitesInHub(siteId),
+      this.searchProjectsInHub(siteId),
       projectsList.items
         .top(500)
-        .filter(this.current.dataQuery || "GtProjectLifecycleStatus eq 'Aktivt'")
+        .filter("GtProjectLifecycleStatus eq 'Aktivt'")
         .usingCaching(this.getCacheOptions('projects'))
         .get<IProjectItem[]>(),
       projectStatusList.items
@@ -214,11 +243,13 @@ export class DataAdapter {
           filter(status, (s) => s.siteId === item.GtSiteId),
           _projectDetails[index]
         );
-        if (_sites[project.siteId])
+
+        if (!_filteredProjects[project.siteId])
+          return null
+        else if (_sites[project.siteId])
           return project.setTitle(_sites[project.siteId]);
         return project;
-      })
-      .filter((p) => p);
+      }).filter((p) => p);
 
     const phases = map(
       filter(

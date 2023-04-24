@@ -3,7 +3,7 @@ export interface IPortfolioItem {
     Title: string;
     URL: string;
     IconName: string;
-    GtODataQuery: string;
+    GtSearchQuery: string;
 }
 
 export class Portfolio {
@@ -11,7 +11,7 @@ export class Portfolio {
     public title: string;
     public url: string;
     public iconName: string;
-    public dataQuery: string;
+    public searchQuery: string;
     public hoverColumns: any[];
 
     constructor(item: IPortfolioItem) {
@@ -19,6 +19,6 @@ export class Portfolio {
         this.title = item.Title;
         this.url = item.URL;
         this.iconName = item.IconName;
-        this.dataQuery = item.GtODataQuery;
+        this.searchQuery = item.GtSearchQuery;
     }
 }
