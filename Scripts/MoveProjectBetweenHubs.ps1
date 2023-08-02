@@ -4,13 +4,13 @@ Param(
     [Parameter(Mandatory = $false)][string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/Brukenavlatinidenitalienskefascismensoffentlighet"
 )
 
-function VerifyUser($UserObject) {
-    if ($SourceValue.Email -ne "") {                    
+function VerifyUser($UserObject, $Connection) {
+    if ($SourceValue.Email -ne "") {
         try {
-            $User = New-PnPUser -LoginName $UserObject.Email -ErrorAction SilentlyContinue
+            $User = New-PnPUser -LoginName $UserObject.Email -Connection $Connection -ErrorAction SilentlyContinue
         
             if ($null -ne $User) {
-                $ADUser = Get-PnPAzureADUser -Identity $UserObject.Email -ErrorAction SilentlyContinue
+                $ADUser = Get-PnPAzureADUser -Identity $UserObject.Email -Connection $Connection -ErrorAction SilentlyContinue
 
                 if ($null -ne $ADUser -and $ADUser.AccountEnabled) {
                     return $UserObject.Email
@@ -25,7 +25,7 @@ function VerifyUser($UserObject) {
     Write-Host "`t`tUser $($UserObject.Email) does not exist anymore" -ForegroundColor Yellow
     return $null
 }
-function GetSPItemPropertiesValues($MatchingProject) {
+function GetSPItemPropertiesValues($MatchingProject, $Connection) {
     $SourceRawProperties = @{}
     foreach ($key in $MatchingProject.FieldValues.Keys) { 
         if (($key.startswith("Gt") -or $key -eq "Title" -or $key -eq "Created" -or $key -eq "Modified" -or $key -eq "Author" -or $key -eq "Editor") -and ($key -ne "GtcProjectCategory")) {
@@ -59,7 +59,7 @@ function GetSPItemPropertiesValues($MatchingProject) {
             "Microsoft.SharePoint.Client.FieldUserValue[]" {
                 $VerifiedUsers = @()
                 $SourceValue | ForEach-Object {
-                    $User = VerifyUser -UserObject $_
+                    $User = VerifyUser -UserObject $_ -Connection $Connection
                     if ($null -ne $User) {
                         $VerifiedUsers += $User
                     }
@@ -67,7 +67,11 @@ function GetSPItemPropertiesValues($MatchingProject) {
                 $ProjectPropertiesValues[$fld] = $VerifiedUsers
             }
             "Microsoft.SharePoint.Client.FieldLookupValue" {
-                $ProjectPropertiesValues[$fld] = $SourceValue.LookupId
+                $LookupValue = $SourceValue.LookupValue
+                if ($null -ne $LookupValue) {
+                    $NewLookupValue = Get-PnPListItem -List "Tidslinjekonfigurasjon" -Connection $Connection | Where-Object { $_.FieldValues['Title'] -eq $LookupValue }
+                    $ProjectPropertiesValues[$fld] = $NewLookupValue.Id
+                }
             }
             default {
                 $ProjectPropertiesValues[$fld] = $SourceValue;
@@ -153,15 +157,16 @@ $MatchingProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCam
 
 if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
     Write-Host "`t`tCopying project element from Projects list"
-    $ProjectPropertiesValues = GetSPItemPropertiesValues -MatchingProject $MatchingProject
     $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
+    $ProjectPropertiesValues = GetSPItemPropertiesValues -MatchingProject $MatchingProject -Connection $DestinationConn
     $MatchingDestinationProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml -Connection $DestinationConn
     if ($null -eq $MatchingDestinationProject) {
         $NewItem = Add-PnPListItem -List "Prosjekter" -Values $ProjectPropertiesValues -Connection $DestinationConn
+        Write-Host "`t`tSuccessfully added project properties" -ForegroundColor Green
     } else {
         $NewItem = Set-PnPListItem -List "Prosjekter" -Identity $MatchingDestinationProject.Id -Values $ProjectPropertiesValues -Connection $DestinationConn
+        Write-Host "`t`tSuccessfully updated project properties" -ForegroundColor Green
     }
-    Write-Host "`t`tSuccessfully migrated properties for $($MatchingProject.FieldValues['Title'])" -ForegroundColor Green
 }
 else {
     Write-Host "`t`tCannot find project object in source site"
@@ -174,20 +179,25 @@ $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnectio
 [array]$MatchingReports = Get-PnPListItem -List "Prosjektstatus" -Connection $SourceConn -Query $MatchingProjectCaml
 
 $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
+[array]$MatchingDestReports = Get-PnPListItem -List "Prosjektstatus" -Connection $DestinationConn -Query $MatchingProjectCaml
 $ProjectStatusAttachmentsList = Get-PnPList -Identity "Prosjektstatusvedlegg" -Connection $DestinationConn
 
-if ($null -ne $MatchingReports -and $MatchingReports.length -gt 0) {
-    $MatchingReports | ForEach-Object {
-        $MatchingReport = $_
-        Write-Host "`t`tCopying project status element from Projects status list"
-        $ProjectStatusValues = GetSPItemPropertiesValues -MatchingProject $MatchingReport
-        $NewItem = Add-PnPListItem -List "Prosjektstatus" -Values $ProjectStatusValues -Connection $DestinationConn
-        Copy-ListItemAttachments -SourceItem $MatchingReport -DestinationItem $NewItem
-
-        $CopyFileResult = Copy-PnPFile -SourceUrl "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetUrl "$($ProjectStatusAttachmentsList.ParentWebUrl)/Prosjektstatusvedlegg" -Overwrite -Force -ErrorAction Continue
-        
-        Write-Host "`t`tSuccessfully migrated status report $($MatchingReport.Id) for $($MatchingProject.FieldValues['Title'])" -ForegroundColor Green
+if ($null -ne $MatchingReports -and $MatchingReports.Length -gt 0) {
+    if ($null -eq $MatchingDestReports -or $MatchingDestReports.Length -eq 0) {
+        $MatchingReports | ForEach-Object {
+            $MatchingReport = $_
+            Write-Host "`t`tCopying project status element from Projects status list"
+            $ProjectStatusValues = GetSPItemPropertiesValues -MatchingProject $MatchingReport -Connection $DestinationConn
+            $NewItem = Add-PnPListItem -List "Prosjektstatus" -Values $ProjectStatusValues -Connection $DestinationConn
+            Copy-ListItemAttachments -SourceItem $MatchingReport -DestinationItem $NewItem
+    
+            $CopyFileResult = Copy-PnPFile -SourceUrl "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetUrl "$($ProjectStatusAttachmentsList.ParentWebUrl)/Prosjektstatusvedlegg" -Overwrite -Force -ErrorAction Continue -Connection $SourceConn
+            $RenameResult = Rename-PnPFolder -Folder "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetFolderName $NewItem.Id -Connection $DestinationConn -ErrorAction Continue
+            
+            Write-Host "`t`tSuccessfully migrated status report $($MatchingReport.Id)" -ForegroundColor Green
+        }
     }
+    Write-Host "`t`tSkipping migrating status reports as they are already present"
 }
 else {
     Write-Host "`t`tCannot find project status objects in source site"
@@ -225,14 +235,14 @@ if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
         $MatchingDestTimelineItems = Get-PnPListItem -List "Tidslinjeinnhold" -Query $MatchingTimelineDestItemsCaml -Connection $DestinationConn
         if ($null -eq $MatchingDestTimelineItems) {
             $TimelineItems | ForEach-Object {
-                $TimelineItem = GetSPItemPropertiesValues -MatchingProject $_
+                $TimelineItem = GetSPItemPropertiesValues -MatchingProject $_ -Connection $DestinationConn
                 $TimelineItem["GtSiteIdLookup"] = $MatchingDestinationProject.Id
                 $NewItem = Add-PnPListItem -List "Tidslinjeinnhold" -Values $TimelineItem -Connection $DestinationConn
-                Write-Host "`t`tSuccessfully migrated timeline item $($TimelineItem.Id) for $($MatchingProject.FieldValues['Title'])" -ForegroundColor Green
+                Write-Host "`t`tSuccessfully migrated timeline item '$($TimelineItem.Title)'" -ForegroundColor Green
             }
         }
         else {
-            Write-Host "`t`tTimeline items already exist in destination site"
+            Write-Host "`t`tSkipping migrating timeline items as they already exists in destination site"
         }
     }
 }
