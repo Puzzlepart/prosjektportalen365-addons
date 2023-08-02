@@ -1,7 +1,7 @@
 Param(
-    [Parameter(Mandatory = $false)][string]$SourceHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365",
-    [Parameter(Mandatory = $false)][string]$DestinationHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365_a4506a4",
-    [Parameter(Mandatory = $false)][string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/Brukenavlatinidenitalienskefascismensoffentlighet"
+    [Parameter(Mandatory = $true)][string]$SourceHubUrl,
+    [Parameter(Mandatory = $true)][string]$DestinationHubUrl,
+    [Parameter(Mandatory = $true)][string]$ProjectUrl
 )
 
 function VerifyUser($UserObject, $Connection) {
