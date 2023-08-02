@@ -1,7 +1,7 @@
 Param(
-    [string]$SourceHubUrl,
-    [string]$DestinationHubUrl,
-    [string]$ProjectUrl
+    [Parameter(Mandatory = $false)][string]$SourceHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365",
+    [Parameter(Mandatory = $false)][string]$DestinationHubUrl = "https://puzzlepart.sharepoint.com/sites/pp365_a4506a4",
+    [Parameter(Mandatory = $false)][string]$ProjectUrl = "https://puzzlepart.sharepoint.com/sites/Brukenavlatinidenitalienskefascismensoffentlighet"
 )
 
 function VerifyUser($UserObject) {
@@ -10,23 +10,26 @@ function VerifyUser($UserObject) {
             $User = New-PnPUser -LoginName $UserObject.Email -ErrorAction SilentlyContinue
         
             if ($null -ne $User) {
-                $ADUser = Get-AzureADUser -ObjectId $UserObject.Email -ErrorAction SilentlyContinue
+                $ADUser = Get-PnPAzureADUser -Identity $UserObject.Email -ErrorAction SilentlyContinue
 
                 if ($null -ne $ADUser -and $ADUser.AccountEnabled) {
                     return $UserObject.Email
                 }
             }
         }
-        catch {}
+        catch {
+            Write-Host "`t`tUser $($UserObject.Email) does not exist anymore" -ForegroundColor Yellow
+            return $null
+        }
     }
     Write-Host "`t`tUser $($UserObject.Email) does not exist anymore" -ForegroundColor Yellow
     return $null
 }
-function GetSPItemPropertiesValues($MatchingItem) {
+function GetSPItemPropertiesValues($MatchingProject) {
     $SourceRawProperties = @{}
-    foreach ($key in $MatchingItem.FieldValues.Keys) { 
+    foreach ($key in $MatchingProject.FieldValues.Keys) { 
         if (($key.startswith("Gt") -or $key -eq "Title" -or $key -eq "Created" -or $key -eq "Modified" -or $key -eq "Author" -or $key -eq "Editor") -and ($key -ne "GtcProjectCategory")) {
-            $SourceRawProperties[$key] = $MatchingItem.FieldValues[$key]
+            $SourceRawProperties[$key] = $MatchingProject.FieldValues[$key]
         }
     }
     $ProjectPropertiesValues = @{}
@@ -63,6 +66,9 @@ function GetSPItemPropertiesValues($MatchingItem) {
                 }
                 $ProjectPropertiesValues[$fld] = $VerifiedUsers
             }
+            "Microsoft.SharePoint.Client.FieldLookupValue" {
+                $ProjectPropertiesValues[$fld] = $SourceValue.LookupId
+            }
             default {
                 $ProjectPropertiesValues[$fld] = $SourceValue;
             }
@@ -93,17 +99,14 @@ Function Copy-ListItemAttachments() {
         Remove-Item -Path ($Env:TEMP + "\" + $_.FileName) -Force
     }
 }  
-$ErrorActionPreference = "Stop"
-Set-PnPTraceLog -Off
 
-try { 
-    $AzureADCommand = Get-AzureADTenantDetail 
-} 
-catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] { 
-    Write-Host "Connecting to Azure AD" 
-    $AzureConnection = Connect-AzureAD 
+if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
+    Write-Host "You have to load the PnP.PowerShell module before running this script!" -ForegroundColor Red
+    exit 0
 }
 
+$ErrorActionPreference = "Stop"
+Set-PnPTraceLog -Off
 
 $Url = [System.Uri]$SourceHubUrl
 $TenantAdminUrl = "https://" + $Url.Authority.Replace(".sharepoint.com", "-admin.sharepoint.com")
@@ -132,8 +135,8 @@ $Site = Get-PnPSite
 $SiteId = (Get-PnPProperty -ClientObject $Site -Property "Id").Guid
 
 Write-Host "`tLooking for relevant entries in Projects list"
-Connect-PnPOnline -Url $SourceHubUrl -Interactive
-$MatchingItem = Get-PnPListItem -List "Prosjekter" -Query @"
+
+$MatchingProjectCaml = @"
 <View>
     <Query>
         <Where>
@@ -145,12 +148,20 @@ $MatchingItem = Get-PnPListItem -List "Prosjekter" -Query @"
 </View>
 "@
 
-if ($null -ne $MatchingItem -and $MatchingItem.length -eq 1) {
+Connect-PnPOnline -Url $SourceHubUrl -Interactive
+$MatchingProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml
+
+if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
     Write-Host "`t`tCopying project element from Projects list"
-    $ProjectPropertiesValues = GetSPItemPropertiesValues -MatchingItem $MatchingItem
+    $ProjectPropertiesValues = GetSPItemPropertiesValues -MatchingProject $MatchingProject
     $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
-    $NewItem = Add-PnPListItem -List "Prosjekter" -Values $ProjectPropertiesValues -Connection $DestinationConn
-    Write-Host "`t`tSuccessfully migrated properties for $($MatchingItem.FieldValues['Title'])" -ForegroundColor Green
+    $MatchingDestinationProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml -Connection $DestinationConn
+    if ($null -eq $MatchingDestinationProject) {
+        $NewItem = Add-PnPListItem -List "Prosjekter" -Values $ProjectPropertiesValues -Connection $DestinationConn
+    } else {
+        $NewItem = Set-PnPListItem -List "Prosjekter" -Identity $MatchingDestinationProject.Id -Values $ProjectPropertiesValues -Connection $DestinationConn
+    }
+    Write-Host "`t`tSuccessfully migrated properties for $($MatchingProject.FieldValues['Title'])" -ForegroundColor Green
 }
 else {
     Write-Host "`t`tCannot find project object in source site"
@@ -160,55 +171,89 @@ else {
 Write-Host "`tLooking for relevant entries in Projects Status list"
 $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
 
-$MatchingReports = Get-PnPListItem -List "Prosjektstatus" -Connection $SourceConn -Query @"
-<View>
-    <Query>
-        <Where>
-            <Eq>
-                <FieldRef Name='GtSiteId' /><Value Type='Text'>$SiteId</Value>
-            </Eq>
-        </Where>
-    </Query>
-</View>
-"@
+[array]$MatchingReports = Get-PnPListItem -List "Prosjektstatus" -Connection $SourceConn -Query $MatchingProjectCaml
 
 $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
-if ($null -ne $MatchingReports -and $MatchingReports.length -eq 1) {
-    Write-Host "`t`tCopying project status element from Projects status list"    
-    $ProjectStatusValues = GetSPItemPropertiesValues -MatchingItem $MatchingReports    
-    $NewItem = Add-PnPListItem -List "Prosjektstatus" -Values $ProjectStatusValues -Connection $DestinationConn
-    Copy-ListItemAttachments -SourceItem $MatchingReports -DestinationItem $NewItem
-    Write-Host "`t`tSuccessfully migrated status report $($MatchingReports.Id) for $($MatchingItem.FieldValues['Title'])" -ForegroundColor Green
-}
-elseif ($null -ne $MatchingReports -and $MatchingReports.length -gt 1) {
+$ProjectStatusAttachmentsList = Get-PnPList -Identity "Prosjektstatusvedlegg" -Connection $DestinationConn
+
+if ($null -ne $MatchingReports -and $MatchingReports.length -gt 0) {
     $MatchingReports | ForEach-Object {
         $MatchingReport = $_
         Write-Host "`t`tCopying project status element from Projects status list"
-        $ProjectStatusValues = GetSPItemPropertiesValues -MatchingItem $MatchingReport
+        $ProjectStatusValues = GetSPItemPropertiesValues -MatchingProject $MatchingReport
         $NewItem = Add-PnPListItem -List "Prosjektstatus" -Values $ProjectStatusValues -Connection $DestinationConn
         Copy-ListItemAttachments -SourceItem $MatchingReport -DestinationItem $NewItem
-        Write-Host "`t`tSuccessfully migrated status report $($MatchingReport.Id) for $($MatchingItem.FieldValues['Title'])" -ForegroundColor Green
+
+        $CopyFileResult = Copy-PnPFile -SourceUrl "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetUrl "$($ProjectStatusAttachmentsList.ParentWebUrl)/Prosjektstatusvedlegg" -Overwrite -Force -ErrorAction Continue
+        
+        Write-Host "`t`tSuccessfully migrated status report $($MatchingReport.Id) for $($MatchingProject.FieldValues['Title'])" -ForegroundColor Green
     }
 }
 else {
     Write-Host "`t`tCannot find project status objects in source site"
 }
 
+Write-Host "`tMigrating any timeline items for project"
+if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
+    $MatchingTimelineSourceItemsCaml = "@
+    <View Scope='RecursiveAll'>
+        <Query>
+            <Where>
+                <Eq>
+                    <FieldRef Name='GtSiteIdLookup' LookupId='TRUE'/><Value Type='Lookup'>$($MatchingProject.Id)</Value>
+                </Eq>
+            </Where>
+        </Query>
+    </View>"
+
+    $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
+    [array]$TimelineItems = Get-PnPListItem -List "Tidslinjeinnhold" -Query $MatchingTimelineSourceItemsCaml -Connection $SourceConn
+
+    $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
+    $MatchingDestinationProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml -Connection $DestinationConn
+    if ($null -ne $MatchingDestinationProject -and $MatchingDestinationProject.length -eq 1) {
+        $MatchingTimelineDestItemsCaml = "@
+        <View Scope='RecursiveAll'>
+            <Query>
+                <Where>
+                    <Eq>
+                        <FieldRef Name='GtSiteIdLookup' LookupId='TRUE'/><Value Type='Lookup'>$($MatchingDestinationProject.Id)</Value>
+                    </Eq>
+                </Where>
+            </Query>
+        </View>"
+        $MatchingDestTimelineItems = Get-PnPListItem -List "Tidslinjeinnhold" -Query $MatchingTimelineDestItemsCaml -Connection $DestinationConn
+        if ($null -eq $MatchingDestTimelineItems) {
+            $TimelineItems | ForEach-Object {
+                $TimelineItem = GetSPItemPropertiesValues -MatchingProject $_
+                $TimelineItem["GtSiteIdLookup"] = $MatchingDestinationProject.Id
+                $NewItem = Add-PnPListItem -List "Tidslinjeinnhold" -Values $TimelineItem -Connection $DestinationConn
+                Write-Host "`t`tSuccessfully migrated timeline item $($TimelineItem.Id) for $($MatchingProject.FieldValues['Title'])" -ForegroundColor Green
+            }
+        }
+        else {
+            Write-Host "`t`tTimeline items already exist in destination site"
+        }
+    }
+}
 Write-Host "`tCleaning up project data in source hub"
-# Deleting properties and status elements from source
 $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
-if ($null -ne $MatchingItem -and $MatchingItem.length -eq 1) {
-    Write-Host "`t`tDeleting project properties item with ID $($MatchingItem.Id)"
-    $RemovedItem = Remove-PnPListItem -List "Prosjekter" -Identity $MatchingItem.Id -Force -Recycle -Connection $SourceConn
+if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
+    Write-Host "`t`tDeleting project properties item with ID $($MatchingProject.Id)"
+    $RemovedItem = Remove-PnPListItem -List "Prosjekter" -Identity $MatchingProject.Id -Force -Recycle -Connection $SourceConn
 }
-if ($null -ne $MatchingReports -and $MatchingReports.length -eq 1) {
-    Write-Host "`t`tDeleting project status item with ID $($MatchingReports.Id)"
-    $RemovedItem = Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReports.Id -Force -Recycle -Connection $SourceConn
-}
-elseif ($null -ne $MatchingReports -and $MatchingReports.length -gt 1) {
+if ($null -ne $MatchingReports -and $MatchingReports.length -gt 0) {
     $MatchingReports | ForEach-Object {
         $MatchingReport = $_
         Write-Host "`t`tDeleting project status item with ID $($MatchingReport.Id)"
         $RemovedItem = Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReport.Id -Force -Recycle -Connection $SourceConn
+        $RemovedFolder = Remove-PnPFolder -Name $MatchingReport.Id -Folder "Prosjektstatusvedlegg" -Force -Recycle -Connection $SourceConn
+    }
+}
+if ($null -ne $TimelineItems -and $TimelineItems.length -gt 0) {
+    $TimelineItems | ForEach-Object {
+        $TimelineItem = $_
+        Write-Host "`t`tDeleting timeline item with ID $($TimelineItem.Id)"
+        $RemovedItem = Remove-PnPListItem -List "Tidslinjeinnhold" -Identity $TimelineItem.Id -Force -Recycle -Connection $SourceConn
     }
 }
