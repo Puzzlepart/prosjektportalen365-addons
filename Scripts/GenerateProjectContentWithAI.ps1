@@ -71,11 +71,13 @@ $TargetLists = @(
     @{Name="Gevinstoppfølging"; Max=7}
 )
 
+Write-Host "Script ready to generate demo content with AI in site '$SiteTitle'"
+
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
     
-    Write-Host "Generating suggestions for '$ListTitle' items for '$SiteTitle'"
+    Write-Host "Processing list '$ListTitle'. Generating prompt..."
 
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") }
 
@@ -129,6 +131,7 @@ $TargetLists | ForEach-Object {
 
     $Prompt = "Gi meg maks $PromptMaxElements eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Lengden på returnert JSON-tabell må ikke være på flere enn 2048 tegn. Feltene til listen er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Returner elementene som en ren json array. Bruk internnavnene på feltene i JSON-objektet. "
     
+    Write-Host "Prompt ready. Asking for suggestions from GPT3..."
     $AIResults = Get-GPT3Completion -prompt $Prompt -max_tokens 2048 -temperature 0.3
 
     try {
@@ -144,7 +147,7 @@ $TargetLists | ForEach-Object {
 
 
     $AIGeneratedItems | ForEach-Object {
-        Write-Host "Creating list item '$($_.Title)' for list '$ListTitle'"
+        Write-Host "`tCreating list item '$($_.Title)' for list '$ListTitle'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
