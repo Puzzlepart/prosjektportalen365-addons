@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false)][string]$Url = "https://puzzlepart.sharepoint.com/sites/Barnafoerst-strategientilHusbanken"
+    [Parameter(Mandatory = $true)][string]$Url
 )
 
 function ConvertPSObjectToHashtable {
@@ -60,9 +60,9 @@ $ctx.ExecuteQuery()
 $CurrentUserEmail = $ctx.Web.CurrentUser.Email
 
 $TargetLists = @(
-    #@{Name="Interessentregister"; Max=7},
+    @{Name="Interessentregister"; Max=7},
     @{Name="Prosjektleveranser"; Max=4},
-    #@{Name="Kommunikasjonsplan"; Max=7},
+    @{Name="Kommunikasjonsplan"; Max=7},
     @{Name="Prosjektlogg"; Max=6},
     @{Name="Usikkerhet"; Max=7},
     @{Name="Endringsanalyse"; Max=3},
