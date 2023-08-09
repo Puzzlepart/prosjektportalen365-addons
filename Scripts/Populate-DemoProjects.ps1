@@ -60,9 +60,9 @@ $ctx.ExecuteQuery()
 $CurrentUserEmail = $ctx.Web.CurrentUser.Email
 
 $TargetLists = @(
-    @{Name="Interessentregister"; Max=7},
+    #@{Name="Interessentregister"; Max=7},
     @{Name="Prosjektleveranser"; Max=4},
-    @{Name="Kommunikasjonsplan"; Max=7},
+    #@{Name="Kommunikasjonsplan"; Max=7},
     @{Name="Prosjektlogg"; Max=6},
     @{Name="Usikkerhet"; Max=7},
     @{Name="Endringsanalyse"; Max=3},
@@ -129,7 +129,7 @@ $TargetLists | ForEach-Object {
 
     $Prompt = "Gi meg maks $PromptMaxElements eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Lengden på returnert JSON-tabell må ikke være på flere enn 2048 tegn. Feltene til listen er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Returner elementene som en ren json array. Bruk internnavnene på feltene i JSON-objektet. "
     
-    $AIResults = Get-GPT3Completion -prompt $Prompt -max_tokens 2048 -temperature 0.5
+    $AIResults = Get-GPT3Completion -prompt $Prompt -max_tokens 2048 -temperature 0.3
 
     try {
         $TestJsonResult = Test-Json -Json $AIResults
@@ -140,14 +140,17 @@ $TargetLists | ForEach-Object {
         exit 0
     }
 
-    $Items = ConvertFrom-Json ($AIResults.Trim())
+    $AIGeneratedItems = ConvertFrom-Json ($AIResults.Trim())
 
 
-    $Items | ForEach-Object {
+    $AIGeneratedItems | ForEach-Object {
         Write-Host "Creating list item '$($_.Title)' for list '$ListTitle'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
+        @($HashtableValues.keys) | ForEach-Object { 
+            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
+        }
         try {
-            $Item = Add-PnPListItem -List $ListTitle -Values $HashtableValues
+            $ItemResult = Add-PnPListItem -List $ListTitle -Values $HashtableValues
         } catch {
             Write-Host "Failed to create list item for list '$ListTitle'" -ForegroundColor Red
             Write-Host $_.Exception.Message -ForegroundColor Red
