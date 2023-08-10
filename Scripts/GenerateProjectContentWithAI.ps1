@@ -117,7 +117,19 @@ $TargetLists | ForEach-Object {
             $LookupChoices = $LookupChoices.TrimEnd(", ")
             $FieldPromptValue += $LookupChoices
         } elseif ($_.TypeAsString -eq "TaxonomyFieldType" -or $_.TypeAsString -eq "TaxonomyFieldTypeMulti") {
-            return
+            $termGroup = Get-PnPTermGroup -Identity "Prosjektportalen"
+            if ($null -ne $termGroup) {
+                $termSet = Get-PnPTermSet -Identity $_.TermSetId.Guid -TermGroup $termGroup.Id.Guid
+                $terms = Get-PnPTerm -TermSet $termSet -TermGroup $termGroup.Id.Guid
+
+                $LookupChoices = ", valg (bruk ID-verdien til en av følgende): "
+                
+                $terms | ForEach-Object {
+                    $LookupChoices += "$($_.Name) (ID: $($_.Id)), "
+                }
+                $LookupChoices = $LookupChoices.TrimEnd(", ")
+                $FieldPromptValue += $LookupChoices
+            }
         } elseif ($_.TypeAsString -eq "Calculated") {
             return
         }elseif ($_.TypeAsString -eq "Boolean") {
