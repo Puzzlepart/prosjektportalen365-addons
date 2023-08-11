@@ -149,7 +149,7 @@ $TargetLists | ForEach-Object {
     $Prompt = "Gi meg maks $PromptMaxElements eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Lengden på returnert JSON-tabell må ikke være på flere enn 2048 tegn. Feltene til listen er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Returner elementene som en ren json array. Bruk internnavnene på feltene i JSON-objektet. "
     
     Write-Host "Prompt ready. Asking for suggestions from GPT3..."
-    $AIResults = Get-GPT3Completion -prompt $Prompt -max_tokens 2048 -temperature 0.3
+    $AIResults = Get-GPT3Completion -Prompt $Prompt -Max_tokens 2048 -Temperature 0.5
 
     try {
         $TestJsonResult = Test-Json -Json $AIResults
