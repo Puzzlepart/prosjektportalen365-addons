@@ -1,5 +1,6 @@
 Param(
-    [Parameter(Mandatory = $true)][string]$Url
+    [Parameter(Mandatory = $true)][string]$Url,
+    [Parameter(Mandatory = $false)][string]$OpenAIKey
 )
 
 function ConvertPSObjectToHashtable {
@@ -37,10 +38,14 @@ if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
     exit 0
 }
 if ($null -eq (Get-Command Get-GPT3Completion -ErrorAction SilentlyContinue)) {
-    Write-Host "You have to load the PowerShellAI module before running this script!" -ForegroundColor Red
+    Write-Host "Installing module PowerShellAI" -ForegroundColor Yellow
+    Install-Module PowerShellAI -Scope CurrentUser
     exit 0
 }
-if ($null -eq $env:OpenAIKey) {
+
+if( -not [string]::IsNullOrWhiteSpace($OpenAIKey) ) {
+   $env:OpenAIKey = $OpenAIKey
+} elseif ($null -eq $env:OpenAIKey) {
     Write-Host "You have to set the OpenAIKey environment variable (`$env:OpenAIKey`) before running this script!" -ForegroundColor Red
     exit 0
 }
