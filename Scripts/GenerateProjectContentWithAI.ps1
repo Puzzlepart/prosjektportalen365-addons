@@ -43,9 +43,10 @@ if ($null -eq (Get-Command Get-GPT3Completion -ErrorAction SilentlyContinue)) {
     exit 0
 }
 
-if( -not [string]::IsNullOrWhiteSpace($OpenAIKey) ) {
-   $env:OpenAIKey = $OpenAIKey
-} elseif ($null -eq $env:OpenAIKey) {
+if ( -not [string]::IsNullOrWhiteSpace($OpenAIKey) ) {
+    $env:OpenAIKey = $OpenAIKey
+}
+elseif ($null -eq $env:OpenAIKey) {
     Write-Host "You have to set the OpenAIKey environment variable (`$env:OpenAIKey`) before running this script!" -ForegroundColor Red
     exit 0
 }
@@ -65,15 +66,15 @@ $ctx.ExecuteQuery()
 $CurrentUserEmail = $ctx.Web.CurrentUser.Email
 
 $TargetLists = @(
-    @{Name="Interessentregister"; Max=7},
-    @{Name="Prosjektleveranser"; Max=4},
-    @{Name="Kommunikasjonsplan"; Max=7},
-    @{Name="Prosjektlogg"; Max=6},
-    @{Name="Usikkerhet"; Max=7},
-    @{Name="Endringsanalyse"; Max=3},
-    @{Name="Gevinstanalyse og gevinstrealiseringsplan"; Max=6},
-    @{Name="Måleindikatorer"; Max=6},
-    @{Name="Gevinstoppfølging"; Max=7}
+    @{Name = "Interessentregister"; Max = 7 },
+    @{Name = "Prosjektleveranser"; Max = 4 },
+    @{Name = "Kommunikasjonsplan"; Max = 7 },
+    @{Name = "Prosjektlogg"; Max = 6 },
+    @{Name = "Usikkerhet"; Max = 7 },
+    @{Name = "Endringsanalyse"; Max = 3 },
+    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 6 },
+    @{Name = "Måleindikatorer"; Max = 6 },
+    @{Name = "Gevinstoppfølging"; Max = 7 }
 )
 
 Write-Host "Script ready to generate demo content with AI in site '$SiteTitle'"
@@ -88,22 +89,26 @@ $TargetLists | ForEach-Object {
 
     $FieldPrompt = ""
     $Fields | ForEach-Object { 
-        $FieldPromptValue =  "'$($_.Title)' (Internt navn '$($_.InternalName)'"
+        $FieldPromptValue = "'$($_.Title)' (Internt navn '$($_.InternalName)'"
         if ($_.Description) {
             $FieldPromptValue += ", beskrivelse av input: '$($_.Description)'"
         }
 
         if ($_.TypeAsString -eq "DateTime") {
             $FieldPromptValue += ", datoformat: yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff"
-        }  elseif ($_.TypeAsString -eq "Number") {
+        }
+        elseif ($_.TypeAsString -eq "Number") {
             $FieldPromptValue += ", verdien skal være et heltall"
-        } elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
+        }
+        elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
             $FieldPromptValue += ", verdi skal være '$CurrentUserEmail'"
-        } elseif ($_.TypeAsString -eq "Choice" -or $_.TypeAsString -eq "MultiChoice") {
+        }
+        elseif ($_.TypeAsString -eq "Choice" -or $_.TypeAsString -eq "MultiChoice") {
             if ($_.Choices) {
                 $FieldPromptValue += ", valg: '$($_.Choices -join ", ")'"
             }
-        } elseif (($_.TypeAsString -eq "Lookup" -or $_.TypeAsString -eq "LookupMulti")) {
+        }
+        elseif (($_.TypeAsString -eq "Lookup" -or $_.TypeAsString -eq "LookupMulti")) {
             if ($_.InternalName.Contains("_")) {
                 return
             }
@@ -113,7 +118,8 @@ $TargetLists | ForEach-Object {
             }
             if ($_.TypeAsString -eq "LookupMulti") {
                 $LookupChoices = ", valg (bruk ID-verdien til en eller flere av de følgende (ID kommaseparert, f.eks. 1,23,30)): "
-            } else {
+            }
+            else {
                 $LookupChoices = ", valg (bruk ID-verdien til en av følgende): "
             }
             $LookupChoicesListItems | ForEach-Object {
@@ -121,7 +127,8 @@ $TargetLists | ForEach-Object {
             }
             $LookupChoices = $LookupChoices.TrimEnd(", ")
             $FieldPromptValue += $LookupChoices
-        } elseif ($_.TypeAsString -eq "TaxonomyFieldType" -or $_.TypeAsString -eq "TaxonomyFieldTypeMulti") {
+        }
+        elseif ($_.TypeAsString -eq "TaxonomyFieldType" -or $_.TypeAsString -eq "TaxonomyFieldTypeMulti") {
             $termGroup = Get-PnPTermGroup -Identity "Prosjektportalen"
             if ($null -ne $termGroup) {
                 $termSet = Get-PnPTermSet -Identity $_.TermSetId.Guid -TermGroup $termGroup.Id.Guid
@@ -135,9 +142,11 @@ $TargetLists | ForEach-Object {
                 $LookupChoices = $LookupChoices.TrimEnd(", ")
                 $FieldPromptValue += $LookupChoices
             }
-        } elseif ($_.TypeAsString -eq "Calculated") {
+        }
+        elseif ($_.TypeAsString -eq "Calculated") {
             return
-        }elseif ($_.TypeAsString -eq "Boolean") {
+        }
+        elseif ($_.TypeAsString -eq "Boolean") {
             return
         }
 
@@ -152,15 +161,14 @@ $TargetLists | ForEach-Object {
     $AIResults = Get-GPT3Completion -Prompt $Prompt -Max_tokens 2048 -Temperature 0.5
 
     try {
-        $TestJsonResult = Test-Json -Json $AIResults
-    } catch {
+        $AIGeneratedItems = ConvertFrom-Json ($AIResults.Trim())
+    }
+    catch {
         Write-Host "The AI did not return valid JSON." -ForegroundColor Red
         Write-Host $Prompt
         Write-Host $AIResults
         exit 0
     }
-
-    $AIGeneratedItems = ConvertFrom-Json ($AIResults.Trim())
 
 
     $AIGeneratedItems | ForEach-Object {
@@ -171,7 +179,8 @@ $TargetLists | ForEach-Object {
         }
         try {
             $ItemResult = Add-PnPListItem -List $ListTitle -Values $HashtableValues
-        } catch {
+        }
+        catch {
             Write-Host "Failed to create list item for list '$ListTitle'" -ForegroundColor Red
             Write-Host $_.Exception.Message -ForegroundColor Red
             Write-Host "Using the following prompt: $Prompt"
