@@ -1,4 +1,4 @@
-Param(
+Param(    
     [Parameter(Mandatory = $true)][string]$SourceHubUrl,
     [Parameter(Mandatory = $true)][string]$DestinationHubUrl,
     [Parameter(Mandatory = $true)][string]$ProjectUrl
@@ -112,20 +112,37 @@ if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
 $ErrorActionPreference = "Stop"
 Set-PnPTraceLog -Off
 
-$Url = [System.Uri]$SourceHubUrl
+$Url = [System.Uri]$ProjectUrl
 $TenantAdminUrl = "https://" + $Url.Authority.Replace(".sharepoint.com", "-admin.sharepoint.com")
 
 Connect-PnPOnline -Url $TenantAdminUrl -Interactive
 
+$ProjectSite = Get-PnPTenantSite -Url $ProjectUrl
 $SourceHub = Get-PnPHubSite -Identity $SourceHubUrl
 $DestinationHub = Get-PnPHubSite -Identity $DestinationHubUrl
-$DestinationHubSite = Get-PnPTenantSite -Url $DestinationHubUrl
-$ProjectSite = Get-PnPTenantSite -Url $ProjectUrl
 
-if ($null -eq $SourceHub -or $null -eq $DestinationHub -or $null -eq $SourceHub.ID -or $null -eq $DestinationHub.ID -or $null -eq $DestinationHubSite) {
+if ($null -eq $SourceHub -or $null -eq $DestinationHub -or $null -eq $SourceHub.ID -or $null -eq $DestinationHub.ID) {
     Write-Host "Cannot find source or destination hub. Aborting"
     exit 1
 }
+
+$ctx = Get-PnPContext
+$ctx.Load($ctx.Web.CurrentUser)
+$ctx.ExecuteQuery()
+$CurrentUserEmail = $ctx.Web.CurrentUser.Email
+if ($null -eq $CurrentUserEmail) {
+    $CurrentUserEmail = $ctx.Web.CurrentUser.UserPrincipalName
+}
+
+if ($null -eq $CurrentUserEmail) {
+    Write-Host "Cannot find current user. Aborting"
+    exit 1
+}
+
+Write-Host "Setting current user as owner of project site, source hub and destination hub"
+Set-PnPTenantSite -Identity $ProjectUrl -Owners $CurrentUserEmail -ErrorAction SilentlyContinue
+Set-PnPTenantSite -Identity $DestinationHubUrl -Owners $CurrentUserEmail -ErrorAction SilentlyContinue
+Set-PnPTenantSite -Identity $SourceHubUrl -Owners $CurrentUserEmail -ErrorAction SilentlyContinue
 
 Write-Host "Starting to move site $($ProjectSite.Title) [$ProjectUrl]"
 if ($DestinationHub.ID -ne $ProjectSite.HubSiteId) {
@@ -186,18 +203,22 @@ if ($null -ne $MatchingReports -and $MatchingReports.Length -gt 0) {
     if ($null -eq $MatchingDestReports -or $MatchingDestReports.Length -eq 0) {
         $MatchingReports | ForEach-Object {
             $MatchingReport = $_
-            Write-Host "`t`tCopying project status element from Projects status list"
+            Write-Host "`t`tCopying project status element from Projects status list with ID: $($MatchingReport.Id)"
             $ProjectStatusValues = GetSPItemPropertiesValues -MatchingProject $MatchingReport -Connection $DestinationConn
             $NewItem = Add-PnPListItem -List "Prosjektstatus" -Values $ProjectStatusValues -Connection $DestinationConn
             Copy-ListItemAttachments -SourceItem $MatchingReport -DestinationItem $NewItem
-    
-            $CopyFileResult = Copy-PnPFile -SourceUrl "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetUrl "$($ProjectStatusAttachmentsList.ParentWebUrl)/Prosjektstatusvedlegg" -Overwrite -Force -ErrorAction Continue -Connection $SourceConn
-            $RenameResult = Rename-PnPFolder -Folder "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetFolderName $NewItem.Id -Connection $DestinationConn -ErrorAction Continue
             
+            $ExistingStatusAttachment = Get-PnPFolder -Url "Prosjektstatusvedlegg/$($MatchingReport.Id)" -Connection $SourceConn -ErrorAction SilentlyContinue
+            if ($null -ne $ExistingStatusAttachment) {
+                Write-Host "`t`tCopying project status attachments with path Prosjektstatusvedlegg/$($MatchingReport.Id)"
+                $CopyFileResult = Copy-PnPFile -SourceUrl "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetUrl "$($ProjectStatusAttachmentsList.ParentWebUrl)/Prosjektstatusvedlegg" -Overwrite -Force -ErrorAction Continue -Connection $SourceConn
+                $RenameResult = Rename-PnPFolder -Folder "Prosjektstatusvedlegg/$($MatchingReport.Id)" -TargetFolderName $NewItem.Id -Connection $DestinationConn -ErrorAction Continue                
+            }
             Write-Host "`t`tSuccessfully migrated status report $($MatchingReport.Id)" -ForegroundColor Green
         }
+    } else {
+        Write-Host "`t`tSkipping migrating status reports as they are already present"
     }
-    Write-Host "`t`tSkipping migrating status reports as they are already present"
 }
 else {
     Write-Host "`t`tCannot find project status objects in source site"
@@ -246,6 +267,7 @@ if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
         }
     }
 }
+
 Write-Host "`tCleaning up project data in source hub"
 $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
 if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
