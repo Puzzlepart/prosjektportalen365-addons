@@ -1,0 +1,47 @@
+{
+    "Lists": [
+        {
+            "Title": "Dokumenter",
+            "Description": "",
+            "Template": 101,
+            "ContentTypesEnabled": false,
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "Views": [
+                {
+                    "Title": "Alle dokumenter",
+                    "ViewFields": [
+                        "DocIcon",
+                        "LinkFilename",
+                        "GtProjectPhase",
+                        "Modified",
+                        "Editor"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 30,
+                        "Paged": true,
+                        "ViewQuery": ""
+                    }
+                },
+                {
+                    "Title": "Flat struktur",
+                    "ViewFields": [
+                        "DocIcon",
+                        "LinkFilename",
+                        "GtProjectPhase",
+                        "Modified",
+                        "Editor",
+                        "FileDirRef"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 100,
+                        "Paged": true,
+                        "ViewQuery": "<OrderBy><FieldRef Name='Modified' Ascending='FALSE' /></OrderBy>",
+                        "Scope": 1
+                    }
+                }
+            ]
+        }
+    ]
+}
