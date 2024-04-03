@@ -1,2 +1,3 @@
 MoveSites_Log*.txt
 .vscode/*
+Scripts/Populate-Project.ps1

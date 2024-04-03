@@ -1,8 +1,82 @@
 Param(
-    [Parameter(Mandatory = $true)][string]$Url,
-    [Parameter(Mandatory = $false)][string]$OpenAIKey
+    [Parameter(Mandatory = $false)]
+    [string]$Url,
+    [Parameter(Mandatory = $true)]
+    [string]$api_key,
+    [Parameter(Mandatory = $true)]
+    [string]$api_base,
+    [Parameter(Mandatory = $false)]
+    [string]$model_name = "gpt-35",
+    [Parameter(Mandatory = $false)]
+    [string]$api_version = "2023-07-01-preview"
 )
 
+# Azure OpenAI metadata variables
+$openai = @{
+    api_key     = $api_key
+    api_base    = $api_base # your endpoint should look like the following https://YOUR_RESOURCE_NAME.openai.azure.com/
+    api_version = $api_version # this may change in the future
+    name        = $model_name #This will correspond to the custom name you chose for your deployment when you deployed a model.
+}
+
+function Invoke-OpenAI {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [String]
+        $InputMessage        
+    )
+    # Craft message chain to send to the model
+    $messages = @(
+        @{
+            role    = 'system'
+            content = "You are responding only with JSON. Thhe JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+        },
+        @{
+            role    = 'user'
+            content = $InputMessage
+        }
+    )
+
+    # Header for authentication
+    $headers = [ordered]@{
+        'api-key' = $openai.api_key
+    }
+
+    # Adjust these values to fine-tune completions
+    $body = [ordered]@{
+        messages        = $messages
+        # response_format = @{type = 'json_object'}
+        temperature     = 0.1
+    } | ConvertTo-Json
+
+    # Send a request to generate an answer
+    $url = "$($openai.api_base)/openai/deployments/$($openai.name)/chat/completions?api-version=$($openai.api_version)"
+    $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
+    return $response
+}
+
+function Get-OpenAIResults {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Prompt
+    )
+
+    try {
+        $AIResults = Invoke-OpenAI -InputMessage $Prompt
+        $ProcessedResults = $AIResults.choices[0].message.content.TrimStart("````json").TrimEnd("``````").Trim()
+        return ConvertFrom-Json $ProcessedResults
+    }
+    catch {
+        Write-Host "*******************ERROR*********************"
+        Write-Host $_ -ForegroundColor Red
+        Write-Host "*******************PROMPT*********************"
+        Write-Host $Prompt
+        Write-Host "*******************Results*********************"
+        Write-Host $ProcessedResults
+        exit 0
+    }
+}
 function ConvertPSObjectToHashtable {
     param (
         [Parameter(ValueFromPipeline)]
@@ -37,26 +111,12 @@ if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
     Write-Host "You have to load the PnP.PowerShell module before running this script!" -ForegroundColor Red
     exit 0
 }
-if ($null -eq (Get-Command Get-GPT3Completion -ErrorAction SilentlyContinue)) {
-    Write-Host "Installing module PowerShellAI" -ForegroundColor Yellow
-    Install-Module PowerShellAI -Scope CurrentUser
-    exit 0
-}
-
-if ( -not [string]::IsNullOrWhiteSpace($OpenAIKey) ) {
-    $env:OpenAIKey = $OpenAIKey
-}
-elseif ($null -eq $env:OpenAIKey) {
-    Write-Host "You have to set the OpenAIKey environment variable (`$env:OpenAIKey`) before running this script!" -ForegroundColor Red
-    exit 0
-}
 
 $ErrorActionPreference = "Stop"
 Set-PnPTraceLog -Off
 
 Connect-PnPOnline -Url $Url -Interactive
 
-$Site = Get-PnPSite
 $Web = Get-PnPWeb
 $SiteTitle = $Web.Title
 
@@ -66,15 +126,15 @@ $ctx.ExecuteQuery()
 $CurrentUserEmail = $ctx.Web.CurrentUser.Email
 
 $TargetLists = @(
-    @{Name = "Interessentregister"; Max = 7 },
-    @{Name = "Prosjektleveranser"; Max = 4 },
-    @{Name = "Kommunikasjonsplan"; Max = 7 },
-    @{Name = "Prosjektlogg"; Max = 6 },
-    @{Name = "Usikkerhet"; Max = 7 },
+    @{Name = "Interessentregister"; Max = 10 },
+    @{Name = "Prosjektleveranser"; Max = 5 },
+    @{Name = "Kommunikasjonsplan"; Max = 6 },
+    @{Name = "Prosjektlogg"; Max = 10 },
+    @{Name = "Usikkerhet"; Max = 6 },
     @{Name = "Endringsanalyse"; Max = 3 },
-    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 6 },
+    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
     @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 7 }
+    @{Name = "Gevinstoppfølging"; Max = 20 }
 )
 
 Write-Host "Script ready to generate demo content with AI in site '$SiteTitle'"
@@ -83,7 +143,7 @@ $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
     
-    Write-Host "Processing list '$ListTitle'. Generating prompt..."
+    Write-Host "Processing list '$ListTitle'. Generating prompt based on list configuration..."
 
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") }
 
@@ -117,10 +177,10 @@ $TargetLists | ForEach-Object {
                 return
             }
             if ($_.TypeAsString -eq "LookupMulti") {
-                $LookupChoices = ", valg (bruk ID-verdien til en eller flere av de følgende (ID kommaseparert, f.eks. 1,23,30)): "
+                $LookupChoices = ", valg (velg ID-verdien til en eller flere av følgende (ID kommaseparert, f.eks. 1,23,30). Kun ID-verdien skal være med i JSON): "
             }
             else {
-                $LookupChoices = ", valg (bruk ID-verdien til en av følgende): "
+                $LookupChoices = ", valg (velg ID-verdien til en av følgende. Kun ID-verdien skal være med i JSON): "
             }
             $LookupChoicesListItems | ForEach-Object {
                 $LookupChoices += "$($_.FieldValues.Title) (ID: $($_.FieldValues.ID)), "
@@ -129,18 +189,24 @@ $TargetLists | ForEach-Object {
             $FieldPromptValue += $LookupChoices
         }
         elseif ($_.TypeAsString -eq "TaxonomyFieldType" -or $_.TypeAsString -eq "TaxonomyFieldTypeMulti") {
-            $termGroup = Get-PnPTermGroup -Identity "Prosjektportalen"
-            if ($null -ne $termGroup) {
-                $termSet = Get-PnPTermSet -Identity $_.TermSetId.Guid -TermGroup $termGroup.Id.Guid
-                $terms = Get-PnPTerm -TermSet $termSet -TermGroup $termGroup.Id.Guid
+            try {                
+                $termGroup = Get-PnPTermGroup -Identity "Prosjektportalen"
+                if ($null -ne $termGroup) {
+                    $termSet = Get-PnPTermSet -Identity $_.TermSetId.Guid -TermGroup $termGroup.Id.Guid
+                    $terms = Get-PnPTerm -TermSet $termSet -TermGroup $termGroup.Id.Guid
 
-                $LookupChoices = ", valg (bruk ID-verdien til en av følgende): "
+                    $LookupChoices = ", valg (bruk KUN ID-verdien til en av følgende): "
                 
-                $terms | ForEach-Object {
-                    $LookupChoices += "$($_.Name) (ID: $($_.Id)), "
+                    $terms | ForEach-Object {
+                        $LookupChoices += "$($_.Name) (ID: $($_.Id)), "
+                    }
+                    $LookupChoices = $LookupChoices.TrimEnd(", ")
+                    $FieldPromptValue += $LookupChoices
                 }
-                $LookupChoices = $LookupChoices.TrimEnd(", ")
-                $FieldPromptValue += $LookupChoices
+            }
+            catch {
+                Write-Host $_.Exception.Message -ForegroundColor Red
+                Write-Host "Failed to get termset for field '$($_.Title)' in list '$ListTitle'.. Continuing with next list.."
             }
         }
         elseif ($_.TypeAsString -eq "Calculated") {
@@ -155,23 +221,13 @@ $TargetLists | ForEach-Object {
     }
     $FieldPrompt = $FieldPrompt.TrimEnd(", ")
 
-    $Prompt = "Gi meg maks $PromptMaxElements eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Lengden på returnert JSON-tabell må ikke være på flere enn 2048 tegn. Feltene til listen er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Returner elementene som en ren json array. Bruk internnavnene på feltene i JSON-objektet. "
+    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
     
-    Write-Host "Prompt ready. Asking for suggestions from GPT3..."
-    $AIResults = Get-GPT3Completion -Prompt $Prompt -Max_tokens 2048 -Temperature 0.5
+    Write-Host "Prompt ready. Asking for suggestions from $model_name..."
 
-    try {
-        $AIGeneratedItems = ConvertFrom-Json ($AIResults.Trim())
-    }
-    catch {
-        Write-Host "The AI did not return valid JSON." -ForegroundColor Red
-        Write-Host $Prompt
-        Write-Host $AIResults
-        exit 0
-    }
+    $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
 
-
-    $AIGeneratedItems | ForEach-Object {
+    $GeneratedItems | ForEach-Object {
         Write-Host "`tCreating list item '$($_.Title)' for list '$ListTitle'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
@@ -184,7 +240,7 @@ $TargetLists | ForEach-Object {
             Write-Host "Failed to create list item for list '$ListTitle'" -ForegroundColor Red
             Write-Host $_.Exception.Message -ForegroundColor Red
             Write-Host "Using the following prompt: $Prompt"
-            Write-Host "Using the following AI generated:"
+            Write-Host "Using the following values as input:"
             $HashtableValues
         }
     }
