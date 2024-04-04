@@ -6,7 +6,7 @@ Param(
     [Parameter(Mandatory = $true)]
     [string]$api_base,
     [Parameter(Mandatory = $false)]
-    [string]$model_name = "gpt-35",
+    [string]$model_name,
     [Parameter(Mandatory = $false)]
     [string]$api_version = "2023-07-01-preview"
 )

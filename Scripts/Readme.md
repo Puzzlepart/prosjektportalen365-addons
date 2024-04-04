@@ -28,18 +28,16 @@ En enkel wrapper på forrige skript for å flytte flere prosjekter, som også tr
 
 ## GenerateProjectContentWithAI.ps1
 
-Bruker ChatGPT 3.5 til å generere innhold i et prosjekt. Fyller ut de vanlige listene med generert innhold. Nyttig for å teste ut Prosjektportalen med relativt realistisk data.
+Bruker Open AI til å generere innhold i et prosjekt. Fyller ut de vanlige listene med generert innhold. Nyttig for å teste ut Prosjektportalen med relativt realistisk data.
 
 Skriptet henter ut tittel på området, går gjennom de ulike listene, henter ut feltene som skal fylles med data, genererer en prompt basert på dette som returneres som JSON, skriptet behandler innsendt JSON, konverterer hvert elements data til en hashtabell som sendes inn med Add-PnPListItem sin -Values parameter.
 
 Skriptet har følgende forutsetninger
 - Du har installert PnP.PowerShell-modulen
-- Du har installert PowerShellAI-modulen
-- Du har opprettet en konto hos OpenAI, og opprettet en API-nøkkel
-- Du har satt miljøvariabelen $env:OpenAIKey til denne API-nøkkelen
+- Du har tilgang på/satt opp en Azure Open AI instans og har en deployment med api-nøkkel, baseurl og navn
 
 ### Eksempel
 
-``
-.\GenerateProjectContentWithAI.ps1 -Url https://tenant.sharepoint.com/sites/mittprosjekt
-``
+````PowerShell
+.\GenerateProjectContentWithAI.ps1 -Url "https://prosjektportalen.sharepoint.com/sites/DigitalTransformasjon" -api_key "112233445566778899abc" -api_base "https://company-testing-oaiservice-swedencentral.openai.azure.com/" -model_name "gpt-4-1106-preview"
+````
