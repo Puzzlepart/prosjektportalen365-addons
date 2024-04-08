@@ -45,9 +45,9 @@ function Invoke-OpenAI {
 
     # Adjust these values to fine-tune completions
     $body = [ordered]@{
-        messages        = $messages
+        messages    = $messages
         # response_format = @{type = 'json_object'}
-        temperature     = 0.1
+        temperature = 0.1
     } | ConvertTo-Json
 
     # Send a request to generate an answer
@@ -77,78 +77,12 @@ function Get-OpenAIResults {
         exit 0
     }
 }
-function ConvertPSObjectToHashtable {
-    param (
-        [Parameter(ValueFromPipeline)]
-        $InputObject
-    )
 
-    process {
-        if ($null -eq $InputObject) { return $null }
-
-        if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
-            $collection = @(
-                foreach ($object in $InputObject) { ConvertPSObjectToHashtable $object }
-            )
-
-            Write-Output -NoEnumerate $collection
-        }
-        elseif ($InputObject -is [psobject]) {
-            $hash = @{}
-
-            foreach ($property in $InputObject.PSObject.Properties) {
-                $hash[$property.Name] = ConvertPSObjectToHashtable $property.Value
-            }
-
-            $hash
-        }
-        else {
-            $InputObject
-        }
-    }
-}
-if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
-    Write-Host "You have to load the PnP.PowerShell module before running this script!" -ForegroundColor Red
-    exit 0
-}
-
-$ErrorActionPreference = "Stop"
-Set-PnPTraceLog -Off
-
-Connect-PnPOnline -Url $Url -Interactive
-
-$Web = Get-PnPWeb
-$SiteTitle = $Web.Title
-
-$ctx = Get-PnPContext
-$ctx.Load($ctx.Web.CurrentUser)
-$ctx.ExecuteQuery()
-$CurrentUserEmail = $ctx.Web.CurrentUser.Email
-
-$TargetLists = @(
-    @{Name = "Interessentregister"; Max = 10 },
-    @{Name = "Prosjektleveranser"; Max = 5 },
-    @{Name = "Kommunikasjonsplan"; Max = 6 },
-    @{Name = "Prosjektlogg"; Max = 10 },
-    @{Name = "Usikkerhet"; Max = 6 },
-    @{Name = "Endringsanalyse"; Max = 3 },
-    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
-    @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 20 }
-)
-
-Write-Host "Script ready to generate demo content with AI in site '$SiteTitle'"
-
-$TargetLists | ForEach-Object {
-    $ListTitle = $_["Name"]
-    $PromptMaxElements = $_["Max"]
-    
-    Write-Host "Processing list '$ListTitle'. Generating prompt based on list configuration..."
-
-    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") }
+function Get-FieldPromptForList($ListTitle) {
+    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus") }
 
     $FieldPrompt = ""
-    $Fields | ForEach-Object { 
+    $Fields | ForEach-Object {
         $FieldPromptValue = "'$($_.Title)' (Internt navn '$($_.InternalName)'"
         if ($_.Description) {
             $FieldPromptValue += ", beskrivelse av input: '$($_.Description)'"
@@ -220,15 +154,124 @@ $TargetLists | ForEach-Object {
         $FieldPrompt += $FieldPromptValue
     }
     $FieldPrompt = $FieldPrompt.TrimEnd(", ")
+    return $FieldPrompt
+}
+function ConvertPSObjectToHashtable {
+    param (
+        [Parameter(ValueFromPipeline)]
+        $InputObject
+    )
 
-    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    process {
+        if ($null -eq $InputObject) { return $null }
+
+        if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
+            $collection = @(
+                foreach ($object in $InputObject) { ConvertPSObjectToHashtable $object }
+            )
+
+            Write-Output -NoEnumerate $collection
+        }
+        elseif ($InputObject -is [psobject]) {
+            $hash = @{}
+
+            foreach ($property in $InputObject.PSObject.Properties) {
+                $hash[$property.Name] = ConvertPSObjectToHashtable $property.Value
+            }
+
+            $hash
+        }
+        else {
+            $InputObject
+        }
+    }
+}
+if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
+    Write-Host "You have to load the PnP.PowerShell module before running this script!" -ForegroundColor Red
+    exit 0
+}
+
+$ErrorActionPreference = "Stop"
+Set-PnPTraceLog -Off
+
+Connect-PnPOnline -Url $Url -Interactive
+
+$Site = Get-PnPSite
+$ProjectSiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
+$HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
+$HubSiteData = ConvertFrom-Json $HubSiteDataRaw.value
+$HubSiteUrl = $HubSiteData.url
+
+$Web = Get-PnPWeb
+$SiteTitle = $Web.Title
+
+$ctx = Get-PnPContext
+$ctx.Load($ctx.Web.CurrentUser)
+$ctx.ExecuteQuery()
+$CurrentUserEmail = $ctx.Web.CurrentUser.Email
+
+$TargetLists = @(
+    @{Name = "Interessentregister"; Max = 10 },
+    @{Name = "Prosjektleveranser"; Max = 5 },
+    @{Name = "Kommunikasjonsplan"; Max = 6 },
+    @{Name = "Prosjektlogg"; Max = 10 },
+    @{Name = "Usikkerhet"; Max = 6 },
+    @{Name = "Endringsanalyse"; Max = 3 },
+    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
+    @{Name = "Måleindikatorer"; Max = 6 },
+    @{Name = "Gevinstoppfølging"; Max = 20 }
+)
+
+Write-Host "Script ready to generate demo content with AI in site '$SiteTitle'"
+
+$ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
+if ($null -eq $ProjectProperties) {
+    Write-Host "`tProject properties not found. Please create a project properties list item in the Prosjektegenskaper list before running this script." -ForegroundColor Red
+}
+else {
+    Write-Host "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
+    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper"
     
-    Write-Host "Prompt ready. Asking for suggestions from $model_name..."
+    $Prompt = "Gi meg eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    
+    Write-Host "`tPrompt ready. Asking for suggestions from $model_name..."
 
     $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
 
     $GeneratedItems | ForEach-Object {
-        Write-Host "`tCreating list item '$($_.Title)' for list '$ListTitle'"
+        Write-Host "`t`tCreating list item '$($_.Title)' for list 'Prosjektegenskaper'"
+        $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
+        @($HashtableValues.keys) | ForEach-Object { 
+            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
+        }
+        try {
+            $ItemResult = Set-PnPListItem -List "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
+        }
+        catch {
+            Write-Host "Failed to create list item for list 'Prosjektegenskaper'" -ForegroundColor Red
+            Write-Host $_.Exception.Message -ForegroundColor Red
+            Write-Host "Using the following prompt: $Prompt"
+            Write-Host "Using the following values as input:"
+            $HashtableValues
+        }
+    }
+}
+
+$TargetLists | ForEach-Object {
+    $ListTitle = $_["Name"]
+    $PromptMaxElements = $_["Max"]
+    
+    Write-Host "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
+    $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle
+
+    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    
+    Write-Host "`tPrompt ready. Asking for suggestions from $model_name..."
+
+    $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
+
+    $GeneratedItems | ForEach-Object {
+        Write-Host "`t`tCreating list item '$($_.Title)' for list '$ListTitle'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
@@ -244,4 +287,46 @@ $TargetLists | ForEach-Object {
             $HashtableValues
         }
     }
+}
+
+try {
+    Write-Host "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
+    Connect-PnPOnline -Url $HubSiteUrl -Interactive
+
+    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus"
+        
+    $Prompt = "Gi meg eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+        
+    Write-Host "`tPrompt ready. Asking for suggestions from $model_name..."
+    
+    $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
+    
+    $GeneratedItems | ForEach-Object {
+        Write-Host "`t`tCreating list item '$($_.Title)' for list 'Prosjektstatus'"
+        $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
+        @($HashtableValues.keys) | ForEach-Object { 
+            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
+        }
+        
+        $HashtableValues["Title"] = "Ny statusrapport for $SiteTitle"
+        $HashtableValues["GtSiteId"] = $ProjectSiteId
+        $HashtableValues["GtModerationStatus"] = "Publisert"
+        $HashtableValues["GtLastReportDate"] = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffffff")
+
+        try {
+            $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
+        }
+        catch {
+            Write-Host "Failed to create list item for list 'Prosjektstatus'" -ForegroundColor Red
+            Write-Host $_.Exception.Message -ForegroundColor Red
+            Write-Host "Using the following prompt: $Prompt"
+            Write-Host "Using the following values as input:"
+            $HashtableValues
+        }
+    }
+    
+}
+catch {
+    Write-Host "Failed to process project status report in hub site." -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
 }
