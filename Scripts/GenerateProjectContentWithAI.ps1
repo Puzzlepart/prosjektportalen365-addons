@@ -8,17 +8,49 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$model_name,
     [Parameter(Mandatory = $false)]
-    [string]$api_version = "2023-07-01-preview"
+    [string]$model_name_images = "dall-e",
+    [Parameter(Mandatory = $false)]
+    [string]$api_version = "2023-07-01-preview",
+    [Parameter(Mandatory = $false)]
+    [string]$api_version_images = "2024-02-15-preview"
 )
 
 # Azure OpenAI metadata variables
 $openai = @{
     api_key     = $api_key
-    api_base    = $api_base # your endpoint should look like the following https://YOUR_RESOURCE_NAME.openai.azure.com/
-    api_version = $api_version # this may change in the future
-    name        = $model_name #This will correspond to the custom name you chose for your deployment when you deployed a model.
+    api_base    = $api_base
+    api_version = $api_version
+    api_version_images = $api_version_images
+    model_name_images =  $model_name_images
+    model_name        = $model_name #This will correspond to the custom name you chose for your deployment when you deployed a model.
 }
 
+function Invoke-ImageOpenAI {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [String]
+        $InputMessage        
+    )
+
+    # Header for authentication
+    $headers = [ordered]@{
+        'api-key' = $openai.api_key
+    }
+
+    # Adjust these values to fine-tune completions
+    $body = [ordered]@{
+        prompt    = $InputMessage
+        size   = '1024x1024'
+        style = 'vivid'
+        n      = 1
+    } | ConvertTo-Json
+
+    # Send a request to generate an answer
+    $url = "$($openai.api_base)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
+    $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
+    return $response.data.url
+}
 function Invoke-OpenAI {
     [CmdletBinding()]
     param (
@@ -51,7 +83,7 @@ function Invoke-OpenAI {
     } | ConvertTo-Json
 
     # Send a request to generate an answer
-    $url = "$($openai.api_base)/openai/deployments/$($openai.name)/chat/completions?api-version=$($openai.api_version)"
+    $url = "$($openai.api_base)/openai/deployments/$($openai.model_name)/chat/completions?api-version=$($openai.api_version)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
     return $response
 }
@@ -68,12 +100,10 @@ function Get-OpenAIResults {
         return ConvertFrom-Json $ProcessedResults
     }
     catch {
-        Write-Host "*******************ERROR*********************"
-        Write-Host $_ -ForegroundColor Red
-        Write-Host "*******************PROMPT*********************"
-        Write-Host $Prompt
-        Write-Host "*******************Results*********************"
-        Write-Host $ProcessedResults
+        Write-Output $_.Exception.Message
+        Write-Output "Using the following prompt: $Prompt"
+        Write-Output "Yielded the following results:"
+        Write-Output $ProcessedResults
         exit 0
     }
 }
@@ -139,8 +169,8 @@ function Get-FieldPromptForList($ListTitle) {
                 }
             }
             catch {
-                Write-Host $_.Exception.Message -ForegroundColor Red
-                Write-Host "Failed to get termset for field '$($_.Title)' in list '$ListTitle'.. Continuing with next list.."
+                Write-Output $_.Exception.Message -ForegroundColor Red
+                Write-Output "Failed to get termset for field '$($_.Title)' in list '$ListTitle'.. Continuing with next list.."
             }
         }
         elseif ($_.TypeAsString -eq "Calculated") {
@@ -187,7 +217,7 @@ function ConvertPSObjectToHashtable {
     }
 }
 if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
-    Write-Host "You have to load the PnP.PowerShell module before running this script!" -ForegroundColor Red
+    Write-Output "You have to load the PnP.PowerShell module before running this script!" -ForegroundColor Red
     exit 0
 }
 
@@ -197,6 +227,7 @@ Set-PnPTraceLog -Off
 Connect-PnPOnline -Url $Url -Interactive
 
 $Site = Get-PnPSite
+$GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
 $ProjectSiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
 $HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
 $HubSiteData = ConvertFrom-Json $HubSiteDataRaw.value
@@ -222,24 +253,34 @@ $TargetLists = @(
     @{Name = "Gevinstoppfølging"; Max = 20 }
 )
 
-Write-Host "Script ready to generate demo content with AI in site '$SiteTitle'"
+Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
+
+Write-Output "Generating project logo with $model_name_images..."
+
+$Prompt = "Generate an image for a project named $SiteTitle."
+$LogoPath = "C:\temp\logo.png"
+$GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt
+Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
+Set-PnPMicrosoft365Group -Identity $GroupId.Guid -GroupLogoPath $LogoPath
+
+Write-Output "Project logo generated and set for project '$SiteTitle'. This will take some minutes to propagate."
 
 $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
 if ($null -eq $ProjectProperties) {
-    Write-Host "`tProject properties not found. Please create a project properties list item in the Prosjektegenskaper list before running this script." -ForegroundColor Red
+    Write-Output "`tProject properties not found. Please create a project properties list item in the Prosjektegenskaper list before running this script." -ForegroundColor Red
 }
 else {
-    Write-Host "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
+    Write-Output "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper"
     
     $Prompt = "Gi meg eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
     
-    Write-Host "`tPrompt ready. Asking for suggestions from $model_name..."
+    Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
 
     $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
 
     $GeneratedItems | ForEach-Object {
-        Write-Host "`t`tCreating list item '$($_.Title)' for list 'Prosjektegenskaper'"
+        Write-Output "`t`tCreating list item '$($_.Title)' for list 'Prosjektegenskaper'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
@@ -248,10 +289,10 @@ else {
             $ItemResult = Set-PnPListItem -List "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
         }
         catch {
-            Write-Host "Failed to create list item for list 'Prosjektegenskaper'" -ForegroundColor Red
-            Write-Host $_.Exception.Message -ForegroundColor Red
-            Write-Host "Using the following prompt: $Prompt"
-            Write-Host "Using the following values as input:"
+            Write-Output "Failed to create list item for list 'Prosjektegenskaper'" -ForegroundColor Red
+            Write-Output $_.Exception.Message -ForegroundColor Red
+            Write-Output "Using the following prompt: $Prompt"
+            Write-Output "Using the following values as input:"
             $HashtableValues
         }
     }
@@ -261,17 +302,17 @@ $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
     
-    Write-Host "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
+    Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle
 
     $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
     
-    Write-Host "`tPrompt ready. Asking for suggestions from $model_name..."
+    Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
 
     $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
 
     $GeneratedItems | ForEach-Object {
-        Write-Host "`t`tCreating list item '$($_.Title)' for list '$ListTitle'"
+        Write-Output "`t`tCreating list item '$($_.Title)' for list '$ListTitle'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
@@ -280,29 +321,29 @@ $TargetLists | ForEach-Object {
             $ItemResult = Add-PnPListItem -List $ListTitle -Values $HashtableValues
         }
         catch {
-            Write-Host "Failed to create list item for list '$ListTitle'" -ForegroundColor Red
-            Write-Host $_.Exception.Message -ForegroundColor Red
-            Write-Host "Using the following prompt: $Prompt"
-            Write-Host "Using the following values as input:"
+            Write-Output "Failed to create list item for list '$ListTitle'" -ForegroundColor Red
+            Write-Output $_.Exception.Message -ForegroundColor Red
+            Write-Output "Using the following prompt: $Prompt"
+            Write-Output "Using the following values as input:"
             $HashtableValues
         }
     }
 }
 
 try {
-    Write-Host "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
+    Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
     Connect-PnPOnline -Url $HubSiteUrl -Interactive
 
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus"
         
     $Prompt = "Gi meg eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
-    Write-Host "`tPrompt ready. Asking for suggestions from $model_name..."
+    Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
     
     $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
     
     $GeneratedItems | ForEach-Object {
-        Write-Host "`t`tCreating list item '$($_.Title)' for list 'Prosjektstatus'"
+        Write-Output "`t`tCreating list item '$($_.Title)' for list 'Prosjektstatus'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
@@ -317,16 +358,16 @@ try {
             $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
         }
         catch {
-            Write-Host "Failed to create list item for list 'Prosjektstatus'" -ForegroundColor Red
-            Write-Host $_.Exception.Message -ForegroundColor Red
-            Write-Host "Using the following prompt: $Prompt"
-            Write-Host "Using the following values as input:"
+            Write-Output "Failed to create list item for list 'Prosjektstatus'" -ForegroundColor Red
+            Write-Output $_.Exception.Message -ForegroundColor Red
+            Write-Output "Using the following prompt: $Prompt"
+            Write-Output "Using the following values as input:"
             $HashtableValues
         }
     }
     
 }
 catch {
-    Write-Host "Failed to process project status report in hub site." -ForegroundColor Red
-    Write-Host $_.Exception.Message -ForegroundColor Red
+    Write-Output "Failed to process project status report in hub site." -ForegroundColor Red
+    Write-Output $_.Exception.Message -ForegroundColor Red
 }
