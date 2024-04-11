@@ -224,7 +224,16 @@ if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
 $ErrorActionPreference = "Stop"
 Set-PnPTraceLog -Off
 
-Connect-PnPOnline -Url $Url -Interactive
+$pnpParams = @{ 
+    Url = $Url
+}
+if($null -ne $PSPrivateMetadata){ #azure runbook context
+    $pnpParams.Add("ManagedIdentity",$true)
+} else {
+    $pnpParams.Add("Interactive",$true)
+}
+
+Connect-PnPOnline @pnpParams
 
 $Site = Get-PnPSite
 $GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
@@ -258,6 +267,8 @@ Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'
 Write-Output "Generating project logo with $model_name_images..."
 
 $Prompt = "Generate an image for a project named $SiteTitle."
+
+#TODO: FIX LOGO PATH!
 $LogoPath = "C:\temp\logo.png"
 $GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt
 Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
@@ -332,7 +343,8 @@ $TargetLists | ForEach-Object {
 
 try {
     Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
-    Connect-PnPOnline -Url $HubSiteUrl -Interactive
+    $pnpParams.Url = $HubSiteUrl
+    Connect-PnPOnline @pnpParams
 
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus"
         
