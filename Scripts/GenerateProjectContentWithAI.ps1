@@ -62,7 +62,7 @@ function Invoke-OpenAI {
     $messages = @(
         @{
             role    = 'system'
-            content = "You are responding only with JSON. Thhe JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+            content = "You are responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
         },
         @{
             role    = 'user'
@@ -96,7 +96,8 @@ function Get-OpenAIResults {
 
     try {
         $AIResults = Invoke-OpenAI -InputMessage $Prompt
-        $ProcessedResults = $AIResults.choices[0].message.content.TrimStart("````json").TrimEnd("``````").Trim()
+        $ProcessedResults = $AIResults.choices[0].message.content
+        #$JsonTextContent = $ProcessedResults.substr
         return ConvertFrom-Json $ProcessedResults
     }
     catch {
@@ -285,7 +286,7 @@ else {
     Write-Output "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper"
     
-    $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
     
     Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
 
@@ -317,7 +318,7 @@ $TargetLists | ForEach-Object {
     Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle
 
-    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
     
     Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
 
@@ -349,7 +350,7 @@ try {
 
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus"
         
-    $Prompt = "Gi meg eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
     Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
     
