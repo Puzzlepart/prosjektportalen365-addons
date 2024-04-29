@@ -268,7 +268,7 @@ $TargetLists = @(
 
 Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
 
-Write-Output "Generating project logo with $model_name_images..."
+Write-Output "`tGenerating project logo with $model_name_images..."
 
 $Prompt = "Generate an image for a project named $SiteTitle."
 
@@ -276,7 +276,7 @@ $GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt
 Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
 Set-PnPMicrosoft365Group -Identity $GroupId.Guid -GroupLogoPath $LogoPath
 
-Write-Output "Project logo generated and set for project '$SiteTitle'. This will take some minutes to propagate."
+Write-Output "`tProject logo generated and set for project '$SiteTitle'. This will take some minutes to propagate."
 
 $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
 if ($null -eq $ProjectProperties) {
@@ -293,7 +293,7 @@ else {
     $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
 
     $GeneratedItems | ForEach-Object {
-        Write-Output "`t`tCreating list item '$($_.Title)' for list 'Prosjektegenskaper'"
+        Write-Output "`t`tUpdating list item '$($_.Title)' for list 'Prosjektegenskaper'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
