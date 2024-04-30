@@ -150,7 +150,12 @@ function Get-FieldPromptForList($ListTitle, $UsersEmails) {
             $FieldPromptValue += ", datoformat: yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff"
         }
         elseif ($_.TypeAsString -eq "Number") {
-            $FieldPromptValue += ", verdien skal være et heltall"
+            if ($_.ShowAsPercentage) {
+                $FieldPromptValue += ", verdien skal være et desimaltall mellom 0 og 1 som indikerer prosent, der 1 er 100%"
+            }
+            else {
+                $FieldPromptValue += ", verdien skal være et heltall"
+            }
         }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
             $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"
@@ -307,8 +312,13 @@ function GenerateProjectContentInList($Url, $SiteTitle, $ListTitle, $PromptMaxEl
 
     $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
 
+    $count = 0
     $GeneratedItems | ForEach-Object {
-        Write-Output "`t`tCreating list item '$($_.Title)' for list '$ListTitle'"
+        $ListItemTitle = $_.Title
+        if ($null -eq $ListItemTitle -or "" -eq $ListItemTitle) {
+            $ListItemTitle = ($ListTitle + " " + ++$count)
+        }
+        Write-Output "`t`tCreating list item '$ListItemTitle' for list '$ListTitle'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
         @($HashtableValues.keys) | ForEach-Object { 
             if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
@@ -408,6 +418,7 @@ $TargetLists = @(
     @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
     @{Name = "Måleindikatorer"; Max = 6 },
     @{Name = "Gevinstoppfølging"; Max = 20 }
+    @{Name = "Ressursallokering"; Max = 10 }
 )
 
 Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
