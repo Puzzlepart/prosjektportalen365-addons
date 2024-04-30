@@ -124,12 +124,19 @@ function Get-OpenAIResults {
     }
 }
 
-function Get-UserFieldOptions($HubUrl) {
-    Connect-SharePoint -Url $HubUrl
+function Get-SiteUsersEmails($Url) {
+    Connect-SharePoint -Url $Url
+    $GroupId = Get-PnPProperty -ClientObject (Get-PnPSite) -Property "GroupId"
 
+    $UserFieldOptions = @()
 
+    Get-PnPMicrosoft365GroupMember -Identity $GroupId | Where-Object UserType -eq "member" | ForEach-Object {
+        $UserFieldOptions += $_.UserPrincipalName
+    }
+
+    return $UserFieldOptions
 }
-function Get-FieldPromptForList($ListTitle) {
+function Get-FieldPromptForList($ListTitle, $UsersEmails) {
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus") }
 
     $FieldPrompt = ""
@@ -146,7 +153,7 @@ function Get-FieldPromptForList($ListTitle) {
             $FieldPromptValue += ", verdien skal være et heltall"
         }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
-            $FieldPromptValue += ", verdi skal være '$CurrentUserEmail'"
+            $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"
         }
         elseif ($_.TypeAsString -eq "Choice" -or $_.TypeAsString -eq "MultiChoice") {
             if ($_.Choices) {
@@ -238,31 +245,29 @@ function ConvertPSObjectToHashtable {
     }
 }
 
-function GenerateProjectLogo {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$SiteTitle
-    )
-
+function GenerateProjectLogo ($SiteTitle, $GroupId) {
+    $LogoPath = "$env:TEMP\$GroupId.png"
     Write-Output "`tGenerating project logo with $model_name_images..."
 
     $Prompt = "Generate an image for a project named $SiteTitle."
 
     $GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt
     Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
-    Set-PnPMicrosoft365Group -Identity $GroupId.Guid -GroupLogoPath $LogoPath
+    Set-PnPMicrosoft365Group -Identity $GroupId -GroupLogoPath $LogoPath
 
     Write-Output "`tProject logo generated and set for project '$SiteTitle'. This will take some minutes to propagate."
 }
 
-function GenerateProjectPropertiesContent($SiteTitle) {
+function GenerateProjectPropertiesContent($Url, $SiteTitle, $UsersEmails) {
+    Connect-SharePoint -Url $Url
+    
     $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
     if ($null -eq $ProjectProperties) {
         Write-Output "`tProject properties not found. Please create a project properties list item in the Prosjektegenskaper list before running this script."
     }
     else {
         Write-Output "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
-        $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper"
+        $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper" -UsersEmails $UsersEmails
         
         $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
@@ -290,9 +295,11 @@ function GenerateProjectPropertiesContent($SiteTitle) {
     }
 }
 
-function GenerateProjectContentInList($ListTitle, $PromptMaxElements) {
+function GenerateProjectContentInList($Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails) {
+    Connect-SharePoint -Url $Url
+
     Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
-    $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle
+    $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle -UsersEmails $UsersEmails
 
     $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
     
@@ -375,7 +382,6 @@ Set-PnPTraceLog -Off
 Connect-SharePoint -Url $Url
 
 $Site = Get-PnPSite
-$LogoPath = "$env:TEMP\$GroupId.png"
 $GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
 $ProjectSiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
 $HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
@@ -390,6 +396,8 @@ $ctx.Load($ctx.Web.CurrentUser)
 $ctx.ExecuteQuery()
 $CurrentUserEmail = $ctx.Web.CurrentUser.Email
 
+$UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
+
 $TargetLists = @(
     @{Name = "Interessentregister"; Max = 10 },
     @{Name = "Prosjektleveranser"; Max = 5 },
@@ -403,14 +411,14 @@ $TargetLists = @(
 )
 
 Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
-GenerateProjectLogo -SiteTitle $SiteTitle
+GenerateProjectLogo -SiteTitle $SiteTitle -GroupId $GroupId.Guid
 
-GenerateProjectPropertiesContent -SiteTitle $SiteTitle
+GenerateProjectPropertiesContent -SiteTitle $SiteTitle -Url $Url -UsersEmails $UsersEmails
 
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
-    GenerateProjectContentInList -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements
+    GenerateProjectContentInList -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails
 }
 
 GenerateProjectStatusReportContent -SiteTitle $SiteTitle -HubSiteUrl $HubSiteUrl
