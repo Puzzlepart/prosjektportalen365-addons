@@ -263,7 +263,7 @@ function GenerateProjectLogo ($SiteTitle, $GroupId) {
     Write-Output "`tProject logo generated and set for project '$SiteTitle'. This will take some minutes to propagate."
 }
 
-function GenerateProjectPropertiesContent($Url, $SiteTitle, $UsersEmails) {
+function GenerateProjectPropertiesContent($Url, $SiteTitle,$SiteId,$GroupId, $UsersEmails, $HubSiteUrl) {
     Connect-SharePoint -Url $Url
     
     $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
@@ -296,6 +296,25 @@ function GenerateProjectPropertiesContent($Url, $SiteTitle, $UsersEmails) {
                 Write-Output "Using the following values as input:"
                 $HashtableValues
             }
+        }
+
+        Write-Output "`tUpdating project properties at hub level"
+
+        $HashtableValues["Title"] = $SiteTitle
+        $HashtableValues["GtSiteUrl"] = $Url
+        $HashtableValues["GtSiteId"] = $SiteId
+        $HashtableValues["GtGroupId"] = $GroupId
+
+        Connect-SharePoint -Url $HubSiteUrl
+        $MatchingProjectInHub = Get-PnPListItem -List "Prosjekter" -Query "<View><Query><Where><Eq><FieldRef Name='GtSiteUrl' /><Value Type='Text'>$Url</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
+        
+        if ($null -ne $MatchingProjectInHub) {
+            Write-Output "`t`tUpdating existing project item"
+            $HubProject = Set-PnPListItem -List "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues
+        }
+        else {
+            Write-Output "`t`tAdding new project item"
+            $HubProject = Add-PnPListItem -List "Prosjekter" -Values $HashtableValues
         }
     }
 }
@@ -336,8 +355,56 @@ function GenerateProjectContentInList($Url, $SiteTitle, $ListTitle, $PromptMaxEl
     }
 }
 
+function GenerateProjectTimelineContent($SiteTitle, $SiteId, $HubSiteUrl){
+    try {    
+        Write-Output "`tProcessing project timeline items in hub site. Generating prompt based on list configuration..."
+        Connect-SharePoint -Url $HubSiteUrl
 
-function GenerateProjectStatusReportContent($SiteTitle, $HubSiteUrl) {
+        $MatchingProjectInHub = Get-PnPListItem -List "Prosjekter" -Query "<View><Query><Where><Eq><FieldRef Name='GtSiteUrl' /><Value Type='Text'>$Url</Value></Eq></Where></Query></View>"
+        if ($null -eq $MatchingProjectInHub) {
+            Write-Output "`tProject not found in hub site. Skipping project timeline items generation."
+            return
+        }
+
+        $FieldPrompt = Get-FieldPromptForList -ListTitle "Tidslinjeinnhold"
+        
+        $StartDate = $MatchingProjectInHub.FieldValues["GtStartDate"]
+        $EndDate = $MatchingProjectInHub.FieldValues["GtEndDate"]
+        
+        $Prompt = "Gi meg et eksempel på tidslinjeelementer for et prosjekt som heter '$SiteTitle'. Prosjektets startdato er $StartDate og sluttdato er $EndDate.  VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal beskrive tidslinjeelementet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+        
+        Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
+    
+        $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
+    
+        $GeneratedItems | ForEach-Object {
+            Write-Output "`t`tCreating list item '$($_.Title)' for list 'Tidslinjeinnhold'"
+            $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
+            @($HashtableValues.keys) | ForEach-Object { 
+                if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
+            }
+        
+            $HashtableValues["GtSiteIdLookup"] = $MatchingProjectInHub.Id
+
+            try {
+                $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
+            }
+            catch {
+                Write-Output "Failed to create list item for list 'Prosjektstatus'"
+                Write-Output $_.Exception.Message
+                Write-Output "Using the following prompt: $Prompt"
+                Write-Output "Using the following values as input:"
+                $HashtableValues
+            }
+        }
+    
+    }
+    catch {
+        Write-Output "Failed to process project status report in hub site."
+        Write-Output $_.Exception.Message
+    }
+}
+function GenerateProjectStatusReportContent($SiteTitle, $SiteId, $HubSiteUrl) {
     try {
         Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
         Connect-SharePoint -Url $HubSiteUrl
@@ -393,7 +460,7 @@ Connect-SharePoint -Url $Url
 
 $Site = Get-PnPSite
 $GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
-$ProjectSiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
+$SiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
 $HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
 $HubSiteData = ConvertFrom-Json $HubSiteDataRaw.value
 $HubSiteUrl = $HubSiteData.url
@@ -424,7 +491,7 @@ $TargetLists = @(
 Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
 GenerateProjectLogo -SiteTitle $SiteTitle -GroupId $GroupId.Guid
 
-GenerateProjectPropertiesContent -SiteTitle $SiteTitle -Url $Url -UsersEmails $UsersEmails
+GenerateProjectPropertiesContent -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails
 
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
@@ -432,6 +499,6 @@ $TargetLists | ForEach-Object {
     GenerateProjectContentInList -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails
 }
 
-# TODO: Prosjekttidslinje
+GenerateProjectTimelineContent -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl
 
-GenerateProjectStatusReportContent -SiteTitle $SiteTitle -HubSiteUrl $HubSiteUrl
+GenerateProjectStatusReportContent -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl
