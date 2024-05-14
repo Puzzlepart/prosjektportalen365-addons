@@ -71,19 +71,37 @@ function Invoke-OpenAI {
     param (
         [Parameter()]
         [String]
-        $InputMessage        
+        $InputMessage,
+        [switch]$ForceArray
     )
     # Craft message chain to send to the model
+
+    $forceArrayPrompt = 'Provide JSON format as follows, where items is an array of the elements, and each item is an object with keys as specified in the user prompt:
+    {
+        "items": [
+            {
+                "Title": "..."
+                # internal column names
+            }
+        ]
+    }'
+
     $messages = @(
         @{
             role    = 'system'
-            content = "You are responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
         },
         @{
             role    = 'user'
             content = $InputMessage
         }
     )
+    if ($ForceArray.IsPresent) {
+        $messages += @{
+            role    = 'system'
+            content = $forceArrayPrompt
+        }
+    }
 
     # Header for authentication
     $headers = [ordered]@{
@@ -92,8 +110,8 @@ function Invoke-OpenAI {
 
     # Adjust these values to fine-tune completions
     $body = [ordered]@{
+        response_format = @{type = 'json_object'}
         messages    = $messages
-        # response_format = @{type = 'json_object'}
         temperature = 0.1
     } | ConvertTo-Json
 
@@ -106,13 +124,13 @@ function Invoke-OpenAI {
 function Get-OpenAIResults {
     param (
         [Parameter(Mandatory = $true)]
-        [string]$Prompt
+        [string]$Prompt,
+        [switch]$ForceArray
     )
 
     try {
-        $AIResults = Invoke-OpenAI -InputMessage $Prompt
+        $AIResults = Invoke-OpenAI -InputMessage $Prompt -ForceArray:$ForceArray.IsPresent
         $ProcessedResults = $AIResults.choices[0].message.content
-        #$JsonTextContent = $ProcessedResults.substr
         return ConvertFrom-Json $ProcessedResults
     }
     catch {
@@ -325,14 +343,14 @@ function GenerateProjectContentInList($Url, $SiteTitle, $ListTitle, $PromptMaxEl
     Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle -UsersEmails $UsersEmails
 
-    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. "
     
     Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
 
-    $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
+    $GeneratedItems = Get-OpenAIResults -Prompt $Prompt -ForceArray
 
     $count = 0
-    $GeneratedItems | ForEach-Object {
+    $GeneratedItems.items | ForEach-Object {
         $ListItemTitle = $_.Title
         if ($null -eq $ListItemTitle -or "" -eq $ListItemTitle) {
             $ListItemTitle = ($ListTitle + " " + ++$count)
