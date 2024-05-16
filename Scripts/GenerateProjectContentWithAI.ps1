@@ -154,11 +154,14 @@ function Get-SiteUsersEmails($Url) {
 
     return $UserFieldOptions
 }
-function Get-FieldPromptForList($ListTitle, $UsersEmails) {
+function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus") }
 
     $FieldPrompt = ""
     $Fields | ForEach-Object {
+        if ($SkipFields -contains $_.InternalName) {
+            return
+        }
         $FieldPromptValue = "'$($_.Title)' (Internt navn '$($_.InternalName)'"
         if ($_.Description) {
             $FieldPromptValue += ", beskrivelse av input: '$($_.Description)'"
@@ -384,7 +387,7 @@ function GenerateProjectTimelineContent($SiteTitle, $SiteId, $HubSiteUrl){
             return
         }
 
-        $FieldPrompt = Get-FieldPromptForList -ListTitle "Tidslinjeinnhold"
+        $FieldPrompt = Get-FieldPromptForList -ListTitle "Tidslinjeinnhold" -SkipFields @("GtSiteIdLookup")
         
         $StartDate = $MatchingProjectInHub.FieldValues["GtStartDate"]
         $EndDate = $MatchingProjectInHub.FieldValues["GtEndDate"]
@@ -393,9 +396,9 @@ function GenerateProjectTimelineContent($SiteTitle, $SiteId, $HubSiteUrl){
         
         Write-Output "`tPrompt ready. Asking for suggestions from $model_name..."
     
-        $GeneratedItems = Get-OpenAIResults -Prompt $Prompt
+        $GeneratedItems = Get-OpenAIResults -Prompt $Prompt -ForceArray
     
-        $GeneratedItems | ForEach-Object {
+        $GeneratedItems.items | ForEach-Object {
             Write-Output "`t`tCreating list item '$($_.Title)' for list 'Tidslinjeinnhold'"
             $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
             @($HashtableValues.keys) | ForEach-Object { 
@@ -405,10 +408,10 @@ function GenerateProjectTimelineContent($SiteTitle, $SiteId, $HubSiteUrl){
             $HashtableValues["GtSiteIdLookup"] = $MatchingProjectInHub.Id
 
             try {
-                $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
+                $ItemResult = Add-PnPListItem -List "Tidslinjeinnhold" -Values $HashtableValues
             }
             catch {
-                Write-Output "Failed to create list item for list 'Prosjektstatus'"
+                Write-Output "Failed to create list item for list 'Tidslinjeinnhold'"
                 Write-Output $_.Exception.Message
                 Write-Output "Using the following prompt: $Prompt"
                 Write-Output "Using the following values as input:"
@@ -443,7 +446,7 @@ function GenerateProjectStatusReportContent($SiteTitle, $SiteId, $HubSiteUrl) {
             }
         
             $HashtableValues["Title"] = "Ny statusrapport for $SiteTitle"
-            $HashtableValues["GtSiteId"] = $ProjectSiteId
+            $HashtableValues["GtSiteId"] = $SiteId
             $HashtableValues["GtModerationStatus"] = "Publisert"
             $HashtableValues["GtLastReportDate"] = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffffff")
 
@@ -486,11 +489,6 @@ $HubSiteUrl = $HubSiteData.url
 $Web = Get-PnPWeb
 $SiteTitle = $Web.Title
 
-$ctx = Get-PnPContext
-$ctx.Load($ctx.Web.CurrentUser)
-$ctx.ExecuteQuery()
-$CurrentUserEmail = $ctx.Web.CurrentUser.Email
-
 $UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
 
 $TargetLists = @(
@@ -507,6 +505,7 @@ $TargetLists = @(
 )
 
 Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
+
 GenerateProjectLogo -SiteTitle $SiteTitle -GroupId $GroupId.Guid
 
 GenerateProjectPropertiesContent -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails
