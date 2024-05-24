@@ -71,7 +71,7 @@ Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
-    . .\GenerateProjectContentInList.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails
+    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails
 }
 
 . .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl
