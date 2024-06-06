@@ -18,19 +18,6 @@ function Connect-SharePoint($Url) {
     Connect-PnPOnline @pnpParams
 }
 
-function Get-SiteUsersEmails($Url) {
-    Connect-SharePoint -Url $Url
-    $GroupId = Get-PnPProperty -ClientObject (Get-PnPSite) -Property "GroupId"
-
-    $UserFieldOptions = @()
-
-    Get-PnPMicrosoft365GroupMember -Identity $GroupId | Where-Object UserType -eq "member" | ForEach-Object {
-        $UserFieldOptions += $_.UserPrincipalName
-    }
-
-    return $UserFieldOptions
-}
-
 Connect-SharePoint -Url $Url
 
 $Site = Get-PnPSite
@@ -43,7 +30,23 @@ $HubSiteUrl = $HubSiteData.url
 $Web = Get-PnPWeb
 $SiteTitle = $Web.Title
 
-$UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
+Connect-SharePoint -Url $HubSiteUrl
+$HubSite = Get-PnPSite
+$GroupId = Get-PnPProperty -ClientObject $HubSite -Property "GroupId"
+
+
+$HubUri = [System.Uri]$HubSiteUrl
+$TenantAdminUrl = "https://" + $HubUri.Authority.Replace(".sharepoint.com", "-admin.sharepoint.com")
+
+Connect-SharePoint -Url $TenantAdminUrl
+$UsersEmails = @()
+$HubMembers = Get-PnPMicrosoft365GroupMember -Identity $GroupId | Where-Object UserType -eq "member"
+$HubMembers | ForEach-Object {
+    $UsersEmails += $_.UserPrincipalName
+}
+if ($UsersEmails.Length -eq 0) {
+    $UsersEmails += "admin@prosjektportalen.onmicrosoft.com"
+}
 
 $Result = @{
     SiteTitle = $SiteTitle
