@@ -3,20 +3,7 @@ Param(
     [string]$Url
 )
 
-function Connect-SharePoint($Url) {
-    $pnpParams = @{ 
-        Url = $Url
-    }
-    if ($null -ne $PSPrivateMetadata) {
-        #azure runbook context
-        $pnpParams.Add("ManagedIdentity", $true)
-    }
-    else {
-        $pnpParams.Add("Interactive", $true)
-    }
-
-    Connect-PnPOnline @pnpParams
-}
+. .\CommonPPAI.ps1
 
 Connect-SharePoint -Url $Url
 
@@ -33,7 +20,6 @@ $SiteTitle = $Web.Title
 Connect-SharePoint -Url $HubSiteUrl
 $HubSite = Get-PnPSite
 $GroupId = Get-PnPProperty -ClientObject $HubSite -Property "GroupId"
-
 
 $HubUri = [System.Uri]$HubSiteUrl
 $TenantAdminUrl = "https://" + $HubUri.Authority.Replace(".sharepoint.com", "-admin.sharepoint.com")
