@@ -6,7 +6,7 @@ $LogoFileName = "$GroupId.png"
 $LogoPath = "$env:TEMP\$LogoFileName"
 Write-Output "`tGenerating project logo with $($OpenAISettings.model_name_images)..."
 
-$Prompt = "Generate a logo for a project named '$SiteTitle', rounded edges square mobile app logo design, subtle gradient, minimal single color background. No text. Icon should use full width and height."
+$Prompt = "Lag en logo for et prosjekt som heter '$SiteTitle' i enkel stil som egner seg digitalt, subtil gradient. Ikke bruk tekst i logo."
 
 $GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt -openai $OpenAISettings
 Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
