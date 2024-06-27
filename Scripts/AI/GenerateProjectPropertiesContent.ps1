@@ -28,7 +28,7 @@ else {
             $ItemResult = Set-PnPListItem -List "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
         }
         catch {
-            Write-Output "Failed to create list item for list 'Prosjektegenskaper'"
+            Write-Output "Failed to update list item 'Prosjektegenskaper'"
             Write-Output $_.Exception.Message
             Write-Output "Using the following prompt: $Prompt"
             Write-Output "Using the following values as input:"
