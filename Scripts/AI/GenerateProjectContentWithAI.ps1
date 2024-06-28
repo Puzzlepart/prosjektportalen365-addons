@@ -54,7 +54,7 @@ $TargetLists = @(
     @{Name = "Prosjektleveranser"; Max = 5 },
     @{Name = "Kommunikasjonsplan"; Max = 6 },
     @{Name = "Prosjektlogg"; Max = 10 },
-    @{Name = "Usikkerhet"; Max = 6 },
+    @{Name = "Usikkerhet"; Max = 8 },
     @{Name = "Endringsanalyse"; Max = 3 },
     @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
     @{Name = "Måleindikatorer"; Max = 6 },
