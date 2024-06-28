@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
-<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.dev.office.com/PnP/2018/05/ProvisioningSchema https://raw.githubusercontent.com/OfficeDev/PnP-Provisioning-Schema/master/OfficeDevPnP.ProvisioningSchema/ProvisioningSchema-2019-03.xsd">
-    <pnp:Preferences></pnp:Preferences>
-    <pnp:Templates ID="CONTAINER-TEMPLATE-PP-ADDONS-PROSJEKTOVERSIKT">
-        <pnp:ProvisioningTemplate ID="TEMPLATE-PP-ADDONS-PROSJEKTOVERSIKT" Version="1" Scope="RootSite">
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:Templates ID="CONTAINER-TEMPLATE-ADDONS-PROSJEKTOVERSIKT">
+        <pnp:ProvisioningTemplate ID="TEMPLATE-ADDONS-PROSJEKTOVERSIKT" Version="1" Scope="RootSite">
             <pnp:ClientSidePages>
                 <pnp:ClientSidePage PageName="Prosjektoversikt.aspx" PromoteAsNewsArticle="false" Overwrite="false" Layout="SingleWebPartAppPage" EnableComments="false" Title="Prosjektoversikt">
                     <pnp:Sections>
@@ -13,7 +11,6 @@
                             </pnp:Controls>
                         </pnp:Section>
                     </pnp:Sections>
-                    <pnp:Header Type="None" />
                 </pnp:ClientSidePage>
             </pnp:ClientSidePages>
             <pnp:Lists>
@@ -76,10 +73,10 @@
                         </View>
                     </pnp:Views>
                     <pnp:FieldRefs>
-                        <pnp:FieldRef ID="6aefa59f-4300-4c22-94af-d77d05d792f6" Name="GtPortfolioColumn" Required="true" />
-                        <pnp:FieldRef ID="bb6eac2d-9253-4cb9-a934-a9343ce875d2" Name="GtPortfolioColumnValue" Required="true" />
-                        <pnp:FieldRef ID="4cfafd35-e26f-44cf-bb90-47aa65a41827" Name="GtPortfolioColumnColor" Required="true" />
-                        <pnp:FieldRef ID="d066062c-2fd0-486a-a30a-44bcb3bead4a" Name="GtPortfolioColumnIconName" Required="true" />
+                        <pnp:FieldRef ID="6aefa59f-4300-4c22-94af-d77d05d792f6" Name="GtPortfolioColumn" DisplayName="Kolonne" Required="true" />
+                        <pnp:FieldRef ID="bb6eac2d-9253-4cb9-a934-a9343ce875d2" Name="GtPortfolioColumnValue" DisplayName="Kolonneverdi" Required="true" />
+                        <pnp:FieldRef ID="4cfafd35-e26f-44cf-bb90-47aa65a41827" Name="GtPortfolioColumnColor" DisplayName="Farge" Required="true" />
+                        <pnp:FieldRef ID="d066062c-2fd0-486a-a30a-44bcb3bead4a" Name="GtPortfolioColumnIconName" DisplayName="Ikonnavn" Required="true" />
                     </pnp:FieldRefs>
                     <pnp:DataRows KeyColumn="GtPortfolioColumn" UpdateBehavior="Overwrite">
                         <pnp:DataRow>
