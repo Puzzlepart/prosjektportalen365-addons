@@ -3,7 +3,7 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$ProjectUrl = "https://prosjektportalen.sharepoint.com/sites/Amatrenesinntogsmarsj",
     [Parameter(Mandatory = $false)]
-    [bool]$DryRun = $true
+    [switch]$DryRun
 )
 
 # This script removes a project and all related content from the hub site. This includes (in order of removal):
@@ -13,60 +13,10 @@ Param(
 # - The project entry in the Prosjekter list (there may be multiple)
 
 
-# *** Functions ***
-function Remove-ListItems {
-    param (
-        [Parameter(Mandatory = $true)]
-        [System.Object[]]$ListItems,
-        [Parameter(Mandatory = $false)]
-        [string]$ListName,
-        [Parameter(Mandatory = $true)]
-        $Connection
-    )
-    Write-Host "Removing $($ListItems.Count) items from $ListName"
-    # Create a new batch
-    $batch = New-PnPBatch -Connection $Connection
-
-    # Add delete commands to the batch
-    foreach ($item in $ListItems) {
-        Write-Host "`tRemoving item:     ID:$($item.Id)  Title: $($item["Title"])"
-        if($DryRun){
-            continue
-        }
-        Remove-PnPListItem -List $ListName -Identity $item.Id -Connection $Connection -Batch $batch
-    }
-
-    # Execute the batch
-    Invoke-PnPBatch -Batch $batch -Connection $Connection
-}
-
-function Initialize-Connections {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$ProjectUrl,
-        [Parameter(Mandatory = $true)]
-        $pnpParams,
-        [Parameter(Mandatory = $true)]
-        $connections
-    )
-    # making a primary connection to the project site in order to avoid having to do multiple 
-    # authentications when using -Interactive
-    Connect-PnPOnline -Url $ProjectUrl @pnpParams
-    $pnpParams.ReturnConnection = $true
-
-    # reconnecting and stuffing the connection in our $connections master object
-    $connections.ProjectSite = Connect-PnPOnline -Url $ProjectUrl @pnpParams
-    $projectSite = Get-PnPSite -Connection $connections.ProjectSite -Includes HubSiteId,Id,GroupId
-
-    $hubSiteUrl = $(Get-PnPHubSite -Identity ([string]$projectSite.HubSiteId) -Connection $connections.ProjectSite).SiteUrl
-    # stuffing the hubsite connection in our $connections master object
-    $connections.HubSite = Connect-PnPOnline -Url $hubSiteUrl @pnpParams
-}
-
 # *** Config ***
 
 $pnpParams = @{
-    ReturnConnection = $false
+    ReturnConnection = $true
 }
 
 if($null -ne $PSPrivateMetadata){ #azure runbook context
@@ -107,10 +57,60 @@ $filter = @{
 
 }
 
+# *** Functions ***
+function Remove-ListItems {
+    param (
+        [Parameter(Mandatory = $true)]
+        [System.Object[]]$ListItems,
+        [Parameter(Mandatory = $false)]
+        [string]$ListName,
+        [Parameter(Mandatory = $true)]
+        $Connection
+    )
+    Write-Host "Removing $($ListItems.Count) items from $ListName"
+    # Create a new batch
+    $batch = New-PnPBatch -Connection $Connection
+
+    # Add delete commands to the batch
+    foreach ($item in $ListItems) {
+        Write-Host "`tRemoving item:     ID:$($item.Id)  Title: $($item["Title"])"
+        if($DryRun){
+            continue
+        }
+        Remove-PnPListItem -List $ListName -Identity $item.Id -Connection $Connection -Batch $batch
+    }
+
+    # Execute the batch
+    Invoke-PnPBatch -Batch $batch -Connection $Connection
+}
+
+function Initialize-Connections {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectUrl,
+        [Parameter(Mandatory = $true)]
+        $pnpParams,
+        [Parameter(Mandatory = $true)]
+        $connections
+    )
+
+    # reconnecting and stuffing the connection in our $connections master object
+    $connections.ProjectSite = Connect-PnPOnline -Url $ProjectUrl @pnpParams
+    $projectSite = Get-PnPSite -Connection $connections.ProjectSite -Includes HubSiteId,Id,GroupId
+
+    $hubSiteUrl = $(Get-PnPHubSite -Identity ([string]$projectSite.HubSiteId) -Connection $connections.ProjectSite).SiteUrl
+    # stuffing the hubsite connection in our $connections master object. Reusing auth from project site, assming same credentials
+    $connections.HubSite = Connect-PnPOnline -Url $hubSiteUrl -Connection $connections.ProjectSite @pnpParams
+}
 
 # *** Main ***
 
+if($DryRun) {
+    Write-Host "Running in dry-run mode. No changes will be made" -ForegroundColor Yellow
+}
+
 Initialize-Connections -ProjectUrl $ProjectUrl -pnpParams $pnpParams -connections $connections
+$projectSite = $connections.ProjectSite.Context.Site
 
 # We may in some cases have multiple projects with the same site id. This is an error condition, but needs to be handled
 $projectListItems = @(Get-PnPListItem -List "Prosjekter" -Query ($filter.whereProjectSiteId -f [string]$projectSite.Id) -Connection $connections.HubSite)
