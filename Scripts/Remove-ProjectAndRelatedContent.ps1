@@ -1,10 +1,25 @@
 [CmdletBinding()]
-Param(    
+Param(
     [Parameter(Mandatory = $false)]
-    [string]$ProjectUrl = "https://prosjektportalen.sharepoint.com/sites/Amatrenesinntogsmarsj",
+    [object]$WebhookData,
+    [Parameter(Mandatory = $false)]
+    [string]$ProjectUrl,
     [Parameter(Mandatory = $false)]
     [switch]$DryRun
 )
+
+# Parse webhook data if present
+if ($WebhookData) {
+    $WebhookBody = ConvertFrom-Json -InputObject $WebhookData.RequestBody
+    
+    if ($WebhookBody.ProjectUrl) {
+        $ProjectUrl = $WebhookBody.ProjectUrl
+    }
+    
+    if ($null -ne $WebhookBody.DryRun) {
+        $DryRun = [System.Convert]::ToBoolean($WebhookBody.DryRun)
+    }
+}
 
 # This script removes a project and all related content from the hub site. This includes (in order of removal):
 # - All items in the Tidslinjeinnhold list referencing the project
@@ -30,6 +45,7 @@ if($null -ne $PSPrivateMetadata){ #azure runbook context
 $connections = @{
     ProjectSite = $null
     HubSite = $null
+    TenantAdminSite = $null # Need this explicitly to avoid errors when running in Azure Runbook context
 }
 
 $filter = @{
@@ -67,13 +83,13 @@ function Remove-ListItems {
         [Parameter(Mandatory = $true)]
         $Connection
     )
-    Write-Host "Removing $($ListItems.Count) items from $ListName"
+    Write-Output "Removing $($ListItems.Count) items from $ListName"
     # Create a new batch
     $batch = New-PnPBatch -Connection $Connection
 
     # Add delete commands to the batch
     foreach ($item in $ListItems) {
-        Write-Host "`tRemoving item:     ID:$($item.Id)  Title: $($item["Title"])"
+        Write-Output "`tRemoving item:     ID:$($item.Id)  Title: $($item["Title"])"
         if($DryRun){
             continue
         }
@@ -94,19 +110,23 @@ function Initialize-Connections {
         $connections
     )
 
-    # reconnecting and stuffing the connection in our $connections master object
+    # Connect to the project site
     $connections.ProjectSite = Connect-PnPOnline -Url $ProjectUrl @pnpParams
     $projectSite = Get-PnPSite -Connection $connections.ProjectSite -Includes HubSiteId,Id,GroupId
+    
+    # Connect to tenant admin site
+    $tenantAdminUrl = "$($projectSite.Url.Split('.')[0])-admin.sharepoint.com"
+    $connections.TenantAdminSite = Connect-PnPOnline -Url $tenantAdminUrl @pnpParams
 
-    $hubSiteUrl = $(Get-PnPHubSite -Identity ([string]$projectSite.HubSiteId) -Connection $connections.ProjectSite).SiteUrl
-    # stuffing the hubsite connection in our $connections master object. Reusing auth from project site, assming same credentials
-    $connections.HubSite = Connect-PnPOnline -Url $hubSiteUrl -Connection $connections.ProjectSite @pnpParams
+    # Get hub site URL and connect
+    $hubSiteUrl = $(Get-PnPHubSite -Identity ([string]$projectSite.HubSiteId) -Connection $connections.TenantAdminSite).SiteUrl
+    $connections.HubSite = Connect-PnPOnline -Url $hubSiteUrl @pnpParams
 }
 
 # *** Main ***
 
 if($DryRun) {
-    Write-Host "Running in dry-run mode. No changes will be made" -ForegroundColor Yellow
+    Write-Output "** Running in DryRun mode! No changes will be made **"
 }
 
 Initialize-Connections -ProjectUrl $ProjectUrl -pnpParams $pnpParams -connections $connections
@@ -129,13 +149,13 @@ $projectListItems | ForEach-Object {
     }
 }
 
-Write-Host "Removing Microsoft 365 group, including site: $($projectSite.Url)"
+Write-Output "Removing Microsoft 365 group, including site: $($projectSite.Url)"
 if(-not $DryRun){
     Out-Null | Get-PnPProperty -ClientObject $projectSite -Property GroupId -Connection $connections.ProjectSite #make sure we get the group id, as it is not always included even when requested
     Remove-PnPMicrosoft365Group -Identity $projectSite.GroupId -Connection $connections.HubSite
 }
 
-Write-Host "Removing entries in Prosjekter list"
+Write-Output "Removing entries in Prosjekter list"
 Remove-ListItems -ListItems $projectListItems -ListName "Prosjekter" -Connection $connections.HubSite
 
-Write-Host "Done!"
+Write-Output "Done!"
