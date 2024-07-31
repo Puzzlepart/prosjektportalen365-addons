@@ -10,7 +10,7 @@ $GraphPermissionScopes = @(
   "RoleManagement.ReadWrite.Directory"
 )
 
-Connect-MgGraph -Scopes "Application.Read.All", "AppRoleAssignment.ReadWrite.All,RoleManagement.ReadWrite.Directory"
+Connect-MgGraph -Scopes "Application.Read.All,AppRoleAssignment.ReadWrite.All,RoleManagement.ReadWrite.Directory"
 
 $ManagedIdentity = Get-MgServicePrincipal -ServicePrincipalId $ManagedIdentityId
 
