@@ -28,6 +28,7 @@
                                 <FieldRef Name="URL" />
                                 <FieldRef Name="IconName" />
                                 <FieldRef Name="GtSearchQuery" />
+                                <FieldRef Name="GtTermSetId" />
                             </ViewFields>
                             <RowLimit Paged="TRUE">30</RowLimit>
                             <JSLink>clienttemplates.js</JSLink>
@@ -37,6 +38,7 @@
                     <pnp:Fields>
                         <Field DisplayName="URL" Format="Dropdown" MaxLength="255" Name="URL" Title="URL" Type="Text" ID="{0b20344b-bc06-4f89-b256-32f79d319c36}" SourceID="{{listid:Prosjektoversiktkonfigurasjon}}" StaticName="URL" ColName="nvarchar4" RowOrdinal="0" />
                         <Field DisplayName="IconName" Format="Dropdown" MaxLength="255" Name="IconName" Title="IconName" Type="Text" ID="{ffe24201-3acd-4933-bcdb-8e7d9c09a500}" SourceID="{{listid:Prosjektoversiktkonfigurasjon}}" StaticName="IconName" ColName="nvarchar5" RowOrdinal="0" />
+                        <Field Type="Text" DisplayName="TermSet ID" ID="{d648c99a-e920-4a34-9c78-23a6f759d9ac}" StaticName="GtTermSetId" Name="GtTermSetId" />
                         <Field Type="Text" DisplayName="Søkespørring" ID="{31e405e0-2890-439d-9c9f-42354154feda}" StaticName="GtSearchQuery" Name="GtSearchQuery">
                             <Default>DepartmentId:{{sitecollectionid}} ContentTypeId:0x0100805E9E4FEAAB4F0EABAB2600D30DB70C* -GtProjectLifecycleStatusOWSCHCS="Avsluttet"</Default>
                         </Field>

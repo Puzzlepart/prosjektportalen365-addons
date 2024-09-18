@@ -20,6 +20,7 @@ const PortfolioSelector = ({
                 key: `conf_${conf.id.toString()}`,
                 name: conf.title,
                 iconProps: { iconName: conf.iconName },
+                termStoreId: conf.termSetId,
                 canCheck: true,
                 checked: conf.id === state.selectedPortfolio.id,
                 onClick: () => {

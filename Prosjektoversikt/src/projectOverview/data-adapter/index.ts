@@ -134,7 +134,7 @@ export class DataAdapter {
     const list = sp.web.lists.getByTitle(CONFIG_LIST_NAME);
     const items = await list.items
       .top(500)
-      .select('ID', 'Title', 'URL', 'IconName', 'GtSearchQuery')
+      .select('ID', 'Title', 'URL', 'IconName', 'GtSearchQuery', 'GtTermSetId')
       .get<IPortfolioItem[]>();
     return items.map((item) => new Portfolio(item));
   }
@@ -171,7 +171,7 @@ export class DataAdapter {
     this.current = config;
     this.site = new Site(this.current.url);
     const { Id: siteId } = await this.site.select('Id').get<{ Id: string }>();
-    const _phaseTermSetId = await this.getPhaseFieldTermSetId();
+    const _phaseTermSetId = this.current.termSetId ?? await this.getPhaseFieldTermSetId();
     const projectsList = this.site.rootWeb.lists.getByTitle(PROJECTS_LIST_NAME);
     const projectStatusList = this.site.rootWeb.lists.getByTitle(PROJECT_STATUS_LIST_NAME);
     const statusSectionsList = this.site.rootWeb.lists.getByTitle(STATUS_SECTIONS_LIST_NAME);

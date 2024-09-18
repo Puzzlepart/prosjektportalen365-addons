@@ -4,6 +4,7 @@ export interface IPortfolioItem {
     URL: string;
     IconName: string;
     GtSearchQuery: string;
+    GtTermSetId: string;
 }
 
 export class Portfolio {
@@ -11,6 +12,7 @@ export class Portfolio {
     public title: string;
     public url: string;
     public iconName: string;
+    public termSetId: string;
     public searchQuery: string;
     public hoverColumns: any[];
 
@@ -18,6 +20,7 @@ export class Portfolio {
         this.id = item.ID;
         this.title = item.Title;
         this.url = item.URL;
+        this.termSetId = item.GtTermSetId;
         this.iconName = item.IconName;
         this.searchQuery = item.GtSearchQuery;
     }
