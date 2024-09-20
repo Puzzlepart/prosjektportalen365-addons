@@ -1,0 +1,25 @@
+﻿<pnp:ListInstance Title="Datakilder" TemplateType="100" Url="Lists/Datakilder" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false"
+    xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtDataSourceId">43c69276-ad27-461c-803c-4d037691d7e5</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100887D4D4A764049598753E185A1D39419* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtIconName">BacklogList</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">Portefølje</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtDataSourceId">1d85e82f-1d7e-4905-8920-1cf042eddd3a</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer for underområder</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100887D4D4A764049598753E185A1D39419* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtIconName">BacklogList</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">Overordnet/Program</pnp:DataValue>
+        </pnp:DataRow>
+    </pnp:DataRows>
+</pnp:ListInstance>
