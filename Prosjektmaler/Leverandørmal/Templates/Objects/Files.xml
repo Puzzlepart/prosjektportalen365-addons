@@ -1,0 +1,14 @@
+<pnp:Files xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:File Src="ProjectExtensions/Leverandørmal.txt" Folder="Prosjekttillegg" Level="Published" Overwrite="true">
+        <pnp:Properties>
+            <pnp:Property Key="Title" Value="Leverandørmal" />
+            <pnp:Property Key="GtDescription" Value="Tilpasninger for leverandørprosjekter" />
+        </pnp:Properties>
+    </pnp:File>
+    <pnp:File Src="ProjectExtensions/Overordnet-leverandørmal.txt" Folder="Prosjekttillegg" Level="Published" Overwrite="true">
+        <pnp:Properties>
+            <pnp:Property Key="Title" Value="Overordnet leverandørmal" />
+            <pnp:Property Key="GtDescription" Value="Tilpasninger for overordnet leverandørprosjekt" />
+        </pnp:Properties>
+    </pnp:File>
+</pnp:Files>

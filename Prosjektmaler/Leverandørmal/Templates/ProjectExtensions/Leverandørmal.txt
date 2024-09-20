@@ -1,0 +1,163 @@
+{
+  "ContentTypes": [
+    {
+      "ID": "0x0100887D4D4A764049598753E185A1D39419",
+      "Name": "Prosjektsikkerhetsloggelement",
+      "Description": "",
+      "Group": "Prosjektportalen innholdstyper",
+      "FieldRefs": [
+        {
+          "ID": "2391d165-5d13-46b7-87d2-e32040293210",
+          "Name": "GtProjectLogType"
+        },
+        {
+          "ID": "49b0ba6b-d1ec-4644-91b7-691a33524c90",
+          "Name": "GtProjectLogReporter"
+        },
+        {
+          "ID": "a3462545-ac76-4681-96b4-f883fea4b2ba",
+          "Name": "GtProjectLogDescription"
+        },
+        {
+          "ID": "7838332a-cf7f-47d5-924f-8c6d134935ea",
+          "Name": "GtProjectLogResponsible"
+        },
+        {
+          "ID": "7b424ee7-bcc8-490a-8c4c-01637da03347",
+          "Name": "GtProjectLogConsequence"
+        },
+        {
+          "ID": "6aad1f97-ba6f-4865-b325-9deea7bd0564",
+          "Name": "GtProjectLogRecommendation"
+        },
+        {
+          "ID": "832a2eeb-5709-40b4-9f7c-04ae67ddd86b",
+          "Name": "GtProjectLogExperience"
+        },
+        {
+          "ID": "6539658a-b186-402c-b224-9fb41cb48596",
+          "Name": "GtProjectLogActors"
+        }
+      ]
+    }
+  ],
+  "Navigation": {
+    "QuickLaunch": [
+      {
+        "Url": "SitePages/Hjem.aspx",
+        "Title": "Hjem"
+      },
+      {
+        "Url": "Lists/Prosjektlogg/AllItems.aspx",
+        "Title": "Prosjektlogg"
+      },
+      {
+        "Url": "Lists/Prosjektsikkerhetslogg/AllItems.aspx",
+        "Title": "Prosjektlogg SHA"
+      },
+      {
+        "Url": "Dokumenter/Forms/AllItems.aspx",
+        "Title": "Dokumenter"
+      },
+      {
+        "Url": "_layouts/15/viewlsts.aspx",
+        "Title": "Områdeinnhold"
+      }
+    ]
+  },
+  "WebSettings": {
+    "WelcomePage": "SitePages/Hjem.aspx"
+  },
+  "ClientSidePages": [
+    {
+      "Name": "Hjem.aspx",
+      "Title": "Hjem",
+      "PageLayoutType": "Home",
+      "CommentsDisabled": true,
+      "VerticalSection": [
+        {
+          "Id": "183a4b49-c2ee-4917-8f58-07c31e81733d",
+          "Properties": {
+            "title": "Prosjektinformasjon",
+            "hideStatusReport": true,
+            "adminPageLink": "Admin.aspx"
+          }
+        }
+      ],
+      "Sections": [
+        {
+          "Columns": [
+            {
+              "Factor": 12,
+              "Controls": [
+                {
+                  "Id": "f92bf067-bc19-489e-a556-7fe95f508720",
+                  "Properties": {
+                    "isDocumentLibrary": false,
+                    "selectedListId": "{listid:Prosjektlogg}",
+                    "webpartHeightKey": 4
+                  }
+                },
+                {
+                  "Id": "f92bf067-bc19-489e-a556-7fe95f508720",
+                  "Properties": {
+                    "isDocumentLibrary": false,
+                    "selectedListId": "{listid:Prosjektsikkerhetslogg}",
+                    "webpartHeightKey": 4
+                  }
+                },
+                {
+                  "Id": "f92bf067-bc19-489e-a556-7fe95f508720",
+                  "Properties": {
+                    "isDocumentLibrary": true,
+                    "selectedListId": "{listid:Dokumenter}",
+                    "webpartHeightKey": 4
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Lists": [
+    {
+      "Title": "Prosjektsikkerhetslogg",
+      "Description": "",
+      "Template": 100,
+      "ContentTypesEnabled": false,
+      "RemoveExistingContentTypes": true,
+      "ContentTypeBindings": [
+        {
+          "ContentTypeID": "0x0100887D4D4A764049598753E185A1D39419"
+        }
+      ],
+      "AdditionalSettings": {
+        "EnableVersioning": true
+      },
+      "Fields": [
+        "<Field Type=\"Lookup\" DisplayName=\"Påvirker leveranse\" List=\"{listid:Prosjektleveranser}\" ShowField=\"Title\" ID=\"{022cc93f-13df-4420-bd47-55e4fdae5d18}\" Description=\"Hvis relevant, oppgi hvilken leveranse loggelementet påvirker\" StaticName=\"GtProjectLogProductLookup\" Name=\"GtProjectLogProductLookup\" />"
+      ],
+      "Views": [
+        {
+          "Title": "Alle elementer",
+          "ViewFields": [
+            "LinkTitle",
+            "GtProjectLogType",
+            "GtProjectLogReporter",
+            "GtProjectLogResponsible",
+            "GtProjectLogConsequence",
+            "GtProjectLogRecommendation",
+            "GtProjectLogExperience"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 30,
+            "Paged": true,
+            "ViewQuery": ""
+          }
+        }
+      ]
+    }
+  ]
+}

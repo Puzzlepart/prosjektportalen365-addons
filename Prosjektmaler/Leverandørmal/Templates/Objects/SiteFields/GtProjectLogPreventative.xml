@@ -1,0 +1,1 @@
+<Field ID="{ca5fbd6d-30f5-45eb-a3fe-42d3e641b55b}" Name="GtProjectLogPreventative" DisplayName="Forebyggende tiltak" Type="Text" Group="Kolonner for Prosjektportalen (Prosjekt)" Description="Forebyggende tiltak for hendelsen" MaxLength="255" StaticName="GtProjectLogPreventative" />

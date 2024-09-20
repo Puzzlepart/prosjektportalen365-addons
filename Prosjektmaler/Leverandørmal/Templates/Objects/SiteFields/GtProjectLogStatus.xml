@@ -1,0 +1,1 @@
+<Field ID="{66337e99-dfd8-4a34-a223-0e4bad699d42}" Name="GtProjectLogStatus" DisplayName="Status" Type="Choice" Group="Kolonner for Prosjektportalen (Prosjekt)" Description="Gjeldende status for hendelsen" FillInChoice="FALSE" StaticName="GtProjectLogStatus"><CHOICES><CHOICE>Ny</CHOICE><CHOICE>Pågår</CHOICE><CHOICE>Løst</CHOICE><CHOICE>Arkivert</CHOICE></CHOICES></Field>
