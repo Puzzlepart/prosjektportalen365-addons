@@ -40,15 +40,13 @@ $SiteDesignThumbnail = "https://publiccdn.sharepointonline.com/prosjektportalen.
 
 $SiteScriptIds = @()
 
+$Content = (Get-Content -Path "./SiteScripts/Sikkerhetsloggelement.txt" -Raw | Out-String)
+$SiteScript = Add-PnPSiteScript -Title "Innholdstype - Sikkerhetslogg" -Content $Content
+
 $SiteScripts = Get-PnPSiteScript
 foreach ($SiteScript in $SiteScripts) {
     $SiteScriptIds += $SiteScript.Id.Guid
 }
-
-$Content = (Get-Content -Path "./SiteScripts/Prosjektsikkerhetsloggelement.txt" -Raw | Out-String)
-$SiteScript = Add-PnPSiteScript -Title "Innholdstype - Prosjektsikkerhetslogg" -Content $Content
-
-Get-PnPSiteScript
 
 $SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
 $SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptIds -Description $SiteDesignDesc -Version "1" -ThumbnailUrl $SiteDesignThumbnail

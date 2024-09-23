@@ -1,1 +1,1 @@
-<Field ID="{ad30475c-c6b1-4996-9428-407a1e92669e}" Name="GtProjectLogSolution" DisplayName="Umiddelbare tiltak" Type="Text" Group="Kolonner for Prosjektportalen (Prosjekt)" Description="Umiddelbare tiltak for hendelsen" MaxLength="255" StaticName="GtProjectLogSolution" />
+<Field ID="{ad30475c-c6b1-4996-9428-407a1e92669e}" Name="GtProjectLogSolution" DisplayName="Umiddelbare tiltak" Type="Text" Group="Kolonner for leverandørmal" Description="Umiddelbare tiltak for hendelsen" MaxLength="255" StaticName="GtProjectLogSolution" />
