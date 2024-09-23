@@ -7,6 +7,14 @@
       "Group": "Prosjektportalen innholdstyper",
       "FieldRefs": [
         {
+          "ID": "4a285fa5-7581-4c5f-afe0-92c2ced6cf1e",
+          "Name": "GtProjectLogDate"
+        },
+        {
+          "ID": "01718c0e-0826-46dc-9128-29e69af93064",
+          "Name": "GtProjectLogIncidentType"
+        },
+        {
           "ID": "f2dff6d0-46a2-4d62-97d5-f64087a1e752",
           "Name": "GtProjectLogNature"
         },
@@ -129,7 +137,9 @@
         {
           "Title": "Alle elementer",
           "ViewFields": [
+            "GtProjectLogDate",
             "LinkTitle",
+            "GtProjectLogIncidentType",
             "GtProjectLogNature",
             "GtProjectLogDetails",
             "GtProjectLogCause",
@@ -151,6 +161,7 @@
           "Title": "Pågående hendelser",
           "ViewFields": [
             "LinkTitle",
+            "GtProjectLogIncidentType",
             "GtProjectLogSeverityLevel",
             "GtProjectLogStatus",
             "GtProjectLogAccountable",
