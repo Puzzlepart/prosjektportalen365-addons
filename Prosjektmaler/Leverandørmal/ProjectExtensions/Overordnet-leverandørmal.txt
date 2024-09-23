@@ -95,7 +95,7 @@
                   "Properties": {
                     "title": "Sikkerhetsloggelementer for underområder",
                     "dataSource": "Alle sikkerhetsloggelementer for underområder",
-                    "dataSourceCategory": "Erfaringslogg",
+                    "dataSourceCategory": "Sikkerhetslogg",
                     "dataSourceLevel": "Overordnet/Program",
                     "showCommandBar": true,
                     "showViewSelector": true,

@@ -19,8 +19,9 @@ Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å inst
 1. Last ned release-pakken fra releases og pakk ut pakken lokalt
 2. Kjør kommandoer under for å installere oppsettet
 3. Du kan nå opprette nye prosjekter og velge malen som heter `Leverandørmal`
-4. Knytte opp de nye prosjekttilleggene til de nye malene.
-5. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene
+4. Ny aggregert oversikt på portefølje, `Sikkerhetslogg`
+5. Knytte opp de nye prosjekttilleggene til de nye malene.
+6. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene
 
 ```pwsh
 

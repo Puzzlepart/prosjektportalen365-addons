@@ -7,7 +7,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogDate</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogDateOWSDATE</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">120</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
@@ -17,7 +17,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogIncidentType</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogIncidentTypeOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -28,7 +28,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogNature</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogNatureOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -39,7 +39,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogCause</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogCauseOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -50,7 +50,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogSeverityLevel</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogSeverityLevelOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -61,7 +61,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogSolution</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogSolutionOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -72,7 +72,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogPreventative</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogPreventativeOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -83,7 +83,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogAccountable</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogAccountableOWSUSER</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">User</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -94,7 +94,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogStatus</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogStatusOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
@@ -105,7 +105,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogMedia</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogMediaOWSURLH</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">URL</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
         </pnp:DataRow>
@@ -115,7 +115,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogDetails</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogDetailsOWSMTXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Note</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">320</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
