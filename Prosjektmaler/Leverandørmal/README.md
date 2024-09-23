@@ -19,10 +19,20 @@ Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å inst
 1. Last ned release-pakken fra releases og pakk ut pakken lokalt
 2. Kjør kommandoer under for å installere oppsettet
 3. Du kan nå opprette nye prosjekter og velge malen som heter `Leverandørmal`
+4. Knytte opp de nye prosjekttilleggene til de nye malene.
+5. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene
+
+```pwsh
 
 Eksempel:
 
 ```pwsh
-Connect-PnPOnline "Url til prosjektportalen" -Interactive -ClientId da6c31a6-b557-4ac3-9994-7315da06ea3a 
+Connect-PnPOnline "Url til prosjektportalen" -Interactive -ClientId da6c31a6-b557-4ac3-9994-7315da06ea3a
 Invoke-PnPSiteTemplate -Path ./xx.xml
+
+# Update sitedesign for Prosjektportalen with the new contenttype
+$siteDesign = Get-PnPSiteDesign -Identity "Prosjektportalen"
+Set-P...
 ```
+
+TODO: Lage installasjonsscript for å gjøre dette enklere. Samt utføre de manuelle operasjonene.
