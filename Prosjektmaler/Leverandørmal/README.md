@@ -1,35 +1,28 @@
 # Leverandørmal for Prosjektportalen 365
 
-[![version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://semver.org)
+Leverandørmalen for Prosjektportalen er en samling felter, webdeler og tillegg som sammen utgjør en mal for leverdørprosjekter. Leverandørmalen er blitt utarbeidet i samarbeid med Stord kommune, og Puzzlepart har satt opp dette som mal for deling på GitHub. Videre forvaltning vil gjøres primært av Puzzlepart, og vi ønsker innspill på innholdet i malen. For spørsmål og innspill, logg gjerne en issue i dette området på GitHub eller send oss en e-post på <prosjektportalen@puzzlepart.com>.
 
-Veimodulen for Prosjektportalen er en samling komponenter som sammen utgjør en mal for veiprosjekter. Veimodulen er blitt utarbeidet av Rogaland fylkeskommune, og Puzzlepart har bistått i å ekstrahere tilpasningene som mal for deling på GitHub. Videre forvaltning vil gjøres primært av Puzzlepart, og vi ønsker innspill på innholdet i malen. For spørsmål og innspill, logg gjerne en issue i dette området på GitHub eller send oss en e-post på <prosjektportalen@puzzlepart.com>.
+Leverandørmalen installeres som tillegg til Prosjektportalen 365. Ved å installere leverandørmalen vil man få følgende satt opp i porteføljeområdet
 
-Veimodulen installeres som et tillegg til Prosjektportalen 365. Ved å installere veimodulen vil man få følgende satt opp i porteføljeområdet
-
-1. En ny prosjektmal `Veiprosjekt` som man kan bruke som mal for nye prosjekter
-2. En ny fasesjekkliste `Fasesjekkliste Vei` med egne fasesjekkpunkter for veiprosjekter. Fasesjekklisten har også ny kolonne `Forankret i` for å indikere hvor fasesjekkpunktet er forankret
-3. En ny liste for planneroppgaver `Planneroppgaver Vei` med egne oppgaver for veiprosjekter
-4. Et nytt dokumentbibliotek `Standarddokumenter Vei` med egen folderstruktur som følger fasene
-5. Fasene i veiprosjekter er `Planlegge`, `Prosjektere`, `Bygge` og `Avslutte`
-6. Dokumentbiblioteket i veiprosjekter har fått to nye kolonner `Fag` og `Emne` (taksonomi)
-7. Nye prosjektegenskaper i veiprosjekter for ansvar i fasene
+1. To nye prosjekttillegg, `Leverandørmal` og `Overordnet-leverandørmal`
+2. En ny liste `Prosjektsikkerhetslogg` med egne kolonner
+3. En ny webdel for overordnede prosjekter, `Sikkerhetsloggelementer for underområder` som viser aggregert sikkerhetslogg for underområder.
 
 ## Installasjon
 
 Forutsetninger:
 
 - Du har installert Prosjektportalen 365 på et område
-- Du er Term Store Administrator (pga. nye termer)
-- Du er SharePoint Administrator (pga. søkekonfigurasjon)
 
-Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å installere med samme versjon som kommer med Prosjektportalen 365, som per 21.12.2023 er PnP.PowerShell 1.11.0.
+Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å installere med samme versjon som kommer med Prosjektportalen 365, som per 23.09.2024 er PnP.PowerShell 1.12.0.
 
 1. Last ned release-pakken fra releases og pakk ut pakken lokalt
-2. Kjør Install.ps1 med -Url parameter til din Prosjektportalen-installasjon (PP365 må være installert på forhånd)
-3. Du kan nå opprette nye prosjekter og velge malen som heter `Veiprosjekt`
+2. Kjør kommandoer under for å installere oppsettet
+3. Du kan nå opprette nye prosjekter og velge malen som heter `Leverandørmal`
 
 Eksempel:
 
 ```pwsh
-.\Install.ps1 -Url https://puzzlepart.sharepoint.com/sites/ppveimodul
+Connect-PnPOnline "Url til prosjektportalen" -Interactive -ClientId da6c31a6-b557-4ac3-9994-7315da06ea3a 
+Invoke-PnPSiteTemplate -Path ./xx.xml
 ```
