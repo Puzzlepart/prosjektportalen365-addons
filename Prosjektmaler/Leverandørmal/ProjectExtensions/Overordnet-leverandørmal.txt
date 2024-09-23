@@ -62,7 +62,7 @@
               "Factor": 12,
               "Controls": [
                 {
-                  "Id": "455cb52f-48ef-4fa1-8984-7ec0176b2d51",
+                  "Id": "37c7e990-483d-4f70-b9b9-def1790817e7",
                   "Properties": {
                     "title": "Loggelementer for underområder",
                     "dataSource": "Alle loggelementer for underområder",
@@ -91,7 +91,7 @@
               "Factor": 12,
               "Controls": [
                 {
-                  "Id": "455cb52f-48ef-4fa1-8984-7ec0176b2d51",
+                  "Id": "37c7e990-483d-4f70-b9b9-def1790817e7",
                   "Properties": {
                     "title": "Sikkerhetsloggelementer for underområder",
                     "dataSource": "Alle sikkerhetsloggelementer for underområder",
