@@ -1,1 +1,1 @@
-<Field ID="{c76d6b32-e13f-4814-bd60-216a3df5105f}" Name="GtProjectLogMedia" DisplayName="Media" Type="URL" Group="Kolonner for Prosjektportalen (Prosjekt)" Description="Umiddelbare tiltak for hendelsen" Format="Hyperlink" StaticName="GtProjectLogMedia" />
+<Field ID="{c76d6b32-e13f-4814-bd60-216a3df5105f}" Name="GtProjectLogMedia" DisplayName="Media" Type="URL" Group="Kolonner for leverandørmal" Description="Umiddelbare tiltak for hendelsen" Format="Hyperlink" StaticName="GtProjectLogMedia" />

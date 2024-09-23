@@ -4,8 +4,8 @@
         {
             "verb": "createContentType",
             "description": "",
-            "id": "0x0100887D4D4A764049598753E185A1D39419",
-            "name": "Prosjektsikkerhetsloggelement",
+            "id": "0x01003B441A4AF5624755A74D73226AE8636A",
+            "name": "Sikkerhetsloggelement",
             "hidden": false
         }
     ],
