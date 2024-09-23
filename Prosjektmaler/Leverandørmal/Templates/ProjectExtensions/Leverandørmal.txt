@@ -7,36 +7,52 @@
       "Group": "Prosjektportalen innholdstyper",
       "FieldRefs": [
         {
-          "ID": "2391d165-5d13-46b7-87d2-e32040293210",
-          "Name": "GtProjectLogType"
+          "ID": "4a285fa5-7581-4c5f-afe0-92c2ced6cf1e",
+          "Name": "GtProjectLogDate"
+        },
+        {
+          "ID": "66337e99-dfd8-4a34-a223-0e4bad699d42",
+          "Name": "GtProjectLogIncidentType"
+        },
+        {
+          "ID": "f2dff6d0-46a2-4d62-97d5-f64087a1e752",
+          "Name": "GtProjectLogNature"
+        },
+        {
+          "ID": "1117c0e8-b777-4fc1-931a-2c011f8b75d1",
+          "Name": "GtProjectLogDetails"
+        },
+        {
+          "ID": "f79f2d13-549d-498e-9dbe-30fefdd85539",
+          "Name": "GtProjectLogCause"
+        },
+        {
+          "ID": "a66c9a8c-097a-4237-bb6f-aa991937fc8f",
+          "Name": "GtProjectLogSeverityLevel"
+        },
+        {
+          "ID": "ad30475c-c6b1-4996-9428-407a1e92669e",
+          "Name": "GtProjectLogSolution"
+        },
+        {
+          "ID": "ca5fbd6d-30f5-45eb-a3fe-42d3e641b55b",
+          "Name": "GtProjectLogPreventative"
+        },
+        {
+          "ID": "7838332a-cf7f-47d5-924f-8c6d134935ea",
+          "Name": "GtProjectLogAccountable"
         },
         {
           "ID": "49b0ba6b-d1ec-4644-91b7-691a33524c90",
           "Name": "GtProjectLogReporter"
         },
         {
-          "ID": "a3462545-ac76-4681-96b4-f883fea4b2ba",
-          "Name": "GtProjectLogDescription"
+          "ID": "66337e99-dfd8-4a34-a223-0e4bad699d42",
+          "Name": "GtProjectLogStatus"
         },
         {
-          "ID": "7838332a-cf7f-47d5-924f-8c6d134935ea",
-          "Name": "GtProjectLogResponsible"
-        },
-        {
-          "ID": "7b424ee7-bcc8-490a-8c4c-01637da03347",
-          "Name": "GtProjectLogConsequence"
-        },
-        {
-          "ID": "6aad1f97-ba6f-4865-b325-9deea7bd0564",
-          "Name": "GtProjectLogRecommendation"
-        },
-        {
-          "ID": "832a2eeb-5709-40b4-9f7c-04ae67ddd86b",
-          "Name": "GtProjectLogExperience"
-        },
-        {
-          "ID": "6539658a-b186-402c-b224-9fb41cb48596",
-          "Name": "GtProjectLogActors"
+          "ID": "c76d6b32-e13f-4814-bd60-216a3df5105f",
+          "Name": "GtProjectLogMedia"
         }
       ]
     }
@@ -136,25 +152,45 @@
       "AdditionalSettings": {
         "EnableVersioning": true
       },
-      "Fields": [
-        "<Field Type=\"Lookup\" DisplayName=\"Påvirker leveranse\" List=\"{listid:Prosjektleveranser}\" ShowField=\"Title\" ID=\"{022cc93f-13df-4420-bd47-55e4fdae5d18}\" Description=\"Hvis relevant, oppgi hvilken leveranse loggelementet påvirker\" StaticName=\"GtProjectLogProductLookup\" Name=\"GtProjectLogProductLookup\" />"
-      ],
       "Views": [
         {
           "Title": "Alle elementer",
           "ViewFields": [
+            "GtProjectLogDate",
             "LinkTitle",
-            "GtProjectLogType",
+            "GtProjectLogIncidentType",
+            "GtProjectLogNature",
+            "GtProjectLogDetails",
+            "GtProjectLogCause",
+            "GtProjectLogSeverityLevel",
+            "GtProjectLogSolution",
+            "GtProjectLogPreventative",
+            "GtProjectLogAccountable",
             "GtProjectLogReporter",
-            "GtProjectLogResponsible",
-            "GtProjectLogConsequence",
-            "GtProjectLogRecommendation",
-            "GtProjectLogExperience"
+            "GtProjectLogStatus",
+            "GtProjectLogMedia"
           ],
           "AdditionalSettings": {
             "RowLimit": 30,
             "Paged": true,
             "ViewQuery": ""
+          }
+        },
+        {
+          "Title": "Pågående hendelser",
+          "ViewFields": [
+            "LinkTitle",
+            "GtProjectLogIncidentType",
+            "GtProjectLogSeverityLevel",
+            "GtProjectLogStatus",
+            "GtProjectLogAccountable",
+            "GtProjectLogReporter",
+            "GtProjectLogMedia"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 30,
+            "Paged": true,
+            "ViewQuery": "<Where><Eq><FieldRef Name= \"GtProjectLogStatus\" /><Value Type= \"Text\">Pågår</Value></Eq></Where>"
           }
         }
       ]

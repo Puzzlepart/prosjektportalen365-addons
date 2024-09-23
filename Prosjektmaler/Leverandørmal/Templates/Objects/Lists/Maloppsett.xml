@@ -5,7 +5,7 @@
       <pnp:DataValue FieldName="Title">Leverandørmal</pnp:DataValue>
       <pnp:DataValue FieldName="Order">300</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectTemplate">1</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C0L</pnp:DataValue>
+      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectStatusContentType">0x010022252E35737A413FB56A1BA53862F6D5</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectColumns">Kolonner for Prosjektportalen (Prosjekt)</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectCustomColumns">Egendefinerte kolonner for Prosjektportalen</pnp:DataValue>
@@ -19,7 +19,7 @@
       <pnp:DataValue FieldName="Title">Overordnet leverandørmal</pnp:DataValue>
       <pnp:DataValue FieldName="Order">310</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectTemplate">2</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C0L</pnp:DataValue>
+      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectStatusContentType">0x010022252E35737A413FB56A1BA53862F6D5</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectColumns">Kolonner for Prosjektportalen (Prosjekt)</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectCustomColumns">Egendefinerte kolonner for Prosjektportalen</pnp:DataValue>

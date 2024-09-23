@@ -2,6 +2,16 @@
     xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
     <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
         <pnp:DataRow>
+            <pnp:DataValue FieldName="GtDataSourceId">f85f0381-8585-4c17-a2a3-b9c6cf0ae0ff</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alle loggelementer for underområder</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x01004EDD18CB92C14EBA97103D909C897810* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentColumns">1,11,12,13,14,15,48,49</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentRefiners">12,13,48,49</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIconName">BacklogList</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">Overordnet/Program</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
             <pnp:DataValue FieldName="GtDataSourceId">43c69276-ad27-461c-803c-4d037691d7e5</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer</pnp:DataValue>
             <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100887D4D4A764049598753E185A1D39419* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
