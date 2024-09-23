@@ -31,6 +31,14 @@
           "Name": "GtProjectLogPreventative"
         },
         {
+          "ID": "cf14b56f-65f6-41de-8ace-27457b4731e5",
+          "Name": "GtProjectLogAccountable"
+        },
+        {
+          "ID": "49b0ba6b-d1ec-4644-91b7-691a33524c90",
+          "Name": "GtProjectLogReporter"
+        },
+        {
           "ID": "66337e99-dfd8-4a34-a223-0e4bad699d42",
           "Name": "GtProjectLogStatus"
         },
@@ -128,6 +136,8 @@
             "GtProjectLogSeverityLevel",
             "GtProjectLogSolution",
             "GtProjectLogPreventative",
+            "GtProjectLogAccountable",
+            "GtProjectLogReporter",
             "GtProjectLogStatus",
             "GtProjectLogMedia"
           ],
@@ -143,6 +153,8 @@
             "LinkTitle",
             "GtProjectLogSeverityLevel",
             "GtProjectLogStatus",
+            "GtProjectLogAccountable",
+            "GtProjectLogReporter",
             "GtProjectLogMedia"
           ],
           "AdditionalSettings": {
