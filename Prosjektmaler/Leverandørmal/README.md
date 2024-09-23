@@ -32,8 +32,26 @@ Connect-PnPOnline "Url til prosjektportalen" -Interactive -ClientId da6c31a6-b55
 Invoke-PnPSiteTemplate -Path ./xx.xml
 
 # Update sitedesign for Prosjektportalen with the new contenttype
-$siteDesign = Get-PnPSiteDesign -Identity "Prosjektportalen"
-Set-P...
+$SiteDesignName = "Prosjektomr%C3%A5de"
+
+$SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
+$SiteDesignDesc = [Uri]::UnescapeDataString("Samarbeid i et prosjektomr%C3%A5de fra Prosjektportalen")
+$SiteDesignThumbnail = "https://publiccdn.sharepointonline.com/prosjektportalen.sharepoint.com/sites/ppassets/Thumbnails/prosjektomrade.png"
+
+$SiteScriptIds = @()
+
+$SiteScripts = Get-PnPSiteScript
+foreach ($SiteScript in $SiteScripts) {
+    $SiteScriptIds += $SiteScript.Id.Guid
+}
+
+$Content = (Get-Content -Path "./SiteScripts/Prosjektsikkerhetsloggelement.txt" -Raw | Out-String)
+$SiteScript = Add-PnPSiteScript -Title "Innholdstype - Prosjektsikkerhetslogg" -Content $Content
+
+Get-PnPSiteScript
+
+$SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
+$SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptIds -Description $SiteDesignDesc -Version "1" -ThumbnailUrl $SiteDesignThumbnail
 ```
 
 TODO: Lage installasjonsscript for å gjøre dette enklere. Samt utføre de manuelle operasjonene.

@@ -92,7 +92,7 @@
       "CommentsDisabled": true,
       "VerticalSection": [
         {
-          "Id": "183a4b49-c2ee-4917-8f58-07c31e81733d",
+          "Id": "b8bec0be-2354-443d-a3ca-24b36e8ea7dc",
           "Properties": {
             "title": "Prosjektinformasjon",
             "hideStatusReport": true,
@@ -152,6 +152,68 @@
       "AdditionalSettings": {
         "EnableVersioning": true
       },
+      "FieldRefs": [
+        {
+          "ID": "4a285fa5-7581-4c5f-afe0-92c2ced6cf1e",
+          "Name": "GtProjectLogDate",
+          "Required": false
+        },
+        {
+          "ID": "01718c0e-0826-46dc-9128-29e69af93064",
+          "Name": "GtProjectLogIncidentType",
+          "Required": false
+        },
+        {
+          "ID": "f2dff6d0-46a2-4d62-97d5-f64087a1e752",
+          "Name": "GtProjectLogNature",
+          "Required": false
+        },
+        {
+          "ID": "1117c0e8-b777-4fc1-931a-2c011f8b75d1",
+          "Name": "GtProjectLogDetails",
+          "Required": false
+        },
+        {
+          "ID": "f79f2d13-549d-498e-9dbe-30fefdd85539",
+          "Name": "GtProjectLogCause",
+          "Required": false
+        },
+        {
+          "ID": "a66c9a8c-097a-4237-bb6f-aa991937fc8f",
+          "Name": "GtProjectLogSeverityLevel",
+          "Required": false
+        },
+        {
+          "ID": "ad30475c-c6b1-4996-9428-407a1e92669e",
+          "Name": "GtProjectLogSolution",
+          "Required": false
+        },
+        {
+          "ID": "ca5fbd6d-30f5-45eb-a3fe-42d3e641b55b",
+          "Name": "GtProjectLogPreventative",
+          "Required": false
+        },
+        {
+          "ID": "7838332a-cf7f-47d5-924f-8c6d134935ea",
+          "Name": "GtProjectLogAccountable",
+          "Required": false
+        },
+        {
+          "ID": "49b0ba6b-d1ec-4644-91b7-691a33524c90",
+          "Name": "GtProjectLogReporter",
+          "Required": false
+        },
+        {
+          "ID": "66337e99-dfd8-4a34-a223-0e4bad699d42",
+          "Name": "GtProjectLogStatus",
+          "Required": false
+        },
+        {
+          "ID": "c76d6b32-e13f-4814-bd60-216a3df5105f",
+          "Name": "GtProjectLogMedia",
+          "Required": false
+        }
+      ],
       "Views": [
         {
           "Title": "Alle elementer",
