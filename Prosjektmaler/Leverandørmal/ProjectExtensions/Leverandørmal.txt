@@ -1,45 +1,45 @@
 {
   "ContentTypes": [
     {
-      "ID": "0x01003B441A4AF5624755A74D73226AE8636A",
+      "ID": "0x0100767FA7064D10410F865AFD5DC6A46A54",
       "Name": "Sikkerhetsloggelement",
       "Description": "",
       "Group": "Prosjektportalen innholdstyper",
       "FieldRefs": [
         {
-          "ID": "4a285fa5-7581-4c5f-afe0-92c2ced6cf1e",
+          "ID": "35544afa-2f88-4a99-86db-64917fa5595c",
           "Name": "GtProjectLogDate"
         },
         {
-          "ID": "01718c0e-0826-46dc-9128-29e69af93064",
+          "ID": "c7203492-4606-47b4-a743-c12a0c0e0110",
           "Name": "GtProjectLogIncidentType"
         },
         {
-          "ID": "f2dff6d0-46a2-4d62-97d5-f64087a1e752",
+          "ID": "4ea20e63-9e66-459c-b03c-b102fcfa4fba",
           "Name": "GtProjectLogNature"
         },
         {
-          "ID": "1117c0e8-b777-4fc1-931a-2c011f8b75d1",
+          "ID": "fdc8af85-462b-43eb-951f-d32d2bc0091a",
           "Name": "GtProjectLogDetails"
         },
         {
-          "ID": "f79f2d13-549d-498e-9dbe-30fefdd85539",
+          "ID": "af9b8111-fd79-44ef-beac-68f256d036a4",
           "Name": "GtProjectLogCause"
         },
         {
-          "ID": "a66c9a8c-097a-4237-bb6f-aa991937fc8f",
+          "ID": "fd6942f8-43b0-4134-b6aa-9d200a36236e",
           "Name": "GtProjectLogSeverityLevel"
         },
         {
-          "ID": "ad30475c-c6b1-4996-9428-407a1e92669e",
+          "ID": "bf0cb8fe-2489-4a72-a4e4-8ce6e61653c4",
           "Name": "GtProjectLogSolution"
         },
         {
-          "ID": "ca5fbd6d-30f5-45eb-a3fe-42d3e641b55b",
+          "ID": "022f738c-d3a6-4086-a614-9962f0b21c4e",
           "Name": "GtProjectLogPreventative"
         },
         {
-          "ID": "cf14b56f-65f6-41de-8ace-27457b4731e5",
+          "ID": "d80365c7-4bea-4450-bd4c-c64904630c9a",
           "Name": "GtProjectLogAccountable"
         },
         {
@@ -47,11 +47,11 @@
           "Name": "GtProjectLogReporter"
         },
         {
-          "ID": "66337e99-dfd8-4a34-a223-0e4bad699d42",
+          "ID": "a9103c54-37e5-42ce-b760-2e02c6f19737",
           "Name": "GtProjectLogStatus"
         },
         {
-          "ID": "c76d6b32-e13f-4814-bd60-216a3df5105f",
+          "ID": "e12ad3fa-a309-4a6b-998b-f4602d4b0226",
           "Name": "GtProjectLogMedia"
         }
       ]
@@ -119,7 +119,7 @@
       "RemoveExistingContentTypes": true,
       "ContentTypeBindings": [
         {
-          "ContentTypeID": "0x01003B441A4AF5624755A74D73226AE8636A"
+          "ContentTypeID": "0x0100767FA7064D10410F865AFD5DC6A46A54"
         }
       ],
       "AdditionalSettings": {
@@ -171,7 +171,7 @@
           "AdditionalSettings": {
             "RowLimit": 30,
             "Paged": true,
-            "ViewQuery": "<Where><Eq><FieldRef Name= \"GtProjectLogStatus\" /><Value Type= \"Text\">Pågår</Value></Eq></Where>"
+            "ViewQuery": ""
           }
         }
       ]

@@ -1,1 +1,2 @@
-<Field ID="{cf14b56f-65f6-41de-8ace-27457b4731e5}" Name="GtProjectLogAccountable" DisplayName="Ansvarlig" Type="User" Group="Kolonner for leverandørmal" Description="Ansvarlig for hendelsen" StaticName="GtProjectLogAccountable" />
+<Field ID="{d80365c7-4bea-4450-bd4c-c64904630c9a}" Name="GtProjectLogAccountable" DisplayName="Ansvarlig" Type="User" Group="Kolonner for Stord" Description="Ansvarlig for hendelsen" StaticName="GtProjectLogAccountable" />
+
