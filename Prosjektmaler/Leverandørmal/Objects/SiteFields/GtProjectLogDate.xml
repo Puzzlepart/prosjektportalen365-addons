@@ -1,1 +1,1 @@
-<Field ID="{35544afa-2f88-4a99-86db-64917fa5595c}" Name="GtProjectLogDate" DisplayName="Dato" Type="DateTime" Group="Kolonner for Stord" Description="Dato for hendelsen" Format="DateOnly" StaticName="GtProjectLogDate" />
+<Field ID="{35544afa-2f88-4a99-86db-64917fa5595c}" Name="GtProjectLogDate" DisplayName="Dato" Type="DateTime" Group="Kolonner for Prosjektportalen (Prosjekt)" Description="Dato for hendelsen" Format="DateOnly" StaticName="GtProjectLogDate" />

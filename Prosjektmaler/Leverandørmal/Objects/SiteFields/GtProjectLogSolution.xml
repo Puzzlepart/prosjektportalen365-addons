@@ -1,1 +1,1 @@
-<Field ID="{bf0cb8fe-2489-4a72-a4e4-8ce6e61653c4}" Name="GtProjectLogSolution" DisplayName="Umiddelbare tiltak" Type="Text" Group="Kolonner for Stord" Description="Umiddelbare tiltak for hendelsen" StaticName="GtProjectLogSolution" />
+<Field ID="{bf0cb8fe-2489-4a72-a4e4-8ce6e61653c4}" Name="GtProjectLogSolution" DisplayName="Umiddelbare tiltak" Type="Text" Group="Kolonner for Prosjektportalen (Prosjekt)" Description="Umiddelbare tiltak for hendelsen" StaticName="GtProjectLogSolution" />

@@ -14,14 +14,15 @@ Forutsetninger:
 
 - Du har installert Prosjektportalen 365 på et område
 
-Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å installere med samme versjon som kommer med Prosjektportalen 365, som per 23.09.2024 er PnP.PowerShell 1.12.0.
+Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å installere med samme versjon som kommer med Prosjektportalen 365, som per 23.09.2024 er PnP.PowerShell 2.12.0.
 
-1. Last ned release-pakken fra releases og pakk ut pakken lokalt
-2. Kjør kommandoer under for å installere oppsettet
-3. Du kan nå opprette nye prosjekter og velge malen som heter `Leverandørmal`
-4. Ny aggregert oversikt på portefølje, `Sikkerhetslogg`
+1. Last ned release-pakken fra releases og pakk ut pakken lokalt.
+2. Kjør kommandoer under for å installere oppsettet.
+3. Du kan nå opprette nye prosjekter og velge malen som heter `Leverandørmal`.
+4. Ny aggregert oversikt på portefølje, `Sikkerhetslogg`.
 5. Knytte opp de nye prosjekttilleggene til de nye malene.
-6. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene
+6. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene.
+7. Legg til `Sikkerhetslogg` aggregert oversikt lenke i navigasjonsmenyen på porteføljeområdet.
 
 ```pwsh
 
