@@ -171,7 +171,7 @@
           "AdditionalSettings": {
             "RowLimit": 30,
             "Paged": true,
-            "ViewQuery": ""
+            "ViewQuery": "<Where><Eq><FieldRef Name= \"GtProjectLogStatus\" /><Value Type= \"Text\">Pågår</Value></Eq></Where>"
           }
         }
       ]
