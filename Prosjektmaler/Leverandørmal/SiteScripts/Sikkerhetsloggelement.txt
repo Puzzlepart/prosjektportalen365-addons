@@ -4,7 +4,7 @@
         {
             "verb": "createContentType",
             "description": "",
-            "id": "0x01003B441A4AF5624755A74D73226AE8636A",
+            "id": "0x0100767FA7064D10410F865AFD5DC6A46A54",
             "name": "Sikkerhetsloggelement",
             "hidden": false
         }
