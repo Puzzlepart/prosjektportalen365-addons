@@ -14,7 +14,7 @@
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtDataSourceId">43c69276-ad27-461c-803c-4d037691d7e5</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer</pnp:DataValue>
-            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100767FA7064D10410F865AFD5DC6A46A54* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100767FA7064D10410F865AFD5DC6A46A54* DepartmentId:{{sitecollectionid}}</pnp:DataValue>
             <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
@@ -24,7 +24,7 @@
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtDataSourceId">1d85e82f-1d7e-4905-8920-1cf042eddd3a</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer for underområder</pnp:DataValue>
-            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100767FA7064D10410F865AFD5DC6A46A54* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100767FA7064D10410F865AFD5DC6A46A54* DepartmentId:{{sitecollectionid}}</pnp:DataValue>
             <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
