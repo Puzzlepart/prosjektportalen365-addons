@@ -11,7 +11,9 @@ $AutoRunbooks = @(
     "GenerateProjectTimelineContent.ps1",
     "GenerateProjectStatusReportContent.ps1",
     "GetSiteInformation.ps1",
-    "SetSiteBanner.ps1"
+    "SetSiteBanner.ps1",
+    "SummarizeProject.ps1",
+    "SummarizeProjectStatus.ps1"
 )
 
 $Runbooks = Get-Item -Path $PSScriptRoot\*.ps1

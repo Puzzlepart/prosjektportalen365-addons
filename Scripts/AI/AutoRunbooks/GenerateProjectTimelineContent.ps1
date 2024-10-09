@@ -10,6 +10,7 @@ function Connect-SharePoint($Url) {
     }
     else {
         $pnpParams.Add("Interactive", $true)
+        $pnpParams.Add("ClientId", $global:__ClientId)
     }
 
     Connect-PnPOnline @pnpParams
@@ -50,11 +51,32 @@ function Invoke-OpenAI {
         [String]
         $InputMessage,
         [switch]$ForceArray,
-        $openai
+        $openai,
+        [ValidateSet('JSON', 'Text')]
+        [string]$ResponseFormat = 'JSON'
     )
-    # Craft message chain to send to the model
+    
+    $messages = @(
+        @{
+            role    = 'user'
+            content = $InputMessage
+        }
+    )
 
-    $forceArrayPrompt = 'Provide JSON format as follows, where items is an array of the elements, and each item is an object with keys as specified in the user prompt:
+    if ($ResponseFormat -eq 'Text') {
+        $messages += @{
+            role    = 'system'
+            content = "Du er en hjelpsom assistent som svarer kun med tekst. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring."
+        }
+    }
+    else {
+        $messages += @{
+            role    = 'system'
+            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+        }
+
+        if ($ForceArray.IsPresent) {
+            $forceArrayPrompt = 'Provide JSON format as follows, where items is an array of the elements, and each item is an object with keys as specified in the user prompt:
     {
         "items": [
             {
@@ -63,21 +85,10 @@ function Invoke-OpenAI {
             }
         ]
     }'
-
-    $messages = @(
-        @{
-            role    = 'system'
-            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
-        },
-        @{
-            role    = 'user'
-            content = $InputMessage
-        }
-    )
-    if ($ForceArray.IsPresent) {
-        $messages += @{
-            role    = 'system'
-            content = $forceArrayPrompt
+            $messages += @{
+                role    = 'system'
+                content = $forceArrayPrompt
+            }
         }
     }
 
@@ -86,13 +97,22 @@ function Invoke-OpenAI {
         'api-key' = $openai.api_key
     }
 
-    # Adjust these values to fine-tune completions
-    $body = [ordered]@{
-        response_format = @{type = 'json_object'}
-        messages    = $messages
-        temperature = 0.1
-    } | ConvertTo-Json
+    if ($ResponseFormat -eq 'Text') {
+        # Adjust these values to fine-tune completions
+        $body = [ordered]@{
+            messages    = $messages
+            temperature = 0.1
+        } | ConvertTo-Json
+    }
+    else {
+        # Adjust these values to fine-tune completions
+        $body = [ordered]@{
+            response_format = @{type = 'json_object' }
+            messages        = $messages
+            temperature     = 0.1
+        } | ConvertTo-Json
 
+    }
     # Send a request to generate an answer
     $url = "$($openai.api_base)/openai/deployments/$($openai.model_name)/chat/completions?api-version=$($openai.api_version)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
@@ -104,13 +124,18 @@ function Get-OpenAIResults {
         [Parameter(Mandatory = $true)]
         [string]$Prompt,
         [switch]$ForceArray,
-        $openai
+        $openai,
+        [ValidateSet('JSON', 'Text')]
+        [string]$ResponseFormat = 'JSON'
     )
 
     try {
-        $AIResults = Invoke-OpenAI -InputMessage $Prompt -ForceArray:$ForceArray.IsPresent -openai $openai
+        $AIResults = Invoke-OpenAI -InputMessage $Prompt -ForceArray:$ForceArray.IsPresent -openai $openai -ResponseFormat $ResponseFormat
         $ProcessedResults = $AIResults.choices[0].message.content
-        return ConvertFrom-Json $ProcessedResults
+        if ($ResponseFormat -eq 'JSON') {
+            return ConvertFrom-Json $ProcessedResults
+        }
+        return $ProcessedResults
     }
     catch {
         Write-Output $_.Exception.Message
@@ -256,7 +281,7 @@ try {
     Write-Output "`tProcessing project timeline items in hub site. Generating prompt based on list configuration..."
     Connect-SharePoint -Url $HubSiteUrl
 
-    $MatchingProjectInHub = Get-PnPListItem -List "Prosjekter" -Query "<View><Query><Where><Eq><FieldRef Name='GtSiteUrl' /><Value Type='Text'>$Url</Value></Eq></Where></Query></View>"
+    $MatchingProjectInHub = Get-PnPListItem -List "Prosjekter" -Query "<View><Query><Where><Eq><FieldRef Name='GtSiteId' /><Value Type='Text'>$SiteId</Value></Eq></Where></Query></View>"
     if ($null -eq $MatchingProjectInHub) {
         Write-Output "`tProject not found in hub site. Skipping project timeline items generation."
         return
@@ -267,7 +292,7 @@ try {
     $StartDate = $MatchingProjectInHub.FieldValues["GtStartDate"]
     $EndDate = $MatchingProjectInHub.FieldValues["GtEndDate"]
         
-    $Prompt = "Gi meg et eksempel på tidslinjeelementer for et prosjekt som heter '$SiteTitle'. Prosjektets startdato er $StartDate og sluttdato er $EndDate.  VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal beskrive tidslinjeelementet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg et eksempel på tidslinjeelementer (totalt mellom 10 og 20) for et prosjekt som heter '$SiteTitle'. Prosjektets startdato er $StartDate og sluttdato er $EndDate.  VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal beskrive tidslinjeelementet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
     Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
     

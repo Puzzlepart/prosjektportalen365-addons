@@ -10,6 +10,7 @@ function Connect-SharePoint($Url) {
     }
     else {
         $pnpParams.Add("Interactive", $true)
+        $pnpParams.Add("ClientId", $global:__ClientId)
     }
 
     Connect-PnPOnline @pnpParams
@@ -50,11 +51,32 @@ function Invoke-OpenAI {
         [String]
         $InputMessage,
         [switch]$ForceArray,
-        $openai
+        $openai,
+        [ValidateSet('JSON', 'Text')]
+        [string]$ResponseFormat = 'JSON'
     )
-    # Craft message chain to send to the model
+    
+    $messages = @(
+        @{
+            role    = 'user'
+            content = $InputMessage
+        }
+    )
 
-    $forceArrayPrompt = 'Provide JSON format as follows, where items is an array of the elements, and each item is an object with keys as specified in the user prompt:
+    if ($ResponseFormat -eq 'Text') {
+        $messages += @{
+            role    = 'system'
+            content = "Du er en hjelpsom assistent som svarer kun med tekst. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring."
+        }
+    }
+    else {
+        $messages += @{
+            role    = 'system'
+            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+        }
+
+        if ($ForceArray.IsPresent) {
+            $forceArrayPrompt = 'Provide JSON format as follows, where items is an array of the elements, and each item is an object with keys as specified in the user prompt:
     {
         "items": [
             {
@@ -63,21 +85,10 @@ function Invoke-OpenAI {
             }
         ]
     }'
-
-    $messages = @(
-        @{
-            role    = 'system'
-            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
-        },
-        @{
-            role    = 'user'
-            content = $InputMessage
-        }
-    )
-    if ($ForceArray.IsPresent) {
-        $messages += @{
-            role    = 'system'
-            content = $forceArrayPrompt
+            $messages += @{
+                role    = 'system'
+                content = $forceArrayPrompt
+            }
         }
     }
 
@@ -86,13 +97,22 @@ function Invoke-OpenAI {
         'api-key' = $openai.api_key
     }
 
-    # Adjust these values to fine-tune completions
-    $body = [ordered]@{
-        response_format = @{type = 'json_object'}
-        messages    = $messages
-        temperature = 0.1
-    } | ConvertTo-Json
+    if ($ResponseFormat -eq 'Text') {
+        # Adjust these values to fine-tune completions
+        $body = [ordered]@{
+            messages    = $messages
+            temperature = 0.1
+        } | ConvertTo-Json
+    }
+    else {
+        # Adjust these values to fine-tune completions
+        $body = [ordered]@{
+            response_format = @{type = 'json_object' }
+            messages        = $messages
+            temperature     = 0.1
+        } | ConvertTo-Json
 
+    }
     # Send a request to generate an answer
     $url = "$($openai.api_base)/openai/deployments/$($openai.model_name)/chat/completions?api-version=$($openai.api_version)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
@@ -104,13 +124,18 @@ function Get-OpenAIResults {
         [Parameter(Mandatory = $true)]
         [string]$Prompt,
         [switch]$ForceArray,
-        $openai
+        $openai,
+        [ValidateSet('JSON', 'Text')]
+        [string]$ResponseFormat = 'JSON'
     )
 
     try {
-        $AIResults = Invoke-OpenAI -InputMessage $Prompt -ForceArray:$ForceArray.IsPresent -openai $openai
+        $AIResults = Invoke-OpenAI -InputMessage $Prompt -ForceArray:$ForceArray.IsPresent -openai $openai -ResponseFormat $ResponseFormat
         $ProcessedResults = $AIResults.choices[0].message.content
-        return ConvertFrom-Json $ProcessedResults
+        if ($ResponseFormat -eq 'JSON') {
+            return ConvertFrom-Json $ProcessedResults
+        }
+        return $ProcessedResults
     }
     catch {
         Write-Output $_.Exception.Message
@@ -278,7 +303,7 @@ else {
             $ItemResult = Set-PnPListItem -List "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
         }
         catch {
-            Write-Output "Failed to create list item for list 'Prosjektegenskaper'"
+            Write-Output "Failed to update list item 'Prosjektegenskaper'"
             Write-Output $_.Exception.Message
             Write-Output "Using the following prompt: $Prompt"
             Write-Output "Using the following values as input:"

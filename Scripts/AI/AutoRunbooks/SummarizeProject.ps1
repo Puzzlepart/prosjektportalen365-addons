@@ -1,4 +1,38 @@
-param($OpenAISettings, $SiteTitle, $SiteId, $HubSiteUrl)
+Param(
+    [Parameter(Mandatory = $false)]
+    [string]$Url,
+    [Parameter(Mandatory = $true)]
+    [string]$api_key,
+    [Parameter(Mandatory = $false)]
+    [string]$api_base = "https://pzl-testing-oaiservice-swedencentral.openai.azure.com/",
+    [Parameter(Mandatory = $false)]
+    [string]$model_name = "gpt-4-1106-preview",
+    [Parameter(Mandatory = $false)]
+    [string]$model_name_images = "dall-e",
+    [Parameter(Mandatory = $false)]
+    [string]$api_version = "2023-07-01-preview",
+    [Parameter(Mandatory = $false)]
+    [string]$api_version_images = "2024-02-15-preview",
+    [Parameter(Mandatory = $false)]
+    [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a"
+)
+
+$global:__ClientId = $ClientId
+
+# Azure OpenAI metadata variables
+$OpenAISettings = @{
+    api_key            = $api_key
+    api_base           = $api_base
+    api_version        = $api_version
+    model_name         = $model_name
+    api_version_images = $api_version_images
+    model_name_images  = $model_name_images
+}
+
+if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
+    Write-Output "You have to load the PnP.PowerShell module before running this script!"
+    exit 0
+}
 
 function Connect-SharePoint($Url) {
     $pnpParams = @{ 
@@ -277,45 +311,34 @@ function ConvertPSObjectToHashtable {
     }
 }
 
-try {
-    Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
-    Connect-SharePoint -Url $HubSiteUrl
+$ErrorActionPreference = "Stop"
+Set-PnPTraceLog -Off
 
-    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus"
-        
-    $Prompt = "Gi meg et eksempel på rapportering av Prosjektstatus for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
-        
-    Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
-    
-    $GeneratedItems = Get-OpenAIResults -Prompt $Prompt -openai $OpenAISettings
-    
-    $GeneratedItems | ForEach-Object {
-        Write-Output "`t`tCreating list item '$($_.Title)' for list 'Prosjektstatus'"
-        $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-        @($HashtableValues.keys) | ForEach-Object { 
-            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
-        }
-        
-        $HashtableValues["Title"] = "Ny statusrapport for $SiteTitle"
-        $HashtableValues["GtSiteId"] = $SiteId
-        $HashtableValues["GtModerationStatus"] = "Publisert"
-        $HashtableValues["GtLastReportDate"] = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffffff")
+Connect-SharePoint -Url $Url
 
-        try {
-            $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
-        }
-        catch {
-            Write-Output "Failed to create list item for list 'Prosjektstatus'"
-            Write-Output $_.Exception.Message
-            Write-Output "Using the following prompt: $Prompt"
-            Write-Output "Using the following values as input:"
-            $HashtableValues
-        }
-    }
-    
-}
-catch {
-    Write-Output "Failed to process project status report in hub site."
-    Write-Output $_.Exception.Message
-}
+$Site = Get-PnPSite
+$GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
+$SiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
+$HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
+$HubSiteData = ConvertFrom-Json $HubSiteDataRaw.value
+$HubSiteUrl = $HubSiteData.url
 
+$Web = Get-PnPWeb
+$SiteTitle = $Web.Title
+
+$TargetLists = @(
+    @{Name = "Interessentregister"; Max = 8 },
+    @{Name = "Prosjektleveranser"; Max = 5 },
+    @{Name = "Kommunikasjonsplan"; Max = 6 },
+    @{Name = "Prosjektlogg"; Max = 10 },
+    @{Name = "Usikkerhet"; Max = 8 },
+    @{Name = "Endringsanalyse"; Max = 3 },
+    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
+    @{Name = "Måleindikatorer"; Max = 6 },
+    @{Name = "Gevinstoppfølging"; Max = 20 }
+    @{Name = "Ressursallokering"; Max = 7 }
+)
+
+Write-Output "Script ready to sumarize project '$SiteTitle'"
+
+. .\SummarizeProjectStatus.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl
