@@ -12,8 +12,12 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$api_version = "2023-07-01-preview",
     [Parameter(Mandatory = $false)]
-    [string]$api_version_images = "2024-02-15-preview"
+    [string]$api_version_images = "2024-02-15-preview",
+    [Parameter(Mandatory = $false)]
+    [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a"
 )
+
+$global:__ClientId = $ClientId
 
 # Azure OpenAI metadata variables
 $OpenAISettings = @{

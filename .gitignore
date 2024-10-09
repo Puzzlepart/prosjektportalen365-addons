@@ -1,3 +1,4 @@
 MoveSites_Log*.txt
 .vscode/*
 Scripts/AI/Populate-Project.ps1
+Scripts/AI/Summarize-Project.ps1
