@@ -51,7 +51,7 @@ function SummarizeProjectStatus($SiteId, $HubSiteUrl, [switch]$PreviousReport) {
     }
 
     $StatusPrompt = "Verdiene i statusrapporten er følgende: "
-    $Report.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and ($_ -ne "GtSiteId" -and $_ -ne "GtModerationStatus") } | ForEach-Object {
+    $Report.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and ($_ -ne "GtSiteId" -and $_ -ne "GtModerationStatus" -and $_ -ne "GtLastReportDate" -and -not $_.Contains("GtAi")) } | ForEach-Object {
         $InternalName = $_
         if ($Report.FieldValues[$InternalName]) {
             $Field = $Fields | Where-Object { $_.InternalName -eq $InternalName }

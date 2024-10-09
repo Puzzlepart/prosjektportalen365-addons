@@ -326,7 +326,7 @@ function SummarizeProjectStatus($SiteId, $HubSiteUrl, [switch]$PreviousReport) {
     }
 
     $StatusPrompt = "Verdiene i statusrapporten er følgende: "
-    $Report.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and ($_ -ne "GtSiteId" -and $_ -ne "GtModerationStatus") } | ForEach-Object {
+    $Report.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and ($_ -ne "GtSiteId" -and $_ -ne "GtModerationStatus" -and $_ -ne "GtLastReportDate" -and -not $_.Contains("GtAi")) } | ForEach-Object {
         $InternalName = $_
         if ($Report.FieldValues[$InternalName]) {
             $Field = $Fields | Where-Object { $_.InternalName -eq $InternalName }
@@ -344,12 +344,12 @@ function Ensure-ProjectStatusSummaryColumns($HubSiteUrl) {
     Connect-SharePoint -Url $HubSiteUrl
 
     $AIFields = @(
-        @{Name = "GtAiStatusComments"; FieldXml = '<Field Type="Note" DisplayName="Prosjektstatus oppsummert (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{b4f13c2a-897b-4f68-8854-6da3eb2bf184}" StaticName="GtAiStatusSummary" Name="GtAiStatusSummary" />' },
+        @{Name = "GtAiStatusComments"; FieldXml = '<Field Type="Note" DisplayName="Prosjektstatus oppsummert (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{b4f13c2a-897b-4f68-8854-6da3eb2bf184}" StaticName="GtAiStatusComments" Name="GtAiStatusComments" />' },
         @{Name = "GtAiRecommendations"; FieldXml = '<Field Type="Note" DisplayName="Anbefalinger (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{3cb8e63c-bd94-4793-af08-efa8b2dcdaaf}" StaticName="GtAiRecommendations" Name="GtAiRecommendations" />' },
         @{Name = "GtAiChangesSincePrev"; FieldXml = '<Field Type="Note" DisplayName="Endringer siden forrige (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{1cbd1af8-295b-4040-bd7c-426151e0609a}" StaticName="GtAiChangesSincePrev" Name="GtAiChangesSincePrev" />' },
         @{Name = "GtAiStatusScoreNumber"; FieldXml = '<Field Type="Number" DisplayName="Prosjektstatusscore (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{7453259d-7960-41f2-944f-fbea5830356d}" StaticName="GtAiStatusScoreNumber" Name="GtAiStatusScoreNumber" />' },
-        @{Name = "GtAiStatusPosted"; FieldXml = '<Field Type="Choice" DisplayName="Prosjektstatus vurdert (KI)" Hidden="TRUE" ID="{32477351-23be-4b57-9e4a-94f957d3fe8f}" StaticName="GtAiStatusPosted" Name="GtAiStatusPosted" ><CHOICES><CHOICE>Ja</CHOICE><CHOICE>Nei</CHOICE></CHOICES><Default>Nei</Default></Field>' },
-        @{Name = "GtAiStatus"; FieldXml = '<Field Type="Choice" DisplayName="Prosjektstatus vurdert (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{9c90a42d-fc01-4e41-a5ae-5bb8a4433d39}" StaticName="GtAiStatusScore" Name="GtAiStatusScore" ><CHOICES><CHOICE>Svak</CHOICE><CHOICE>Tilfredsstillende</CHOICE><CHOICE>God</CHOICE><CHOICE>Prisverdig</CHOICE></CHOICES></Field>' }
+        @{Name = "GtAiStatusPosted"; FieldXml = '<Field Type="Choice" DisplayName="Prosjektstatus gjennomgått (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ID="{32477351-23be-4b57-9e4a-94f957d3fe8f}" StaticName="GtAiStatusPosted" Name="GtAiStatusPosted" ><CHOICES><CHOICE>Ja</CHOICE><CHOICE>Nei</CHOICE></CHOICES><Default>Nei</Default></Field>' },
+        @{Name = "GtAiStatus"; FieldXml = '<Field Type="Choice" DisplayName="Prosjektstatus vurdert (KI)" Hidden="FALSE" ShowInEditForm="FALSE" ShowInNewForm="FALSE" ShowInDispForm="TRUE" ID="{9c90a42d-fc01-4e41-a5ae-5bb8a4433d39}" StaticName="GtAiStatus" Name="GtAiStatus" ><CHOICES><CHOICE>Svak</CHOICE><CHOICE>Tilfredsstillende</CHOICE><CHOICE>God</CHOICE><CHOICE>Prisverdig</CHOICE></CHOICES></Field>' }
     )
 
     $ProjectStatusList = Get-PnPList -Identity "Prosjektstatus" -ErrorAction SilentlyContinue
