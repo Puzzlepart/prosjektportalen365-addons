@@ -113,7 +113,7 @@ function Add-StatusSummaryToStatusReport($HubSiteUrl, $ProjectStatusId, $Summary
             } elseif ($ScoreVal -eq 10) {
                 $Score = "Prisverdig"
             } else {
-                $Score = "Rødt"                    
+                $Score = "Ukjent"                    
             }
             $Values["GtAiStatus"] = $Score
             $Values["GtAiStatusScoreNumber"] =  $ScoreVal
