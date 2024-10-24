@@ -42,7 +42,6 @@ Set-PnPTraceLog -Off
 Connect-SharePoint -Url $Url
 
 $Site = Get-PnPSite
-$GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
 $SiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
 $HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
 $HubSiteData = ConvertFrom-Json $HubSiteDataRaw.value
@@ -50,19 +49,6 @@ $HubSiteUrl = $HubSiteData.url
 
 $Web = Get-PnPWeb
 $SiteTitle = $Web.Title
-
-$TargetLists = @(
-    @{Name = "Interessentregister"; Max = 8 },
-    @{Name = "Prosjektleveranser"; Max = 5 },
-    @{Name = "Kommunikasjonsplan"; Max = 6 },
-    @{Name = "Prosjektlogg"; Max = 10 },
-    @{Name = "Usikkerhet"; Max = 8 },
-    @{Name = "Endringsanalyse"; Max = 3 },
-    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
-    @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 20 }
-    @{Name = "Ressursallokering"; Max = 7 }
-)
 
 Write-Output "Script ready to sumarize project '$SiteTitle'"
 

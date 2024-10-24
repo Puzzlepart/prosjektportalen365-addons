@@ -14,7 +14,9 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$api_version_images = "2024-02-15-preview",
     [Parameter(Mandatory = $false)]
-    [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a"
+    [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a",
+    [Parameter(Mandatory = $false)]
+    [int]$IdeaReference
 )
 
 $global:__ClientId = $ClientId
@@ -53,6 +55,10 @@ $SiteTitle = $Web.Title
 
 $UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
 
+if ($IdeaReference -gt 0) {
+    $IdeaPrompt = Get-IdeaPrompt -Url $HubSiteUrl -ID $IdeaReference
+}
+
 $TargetLists = @(
     @{Name = "Interessentregister"; Max = 8 },
     @{Name = "Prosjektleveranser"; Max = 5 },
@@ -70,14 +76,14 @@ Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'
 
 . .\GenerateProjectLogo.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -GroupId $GroupId.Guid
 
-. .\GenerateProjectPropertiesContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails
+. .\GenerateProjectPropertiesContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails -IdeaPrompt $IdeaPrompt
 
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
-    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails
+    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -IdeaPrompt $IdeaPrompt
 }
 
-. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl
+. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -IdeaPrompt $IdeaPrompt
 
-. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl
+. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -IdeaPrompt $IdeaPrompt
