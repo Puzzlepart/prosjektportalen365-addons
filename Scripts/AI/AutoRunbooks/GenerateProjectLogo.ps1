@@ -159,8 +159,33 @@ function Get-SiteUsersEmails($Url) {
     return $UserFieldOptions
 }
 
+function Get-IdeaPrompt($Url, $Id) {
+    Connect-SharePoint -Url $Url
+    $Idea = Get-PnPListItem -List "Idéregistrering" -Id $Id -ErrorAction SilentlyContinue
+    $Fields = Get-PnPField -List "Idéregistrering"
+
+    if ($null -eq $Idea) {
+        return $null
+    } else {
+        $IdeaPrompt = "Prosjektet er basert på et prosjektforslag med følgende data (semikolonseparert): "
+        $Idea.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and -not $_.Contains("GtAi") -and ($_ -ne "GtIdeaUrl" -and $_ -ne "GtIdeaReporter")} | ForEach-Object {
+            $InternalName = $_
+            if ($Idea.FieldValues[$InternalName]) {
+                $Field = $Fields | Where-Object { $_.InternalName -eq $InternalName }
+                $FieldValue = $Idea.FieldValues[$InternalName]
+                if ($Field.TypeAsString -eq "User") {
+                    $FieldValue = $Idea.FieldValues[$InternalName].LookupValue
+                } 
+                $IdeaPrompt += "$($Field.Title):'$FieldValue'; "
+                            
+            }
+        }
+    }
+    return $IdeaPrompt
+}
+
 function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
-    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus") }
+    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
 
     $FieldPrompt = ""
     $Fields | ForEach-Object {
@@ -281,7 +306,7 @@ $LogoFileName = "$GroupId.png"
 $LogoPath = "$env:TEMP\$LogoFileName"
 Write-Output "`tGenerating project logo with $($OpenAISettings.model_name_images)..."
 
-$Prompt = "Lag en logo for et prosjekt som heter '$SiteTitle' i enkel stil som egner seg digitalt, subtil gradient. Ikke bruk tekst i logo."
+$Prompt = "Lag en logo for et prosjekt som heter '$SiteTitle'. Bruk enkel stil som egner seg digitalt, subtil gradient. Ikke bruk tekst."
 
 $GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt -openai $OpenAISettings
 Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath

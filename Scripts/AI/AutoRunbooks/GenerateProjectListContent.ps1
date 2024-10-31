@@ -1,4 +1,4 @@
-param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails) 
+param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails, $IdeaPrompt) 
 
 function Connect-SharePoint($Url) {
     $pnpParams = @{ 
@@ -159,8 +159,33 @@ function Get-SiteUsersEmails($Url) {
     return $UserFieldOptions
 }
 
+function Get-IdeaPrompt($Url, $Id) {
+    Connect-SharePoint -Url $Url
+    $Idea = Get-PnPListItem -List "Idéregistrering" -Id $Id -ErrorAction SilentlyContinue
+    $Fields = Get-PnPField -List "Idéregistrering"
+
+    if ($null -eq $Idea) {
+        return $null
+    } else {
+        $IdeaPrompt = "Prosjektet er basert på et prosjektforslag med følgende data (semikolonseparert): "
+        $Idea.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and -not $_.Contains("GtAi") -and ($_ -ne "GtIdeaUrl" -and $_ -ne "GtIdeaReporter")} | ForEach-Object {
+            $InternalName = $_
+            if ($Idea.FieldValues[$InternalName]) {
+                $Field = $Fields | Where-Object { $_.InternalName -eq $InternalName }
+                $FieldValue = $Idea.FieldValues[$InternalName]
+                if ($Field.TypeAsString -eq "User") {
+                    $FieldValue = $Idea.FieldValues[$InternalName].LookupValue
+                } 
+                $IdeaPrompt += "$($Field.Title):'$FieldValue'; "
+                            
+            }
+        }
+    }
+    return $IdeaPrompt
+}
+
 function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
-    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus") }
+    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
 
     $FieldPrompt = ""
     $Fields | ForEach-Object {
@@ -282,7 +307,7 @@ Connect-SharePoint -Url $Url
 Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
 $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle -UsersEmails $UsersEmails
 
-$Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. "
+$Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. $IdeaPrompt VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. "
     
 Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
 

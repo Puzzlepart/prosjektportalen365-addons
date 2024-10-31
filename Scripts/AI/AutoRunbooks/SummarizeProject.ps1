@@ -193,8 +193,33 @@ function Get-SiteUsersEmails($Url) {
     return $UserFieldOptions
 }
 
+function Get-IdeaPrompt($Url, $Id) {
+    Connect-SharePoint -Url $Url
+    $Idea = Get-PnPListItem -List "Idéregistrering" -Id $Id -ErrorAction SilentlyContinue
+    $Fields = Get-PnPField -List "Idéregistrering"
+
+    if ($null -eq $Idea) {
+        return $null
+    } else {
+        $IdeaPrompt = "Prosjektet er basert på et prosjektforslag med følgende data (semikolonseparert): "
+        $Idea.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and -not $_.Contains("GtAi") -and ($_ -ne "GtIdeaUrl" -and $_ -ne "GtIdeaReporter")} | ForEach-Object {
+            $InternalName = $_
+            if ($Idea.FieldValues[$InternalName]) {
+                $Field = $Fields | Where-Object { $_.InternalName -eq $InternalName }
+                $FieldValue = $Idea.FieldValues[$InternalName]
+                if ($Field.TypeAsString -eq "User") {
+                    $FieldValue = $Idea.FieldValues[$InternalName].LookupValue
+                } 
+                $IdeaPrompt += "$($Field.Title):'$FieldValue'; "
+                            
+            }
+        }
+    }
+    return $IdeaPrompt
+}
+
 function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
-    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus") }
+    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
 
     $FieldPrompt = ""
     $Fields | ForEach-Object {
@@ -317,7 +342,6 @@ Set-PnPTraceLog -Off
 Connect-SharePoint -Url $Url
 
 $Site = Get-PnPSite
-$GroupId = Get-PnPProperty -ClientObject $Site -Property "GroupId"
 $SiteId = Get-PnPProperty -ClientObject $Site -Property "Id"
 $HubSiteDataRaw = Invoke-PnPSPRestMethod -Url '/_api/web/HubSiteData'
 $HubSiteData = ConvertFrom-Json $HubSiteDataRaw.value
@@ -325,19 +349,6 @@ $HubSiteUrl = $HubSiteData.url
 
 $Web = Get-PnPWeb
 $SiteTitle = $Web.Title
-
-$TargetLists = @(
-    @{Name = "Interessentregister"; Max = 8 },
-    @{Name = "Prosjektleveranser"; Max = 5 },
-    @{Name = "Kommunikasjonsplan"; Max = 6 },
-    @{Name = "Prosjektlogg"; Max = 10 },
-    @{Name = "Usikkerhet"; Max = 8 },
-    @{Name = "Endringsanalyse"; Max = 3 },
-    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
-    @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 20 }
-    @{Name = "Ressursallokering"; Max = 7 }
-)
 
 Write-Output "Script ready to sumarize project '$SiteTitle'"
 
