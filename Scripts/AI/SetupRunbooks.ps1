@@ -36,10 +36,7 @@ $Runbooks | Where-Object { $AutoRunbooks.Contains($_.Name) } | ForEach-Object {
 # However, login via WAM is disabled using Update-AzConfig -EnableLoginByWam $false
 Write-Host "Importing AutoRunbooks to Azure Automation account..."
 
-$context = Get-AzContext    
-if (!$context) {
-    Connect-AzAccount
-}
+Connect-AzAccount
 
 $Subscription = Get-AzSubscription -SubscriptionName $SubscriptionName -ErrorAction Stop
 

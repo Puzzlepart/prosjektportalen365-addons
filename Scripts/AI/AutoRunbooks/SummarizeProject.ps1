@@ -50,6 +50,19 @@ function Connect-SharePoint($Url) {
     Connect-PnPOnline @pnpParams
 }
 
+function Get-OpenAIKeyBase($CredentialName = "openai_api") {
+    if ($null -ne $PSPrivateMetadata) {
+        $Credential = Get-AutomationPSCredential -Name $CredentialName
+    }
+    else {
+        $Credential = Get-PnPStoredCredential -Name $CredentialName
+    }
+    if ($null -eq $Credential) {
+        Write-Output "Credential '$CredentialName' not found. You need to add this to credential mngr/Automation keys."    
+    }
+    return $Credential
+}
+
 function Invoke-ImageOpenAI {
     [CmdletBinding()]
     param (
@@ -59,9 +72,13 @@ function Invoke-ImageOpenAI {
         $openai
     )
 
+    $openaicreds = Get-OpenAIKeyBase -CredentialName $openai.credential_name_images
+    $openaiapibase = $openaicreds.UserName
+    $openaiapikey = $openaicreds.GetNetworkCredential().Password
+
     # Header for authentication
     $headers = [ordered]@{
-        'api-key' = $openai.api_key
+        'api-key' = $openaiapikey
     }
 
     # Adjust these values to fine-tune completions
@@ -73,7 +90,7 @@ function Invoke-ImageOpenAI {
     } | ConvertTo-Json
 
     # Send a request to generate an answer
-    $url = "$($openai.api_base)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
+    $url = "$($openaiapibase)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
     return $response.data.url
 }
@@ -126,9 +143,13 @@ function Invoke-OpenAI {
         }
     }
 
+    $openaicreds = Get-OpenAIKeyBase -CredentialName $openai.credential_name
+    $openaiapibase = $openaicreds.UserName
+    $openaiapikey = $openaicreds.GetNetworkCredential().Password
+
     # Header for authentication
     $headers = [ordered]@{
-        'api-key' = $openai.api_key
+        'api-key' = $openaiapikey
     }
 
     if ($ResponseFormat -eq 'Text') {
@@ -148,7 +169,7 @@ function Invoke-OpenAI {
 
     }
     # Send a request to generate an answer
-    $url = "$($openai.api_base)/openai/deployments/$($openai.model_name)/chat/completions?api-version=$($openai.api_version)"
+    $url = "$($openaiapibase)/openai/deployments/$($openai.model_name)/chat/completions?api-version=$($openai.api_version)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
     return $response
 }
@@ -200,9 +221,10 @@ function Get-IdeaPrompt($Url, $Id) {
 
     if ($null -eq $Idea) {
         return $null
-    } else {
+    }
+    else {
         $IdeaPrompt = "Prosjektet er basert på et prosjektforslag med følgende data (semikolonseparert): "
-        $Idea.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and -not $_.Contains("GtAi") -and ($_ -ne "GtIdeaUrl" -and $_ -ne "GtIdeaReporter")} | ForEach-Object {
+        $Idea.FieldValues.Keys | Where-Object { $_.Contains("Gt") -and -not $_.Contains("GtAi") -and ($_ -ne "GtIdeaUrl" -and $_ -ne "GtIdeaReporter") } | ForEach-Object {
             $InternalName = $_
             if ($Idea.FieldValues[$InternalName]) {
                 $Field = $Fields | Where-Object { $_.InternalName -eq $InternalName }
