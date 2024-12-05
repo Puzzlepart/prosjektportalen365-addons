@@ -1,0 +1,8 @@
+<pnp:Files xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:File Src="ProjectExtensions/Forskningsmal.txt" Folder="Prosjekttillegg" Level="Published" Overwrite="true">
+        <pnp:Properties>
+            <pnp:Property Key="Title" Value="Forskningsmal" />
+            <pnp:Property Key="GtDescription" Value="Tilpasninger for forskningsprosjekter" />
+        </pnp:Properties>
+    </pnp:File>
+</pnp:Files>
