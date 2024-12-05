@@ -1,0 +1,36 @@
+<pnp:TermGroups xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:TermGroup Name="Prosjektportalen">
+        <pnp:TermSets>
+            <pnp:TermSet Name="Finansiør" ID="4986b1b9-c4b0-4df2-845e-0ac872ad8355" />
+            <pnp:TermSet Name="Fakultet" ID="943ff631-bd9c-47e6-940f-8c950d33c010">
+                <pnp:Term Name="Anvendt økologi, landbruksfag og bioteknologi" />
+                <pnp:Term Name="Audiovisuelle medier og kreativ teknologi" />
+                <pnp:Term Name="Helse og sosialvitenskap" />
+                <pnp:Term Name="Lærerutdanning og pedagogikk" />
+                <pnp:Term Name="Økonomi og samfunnsvitenskap" />
+            </pnp:TermSet>
+            <pnp:TermSet Name="Institutt" ID="5a7fbf6e-7786-4043-b929-4786de700856">
+                <pnp:Term Name="Bioteknologi" />
+                <pnp:Term Name="Engelsk" />
+                <pnp:Term Name="Folkehelse- og idrettsvitenskap" />
+                <pnp:Term Name="Helse- og sykepleievitenskap" />
+                <pnp:Term Name="Jordbruksfag" />
+                <pnp:Term Name="Kunstfag og kulturstudier" />
+                <pnp:Term Name="Matematikk, naturfag og kroppsøvning" />
+                <pnp:Term Name="Nordisk språk og litteratur" />
+                <pnp:Term Name="Økonomifag" />
+                <pnp:Term Name="Organisasjon og ledelse" />
+                <pnp:Term Name="Pedagogikk" />
+                <pnp:Term Name="Pedagogikk ved lærerutdanningene" />
+                <pnp:Term Name="Psykologi" />
+                <pnp:Term Name="Rettsvitenskap, filosofi og internasjonale studier" />
+                <pnp:Term Name="Samfunnsfag, religion og etikk" />
+                <pnp:Term Name="Skog- og utmarksfag" />
+                <pnp:Term Name="Sosialvitenskap og veiledning" />
+                <pnp:Term Name="Spill utdanninger" />
+                <pnp:Term Name="TV-utdanninger" />
+            </pnp:TermSet>
+            <pnp:TermSet Name="Forskergruppe" ID="15f5bff7-06e6-4e99-a26c-956d59dcbe91" />
+        </pnp:TermSets>
+    </pnp:TermGroup>
+</pnp:TermGroups>

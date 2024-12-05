@@ -1,0 +1,1 @@
+<Field ID="{6e720f3e-e344-488e-bb86-b98f8efd3ac3}" Name="GtcDeadline" DisplayName="Søknadsfrist" Type="DateTime" Group="Egendefinerte kolonner for Prosjektportalen" Description="Dato for søknadsfrist" Format="DateOnly" StaticName="GtcDeadline" />

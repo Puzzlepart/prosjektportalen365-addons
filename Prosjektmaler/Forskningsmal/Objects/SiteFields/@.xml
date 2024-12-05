@@ -1,3 +1,19 @@
 <pnp:SiteFields xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
-    // TODO: Add SiteFields
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcAnnouncement.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcApplicationStatus.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcApplicationSum.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcCristinCode.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcDeadline.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFaculty.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFacultyText.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFinancier.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFinancierText.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcInstitute.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcInstituteText.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcProjectRole.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcProjectSum.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcResearchGroup.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcResearchGroupText.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcStartupDate.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtProjectLifecycleStatus.xml" />
 </pnp:SiteFields>

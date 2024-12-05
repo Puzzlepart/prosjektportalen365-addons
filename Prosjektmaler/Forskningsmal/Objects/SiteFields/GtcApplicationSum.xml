@@ -1,0 +1,1 @@
+<Field Decimals="0" Description="Sum for søknaden" DisplayName="Søknadssum" Group="Egendefinerte kolonner for Prosjektportalen" ID="{093b17a0-8dfa-4bd3-b84b-6a397b43d841}" LCID="1044" Min="0" Name="GtcApplicationSum" StaticName="GtcApplicationSum" Type="Currency" />

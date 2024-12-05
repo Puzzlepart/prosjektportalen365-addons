@@ -2,6 +2,29 @@
     xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
     <pnp:DataRows UpdateBehavior="Overwrite" KeyColumn="GtInternalName">
         <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">30</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Prosjektnummer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectNumber</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectNumberOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldOverrides">{
+            "Forskning": {
+                "nb-no": {
+                    "displayName": "Prosjektnummer, finansiør​",
+                    "description": "Hvis relevant, legg inn tilhørende prosjektnummer (finansiør)"
+                }
+            }}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        
+        
+        <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">800</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Dato</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtProjectLogDate</pnp:DataValue>
