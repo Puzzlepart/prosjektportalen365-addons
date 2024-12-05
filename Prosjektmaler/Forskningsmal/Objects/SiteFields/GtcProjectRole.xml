@@ -1,0 +1,1 @@
+<Field ID="{9cea97d4-a5a4-432d-a367-f8fdf626f49b}" Name="GtcProjectRole" DisplayName="Rolle i prosjektet" Type="Choice" Group="Egendefinerte kolonner for Prosjektportalen" Description="Rolle for gjeldende prosjekt" StaticName="GtcProjectRole"><CHOICES><CHOICE>Koordinator</CHOICE><CHOICE>Partner</CHOICE><CHOICE>Mono beneficiary</CHOICE></CHOICES></Field>
