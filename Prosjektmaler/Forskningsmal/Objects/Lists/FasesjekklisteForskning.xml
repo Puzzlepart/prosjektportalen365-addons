@@ -1,0 +1,30 @@
+﻿<pnp:ListInstance Title="Fasesjekkliste Forskning" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/FasesjekklisteForskning" Hidden="false" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="5000" DraftVersionVisibility="0" ContentTypesEnabled="true" RemoveExistingContentTypes="false" EnableFolderCreation="false" EnableAttachments="false"
+    xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:ContentTypeBindings>
+        <pnp:ContentTypeBinding ContentTypeID="0x0100486B1F8AEA24486FBA1C1BA9146C360C" Default="true" />
+    </pnp:ContentTypeBindings>
+    <pnp:Views RemoveExistingViews="true">
+        <View DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Alle elementer" Url="{site}/Lists/FasesjekklisteForskning/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x">
+            <Query>
+                <OrderBy>
+                    <FieldRef Name="GtSortOrder" />
+                </OrderBy>
+            </Query>
+            <ViewFields>
+                <FieldRef Name="GtSortOrder" />
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="GtProjectPhase" />
+                <FieldRef Name="GtcPhaseReference" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+            </ViewFields>
+            <RowLimit Paged="TRUE">100</RowLimit>
+            <Aggregations Value="Off" />
+            <JSLink>hierarchytaskslist.js</JSLink>
+        </View>
+    </pnp:Views>
+    <pnp:FieldRefs>
+        <pnp:FieldRef ID="0ef193a1-84bd-4913-993e-df2751f5c827" Name="GtcPhaseReference" DisplayName="Prosedyre" />
+        <pnp:FieldRef ID="c70ca705-d503-4d3c-a28e-078e7d61c4c2" Name="GtDataRowUniqueKey" DisplayName="Unik datanøkkel" />
+    </pnp:FieldRefs>
+</pnp:ListInstance>
