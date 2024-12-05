@@ -10,6 +10,7 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFinancierText.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcInstitute.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcInstituteText.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcPhaseReference.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcProjectRole.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcProjectSum.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcResearchGroup.xml" />
