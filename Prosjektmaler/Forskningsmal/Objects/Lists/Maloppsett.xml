@@ -2,30 +2,17 @@
   xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
   <pnp:DataRows KeyColumn="Title" UpdateBehavior="Overwrite">
     <pnp:DataRow>
-      <pnp:DataValue FieldName="Title">Leverandørmal</pnp:DataValue>
+      <pnp:DataValue FieldName="Title">Forskning</pnp:DataValue>
       <pnp:DataValue FieldName="Order">300</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectTemplate">1</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C</pnp:DataValue>
+      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70CFO</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectStatusContentType">0x010022252E35737A413FB56A1BA53862F6D5</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectColumns">Kolonner for Prosjektportalen (Prosjekt)</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectCustomColumns">Egendefinerte kolonner for Prosjektportalen</pnp:DataValue>
       <pnp:DataValue FieldName="IsDefaultExtensionsLocked">False</pnp:DataValue>
       <pnp:DataValue FieldName="IsDefaultListContentLocked">False</pnp:DataValue>
-      <pnp:DataValue FieldName="GtDescription">Dette er leverandørmalen for Prosjektportalen 365.</pnp:DataValue>
-      <pnp:DataValue FieldName="IconName">CubeShape</pnp:DataValue>
-      <pnp:DataValue FieldName="GtDocumentTemplateLibrary">Malbibliotek</pnp:DataValue>
-    </pnp:DataRow>
-    <pnp:DataRow>
-      <pnp:DataValue FieldName="Title">Overordnet leverandørmal</pnp:DataValue>
-      <pnp:DataValue FieldName="Order">310</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectTemplate">2</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectStatusContentType">0x010022252E35737A413FB56A1BA53862F6D5</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectColumns">Kolonner for Prosjektportalen (Prosjekt)</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectCustomColumns">Egendefinerte kolonner for Prosjektportalen</pnp:DataValue>
-      <pnp:DataValue FieldName="IsHiddenTemplate">True</pnp:DataValue>
-      <pnp:DataValue FieldName="GtDescription">Dette er overordnet leverandørmal for Prosjektportalen 365.</pnp:DataValue>
-      <pnp:DataValue FieldName="IconName">CubeShape</pnp:DataValue>
+      <pnp:DataValue FieldName="GtDescription">Dette er forskningsmalen for Prosjektportalen 365.</pnp:DataValue>
+      <pnp:DataValue FieldName="IconName">TestPlan</pnp:DataValue>
       <pnp:DataValue FieldName="GtDocumentTemplateLibrary">Malbibliotek</pnp:DataValue>
     </pnp:DataRow>
   </pnp:DataRows>

@@ -4,6 +4,7 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcApplicationSum.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcCristinCode.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcDeadline.xml" />
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcDeliveryNumber.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFaculty.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFacultyText.xml" />
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="GtcFinancier.xml" />

@@ -1,6 +1,70 @@
 {
   "ContentTypes": [
     {
+      "ID": "0x0100D7B74DE815F946D3B0F99D19F9B36B68",
+      "Name": "Prosjektleveranse",
+      "Description": "",
+      "Group": "Prosjektportalen innholdstyper",
+      "FieldRefs": [
+        {
+          "ID": "99430a99-1354-418f-921f-7ddfdb6c0d7f",
+          "Name": "GtDeliveryDescription"
+        },
+        {
+          "ID": "219a5cdf-799c-48ee-8869-ea39e4b9a6aa",
+          "Name": "GtDeliveryStartTime"
+        },
+        {
+          "ID": "eb78509b-4109-474e-aca8-90d024a960de",
+          "Name": "GtDeliveryEndTime"
+        },
+        {
+          "ID": "c8e260c2-6887-4f9e-a713-7200246c3b1c",
+          "Name": "GtDeliveryQualityExpectations"
+        },
+        {
+          "ID": "149a30c2-056d-44f0-9cb5-29bfc632ca25",
+          "Name": "GtDeliveryAcceptanceCriteria"
+        },
+        {
+          "ID": "3dd7058b-0ba1-46e5-b40a-4f2f542638ea",
+          "Name": "GtDeliveryQualityTolerance"
+        },
+        {
+          "ID": "c845028e-3395-49d4-86fe-6d94992c38c2",
+          "Name": "GtDeliveryQualityResponsible"
+        },
+        {
+          "ID": "3bcfaa2c-e9bd-4a22-bf65-af4d68c308e7",
+          "Name": "GtDeliveryAcceptanceMethod"
+        },
+        {
+          "ID": "dc856c1d-0b98-4d38-9918-d7068f74bd8b",
+          "Name": "GtDeliveryAcceptanceResponsible"
+        },
+        {
+          "ID": "ce9474dd-407b-4480-951a-5381857fad6a",
+          "Name": "GtDeliveryAcceptanceDate"
+        },
+        {
+          "ID": "4322afd6-5f0f-4a22-819a-cb61668e6ede",
+          "Name": "GtDeliveryStatus"
+        },
+        {
+          "ID": "4393ed3c-1599-4ab3-8444-444ab35754bb",
+          "Name": "GtDeliveryStatusComment"
+        },
+        {
+          "ID": "4d342fb6-a0e0-4064-b794-c1d36c922997",
+          "Name": "GtTag"
+        },
+        {
+          "ID": "33001fe3-bfea-4a82-9219-d535ddff4001",
+          "Name": "GtcDeliveryNumber"
+        }
+      ]
+    },
+    {
       "ID": "0x0100486B1F8AEA24486FBA1C1BA9146C360C",
       "Name": "Sjekkpunkt",
       "Description": "",
@@ -25,6 +89,119 @@
         {
           "ID": "0ef193a1-84bd-4913-993e-df2751f5c827",
           "Name": "GtcPhaseReference"
+        }
+      ]
+    }
+  ],
+  "Lists": [
+    {
+      "Title": "Fasesjekkliste",
+      "Description": "",
+      "Template": 100,
+      "ContentTypesEnabled": true,
+      "RemoveExistingContentTypes": true,
+      "ContentTypeBindings": [
+        {
+          "ContentTypeID": "0x0100486B1F8AEA24486FBA1C1BA9146C360C"
+        }
+      ],
+      "AdditionalSettings": {
+        "EnableVersioning": true
+      },
+      "FieldRefs": [
+        {
+          "ID": "0ef193a1-84bd-4913-993e-df2751f5c827",
+          "Name": "GtcPhaseReference",
+          "Required": false
+        }
+      ],
+      "Views": [
+        {
+          "Title": "Alle elementer",
+          "ViewFields": [
+            "GtSortOrder",
+            "LinkTitle",
+            "GtProjectPhase",
+            "GtChecklistStatus",
+            "GtComment",
+            "GtcPhaseReference"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 50,
+            "ViewQuery": "<OrderBy><FieldRef Name=\"GtSortOrder\" /><FieldRef Name=\"ID\" /></OrderBy><Where><Neq><FieldRef Name=\"GtChecklistStatus\" /><Value Type=\"Text\">Arkivert</Value></Neq>\n</Where>"
+          }
+        },
+        {
+          "Title": "Arkivert",
+          "ViewFields": [
+            "GtSortOrder",
+            "LinkTitle",
+            "GtProjectPhase",
+            "GtComment",
+            "GtcPhaseReference"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 50,
+            "ViewQuery": "<OrderBy><FieldRef Name=\"GtSortOrder\" /><FieldRef Name=\"ID\" /></OrderBy><Where><Eq><FieldRef Name=\"GtChecklistStatus\" /><Value Type=\"Text\">Arkivert</Value></Eq>\n</Where>"
+          }
+        },
+        {
+          "Title": "Per status",
+          "ViewFields": [
+            "GtSortOrder",
+            "LinkTitle",
+            "GtProjectPhase",
+            "GtComment",
+            "GtcPhaseReference"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 50,
+            "ViewQuery": "<GroupBy Collapse=\"TRUE\" GroupLimit=\"30\"><FieldRef Name=\"GtChecklistStatus\" Ascending=\"FALSE\" />\n</GroupBy>\n<OrderBy><FieldRef Name=\"GtSortOrder\" /><FieldRef Name=\"ID\" />\n</OrderBy>"
+          }
+        }
+      ]
+    },
+    {
+      "Title": "Prosjektleveranser",
+      "Description": "",
+      "Template": 100,
+      "ContentTypesEnabled": true,
+      "RemoveExistingContentTypes": true,
+      "ContentTypeBindings": [
+        {
+          "ContentTypeID": "0x0100D7B74DE815F946D3B0F99D19F9B36B68"
+        }
+      ],
+      "AdditionalSettings": {
+        "EnableVersioning": true
+      },
+      "Fields": [
+        "<Field Type=\"LookupMulti\" DisplayName=\"Interessent(er)\" List=\"{listid:Interessentregister}\" ShowField=\"Title\" ID=\"{6d90e0b6-73e6-48fb-aa1e-b897b214f934}\" Description=\"Oppgi hvilken interessent(er) leveransen påvirker\" Name=\"GtDeliveryStakeholders\" StaticName=\"GtDeliveryStakeholders\" Name=\"GtDeliveryStakeholders\" Mult=\"TRUE\" />"
+      ],
+      "FieldRefs": [
+        {
+          "ID": "33001fe3-bfea-4a82-9219-d535ddff4001",
+          "Name": "GtcDeliveryNumber",
+          "Required": false
+        }
+      ],
+      "Views": [
+        {
+          "Title": "Alle elementer",
+          "ViewFields": [
+            "LinkTitle",
+            "GtcDeliveryNumber",
+            "GtDeliveryDescription",
+            "GtDeliveryStartTime",
+            "GtDeliveryEndTime",
+            "GtDeliveryStatus",
+            "GtDeliveryStatusComment"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 30,
+            "Paged": true,
+            "ViewQuery": ""
+          }
         }
       ]
     }
