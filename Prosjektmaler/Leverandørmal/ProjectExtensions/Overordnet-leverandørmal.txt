@@ -1,0 +1,112 @@
+{
+  "Navigation": {
+    "QuickLaunch": [
+      {
+        "Url": "SitePages/OverordnetOversikt.aspx",
+        "Title": "Underordnet innhold",
+        "Children": [
+          {
+            "Url": "SitePages/Admin.aspx",
+            "Title": "Administrasjon"
+          },
+          {
+            "Url": "SitePages/OverordnetOversikt.aspx",
+            "Title": "Oversikt"
+          },
+          {
+            "Url": "SitePages/OverordnetGevinster.aspx",
+            "Title": "Gevinster"
+          },
+          {
+            "Url": "SitePages/OverordnetProsjektlogg.aspx",
+            "Title": "Prosjektlogg"
+          },
+          {
+            "Url": "SitePages/OverordnetProsjektsikkerhetslogg.aspx",
+            "Title": "Prosjektsikkerhetslogg"
+          },
+          {
+            "Url": "SitePages/OverordnetTidslinje.aspx",
+            "Title": "Tidslinje"
+          },
+          {
+            "Url": "SitePages/OverordnetLeveranser.aspx",
+            "Title": "Leveranser"
+          },
+          {
+            "Url": "SitePages/OverordnetUsikkerheter.aspx",
+            "Title": "Usikkerheter"
+          },
+          {
+            "Url": "SitePages/OverordnetKommunikasjon.aspx",
+            "Title": "Kommunikasjonsplaner"
+          },
+          {
+            "Url": "SitePages/OverordnetRessursallokeringer.aspx",
+            "Title": "Ressursallokeringer"
+          }
+        ]
+      }
+    ]
+  },
+  "ClientSidePages": [
+    {
+      "Name": "OverordnetProsjektlogg.aspx",
+      "Title": "Prosjektlogg",
+      "PageLayoutType": "SingleWebPartAppPage",
+      "CommentsDisabled": true,
+      "Sections": [
+        {
+          "Columns": [
+            {
+              "Factor": 12,
+              "Controls": [
+                {
+                  "Id": "37c7e990-483d-4f70-b9b9-def1790817e7",
+                  "Properties": {
+                    "title": "Loggelementer for underområder",
+                    "dataSource": "Alle loggelementer for underområder",
+                    "dataSourceCategory": "Erfaringslogg",
+                    "dataSourceLevel": "Overordnet/Program",
+                    "showCommandBar": true,
+                    "showViewSelector": true,
+                    "showSearchBox": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "OverordnetProsjektsikkerhetslogg.aspx",
+      "Title": "Prosjektsikkerhetslogg",
+      "PageLayoutType": "SingleWebPartAppPage",
+      "CommentsDisabled": true,
+      "Sections": [
+        {
+          "Columns": [
+            {
+              "Factor": 12,
+              "Controls": [
+                {
+                  "Id": "37c7e990-483d-4f70-b9b9-def1790817e7",
+                  "Properties": {
+                    "title": "Sikkerhetsloggelementer for underområder",
+                    "dataSource": "Alle sikkerhetsloggelementer for underområder",
+                    "dataSourceCategory": "Sikkerhetslogg",
+                    "dataSourceLevel": "Overordnet/Program",
+                    "showCommandBar": true,
+                    "showViewSelector": true,
+                    "showSearchBox": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

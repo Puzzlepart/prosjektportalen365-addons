@@ -1,0 +1,35 @@
+﻿<pnp:ListInstance Title="Datakilder" TemplateType="100" Url="Lists/Datakilder" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false"
+    xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtDataSourceId">f85f0381-8585-4c17-a2a3-b9c6cf0ae0ff</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alle loggelementer for underområder</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x01004EDD18CB92C14EBA97103D909C897810* DepartmentId:{{sitecollectionid}} GtProjectLogExperienceOWSBOOL:1</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Erfaringslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentColumns">1,11,12,13,14,15,48,49</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentRefiners">12,13,48,49</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIconName">BacklogList</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">Overordnet/Program</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtDataSourceId">43c69276-ad27-461c-803c-4d037691d7e5</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100767FA7064D10410F865AFD5DC6A46A54* DepartmentId:{{sitecollectionid}}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtIconName">BacklogList</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">Portefølje</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtDataSourceId">1d85e82f-1d7e-4905-8920-1cf042eddd3a</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alle sikkerhetsloggelementer for underområder</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x0100767FA7064D10410F865AFD5DC6A46A54* DepartmentId:{{sitecollectionid}}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
+            <pnp:DataValue FieldName="GtIconName">BacklogList</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">Overordnet/Program</pnp:DataValue>
+        </pnp:DataRow>
+    </pnp:DataRows>
+</pnp:ListInstance>
