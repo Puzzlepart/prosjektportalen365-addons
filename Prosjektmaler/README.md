@@ -4,3 +4,4 @@ Her er en samling av generaliserte prosjektmaler som kan installeres og brukes f
 
 - [Leverandørmal](Leverandørmal/README.md)
   - Har ikke installasjonsscript enda, dette kommer snart.
+- [Forskningsmal](Forskningsmal/README.md)

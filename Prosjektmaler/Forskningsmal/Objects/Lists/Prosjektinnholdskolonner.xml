@@ -1,0 +1,124 @@
+<pnp:ListInstance Title="Prosjektinnholdskolonner" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Prosjektinnholdskolonner" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" ContentTypesEnabled="true" RemoveExistingContentTypes="false" EnableFolderCreation="false" EnableAttachments="false"
+    xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:DataRows UpdateBehavior="Overwrite" KeyColumn="GtInternalName">
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">800</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Dato</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogDate</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogDateOWSDATE</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">120</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">810</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Hendelsestype</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogIncidentType</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogIncidentTypeOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">820</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Art</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogNature</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogNatureOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">830</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Årsak</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogCause</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogCauseOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">830</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Alvorsgrad</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogSeverityLevel</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogSeverityLevelOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">840</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Umiddelbare tiltak</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogSolution</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogSolutionOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">850</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Forebyggende tiltak</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogPreventative</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogPreventativeOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="Title">Ansvarlig</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSortOrder">860</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogAccountable</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogAccountableOWSUSER</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">User</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">870</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Status</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogStatus</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogStatusOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">880</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Media</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogMedia</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogMediaOWSURLH</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">URL</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">890</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Detaljer om hendelsen</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectLogDetails</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectLogDetailsOWSMTXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Note</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">Sikkerhetslogg</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">320</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+        </pnp:DataRow>
+    </pnp:DataRows>
+</pnp:ListInstance>
+           

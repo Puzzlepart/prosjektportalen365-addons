@@ -1,0 +1,207 @@
+{
+  "ContentTypes": [
+    {
+      "ID": "0x0100767FA7064D10410F865AFD5DC6A46A54",
+      "Name": "Sikkerhetsloggelement",
+      "Description": "",
+      "Group": "Prosjektportalen innholdstyper",
+      "FieldRefs": [
+        {
+          "ID": "35544afa-2f88-4a99-86db-64917fa5595c",
+          "Name": "GtProjectLogDate"
+        },
+        {
+          "ID": "c7203492-4606-47b4-a743-c12a0c0e0110",
+          "Name": "GtProjectLogIncidentType"
+        },
+        {
+          "ID": "4ea20e63-9e66-459c-b03c-b102fcfa4fba",
+          "Name": "GtProjectLogNature"
+        },
+        {
+          "ID": "fdc8af85-462b-43eb-951f-d32d2bc0091a",
+          "Name": "GtProjectLogDetails"
+        },
+        {
+          "ID": "af9b8111-fd79-44ef-beac-68f256d036a4",
+          "Name": "GtProjectLogCause"
+        },
+        {
+          "ID": "fd6942f8-43b0-4134-b6aa-9d200a36236e",
+          "Name": "GtProjectLogSeverityLevel"
+        },
+        {
+          "ID": "bf0cb8fe-2489-4a72-a4e4-8ce6e61653c4",
+          "Name": "GtProjectLogSolution"
+        },
+        {
+          "ID": "022f738c-d3a6-4086-a614-9962f0b21c4e",
+          "Name": "GtProjectLogPreventative"
+        },
+        {
+          "ID": "d80365c7-4bea-4450-bd4c-c64904630c9a",
+          "Name": "GtProjectLogAccountable"
+        },
+        {
+          "ID": "49b0ba6b-d1ec-4644-91b7-691a33524c90",
+          "Name": "GtProjectLogReporter"
+        },
+        {
+          "ID": "a9103c54-37e5-42ce-b760-2e02c6f19737",
+          "Name": "GtProjectLogStatus"
+        },
+        {
+          "ID": "e12ad3fa-a309-4a6b-998b-f4602d4b0226",
+          "Name": "GtProjectLogMedia"
+        }
+      ]
+    }
+  ],
+  "ClientSidePages": [
+    {
+      "Name": "Hjem.aspx",
+      "Title": "Hjem",
+      "PageLayoutType": "Home",
+      "CommentsDisabled": true,
+      "VerticalSection": [
+        {
+          "Id": "b8bec0be-2354-443d-a3ca-24b36e8ea7dc",
+          "Properties": {
+            "title": "Prosjektinformasjon",
+            "hideStatusReport": true,
+            "adminPageLink": "Admin.aspx"
+          }
+        }
+      ],
+      "Sections": [
+        {
+          "Columns": [
+            {
+              "Factor": 12,
+              "Controls": [
+                {
+                  "Id": "f92bf067-bc19-489e-a556-7fe95f508720",
+                  "Properties": {
+                    "isDocumentLibrary": false,
+                    "selectedListId": "{listid:Prosjektlogg}",
+                    "webpartHeightKey": 4
+                  }
+                },
+                {
+                  "Id": "f92bf067-bc19-489e-a556-7fe95f508720",
+                  "Properties": {
+                    "isDocumentLibrary": false,
+                    "selectedListId": "{listid:Prosjektsikkerhetslogg}",
+                    "webpartHeightKey": 4
+                  }
+                },
+                {
+                  "Id": "f92bf067-bc19-489e-a556-7fe95f508720",
+                  "Properties": {
+                    "isDocumentLibrary": true,
+                    "selectedListId": "{listid:Dokumenter}",
+                    "webpartHeightKey": 4
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Lists": [
+    {
+      "Title": "Prosjektsikkerhetslogg",
+      "Description": "",
+      "Template": 100,
+      "ContentTypesEnabled": false,
+      "RemoveExistingContentTypes": true,
+      "ContentTypeBindings": [
+        {
+          "ContentTypeID": "0x0100767FA7064D10410F865AFD5DC6A46A54"
+        }
+      ],
+      "AdditionalSettings": {
+        "EnableVersioning": true
+      },
+      "FieldRefs": [
+        {
+          "ID": "fa564e0f-0c70-4ab9-b863-0177e6ddd247",
+          "Name": "Title",
+          "Required": true,
+          "DisplayName": "Hendelsesnavn"
+        }
+      ],
+      "Views": [
+        {
+          "Title": "Alle elementer",
+          "ViewFields": [
+            "GtProjectLogDate",
+            "LinkTitle",
+            "GtProjectLogIncidentType",
+            "GtProjectLogNature",
+            "GtProjectLogDetails",
+            "GtProjectLogCause",
+            "GtProjectLogSeverityLevel",
+            "GtProjectLogSolution",
+            "GtProjectLogPreventative",
+            "GtProjectLogAccountable",
+            "GtProjectLogReporter",
+            "GtProjectLogStatus",
+            "GtProjectLogMedia"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 30,
+            "Paged": true,
+            "ViewQuery": ""
+          }
+        },
+        {
+          "Title": "Pågående hendelser",
+          "ViewFields": [
+            "LinkTitle",
+            "GtProjectLogIncidentType",
+            "GtProjectLogSeverityLevel",
+            "GtProjectLogStatus",
+            "GtProjectLogAccountable",
+            "GtProjectLogReporter",
+            "GtProjectLogMedia"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 30,
+            "Paged": true,
+            "ViewQuery": ""
+          }
+        }
+      ]
+    }
+  ],
+  "Navigation": {
+    "QuickLaunch": [
+      {
+        "Url": "SitePages/Hjem.aspx",
+        "Title": "Hjem"
+      },
+      {
+        "Url": "Lists/Prosjektlogg/AllItems.aspx",
+        "Title": "Prosjektlogg"
+      },
+      {
+        "Url": "Lists/Prosjektsikkerhetslogg/AllItems.aspx",
+        "Title": "Prosjektlogg SHA"
+      },
+      {
+        "Url": "Dokumenter/Forms/AllItems.aspx",
+        "Title": "Dokumenter"
+      },
+      {
+        "Url": "_layouts/15/viewlsts.aspx",
+        "Title": "Områdeinnhold"
+      }
+    ]
+  },
+  "WebSettings": {
+    "WelcomePage": "SitePages/Hjem.aspx"
+  }
+}
