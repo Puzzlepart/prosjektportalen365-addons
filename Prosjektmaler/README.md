@@ -1,9 +1,6 @@
-# Prosjekttillegg
+# Prosjektmaler
 
-Her er en samling av generaliserte prosjekttillegg som kan brukes for prosjekter i Prosjektportalen 365, disse legges i mappen `Prosjekttillegg` og knyttes opp mot malene via listen `Maloppsett`
+Her er en samling av generaliserte prosjektmaler som kan installeres og brukes for opprettelse av forskjellige typer prosjekter i Prosjektportalen 365. Hver Prosjektmal har sitt eget insallasjonsscript og veiledning for bruk.
 
-## [Dokumentbibliotek - flat visning med bane kolonne](./Dokumentbibliotek_flat_bane.txt)
-
-Dette tillegget legger ved en flat dokumentvisning (uten mapper) og inkluderer kolonnen `Bane` som viser mappestrukturen til dokumentet
-
-![image](https://github.com/Puzzlepart/prosjektportalen365-addons/assets/28678468/d484b2a3-d77f-498c-abdf-25f78c077250)
+- [Leverandørmal](Leverandørmal/README.md)
+  - Har ikke installasjonsscript enda, dette kommer snart.

@@ -1,0 +1,14 @@
+﻿{
+    "bindata": {},
+    "actions": [
+        {
+            "verb": "createContentType",
+            "description": "",
+            "id": "0x0100767FA7064D10410F865AFD5DC6A46A54",
+            "name": "Sikkerhetsloggelement",
+            "hidden": false
+        }
+    ],
+    "$schema": "schema.json",
+    "version": 1
+}
