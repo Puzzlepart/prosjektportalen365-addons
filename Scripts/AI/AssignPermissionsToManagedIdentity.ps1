@@ -1,6 +1,8 @@
-# This script requires the Microsoft Graph PowerShell module to be installed. It assigns the necessary permissions to a managed identity to access Microsoft Graph and SharePoint Online.
+param(
+  $ManagedIdentityId = "73bc3a50-c895-4bcb-88d3-e7ae9a99084b" # Object (principal) ID of managed identity
+)
 
-$ManagedIdentityId = "73bc3a50-c895-4bcb-88d3-e7ae9a99084b" # Object (principal) ID of managed identity
+  # This script requires the Microsoft Graph PowerShell module to be installed. It assigns the necessary permissions to a managed identity to access Microsoft Graph and SharePoint Online.
 
 $GraphPermissionScopes = @(
   "Directory.ReadWrite.All"
