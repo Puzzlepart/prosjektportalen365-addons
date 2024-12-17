@@ -206,6 +206,124 @@
       ]
     }
   ],
+  "Navigation": {
+    "QuickLaunch": [
+      {
+        "Url": "SitePages/ProjectHome.aspx",
+        "Title": "Hjem"
+      },
+      {
+        "Url": "",
+        "Title": "Obligatoriske funksjoner"
+      },
+      {
+        "Url": "SitePages/Prosjektstatus.aspx",
+        "Title": "Prosjektstatus"
+      },
+      {
+        "Url": "Lists/Prosjektlogg/AllItems.aspx",
+        "Title": "Prosjektlogg"
+      },
+      {
+        "Url": "Lists/Usikkerhet/AllItems.aspx",
+        "Title": "Usikkerhet"
+      },
+      {
+        "Url": "Dokumenter/Forms/AllItems.aspx",
+        "Title": "Dokumenter"
+      },
+      {
+        "Url": "",
+        "Title": "Planlegging og styring"
+      },
+      {
+        "Url": "Lists/Interessentregister/AllItems.aspx",
+        "Title": "Interessentregister"
+      },
+      {
+        "Url": "Lists/Kommunikasjonsplan/AllItems.aspx",
+        "Title": "Kommunikasjonsplan"
+      },
+      {
+        "Url": "Lists/WBS/AllItems.aspx",
+        "Title": "Work Breakdown Structure"
+      },
+      {
+        "Url": "Lists/Prosjektleveranser/AllItems.aspx",
+        "Title": "Prosjektleveranser"
+      },
+      {
+        "Url": "SitePages/Prosjekttidslinje.aspx",
+        "Title": "Prosjekttidslinje"
+      },
+      {
+        "Url": "SitePages/Oppgaver.aspx",
+        "Title": "Oppgaver"
+      },
+      {
+        "Url": "SitePages/Gevinstoversikt.aspx",
+        "Title": "Gevinstarbeid",
+        "Children": [
+          {
+            "Url": "Lists/Endringsanalyse/AllItems.aspx",
+            "Title": "Endringsanalyse"
+          },
+          {
+            "Url": "Lists/Gevinstanalyse og gevinstrealiseringsplan/AllItems.aspx",
+            "Title": "Gevinstanalyse og gevinstrealiseringsplan"
+          },
+          {
+            "Url": "Lists/Mleindikatorer/AllItems.aspx",
+            "Title": "Måleindikatorer"
+          },
+          {
+            "Url": "Lists/Gevinstoppflging/AllItems.aspx",
+            "Title": "Gevinstoppfølging"
+          },
+          {
+            "Url": "SitePages/Gevinstoversikt.aspx",
+            "Title": "Gevinstoversikt"
+          }
+        ]
+      },
+      {
+        "Url": "",
+        "Title": "Administrasjon"
+      },
+      {
+        "Url": "#",
+        "Title": "Møtereferater"
+      },
+      {
+        "Url": "Lists/Prosjektorganisasjon/AllItems.aspx",
+        "Title": "Prosjektorganisasjon"
+      },
+      {
+        "Url": "",
+        "Title": "FoU Verktøy"
+      },
+      {
+        "Url": "Lists/Etiske vurderinger/AllItems.aspx",
+        "Title": "Etiske vurderinger"
+      },
+      {
+        "Url": "Lists/Publiseringsplan/AllItems.aspx",
+        "Title": "Publiseringsplan"
+      },
+      {
+        "Url": "",
+        "Title": "Generelt"
+      },
+      {
+        "Url": "Lists/Fasesjekkliste/AllItems.aspx",
+        "Title": "Fasesjekkliste"
+      },
+      {
+        "Url": "_layouts/15/viewlsts.aspx",
+        "Title": "Områdeinnhold"
+      }
+    ]
+  },
   "ClientSidePages": [
     {
       "Name": "Hjem.aspx",
