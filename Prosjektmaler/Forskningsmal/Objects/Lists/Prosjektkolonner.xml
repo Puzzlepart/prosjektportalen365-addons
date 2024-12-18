@@ -50,7 +50,6 @@
             <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
         </pnp:DataRow>
-
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">33</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Søknadssum</pnp:DataValue>

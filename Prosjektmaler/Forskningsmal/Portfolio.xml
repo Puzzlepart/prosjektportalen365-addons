@@ -8,7 +8,7 @@
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Lists/@.xml" />
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/SiteFields/@.xml" />
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Files.xml" />
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Taxonomy.xml" />
+      <!-- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/Taxonomy.xml" /> -->
     </pnp:ProvisioningTemplate>
   </pnp:Templates>
 </pnp:Provisioning>

@@ -5,7 +5,7 @@
       <pnp:DataValue FieldName="Title">Forskning</pnp:DataValue>
       <pnp:DataValue FieldName="Order">300</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectTemplate">1</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70CFO</pnp:DataValue>
+      <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C09</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectStatusContentType">0x010022252E35737A413FB56A1BA53862F6D5</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectColumns">Kolonner for Prosjektportalen (Prosjekt)</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectCustomColumns">Egendefinerte kolonner for Prosjektportalen</pnp:DataValue>
@@ -14,6 +14,7 @@
       <pnp:DataValue FieldName="GtDescription">Dette er forskningsmalen for Prosjektportalen 365.</pnp:DataValue>
       <pnp:DataValue FieldName="IconName">TestPlan</pnp:DataValue>
       <pnp:DataValue FieldName="GtDocumentTemplateLibrary">Malbibliotek</pnp:DataValue>
+      <pnp:DataValue FieldName="FieldConfigurationName">Forskning</pnp:DataValue>
     </pnp:DataRow>
   </pnp:DataRows>
 </pnp:ListInstance>
