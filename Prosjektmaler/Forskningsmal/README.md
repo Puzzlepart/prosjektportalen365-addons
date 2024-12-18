@@ -7,7 +7,6 @@ Forskningsmalen installeres som tillegg til Prosjektportalen 365. Ved å install
 1. Et nytt prosjekttillegg, `Forskningsmal`
 2. Fire nye lister i forskningsprosjektet, `Etiske vurderinger`, `Prosjektorganisasjon`, `Work Breakdown Structure` og `Publiseringer`
 3. En ny aggregert webdel, `Publiseringer` som viser aggregert informasjon om publiseringer registrert i prosjekter.
-4. 
 
 ## Installasjon
 
@@ -22,6 +21,13 @@ Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å inst
 3. Du kan nå opprette nye prosjekter og velge malen som heter `Forskningsmal`.
 4. Knytte opp de nye prosjekttilleggene til de nye malene.
 5. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene.
+
+### Manuelle steg etter installasjon
+- Legge til Publiseringer side i toppmenyen
+- Knytte opp prosjekttilllegget til malen samt listeinnhold
+- Legge til Prosjektinnholdskolonnene til den nye datakilden
+- Legge til nye Prosjektkolonner til visning samt filtrering
+- Legge til nytt sitescript i sitedesign
 
 Eksempel:
 
