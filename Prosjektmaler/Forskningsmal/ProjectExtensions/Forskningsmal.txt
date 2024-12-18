@@ -552,6 +552,22 @@
             "hideStatusReport": true,
             "adminPageLink": "Admin.aspx"
           }
+        },
+        {
+          "Id": "a5df8fdf-b508-4b66-98a6-d83bc2597f63",
+          "Properties": {
+            "title": "Prosjektnyheter",
+            "showChrome": true,
+            "compactMode": true
+          }
+        },
+        {
+          "Id": "6676088b-e28e-4a90-b9cb-d0d0303cd2eb",
+          "Properties": {
+            "showPerPage": 3,
+            "title": "Gruppekalender",
+            "timeSpanLimitInMonth": 6
+          }
         }
       ],
       "Sections": [
@@ -561,27 +577,21 @@
               "Factor": 12,
               "Controls": [
                 {
-                  "Factor": 12,
-                  "Controls": [
-                    {
-                      "Id": "9e4a1701-d15b-4909-8c84-0519f8d594e7",
-                      "Properties": {
-                        "WebPartType": "Text",
-                        "Order": 2,
-                        "Column": 1,
-                        "Text": "<span class=\"fontSizeSmall\">Fasevelgeren benyttes for å endre faser i prosjektet. Når velger en ny fase, vil du få opp flere sjekkpunkter fra fasesjekklisten som må besvares. Når du har valgt en ny fase, så vil dette bli oppdatert i prosjektinformasjonen og på porteføljenivå.&nbsp;</span>"
-                      }
-                    },
-                    {
-                      "Id": "e536ae15-0748-4d96-b160-3abb30f1b71e",
-                      "Properties": {
-                        "title": "Risiko",
-                        "listName": "Usikkerhet",
-                        "fullWidth": true,
-                        "calloutTemplate": "<h3>{Title}</h3>\n<p><strong>Usikkerhetstrategi: </strong>{GtRiskStrategy}</p>\n<p><strong>Nærhet: </strong>{GtRiskProximity}</p>\n<p><strong>Status usikkerhet: </strong>{GtRiskStatus}</p>"
-                      }
-                    }
-                  ]
+                  "Id": "e536ae15-0748-4d96-b160-3abb30f1b71e",
+                  "Properties": {
+                    "title": "Risiko",
+                    "listName": "Usikkerhet",
+                    "fullWidth": true,
+                    "calloutTemplate": "<h3>{Title}</h3>\n<p><strong>Usikkerhetstrategi: </strong>{GtRiskStrategy}</p>\n<p><strong>Nærhet: </strong>{GtRiskProximity}</p>\n<p><strong>Status usikkerhet: </strong>{GtRiskStatus}</p>"
+                  }
+                },
+                {
+                  "Id": "39c4c1c2-63fa-41be-8cc2-f6c0b49b253d",
+                  "Properties": {
+                    "title": "Oppgaver",
+                    "isFullScreen": false,
+                    "plannerViewMode": "bucketchart"
+                  }
                 }
               ]
             }

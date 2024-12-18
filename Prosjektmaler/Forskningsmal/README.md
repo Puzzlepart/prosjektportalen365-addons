@@ -33,10 +33,22 @@ Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å inst
 Eksempel:
 
 ```pwsh
+# Legge på tilpasninger til Prosjektportalen
+
 Connect-PnPOnline "Url til prosjektportalen" -Interactive -ClientId da6c31a6-b557-4ac3-9994-7315da06ea3a
 Invoke-PnPSiteTemplate -Path ./xx.xml
+```
 
+```pwsh
+# Opprette SiteScript for Publiseringelement
+$Content = (Get-Content -Path "./SiteScripts/Publiseringelement.txt" -Raw | Out-String)
+$SiteScript = Add-PnPSiteScript -Title "Innholdstype - Publiseringelement" -Content $Content
+```
+
+```pwsh
 # Update sitedesign for Prosjektportalen with the new contenttype (Main channel)
+# Pre-requisite: SiteScripts for the new contenttype must be created beforehand
+
 $SiteDesignName = "Prosjektomr%C3%A5de"
 
 $SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
@@ -45,12 +57,9 @@ $SiteDesignThumbnail = "https://publiccdn.sharepointonline.com/prosjektportalen.
 
 $SiteScriptIds = @()
 
-$Content = (Get-Content -Path "./SiteScripts/Publiseringelement.txt" -Raw | Out-String)
-$SiteScript = Add-PnPSiteScript -Title "Innholdstype - Publiseringelement" -Content $Content
-
-$SiteScripts = Get-PnPSiteScript
+$SiteScripts = Get-PnPSiteScript | Where-Object { $_.Title -notlike "* - Test" }
 foreach ($SiteScript in $SiteScripts) {
-    $SiteScriptIds += $SiteScript.Id.Guid
+  $SiteScriptIds += $SiteScript.Id.Guid
 }
 
 $SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
@@ -60,6 +69,7 @@ $SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScript
 ```pwsh
 # Update sitedesign for Prosjektportalen with the new contenttype (Test channel)
 # Pre-requisite: SiteScripts for the new contenttype must be created beforehand
+
 $SiteDesignName = "Prosjektomr%C3%A5de [test]"
 $SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
 $SiteDesignDesc = [Uri]::UnescapeDataString("Denne malen brukes n%C3%A5r det opprettes prosjekter under en test-kanal installasjon av Prosjektportalen")
