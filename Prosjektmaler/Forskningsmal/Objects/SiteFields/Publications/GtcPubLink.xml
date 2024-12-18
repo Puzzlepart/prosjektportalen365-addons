@@ -1,0 +1,1 @@
+<Field Description="Finn publikasjonen på CRISTIN/NVA, og kopier hele lenken inn her. Få med HTTPS://" DisplayName="Lenke til CRISTIN/NVA" Format="Hyperlink" Name="GtcPubLink" Type="URL" ID="{2f5a2d76-8910-4fb7-a3b3-ebb529f97ab2}" Group="Kolonner for Prosjektportalen (Prosjekt)" StaticName="GtcPubLink" />

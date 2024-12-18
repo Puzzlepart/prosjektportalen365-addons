@@ -91,6 +91,38 @@
           "Name": "GtcPhaseReference"
         }
       ]
+    },
+    {
+      "ID": "0x01004B2B9889EA2C462FBE9B54B0D462E96B",
+      "Name": "Publiseringelement",
+      "Description": "",
+      "Group": "Prosjektportalen innholdstyper",
+      "FieldRefs": [
+        {
+          "ID": "99fda828-0bfc-44fc-898e-7c941b9252da",
+          "Name": "GtcPubResultId"
+        },
+        {
+          "ID": "cd6b78ee-9af7-4b9c-9e46-d9e9a67f00e6",
+          "Name": "GtcPubChannel"
+        },
+        {
+          "ID": "0173a845-a466-444d-adbc-e5f2ecfe075f",
+          "Name": "GtcPubRole"
+        },
+        {
+          "ID": "9d2d9ec7-3218-4d16-be3a-de6d8525affa",
+          "Name": "GtcPubIsPublished"
+        },
+        {
+          "ID": "90d297eb-1b8a-4db7-bc07-2422abb4f1e4",
+          "Name": "GtcPubDate"
+        },
+        {
+          "ID": "2f5a2d76-8910-4fb7-a3b3-ebb529f97ab2",
+          "Name": "GtcPubLink"
+        }
+      ]
     }
   ],
   "Lists": [
@@ -349,6 +381,35 @@
             "GtcWBSAffects",
             "GtcWBSAffectsDelivery",
             "GtcWBSAffectsDescription"
+          ],
+          "AdditionalSettings": {
+            "RowLimit": 30,
+            "Paged": true,
+            "ViewQuery": ""
+          }
+        }
+      ]
+    },
+    {
+      "Title": "Publiseringer",
+      "Description": "",
+      "Template": 100,
+      "ContentTypesEnabled": true,
+      "RemoveExistingContentTypes": true,
+      "AdditionalSettings": {
+        "EnableVersioning": true
+      },
+      "Views": [
+        {
+          "Title": "Alle elementer",
+          "ViewFields": [
+            "LinkTitle",
+            "GtcPubResultId",
+            "GtcPubChannel",
+            "GtcPubRole",
+            "GtcPubIsPublished",
+            "GtcPubDate",
+            "GtcPubLink"
           ],
           "AdditionalSettings": {
             "RowLimit": 30,

@@ -1,0 +1,14 @@
+﻿{
+    "bindata": {},
+    "actions": [
+        {
+            "verb": "createContentType",
+            "description": "",
+            "id": "0x01004B2B9889EA2C462FBE9B54B0D462E96B",
+            "name": "Publiseringelement",
+            "hidden": false
+        }
+    ],
+    "$schema": "schema.json",
+    "version": 1
+}
