@@ -23,6 +23,7 @@ Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å inst
 5. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene.
 
 ### Manuelle steg etter installasjon
+
 - Legge til Publiseringer side i toppmenyen
 - Knytte opp prosjekttilllegget til malen samt listeinnhold
 - Legge til Prosjektinnholdskolonnene til den nye datakilden
@@ -35,7 +36,7 @@ Eksempel:
 Connect-PnPOnline "Url til prosjektportalen" -Interactive -ClientId da6c31a6-b557-4ac3-9994-7315da06ea3a
 Invoke-PnPSiteTemplate -Path ./xx.xml
 
-# Update sitedesign for Prosjektportalen with the new contenttype
+# Update sitedesign for Prosjektportalen with the new contenttype (Main channel)
 $SiteDesignName = "Prosjektomr%C3%A5de"
 
 $SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
@@ -50,6 +51,25 @@ $SiteScript = Add-PnPSiteScript -Title "Innholdstype - Publiseringelement" -Cont
 $SiteScripts = Get-PnPSiteScript
 foreach ($SiteScript in $SiteScripts) {
     $SiteScriptIds += $SiteScript.Id.Guid
+}
+
+$SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
+$SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptIds -Description $SiteDesignDesc -Version "1" -ThumbnailUrl $SiteDesignThumbnail
+```
+
+```pwsh
+# Update sitedesign for Prosjektportalen with the new contenttype (Test channel)
+# Pre-requisite: SiteScripts for the new contenttype must be created beforehand
+$SiteDesignName = "Prosjektomr%C3%A5de [test]"
+$SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
+$SiteDesignDesc = [Uri]::UnescapeDataString("Denne malen brukes n%C3%A5r det opprettes prosjekter under en test-kanal installasjon av Prosjektportalen")
+$SiteDesignThumbnail = "https://publiccdn.sharepointonline.com/prosjektportalen.sharepoint.com/sites/ppassets/Thumbnails/prosjektomrade-test.png"
+
+$SiteScriptIds = @()
+$SiteScripts = Get-PnPSiteScript | Where-Object { $_.Title -like "* - Test" -or $_.Title -like "*Publiseringelement*" }
+
+foreach ($SiteScript in $SiteScripts) {
+  $SiteScriptIds += $SiteScript.Id.Guid
 }
 
 $SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
