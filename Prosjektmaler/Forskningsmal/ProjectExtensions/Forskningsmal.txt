@@ -396,6 +396,11 @@
       "Template": 100,
       "ContentTypesEnabled": true,
       "RemoveExistingContentTypes": true,
+      "ContentTypeBindings": [
+        {
+          "ContentTypeID": "0x01004B2B9889EA2C462FBE9B54B0D462E96B"
+        }
+      ],
       "AdditionalSettings": {
         "EnableVersioning": true
       },
@@ -459,7 +464,7 @@
         "Title": "Kommunikasjonsplan"
       },
       {
-        "Url": "Lists/WBS/AllItems.aspx",
+        "Url": "Lists/Work Breakdown Structure/AllItems.aspx",
         "Title": "Work Breakdown Structure"
       },
       {
@@ -521,8 +526,8 @@
         "Title": "Etiske vurderinger"
       },
       {
-        "Url": "Lists/Publiseringsplan/AllItems.aspx",
-        "Title": "Publiseringsplan"
+        "Url": "Lists/Publiseringer/AllItems.aspx",
+        "Title": "Publiseringer"
       },
       {
         "Url": "",
@@ -576,6 +581,17 @@
             {
               "Factor": 12,
               "Controls": [
+                {
+                  "Id": "4449d3dc-fa58-4982-b87c-5a893114e7b7",
+                  "Properties": {
+                    "phaseField": "Fase",
+                    "syncPropertiesAfterPhaseChange": true,
+                    "showSubText": true,
+                    "subTextTruncateLength": 50,
+                    "currentPhaseViewName": "Gjeldende fase",
+                    "useDynamicHomepage": true
+                  }
+                },
                 {
                   "Id": "e536ae15-0748-4d96-b160-3abb30f1b71e",
                   "Properties": {
