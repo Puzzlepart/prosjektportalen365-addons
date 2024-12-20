@@ -432,7 +432,7 @@
         "Title": "Hjem"
       },
       {
-        "Url": "",
+        "Url": "http://linkless.header/",
         "Title": "Obligatoriske funksjoner"
       },
       {
@@ -452,7 +452,7 @@
         "Title": "Dokumenter"
       },
       {
-        "Url": "",
+        "Url": "http://linkless.header/",
         "Title": "Planlegging og styring"
       },
       {
@@ -506,7 +506,7 @@
         ]
       },
       {
-        "Url": "",
+        "Url": "http://linkless.header/",
         "Title": "Administrasjon"
       },
       {
@@ -518,7 +518,7 @@
         "Title": "Prosjektorganisasjon"
       },
       {
-        "Url": "",
+        "Url": "http://linkless.header/",
         "Title": "FoU Verktøy"
       },
       {
@@ -530,7 +530,7 @@
         "Title": "Publiseringer"
       },
       {
-        "Url": "",
+        "Url": "http://linkless.header/",
         "Title": "Generelt"
       },
       {
