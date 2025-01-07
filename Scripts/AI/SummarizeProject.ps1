@@ -1,12 +1,12 @@
 Param(
     [Parameter(Mandatory = $false)]
     [string]$Url,
-    [Parameter(Mandatory = $true)]
-    [string]$api_key,
     [Parameter(Mandatory = $false)]
-    [string]$api_base = "https://pzl-testing-oaiservice-swedencentral.openai.azure.com/",
+    [string]$api_credentialname = "openai_api",
     [Parameter(Mandatory = $false)]
     [string]$model_name = "gpt-4-1106-preview",
+    [Parameter(Mandatory = $false)]
+    [string]$api_images_credentialname = "openai_img_api",
     [Parameter(Mandatory = $false)]
     [string]$model_name_images = "dall-e",
     [Parameter(Mandatory = $false)]
@@ -21,12 +21,12 @@ $global:__ClientId = $ClientId
 
 # Azure OpenAI metadata variables
 $OpenAISettings = @{
-    api_key            = $api_key
-    api_base           = $api_base
-    api_version        = $api_version
-    model_name         = $model_name
-    api_version_images = $api_version_images
-    model_name_images  = $model_name_images
+    credential_name        = $api_credentialname
+    api_version            = $api_version
+    model_name             = $model_name
+    credential_name_images = $api_images_credentialname
+    api_version_images     = $api_version_images
+    model_name_images      = $model_name_images
 }
 
 if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
