@@ -1,4 +1,4 @@
-param($OpenAISettings, $Url, $SiteTitle, $SiteId, $GroupId, $UsersEmails, $HubSiteUrl, $IdeaPrompt)
+param($OpenAISettings, $Url, $SiteTitle, $SiteId, $GroupId, $UsersEmails, $HubSiteUrl, $AdditionalPrompt)
 
 . .\CommonPPAI.ps1
 
@@ -12,7 +12,7 @@ else {
     Write-Output "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper" -UsersEmails $UsersEmails
         
-    $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. $IdeaPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
     Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
 

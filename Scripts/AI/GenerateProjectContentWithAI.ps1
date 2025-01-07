@@ -76,14 +76,14 @@ Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'
 
 . .\GenerateProjectLogo.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -GroupId $GroupId.Guid
 
-. .\GenerateProjectPropertiesContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails -IdeaPrompt $IdeaPrompt
+. .\GenerateProjectPropertiesContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails -AdditionalPrompt $IdeaPrompt
 
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
-    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -IdeaPrompt $IdeaPrompt
+    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -AdditionalPrompt $IdeaPrompt
 }
 
-. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -IdeaPrompt $IdeaPrompt
+. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $IdeaPrompt
 
-. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -IdeaPrompt $IdeaPrompt
+. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $IdeaPrompt

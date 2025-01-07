@@ -1,4 +1,4 @@
-param($OpenAISettings, $SiteTitle, $SiteId, $HubSiteUrl, $IdeaPrompt)
+param($OpenAISettings, $SiteTitle, $SiteId, $HubSiteUrl, $AdditionalPrompt)
 
 . .\CommonPPAI.ps1
 
@@ -17,7 +17,7 @@ try {
     $StartDate = $MatchingProjectInHub.FieldValues["GtStartDate"]
     $EndDate = $MatchingProjectInHub.FieldValues["GtEndDate"]
         
-    $Prompt = "Gi meg et eksempel på tidslinjeelementer (totalt mellom 10 og 20) for et prosjekt som heter '$SiteTitle'. Prosjektets startdato er $StartDate og sluttdato er $EndDate. $IdeaPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal beskrive tidslinjeelementet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg et eksempel på tidslinjeelementer (totalt mellom 10 og 20) for et prosjekt som heter '$SiteTitle'. Prosjektets startdato er $StartDate og sluttdato er $EndDate. $AdditionalPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal beskrive tidslinjeelementet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
     Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
     
