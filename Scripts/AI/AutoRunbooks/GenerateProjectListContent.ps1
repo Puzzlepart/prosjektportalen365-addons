@@ -1,4 +1,4 @@
-param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails, $IdeaPrompt) 
+param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails, $AdditionalPrompt) 
 
 function Connect-SharePoint($Url) {
     $pnpParams = @{ 
@@ -206,7 +206,12 @@ function Get-IdeaPrompt($Url, $Id) {
     return $IdeaPrompt
 }
 
-function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
+function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @()) {    
+    if ($UsersEmails.Count -lt 1) {
+        $Connection = Get-PnPConnection
+        $UsersEmails = Get-SiteUsersEmails -Url $Connection.Url
+    }    
+
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
 
     $FieldPrompt = ""
@@ -231,7 +236,7 @@ function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
             }
         }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
-            $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"
+            $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"            
         }
         elseif ($_.TypeAsString -eq "Choice" -or $_.TypeAsString -eq "MultiChoice") {
             if ($_.Choices) {
@@ -329,7 +334,7 @@ Connect-SharePoint -Url $Url
 Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
 $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle -UsersEmails $UsersEmails
 
-$Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. $IdeaPrompt VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. "
+$Prompt = "Gi meg $PromptMaxElements ulike eksempler på $ListTitle for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva oppføringen handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. "
     
 Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
 

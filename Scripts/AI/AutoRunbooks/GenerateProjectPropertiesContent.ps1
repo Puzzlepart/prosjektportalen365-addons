@@ -1,4 +1,4 @@
-param($OpenAISettings, $Url, $SiteTitle, $SiteId, $GroupId, $UsersEmails, $HubSiteUrl, $IdeaPrompt)
+param($OpenAISettings, $Url, $SiteTitle, $SiteId, $GroupId, $UsersEmails, $HubSiteUrl, $AdditionalPrompt)
 
 function Connect-SharePoint($Url) {
     $pnpParams = @{ 
@@ -206,7 +206,12 @@ function Get-IdeaPrompt($Url, $Id) {
     return $IdeaPrompt
 }
 
-function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
+function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @()) {    
+    if ($UsersEmails.Count -lt 1) {
+        $Connection = Get-PnPConnection
+        $UsersEmails = Get-SiteUsersEmails -Url $Connection.Url
+    }    
+
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
 
     $FieldPrompt = ""
@@ -231,7 +236,7 @@ function Get-FieldPromptForList($ListTitle, $UsersEmails, $SkipFields = @()) {
             }
         }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
-            $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"
+            $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"            
         }
         elseif ($_.TypeAsString -eq "Choice" -or $_.TypeAsString -eq "MultiChoice") {
             if ($_.Choices) {
@@ -334,7 +339,7 @@ else {
     Write-Output "`tProject properties found. Starting to generate content for project '$SiteTitle'..."
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektegenskaper" -UsersEmails $UsersEmails
         
-    $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. $IdeaPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
+    $Prompt = "Gi meg eksempler på Prosjektegenskaper for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være '$SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
     Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
 
