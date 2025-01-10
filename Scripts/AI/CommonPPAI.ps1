@@ -70,6 +70,10 @@ function Invoke-OpenAI {
         [ValidateSet('JSON', 'Text')]
         [string]$ResponseFormat = 'JSON'
     )
+
+    if ($global:__OutputPrompt) {
+        Write-Host $InputMessage
+    }
     
     $messages = @(
         @{
@@ -81,13 +85,13 @@ function Invoke-OpenAI {
     if ($ResponseFormat -eq 'Text') {
         $messages += @{
             role    = 'system'
-            content = "Du er en hjelpsom assistent som svarer kun med tekst. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring."
+            content = "Du er en hjelpsom prosjektleder-assistent som svarer kun med tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst."
         }
     }
     else {
         $messages += @{
             role    = 'system'
-            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+            content = "You are a helpful project manager assistant responding only with JSON. You are an expert on project management and project execution. Your job is to help the user execution projects in a profession and efficient way. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
         }
 
         if ($ForceArray.IsPresent) {
