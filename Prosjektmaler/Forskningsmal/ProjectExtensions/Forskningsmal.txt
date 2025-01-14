@@ -510,8 +510,8 @@
         "Title": "Administrasjon"
       },
       {
-        "Url": "#",
-        "Title": "Møtereferater"
+        "Url": "_layouts/15/groupstatus.aspx?Target=NOTEBOOK",
+        "Title": "Møtereferat"
       },
       {
         "Url": "Lists/Prosjektorganisasjon/AllItems.aspx",

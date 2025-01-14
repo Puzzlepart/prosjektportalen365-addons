@@ -1,1 +1,1 @@
-<Field DisplayName="Utlysning" Description="Utlysning for prosjektet" Format="Hyperlink" Name="GtcAnnouncement" Type="URL" ID="{cbe2eb6b-d976-4456-b865-45e8ab43a06b}" Group="Egendefinerte kolonner for Prosjektportalen" StaticName="GtcAnnouncement" />
+<Field DisplayName="Utlysning" Description="Tittel for utlysning" Format="Hyperlink" Name="GtcAnnouncement" Type="URL" ID="{cbe2eb6b-d976-4456-b865-45e8ab43a06b}" Group="Egendefinerte kolonner for Prosjektportalen" StaticName="GtcAnnouncement" />

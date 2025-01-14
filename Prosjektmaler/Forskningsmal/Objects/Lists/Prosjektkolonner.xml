@@ -66,7 +66,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">34</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Sum til prosjektet</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Sum til universitetet</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcProjectSum</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcProjectSumOWSCURR</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Currency</pnp:DataValue>
