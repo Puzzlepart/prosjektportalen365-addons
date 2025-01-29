@@ -1,0 +1,1 @@
+<Field Description="Hva er CRISTIN resultat-ID for publikasjonen?" DisplayName="CRISTIN resultat-ID" MaxLength="255" Name="GtcPubResultId" Type="Text" ID="{99fda828-0bfc-44fc-898e-7c941b9252da}" Group="Kolonner for Prosjektportalen (Prosjekt)" StaticName="GtcPubResultId" />

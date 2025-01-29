@@ -1,0 +1,195 @@
+<pnp:ListInstance Title="Prosjektkolonner" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Prosjektkolonner" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" ContentTypesEnabled="true" RemoveExistingContentTypes="false" EnableFolderCreation="false" EnableAttachments="false"
+    xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+    <pnp:DataRows UpdateBehavior="Overwrite" KeyColumn="GtInternalName">
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">30</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Prosjektnummer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtProjectNumber</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtProjectNumberOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldOverrides">{
+            "Forskning": {
+                "nb-no": {
+                    "displayName": "Prosjektnummer, finansiør",
+                    "description": "Hvis relevant, legg inn tilhørende prosjektnummer (finansiør)"
+                }
+            }}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">31</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Finansiør</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcFinancier</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcFinancierTextOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">300</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow> 
+            <pnp:DataValue FieldName="GtSortOrder">32</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Utlysning</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcAnnouncement</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcAnnouncementOWSURLH</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">URL</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">33</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Søknadssum</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcApplicationSum</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcApplicationSumOWSCURR</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Currency</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">34</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Sum til universitetet</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcProjectSum</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcProjectSumOWSCURR</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Currency</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">35</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Søknadsfrist</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcDeadline</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcDeadlineOWSDATE</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">101</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Status søknad</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcApplicationStatus</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcApplicationStatusOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">102</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Fakultet</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcFaculty</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcFacultyTextOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">300</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">103</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Institutt</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcInstitute</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcInstituteTextOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">300</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">104</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Forskergruppe</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcResearchGroup</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcResearchGroupTextOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">300</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">105</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Cristin prosjektkode</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcCristinCode</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcCristinCodeOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">106</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Rolle i prosjektet</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcProjectRole</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcProjectRoleOWSCHCS</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">121</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Oppstartsdato</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcStartupDate</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcStartupDateOWSDATE</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">False</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
+        </pnp:DataRow>
+    </pnp:DataRows>
+</pnp:ListInstance>
+           

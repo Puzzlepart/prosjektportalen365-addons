@@ -1,0 +1,18 @@
+<Field DisplayName="Forskergruppe" Group="Egendefinerte kolonner for Prosjektportalen" ID="{e91cb472-14f3-4c2f-a3d2-9b6dcd94278e}" List="{{listid:TaxonomyHiddenList}}" Name="GtcResearchGroup" ShowField="Term1044" StaticName="GtcResearchGroup" Type="TaxonomyFieldType" WebId="{siteid}">
+  <Customization>
+    <ArrayOfProperty>
+      <Property>
+        <Name>SspId</Name>
+        <Value p4:type="q1:string"
+          xmlns:p4="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:q1="http://www.w3.org/2001/XMLSchema">{sitecollectiontermstoreid}</Value>
+      </Property>
+      <Property>
+        <Name>TermSetId</Name>
+        <Value p4:type="q2:string"
+          xmlns:p4="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:q2="http://www.w3.org/2001/XMLSchema">{15f5bff7-06e6-4e99-a26c-956d59dcbe91}</Value>
+      </Property>
+    </ArrayOfProperty>
+  </Customization>
+</Field>
