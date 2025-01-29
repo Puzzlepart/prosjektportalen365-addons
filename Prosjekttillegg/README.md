@@ -11,3 +11,5 @@ Dette tillegget legger ved en flat dokumentvisning (uten mapper) og inkluderer k
 ## [Forside - med hurtiglenke webdel](./Forside_hurtiglenke.txt)
 
 Dette tillegget legger til hurtiglenke webdelen på forsiden av prosjektet. Tilpass tillegget med dine egne lenker.
+
+![image](https://github.com/user-attachments/assets/18576f00-0281-4c87-b91d-7cabf22ccf42)

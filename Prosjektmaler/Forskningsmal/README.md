@@ -18,16 +18,14 @@ Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å inst
 
 1. Last ned release-pakken fra releases og pakk ut pakken lokalt.
 2. Kjør kommandoer under for å installere oppsettet.
-3. Du kan nå opprette nye prosjekter og velge malen som heter `Forskningsmal`.
-4. Knytte opp de nye prosjekttilleggene til de nye malene.
-5. Knytte opp de nye Prosjektinnholdskolonnene til de nye datakildene.
+3. Du kan nå opprette nye prosjekter og velge malen som heter `Forskning`.
 
 ### Manuelle steg etter installasjon
 
-- Legge til Publiseringer side i toppmenyen
+- Legge til `Publiseringer` side i toppmenyen
 - Knytte opp prosjekttilllegget til malen samt listeinnhold
-- Legge til Prosjektinnholdskolonnene til den nye datakilden
-- Legge til nye Prosjektkolonner til visning samt filtrering
+- Legge til prosjektinnholdskolonnene til den nye datakilden
+- Legge til nye `Prosjektkolonner` til visning samt filtrering
 - Legge til nytt sitescript i sitedesign
 
 Eksempel:
