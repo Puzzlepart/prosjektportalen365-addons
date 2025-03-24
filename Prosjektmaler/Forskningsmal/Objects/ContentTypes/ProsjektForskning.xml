@@ -5,6 +5,7 @@
         <pnp:FieldRef ID="983d5ab3-0a6c-4f6a-a7b5-d34d52d73676" Name="GtProjectFinanceName" UpdateChildren="true" />
         <pnp:FieldRef ID="64d45745-0dd0-4c21-979b-67fb13748bb1" Name="GtProjectNumber" UpdateChildren="true" />
         <pnp:FieldRef ID="fac22313-ea4c-4459-97db-8c9b5bced16f" Name="GtcFinancier" UpdateChildren="true" />
+        <pnp:FieldRef ID="781dc764-d5dc-40d4-8199-7a9167eba3b7" Name="GtcFinancierOther" UpdateChildren="true" />
         <pnp:FieldRef ID="cbe2eb6b-d976-4456-b865-45e8ab43a06b" Name="GtcAnnouncement" UpdateChildren="true" />
         <pnp:FieldRef ID="093b17a0-8dfa-4bd3-b84b-6a397b43d841" Name="GtcApplicationSum" UpdateChildren="true" />
         <pnp:FieldRef ID="977af78d-32c1-4fff-b614-8920c07ddcaf" Name="GtcProjectSum" UpdateChildren="true" />
@@ -22,6 +23,7 @@
         <pnp:FieldRef ID="d217903e-4f06-44be-97b4-696f45e01d4d" Name="GtcFaculty" UpdateChildren="true" />
         <pnp:FieldRef ID="74d25b44-88c2-4739-ab0f-54df577159df" Name="GtcInstitute" UpdateChildren="true" />
         <pnp:FieldRef ID="e91cb472-14f3-4c2f-a3d2-9b6dcd94278e" Name="GtcResearchGroup" UpdateChildren="true" />
+        <pnp:FieldRef ID="663a2150-c250-4a7b-8e49-690dca0cba3f" Name="GtcResearchGroupOther" UpdateChildren="true" />
         <pnp:FieldRef ID="5adbe057-ef1f-4009-9ab8-515c6c099b4d" Name="GtcCristinCode" UpdateChildren="true" />
         <pnp:FieldRef ID="9cea97d4-a5a4-432d-a367-f8fdf626f49b" Name="GtcProjectRole" UpdateChildren="true" />
         <pnp:FieldRef ID="e39c32db-a7da-4c93-9369-8aa5a7bde92d" Name="GtStartDate" UpdateChildren="true" />

@@ -36,8 +36,22 @@
             <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
             <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
         </pnp:DataRow>
-        <pnp:DataRow> 
+        <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">32</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Finansiør (Annet)</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcFinancierOther</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcFinancierOtherOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">300</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow> 
+            <pnp:DataValue FieldName="GtSortOrder">33</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Utlysning</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcAnnouncement</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcAnnouncementOWSURLH</pnp:DataValue>
@@ -51,7 +65,7 @@
             <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
-            <pnp:DataValue FieldName="GtSortOrder">33</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSortOrder">34</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Søknadssum</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcApplicationSum</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcApplicationSumOWSCURR</pnp:DataValue>
@@ -65,7 +79,7 @@
             <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
-            <pnp:DataValue FieldName="GtSortOrder">34</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSortOrder">35</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Sum til universitetet</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcProjectSum</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcProjectSumOWSCURR</pnp:DataValue>
@@ -79,7 +93,7 @@
             <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
-            <pnp:DataValue FieldName="GtSortOrder">35</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSortOrder">36</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Søknadsfrist</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcDeadline</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcDeadlineOWSDATE</pnp:DataValue>
@@ -150,6 +164,20 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">105</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">Forskergruppe (Annet)</pnp:DataValue>
+            <pnp:DataValue FieldName="GtInternalName">GtcResearchGroupOther</pnp:DataValue>
+            <pnp:DataValue FieldName="GtManagedProperty">GtcResearchGroupOtherOWSTEXT</pnp:DataValue>
+            <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMinWidth">200</pnp:DataValue>
+            <pnp:DataValue FieldName="GtColMaxWidth">300</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldProjectStatus">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldFrontpage">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtShowFieldPortfolio">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsRefinable">True</pnp:DataValue>
+            <pnp:DataValue FieldName="GtIsGroupable">True</pnp:DataValue>
+        </pnp:DataRow>
+        <pnp:DataRow>
+            <pnp:DataValue FieldName="GtSortOrder">106</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Cristin prosjektkode</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcCristinCode</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcCristinCodeOWSTEXT</pnp:DataValue>
@@ -163,7 +191,7 @@
             <pnp:DataValue FieldName="GtIsGroupable">False</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
-            <pnp:DataValue FieldName="GtSortOrder">106</pnp:DataValue>
+            <pnp:DataValue FieldName="GtSortOrder">107</pnp:DataValue>
             <pnp:DataValue FieldName="Title">Rolle i prosjektet</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcProjectRole</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcProjectRoleOWSCHCS</pnp:DataValue>
