@@ -1,0 +1,18 @@
+<Field DisplayName="Finansiør" Group="Egendefinerte kolonner for Prosjektportalen" ID="{fac22313-ea4c-4459-97db-8c9b5bced16f}" List="{{listid:TaxonomyHiddenList}}" Name="GtcFinancier" ShowField="Term1044" StaticName="GtcFinancier" Type="TaxonomyFieldType" WebId="{siteid}">
+  <Customization>
+    <ArrayOfProperty>
+      <Property>
+        <Name>SspId</Name>
+        <Value p4:type="q1:string"
+          xmlns:p4="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:q1="http://www.w3.org/2001/XMLSchema">{sitecollectiontermstoreid}</Value>
+      </Property>
+      <Property>
+        <Name>TermSetId</Name>
+        <Value p4:type="q2:string"
+          xmlns:p4="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:q2="http://www.w3.org/2001/XMLSchema">{4986b1b9-c4b0-4df2-845e-0ac872ad8355}</Value>
+      </Property>
+    </ArrayOfProperty>
+  </Customization>
+</Field>

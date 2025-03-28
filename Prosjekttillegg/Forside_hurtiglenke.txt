@@ -1,0 +1,122 @@
+{
+  "ClientSidePages": [
+    {
+      "Name": "ProjectHome.aspx",
+      "Title": "Hjem",
+      "PageLayoutType": "Home",
+      "CommentsDisabled": true,
+      "Overwrite": true,
+      "VerticalSection": [
+        {
+          "Id": "b8bec0be-2354-443d-a3ca-24b36e8ea7dc",
+          "Properties": {
+            "title": "Prosjektinformasjon",
+            "hideStatusReport": true,
+            "adminPageLink": "Admin.aspx"
+          }
+        }
+      ],
+      "Sections": [
+        {
+          "Columns": [
+            {
+              "Factor": 12,
+              "Controls": [
+                {
+                  "Id": "4449d3dc-fa58-4982-b87c-5a893114e7b7",
+                  "Properties": {
+                    "phaseField": "Fase",
+                    "syncPropertiesAfterPhaseChange": true,
+                    "showSubText": true,
+                    "subTextTruncateLength": 50,
+                    "currentPhaseViewName": "Gjeldende fase",
+                    "useDynamicHomepage": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Columns": [
+            {
+              "Factor": 4,
+              "Controls": [
+                {
+                  "Id": "c70391ea-0b10-4ee9-b2b4-006d3fcad0cd",
+                  "Properties": {
+                    "items": [
+                      {
+                        "title": "Lær om et gruppeområde",
+                        "url": "https://go.microsoft.com/fwlink/p/?linkid=827918"
+                      },
+                      {
+                        "title": "Lær hvordan du legger til en side",
+                        "url": "https://go.microsoft.com/fwlink/p/?linkid=827919"
+                      }
+                    ],
+                    "title": "Hurtigkoblinger",
+                    "layoutId": "CompactCard",
+                    "shouldShowThumbnail": true,
+                    "hideWebPartWhenEmpty": true,
+                    "dataProviderId": "QuickLinks"
+                  }
+                }
+              ]
+            },
+            {
+              "Factor": 4,
+              "Controls": [
+                {
+                  "Id": "c70391ea-0b10-4ee9-b2b4-006d3fcad0cd",
+                  "Properties": {
+                    "items": [
+                      {
+                        "title": "Lær om et gruppeområde",
+                        "url": "https://go.microsoft.com/fwlink/p/?linkid=827918"
+                      },
+                      {
+                        "title": "Lær hvordan du legger til en side",
+                        "url": "https://go.microsoft.com/fwlink/p/?linkid=827919"
+                      }
+                    ],
+                    "title": "Hurtigkoblinger",
+                    "layoutId": "CompactCard",
+                    "shouldShowThumbnail": true,
+                    "hideWebPartWhenEmpty": true,
+                    "dataProviderId": "QuickLinks"
+                  }
+                }
+              ]
+            },
+            {
+              "Factor": 4,
+              "Controls": [
+                {
+                  "Id": "c70391ea-0b10-4ee9-b2b4-006d3fcad0cd",
+                  "Properties": {
+                    "items": [
+                      {
+                        "title": "Lær om et gruppeområde",
+                        "url": "https://go.microsoft.com/fwlink/p/?linkid=827918"
+                      },
+                      {
+                        "title": "Lær hvordan du legger til en side",
+                        "url": "https://go.microsoft.com/fwlink/p/?linkid=827919"
+                      }
+                    ],
+                    "title": "Hurtigkoblinger",
+                    "layoutId": "CompactCard",
+                    "shouldShowThumbnail": true,
+                    "hideWebPartWhenEmpty": true,
+                    "dataProviderId": "QuickLinks"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

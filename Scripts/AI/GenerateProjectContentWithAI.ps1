@@ -4,17 +4,19 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$api_credentialname = "openai_api",
     [Parameter(Mandatory = $false)]
-    [string]$model_name = "gpt-4-1106-preview",
+    [string]$model_name = "gpt-4o",
     [Parameter(Mandatory = $false)]
     [string]$api_images_credentialname = "openai_img_api",
     [Parameter(Mandatory = $false)]
     [string]$model_name_images = "dall-e",
     [Parameter(Mandatory = $false)]
-    [string]$api_version = "2023-07-01-preview",
+    [string]$api_version = "2024-05-01-preview",
     [Parameter(Mandatory = $false)]
     [string]$api_version_images = "2024-02-15-preview",
     [Parameter(Mandatory = $false)]
     [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a",
+    [Parameter(Mandatory = $false)]
+    [string]$AdditionalPrompt,
     [Parameter(Mandatory = $false)]
     [int]$IdeaReference
 )
@@ -56,19 +58,19 @@ $SiteTitle = $Web.Title
 $UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
 
 if ($IdeaReference -gt 0) {
-    $IdeaPrompt = Get-IdeaPrompt -Url $HubSiteUrl -ID $IdeaReference
+    $AdditionalPrompt = Get-IdeaPrompt -Url $HubSiteUrl -ID $IdeaReference
 }
 
 $TargetLists = @(
-    @{Name = "Interessentregister"; Max = 8 },
+    @{Name = "Interessentregister"; Max = 10 },
     @{Name = "Prosjektleveranser"; Max = 5 },
     @{Name = "Kommunikasjonsplan"; Max = 6 },
-    @{Name = "Prosjektlogg"; Max = 10 },
+    @{Name = "Prosjektlogg"; Max = 20 },
     @{Name = "Usikkerhet"; Max = 8 },
     @{Name = "Endringsanalyse"; Max = 3 },
     @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
     @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 20 }
+    @{Name = "Gevinstoppfølging"; Max = 30 }
     @{Name = "Ressursallokering"; Max = 7 }
 )
 
@@ -76,14 +78,14 @@ Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'
 
 . .\GenerateProjectLogo.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -GroupId $GroupId.Guid
 
-. .\GenerateProjectPropertiesContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails -AdditionalPrompt $IdeaPrompt
+. .\GenerateProjectPropertiesContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -Url $Url -SiteId $SiteId -GroupId $GroupId -HubSiteUrl $HubSiteUrl -UsersEmails $UsersEmails -AdditionalPrompt $AdditionalPrompt
 
 $TargetLists | ForEach-Object {
     $ListTitle = $_["Name"]
     $PromptMaxElements = $_["Max"]
-    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -AdditionalPrompt $IdeaPrompt
+    . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -AdditionalPrompt $AdditionalPrompt
 }
 
-. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $IdeaPrompt
+. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt
 
-. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $IdeaPrompt
+. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt

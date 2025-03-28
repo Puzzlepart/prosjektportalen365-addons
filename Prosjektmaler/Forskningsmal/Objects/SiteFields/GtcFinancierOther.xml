@@ -1,0 +1,1 @@
+<Field DisplayName="Finansiør (Annet)" Description="Hvis finanisøren ikke ble funnet i listen over kan du spesifisere dette her." Group="Egendefinerte kolonner for Prosjektportalen" ID="{781dc764-d5dc-40d4-8199-7a9167eba3b7}" Name="GtcFinancierOther" StaticName="GtcFinancierOther" Type="Text" />

@@ -1,0 +1,18 @@
+<Field DisplayName="Institutt" Group="Egendefinerte kolonner for Prosjektportalen" ID="{74d25b44-88c2-4739-ab0f-54df577159df}" List="{{listid:TaxonomyHiddenList}}" Name="GtcInstitute" ShowField="Term1044" StaticName="GtcInstitute" Type="TaxonomyFieldType" WebId="{siteid}">
+  <Customization>
+    <ArrayOfProperty>
+      <Property>
+        <Name>SspId</Name>
+        <Value p4:type="q1:string"
+          xmlns:p4="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:q1="http://www.w3.org/2001/XMLSchema">{sitecollectiontermstoreid}</Value>
+      </Property>
+      <Property>
+        <Name>TermSetId</Name>
+        <Value p4:type="q2:string"
+          xmlns:p4="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns:q2="http://www.w3.org/2001/XMLSchema">{5a7fbf6e-7786-4043-b929-4786de700856}</Value>
+      </Property>
+    </ArrayOfProperty>
+  </Customization>
+</Field>
