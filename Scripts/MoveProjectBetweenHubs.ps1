@@ -2,7 +2,8 @@ Param(
     [Parameter(Mandatory = $true)][string]$SourceHubUrl,
     [Parameter(Mandatory = $true)][string]$DestinationHubUrl,
     [Parameter(Mandatory = $true)][string]$ProjectUrl,
-    [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
+    [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a", ## PP Client Id
+    [Parameter(Mandatory = $false)][bool]$Force
 )
 
 function VerifyUser($UserObject, $Connection) {
@@ -274,20 +275,20 @@ Write-Host "`tCleaning up project data in source hub"
 $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection -ClientId $ClientId
 if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
     Write-Host "`t`tDeleting project properties item with ID $($MatchingProject.Id)"
-    $RemovedItem = Remove-PnPListItem -List "Prosjekter" -Identity $MatchingProject.Id -Force -Recycle -Connection $SourceConn
+    $RemovedItem = Remove-PnPListItem -List "Prosjekter" -Identity $MatchingProject.Id -Force:$Force -Recycle -Connection $SourceConn
 }
 if ($null -ne $MatchingReports -and $MatchingReports.length -gt 0) {
     $MatchingReports | ForEach-Object {
         $MatchingReport = $_
         Write-Host "`t`tDeleting project status item with ID $($MatchingReport.Id)"
-        $RemovedItem = Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReport.Id -Force -Recycle -Connection $SourceConn
-        $RemovedFolder = Remove-PnPFolder -Name $MatchingReport.Id -Folder "Prosjektstatusvedlegg" -Force -Recycle -Connection $SourceConn
+        $RemovedItem = Remove-PnPListItem -List "Prosjektstatus" -Identity $MatchingReport.Id -Force:$Force -Recycle -Connection $SourceConn
+        $RemovedFolder = Remove-PnPFolder -Name $MatchingReport.Id -Folder "Prosjektstatusvedlegg" -Force:$Force -Recycle -Connection $SourceConn
     }
 }
 if ($null -ne $TimelineItems -and $TimelineItems.length -gt 0) {
     $TimelineItems | ForEach-Object {
         $TimelineItem = $_
         Write-Host "`t`tDeleting timeline item with ID $($TimelineItem.Id)"
-        $RemovedItem = Remove-PnPListItem -List "Tidslinjeinnhold" -Identity $TimelineItem.Id -Force -Recycle -Connection $SourceConn
+        $RemovedItem = Remove-PnPListItem -List "Tidslinjeinnhold" -Identity $TimelineItem.Id -Force:$Force -Recycle -Connection $SourceConn
     }
 }
