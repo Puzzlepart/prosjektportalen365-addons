@@ -1,7 +1,8 @@
 Param(    
     [Parameter(Mandatory = $true)][string]$SourceHubUrl,
     [Parameter(Mandatory = $true)][string]$DestinationHubUrl,
-    [Parameter(Mandatory = $true)][string]$ProjectUrl
+    [Parameter(Mandatory = $true)][string]$ProjectUrl,
+    [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
 )
 
 function VerifyUser($UserObject, $Connection) {
@@ -25,6 +26,7 @@ function VerifyUser($UserObject, $Connection) {
     Write-Host "`t`tUser $($UserObject.Email) does not exist anymore" -ForegroundColor Yellow
     return $null
 }
+
 function GetSPItemPropertiesValues($MatchingProject, $Connection) {
     $SourceRawProperties = @{}
     foreach ($key in $MatchingProject.FieldValues.Keys) { 
@@ -115,7 +117,7 @@ Set-PnPTraceLog -Off
 $Url = [System.Uri]$ProjectUrl
 $TenantAdminUrl = "https://" + $Url.Authority.Replace(".sharepoint.com", "-admin.sharepoint.com")
 
-Connect-PnPOnline -Url $TenantAdminUrl -Interactive
+Connect-PnPOnline -Url $TenantAdminUrl -Interactive -ClientId $ClientId
 
 $ProjectSite = Get-PnPTenantSite -Url $ProjectUrl
 $SourceHub = Get-PnPHubSite -Identity $SourceHubUrl
@@ -151,7 +153,7 @@ if ($DestinationHub.ID -ne $ProjectSite.HubSiteId) {
     Add-PnPHubSiteAssociation -Site $ProjectUrl -HubSite $DestinationHubUrl
 }
 
-Connect-PnPOnline -Url $ProjectUrl -Interactive
+Connect-PnPOnline -Url $ProjectUrl -Interactive -ClientId $ClientId
 $Site = Get-PnPSite
 $SiteId = (Get-PnPProperty -ClientObject $Site -Property "Id").Guid
 
@@ -169,12 +171,12 @@ $MatchingProjectCaml = @"
 </View>
 "@
 
-Connect-PnPOnline -Url $SourceHubUrl -Interactive
+Connect-PnPOnline -Url $SourceHubUrl -Interactive -ClientId $ClientId
 $MatchingProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml
 
 if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
     Write-Host "`t`tCopying project element from Projects list"
-    $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
+    $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection -ClientId $ClientId
     $ProjectPropertiesValues = GetSPItemPropertiesValues -MatchingProject $MatchingProject -Connection $DestinationConn
     $MatchingDestinationProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml -Connection $DestinationConn
     if ($null -eq $MatchingDestinationProject) {
@@ -191,11 +193,11 @@ else {
 
 
 Write-Host "`tLooking for relevant entries in Projects Status list"
-$SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
+$SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection -ClientId $ClientId
 
 [array]$MatchingReports = Get-PnPListItem -List "Prosjektstatus" -Connection $SourceConn -Query $MatchingProjectCaml
 
-$DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
+$DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection -ClientId $ClientId
 [array]$MatchingDestReports = Get-PnPListItem -List "Prosjektstatus" -Connection $DestinationConn -Query $MatchingProjectCaml
 $ProjectStatusAttachmentsList = Get-PnPList -Identity "Prosjektstatusvedlegg" -Connection $DestinationConn
 
@@ -237,10 +239,10 @@ if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
         </Query>
     </View>"
 
-    $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
+    $SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection -ClientId $ClientId
     [array]$TimelineItems = Get-PnPListItem -List "Tidslinjeinnhold" -Query $MatchingTimelineSourceItemsCaml -Connection $SourceConn
 
-    $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection
+    $DestinationConn = Connect-PnPOnline -Url $DestinationHubUrl -Interactive -ReturnConnection -ClientId $ClientId
     $MatchingDestinationProject = Get-PnPListItem -List "Prosjekter" -Query $MatchingProjectCaml -Connection $DestinationConn
     if ($null -ne $MatchingDestinationProject -and $MatchingDestinationProject.length -eq 1) {
         $MatchingTimelineDestItemsCaml = "@
@@ -269,7 +271,7 @@ if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
 }
 
 Write-Host "`tCleaning up project data in source hub"
-$SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection
+$SourceConn = Connect-PnPOnline -Url $SourceHubUrl -Interactive -ReturnConnection -ClientId $ClientId
 if ($null -ne $MatchingProject -and $MatchingProject.length -eq 1) {
     Write-Host "`t`tDeleting project properties item with ID $($MatchingProject.Id)"
     $RemovedItem = Remove-PnPListItem -List "Prosjekter" -Identity $MatchingProject.Id -Force -Recycle -Connection $SourceConn
