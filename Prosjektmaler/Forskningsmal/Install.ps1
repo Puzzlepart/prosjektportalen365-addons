@@ -53,8 +53,7 @@ if ($null -eq $ExistingSiteScript) {
 }
 
 StartAction("Configuring site designs")
-$SiteDesignName = "Prosjektomr%C3%A5de"
-$SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
+$SiteDesignMainName = [Uri]::UnescapeDataString("Prosjektomr%C3%A5de")
 
 $SiteScriptMainIds = @()
 $SiteScripts = Get-PnPSiteScript | Where-Object { $_.Title -notlike "* - Test" }
@@ -62,14 +61,14 @@ foreach ($SiteScript in $SiteScripts) {
   $SiteScriptMainIds += $SiteScript.Id.Guid
 }
 
-$SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
-$SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptMainIds
+$SiteDesignMain = Get-PnPSiteDesign -Identity $SiteDesignMainName
+if ($null -eq $SiteDesignMain) {
+  Write-Host "[WARNING] Site design '$SiteDesignMainName' not found. Skipping update." -ForegroundColor Yellow
+} else {
+  $SiteDesignMain = Set-PnPSiteDesign -Identity $SiteDesignMain -SiteScriptIds $SiteScriptMainIds
+}
 
-# Update sitedesign for Prosjektportalen with the new contenttype (Test channel)
-# Pre-requisite: SiteScripts for the new contenttype must be created beforehand
-
-$SiteDesignName = "Prosjektomr%C3%A5de [test]"
-$SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
+$SiteDesignTestName = [Uri]::UnescapeDataString("Prosjektomr%C3%A5de [test]")
 
 $SiteScriptTestIds = @()
 $SiteScripts = Get-PnPSiteScript | Where-Object { $_.Title -like "* - Test" -or $_.Title -like "*Publiseringelement*" }
@@ -78,8 +77,12 @@ foreach ($SiteScript in $SiteScripts) {
   $SiteScriptTestIds += $SiteScript.Id.Guid
 }
 
-$SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
-$SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptTestIds
+$SiteDesignTest = Get-PnPSiteDesign -Identity $SiteDesignTestName
+if ($null -eq $SiteDesignTest) {
+  Write-Host "[WARNING] Site design '$SiteDesignTestName' not found. Skipping update." -ForegroundColor Yellow
+} else {
+  $SiteDesignTest = Set-PnPSiteDesign -Identity $SiteDesignTest -SiteScriptIds $SiteScriptTestIds
+}
 EndAction
 
 
@@ -150,9 +153,6 @@ if ($null -ne $CurrentUser.Email) {
   $InstallEntry.InstallUser = $CurrentUser.Email
 }
 
-## Logging installation to SharePoint list
-Add-PnPListItem -List "Installasjonslogg" -Values $InstallEntry -ErrorAction SilentlyContinue >$null 2>&1
-
-#endregion
+$LoggedEntry = Add-PnPListItem -List "Installasjonslogg" -Values $InstallEntry -ErrorAction Continue
 
 Write-Host "Installation of Forskningsmalen complete!" -ForegroundColor Green

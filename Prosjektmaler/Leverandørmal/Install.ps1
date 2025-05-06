@@ -25,24 +25,20 @@ function EndAction() {
   Write-Host "Completed in $($ElapsedSeconds)s" -ForegroundColor Green
 }
 
-#region Setting variables based on input from user
 [System.Uri]$Uri = $Url.TrimEnd('/')
 $ManagedPath = $Uri.Segments[1]
 $Alias = $Uri.Segments[2]
 $AdminSiteUrl = (@($Uri.Scheme, "://", $Uri.Authority) -join "").Replace(".sharepoint.com", "-admin.sharepoint.com")
 $TemplatesBasePath = "$PSScriptRoot/Templates"
-#endregion
 
 Set-PnPTraceLog -Off
 
 # TODO: Replace version from package.json/git-tag
 Write-Host "Installing Prosjektportalen Leverandørmal version 1.0.0" -ForegroundColor Cyan
 
-#region Print installation user
 Connect-PnPOnline -Url $AdminSiteUrl -Interactive -ClientId $ClientId -ErrorAction Stop -WarningAction Ignore
 $CurrentUser = Get-PnPProperty -Property CurrentUser -ClientObject (Get-PnPContext).Web
 Write-Host "[INFO] Installing with user [$($CurrentUser.Email)]"
-#endregion
 
 StartAction("Adding site scripts")
 $ExistingSiteScript = Get-PnPSiteScript | Where-Object { $_.Title -eq "Innholdstype - Sikkerhetsloggelement" }
@@ -53,8 +49,7 @@ if ($null -eq $ExistingSiteScript) {
 EndAction
 
 StartAction("Configuring site designs")
-$SiteDesignName = "Prosjektomr%C3%A5de"
-$SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
+$SiteDesignMainName = [Uri]::UnescapeDataString("Prosjektomr%C3%A5de")
 
 $SiteScriptMainIds = @()
 $SiteScripts = Get-PnPSiteScript | Where-Object { $_.Title -notlike "* - Test" }
@@ -62,14 +57,14 @@ foreach ($SiteScript in $SiteScripts) {
   $SiteScriptMainIds += $SiteScript.Id.Guid
 }
 
-$SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
-$SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptMainIds
+$SiteDesignMain = Get-PnPSiteDesign -Identity $SiteDesignMainName
+if ($null -eq $SiteDesignMain) {
+  Write-Host "[WARNING] Site design '$SiteDesignMainName' not found. Skipping update." -ForegroundColor Yellow
+} else {
+  $SiteDesignMain = Set-PnPSiteDesign -Identity $SiteDesignMain -SiteScriptIds $SiteScriptMainIds
+}
 
-# Update sitedesign for Prosjektportalen with the new contenttype (Test channel)
-# Pre-requisite: SiteScripts for the new contenttype must be created beforehand
-
-$SiteDesignName = "Prosjektomr%C3%A5de [test]"
-$SiteDesignName = [Uri]::UnescapeDataString($SiteDesignName)
+$SiteDesignTestName = [Uri]::UnescapeDataString("Prosjektomr%C3%A5de [test]")
 
 $SiteScriptTestIds = @()
 $SiteScripts = Get-PnPSiteScript | Where-Object { $_.Title -like "* - Test" -or $_.Title -like "*Sikkerhetsloggelement*" }
@@ -78,19 +73,19 @@ foreach ($SiteScript in $SiteScripts) {
   $SiteScriptTestIds += $SiteScript.Id.Guid
 }
 
-$SiteDesign = Get-PnPSiteDesign -Identity $SiteDesignName
-$SiteDesign = Set-PnPSiteDesign -Identity $SiteDesign -SiteScriptIds $SiteScriptTestIds
+$SiteDesignTest = Get-PnPSiteDesign -Identity $SiteDesignTestName
+if ($null -eq $SiteDesignTest) {
+  Write-Host "[WARNING] Site design '$SiteDesignTestName' not found. Skipping update." -ForegroundColor Yellow
+} else {
+  $SiteDesignTest = Set-PnPSiteDesign -Identity $SiteDesignTest -SiteScriptIds $SiteScriptTestIds
+}
 EndAction
 
-
-#region Apply Template
 StartAction("Applying Leverandørmal template")
 Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId -ErrorAction Stop
 Invoke-PnPSiteTemplate -Path "$($TemplatesBasePath)/Leverandørmal.pnp" -ErrorAction Stop -WarningAction Ignore
 EndAction
-#endregion
 
-#region Configure tillegg 
 StartAction("Configuring Leverandørmal tillegg and standardinnhold")
 try {
 
@@ -111,7 +106,6 @@ try {
     Write-Host "[WARNING] Failed to find Leverandørmal template. Please check the Maloppsett list." -ForegroundColor Yellow
   }
 
-  
   $MalOppsettTemplate = $Maloppsett | Where-Object { $_["Title"] -eq "Overordnet leverandørmal" }
   if ($null -ne $MalOppsettTemplate) {
     $TemplateTillegg = $Prosjekttillegg | Where-Object { $_["Title"] -eq "Overordnet leverandørmal" }
@@ -129,9 +123,7 @@ catch {
   Write-Host "[WARNING] Failed to configure tillegg and standardinnhold: $($_.Exception.Message)" -ForegroundColor Yellow
 }
 EndAction
-#endregion
 
-#region Logging installation
 Write-Host "[INFO] Logging installation entry" 
 Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId -ErrorAction Stop
 $LastInstall = Get-PnPListItem -List "Installasjonslogg" -Query "<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query></View>" | Select-Object -First 1 -Wait
@@ -157,9 +149,6 @@ if ($null -ne $CurrentUser.Email) {
   $InstallEntry.InstallUser = $CurrentUser.Email
 }
 
-## Logging installation to SharePoint list
-Add-PnPListItem -List "Installasjonslogg" -Values $InstallEntry -ErrorAction SilentlyContinue >$null 2>&1
-
-#endregion
+$LoggedEntry = Add-PnPListItem -List "Installasjonslogg" -Values $InstallEntry -ErrorAction Continue
 
 Write-Host "Installation of Leverandørmalen complete!" -ForegroundColor Green
