@@ -33,7 +33,7 @@ $OpenAISettings = @{
     model_name_images      = $model_name_images
 }
 
-if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
+if ($null -eq (Get-Command Connect-PnPOnline -ErrorAction SilentlyContinue)) {
     Write-Output "You have to load the PnP.PowerShell module before running this script!"
     exit 0
 }
@@ -41,7 +41,6 @@ if ($null -eq (Get-Command Set-PnPTraceLog -ErrorAction SilentlyContinue)) {
 . .\CommonPPAI.ps1
 
 $ErrorActionPreference = "Stop"
-Set-PnPTraceLog -Off
 
 Connect-SharePoint -Url $Url
 
@@ -54,6 +53,14 @@ $HubSiteUrl = $HubSiteData.url
 
 $Web = Get-PnPWeb
 $SiteTitle = $Web.Title
+
+$ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
+if ($null -ne $ProjectProperties) {
+    $ProjectTemplateParametersRaw = $ProjectProperties.FieldValues["TemplateParameters"]
+    $ProjectTemplateParameters = ConvertFrom-Json $ProjectTemplateParametersRaw
+    $ProjectStatusContentTypeId = $ProjectTemplateParameters.ProjectStatusContentTypeId || "0x010022252E35737A413FB56A1BA53862F6D5"
+    $ProjectPropertiesContentTypeId = $ProjectTemplateParameters.ProjectContentTypeId || "0x0100805E9E4FEAAB4F0EABAB2600D30DB70C"
+}
 
 $UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
 
@@ -88,4 +95,4 @@ $TargetLists | ForEach-Object {
 
 . .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt
 
-. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt
+. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt -ProjectStatusContentTypeId $ProjectStatusContentTypeId

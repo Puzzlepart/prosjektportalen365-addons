@@ -208,13 +208,21 @@ function Get-IdeaPrompt($Url, $Id) {
     return $IdeaPrompt
 }
 
-function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @()) {    
+function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, [string]$ContentTypeId, $SkipFields = @()) {    
     if ($UsersEmails.Count -lt 1) {
         $Connection = Get-PnPConnection
         $UsersEmails = Get-SiteUsersEmails -Url $Connection.Url
-    }    
-
+    }
+    
     $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
+
+    # Filter fields based on ContentTypeId if provided
+    if ($null -ne $ContentTypeId -and $ContentTypeId -ne "") {
+        $ContentType = Get-PnPContentType -List $ListTitle -Includes "FieldLinks", "Parent", "Fields" -ErrorAction SilentlyContinue | Where-Object {$_.Parent.Id.StringValue -eq $ContentTypeId}
+        if ($null -ne $ContentType) {
+            $Fields = $Fields | Where-Object { $_.Id -in $ContentType.Fields.Id }
+        }
+    }
 
     $FieldPrompt = ""
     $Fields | ForEach-Object {
