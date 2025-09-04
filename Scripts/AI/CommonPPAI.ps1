@@ -7,7 +7,6 @@ function Connect-SharePoint($Url) {
         $pnpParams.Add("ManagedIdentity", $true)
     }
     else {
-        $pnpParams.Add("Interactive", $true)
         $pnpParams.Add("ClientId", $global:__ClientId)
     }
 
@@ -49,14 +48,16 @@ function Invoke-ImageOpenAI {
     $body = [ordered]@{
         prompt = $InputMessage
         size   = '1024x1024'
-        style  = 'vivid'
-        n      = 1
+        quality = 'medium'
+        output_compression = 100
+        output_format = 'png'
+        n = 1
     } | ConvertTo-Json
 
     # Send a request to generate an answer
     $url = "$($openaiapibase)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
-    return $response.data.url
+    return $response.data
 }
 
 function Invoke-OpenAI {

@@ -8,10 +8,16 @@ Write-Output "`tGenerating project logo with $($OpenAISettings.model_name_images
 
 $Prompt = "Lag en logo for et prosjekt som heter '$SiteTitle'. Bruk enkel stil som egner seg digitalt, subtil gradient. Ikke bruk tekst."
 
-$GeneratedImageUrl = Invoke-ImageOpenAI -InputMessage $Prompt -openai $OpenAISettings
-Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
+$GeneratedImageData = Invoke-ImageOpenAI -InputMessage $Prompt -openai $OpenAISettings
 
-Write-Output "`tProject logo generated: $GeneratedImageUrl"
+if ($GeneratedImageData.Url -eq $null) {
+    $ImageBytes = [convert]::FromBase64String($GeneratedImageData[0].b64_json)
+    $ImageFile = [System.IO.File]::WriteAllBytes($LogoPath, $ImageBytes)
+}
+else {
+    $GeneratedImageUrl = $GeneratedImageData[0].url
+    Invoke-WebRequest -Uri $GeneratedImageUrl -OutFile $LogoPath
+}
 
 Connect-SharePoint -Url $Url
 Set-PnPMicrosoft365Group -Identity $GroupId -GroupLogoPath $LogoPath
