@@ -1,4 +1,3 @@
 MoveSites_Log*.txt
 .vscode/*
-Scripts/AI/RunScriptWithPzlParams.ps1
 Prosjektmaler/*/release/*
