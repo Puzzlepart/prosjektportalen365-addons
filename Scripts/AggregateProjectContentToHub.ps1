@@ -106,7 +106,7 @@ function EnsureBenefitsListExists($Url) {
             $AddedField = Add-PnPField -List $BenefitsListName -Field $field
         }
 
-        $NewView = Add-PnPView -List $BenefitsListName -Title "Alle gevinster" -Fields @("GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
+        $NewView = Add-PnPView -List $BenefitsListName -Title "Alle gevinster" -Fields @("GtcProjectName", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
     }
 }
 
@@ -239,35 +239,33 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl) {
 
     # Keep track of processed benefits to avoid duplicates
     $ProcessedBenefits = @()
-
-    # First, iterate through all changes and their linked benefits
-    foreach ($endring in $Endringer) {
-        $relatedBenefits = $Gevinster | Where-Object { 
-            $_.FieldValues["GtChangeLookup"] -and 
-            $_.FieldValues["GtChangeLookup"].LookupId -eq $endring.Id 
-        }
-        
-        if ($relatedBenefits.Count -eq 0) {
-            # No benefits for this change, but we still include it
-            $benefitItem = [AggregatedBenefitValue]::new()
-            $benefitItem.GtcUniqueKey = "$SiteId-$($endring.Id)-0-0-0"
-            $benefitItem.GtcProjectName = $ProjectName
-            $benefitItem.GtcProjectUrl = $ProjectUrl
-            $benefitItem.GtcChangeTitle = $endring.FieldValues["Title"]
-            $benefitItem.GtProcess = $endring.FieldValues["GtProcess"]
-            $benefitItem.GtChallengeDescription = $endring.FieldValues["GtChallengeDescription"]
-            $benefitItem.GtcGoalAchievement = $null # No benefits, so no achievement calculation possible
-            $BenefitsAggregationItems += $benefitItem
-        }
-        else {
-            foreach ($gevinst in $relatedBenefits) {
-                $BenefitsAggregationItems += Get-BenefitItems -gevinst $gevinst -endring $endring
-                $ProcessedBenefits += $gevinst.Id
+    
+    # Create a mapping of benefits to their first associated change
+    $BenefitToFirstChange = @{}
+    foreach ($gevinst in $Gevinster) {
+        if ($gevinst.FieldValues["GtChangeLookup"]) {
+            $changeId = $gevinst.FieldValues["GtChangeLookup"].LookupId
+            if (-not $BenefitToFirstChange.ContainsKey($gevinst.Id)) {
+                # Find the first change for this benefit
+                $firstChange = $Endringer | Where-Object { $_.Id -eq $changeId } | Select-Object -First 1
+                if ($firstChange) {
+                    $BenefitToFirstChange[$gevinst.Id] = $firstChange
+                }
             }
         }
     }
 
-    # Then, process any standalone benefits that weren't linked to changes
+    # Process benefits with their first associated change only
+    foreach ($gevinst in $Gevinster) {
+        if ($BenefitToFirstChange.ContainsKey($gevinst.Id)) {
+            # This benefit has associated changes - use the first one
+            $firstChange = $BenefitToFirstChange[$gevinst.Id]
+            $BenefitsAggregationItems += Get-BenefitItems -gevinst $gevinst -endring $firstChange
+            $ProcessedBenefits += $gevinst.Id
+        }
+    }
+
+    # Process any standalone benefits that weren't linked to changes
     $StandaloneBenefits = $Gevinster | Where-Object { 
         $_.Id -notin $ProcessedBenefits
     }
