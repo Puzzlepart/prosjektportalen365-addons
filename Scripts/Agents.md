@@ -13,6 +13,7 @@ Prosjektportalen is a Microsoft 365 solution consisting of the following modules
 - Install PnP.PowerShell: `Install-Module -Name PnP.PowerShell -RequiredVersion 3.1.0 -Force -AllowClobber`
 - Connect to SharePoint: `Connect-PnPOnline -Url "https://tenant.sharepoint.com/sites/sitename" -Interactive`
 - Test connection: `Get-PnPWeb`
+- Admin site URL can be found from any given URL by adding -admin to hostname. E.g. admin site from the URL "https://tenant.sharepoint.com/sites/sitename" is "https://tenant-admin.sharepoint.com/"
 
 ## Authentication Methods
 - **Production**: Use `-ClientId` with browser-based auth and `-ManagedIdentity` for Azure Automation
