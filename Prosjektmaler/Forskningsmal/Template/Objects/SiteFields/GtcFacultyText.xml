@@ -1,1 +1,1 @@
-<Field DisplayName="Fakultet (tekst)" Group="Egendefinerte kolonner for Prosjektportalen" ID="{82c9ee56-d428-4009-9274-369450c9b719}" Name="GtcFacultyText" StaticName="GtcFacultyText" Type="Text" ShowInEditForm="FALSE" />
+<Field DisplayName="{resource:SiteFields_GtcFacultyText_DisplayName}" Description="{resource:SiteFields_GtcFacultyText_Description}" Group="{resource:SiteFields_CustomFields_Group}" ID="{82c9ee56-d428-4009-9274-369450c9b719}" Name="GtcFacultyText" StaticName="GtcFacultyText" Type="Text" ShowInEditForm="FALSE" />

@@ -3,45 +3,153 @@
         <pnp:TermSets>
             <pnp:TermSet Name="Finansiør" ID="4986b1b9-c4b0-4df2-845e-0ac872ad8355">
                 <pnp:Terms>
-                    <pnp:Term Name="Test" />
+                    <pnp:Term Name="Test" ID="f8b2e3d1-4a5c-4d6e-8f9a-1b2c3d4e5f6a" CustomSortOrder="1" SourceTermId="f8b2e3d1-4a5c-4d6e-8f9a-1b2c3d4e5f6a">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Test" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
                 </pnp:Terms>
             </pnp:TermSet>
             <pnp:TermSet Name="Fakultet" ID="943ff631-bd9c-47e6-940f-8c950d33c010">
                 <pnp:Terms>
-                    <pnp:Term Name="Anvendt økologi, landbruksfag og bioteknologi" />
-                    <pnp:Term Name="Audiovisuelle medier og kreativ teknologi" />
-                    <pnp:Term Name="Helse og sosialvitenskap" />
-                    <pnp:Term Name="Hovedadministrasjonen" />
-                    <pnp:Term Name="Lærerutdanning og pedagogikk" />
-                    <pnp:Term Name="Økonomi og samfunnsvitenskap" />
+                    <pnp:Term Name="Anvendt økologi, landbruksfag og bioteknologi" ID="2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d" CustomSortOrder="1" SourceTermId="2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Applied Ecology, Agriculture and Biotechnology" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Audiovisuelle medier og kreativ teknologi" ID="3b4c5d6e-7f8a-4b9c-0d1e-2f3a4b5c6d7e" CustomSortOrder="2" SourceTermId="3b4c5d6e-7f8a-4b9c-0d1e-2f3a4b5c6d7e">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Audiovisual Media and Creative Technology" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Helse og sosialvitenskap" ID="4c5d6e7f-8a9b-4c0d-1e2f-3a4b5c6d7e8f" CustomSortOrder="3" SourceTermId="4c5d6e7f-8a9b-4c0d-1e2f-3a4b5c6d7e8f">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Health and Social Sciences" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Hovedadministrasjonen" ID="5d6e7f8a-9b0c-4d1e-2f3a-4b5c6d7e8f9a" CustomSortOrder="4" SourceTermId="5d6e7f8a-9b0c-4d1e-2f3a-4b5c6d7e8f9a">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Central Administration" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Lærerutdanning og pedagogikk" ID="6e7f8a9b-0c1d-4e2f-3a4b-5c6d7e8f9a0b" CustomSortOrder="5" SourceTermId="6e7f8a9b-0c1d-4e2f-3a4b-5c6d7e8f9a0b">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Teacher Education and Pedagogy" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Økonomi og samfunnsvitenskap" ID="7f8a9b0c-1d2e-4f3a-4b5c-6d7e8f9a0b1c" CustomSortOrder="6" SourceTermId="7f8a9b0c-1d2e-4f3a-4b5c-6d7e8f9a0b1c">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Economics and Social Sciences" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
                 </pnp:Terms>
             </pnp:TermSet>
             <pnp:TermSet Name="Institutt" ID="5a7fbf6e-7786-4043-b929-4786de700856">
                 <pnp:Terms>
-                    <pnp:Term Name="Bioteknologi" />
-                    <pnp:Term Name="Engelsk" />
-                    <pnp:Term Name="Folkehelse- og idrettsvitenskap" />
-                    <pnp:Term Name="Helse- og sykepleievitenskap" />
-                    <pnp:Term Name="Jordbruksfag" />
-                    <pnp:Term Name="Kunstfag og kulturstudier" />
-                    <pnp:Term Name="Matematikk, naturfag og kroppsøvning" />
-                    <pnp:Term Name="Nordisk språk og litteratur" />
-                    <pnp:Term Name="Økonomifag" />
-                    <pnp:Term Name="Organisasjon og ledelse" />
-                    <pnp:Term Name="Pedagogikk" />
-                    <pnp:Term Name="Pedagogikk ved lærerutdanningene" />
-                    <pnp:Term Name="Psykologi" />
-                    <pnp:Term Name="Rettsvitenskap, filosofi og internasjonale studier" />
-                    <pnp:Term Name="Samfunnsfag, religion og etikk" />
-                    <pnp:Term Name="Skog- og utmarksfag" />
-                    <pnp:Term Name="Sosialvitenskap og veiledning" />
-                    <pnp:Term Name="Spill utdanninger" />
-                    <pnp:Term Name="TV-utdanninger" />
+                    <pnp:Term Name="Bioteknologi" ID="8a9b0c1d-2e3f-4a4b-5c6d-7e8f9a0b1c2d" CustomSortOrder="1" SourceTermId="8a9b0c1d-2e3f-4a4b-5c6d-7e8f9a0b1c2d">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Biotechnology" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Engelsk" ID="9b0c1d2e-3f4a-4b5c-6d7e-8f9a0b1c2d3e" CustomSortOrder="2" SourceTermId="9b0c1d2e-3f4a-4b5c-6d7e-8f9a0b1c2d3e">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="English" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Folkehelse- og idrettsvitenskap" ID="0c1d2e3f-4a5b-4c6d-7e8f-9a0b1c2d3e4f" CustomSortOrder="3" SourceTermId="0c1d2e3f-4a5b-4c6d-7e8f-9a0b1c2d3e4f">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Public Health and Sports Sciences" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Helse- og sykepleievitenskap" ID="1d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a" CustomSortOrder="4" SourceTermId="1d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Health and Nursing Sciences" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Jordbruksfag" ID="2e3f4a5b-6c7d-4e8f-9a0b-1c2d3e4f5a6b" CustomSortOrder="5" SourceTermId="2e3f4a5b-6c7d-4e8f-9a0b-1c2d3e4f5a6b">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Agricultural Sciences" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Kunstfag og kulturstudier" ID="3f4a5b6c-7d8e-4f9a-0b1c-2d3e4f5a6b7c" CustomSortOrder="6" SourceTermId="3f4a5b6c-7d8e-4f9a-0b1c-2d3e4f5a6b7c">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Arts and Cultural Studies" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Matematikk, naturfag og kroppsøvning" ID="4a5b6c7d-8e9f-4a0b-1c2d-3e4f5a6b7c8d" CustomSortOrder="7" SourceTermId="4a5b6c7d-8e9f-4a0b-1c2d-3e4f5a6b7c8d">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Mathematics, Natural Sciences and Physical Education" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Nordisk språk og litteratur" ID="5b6c7d8e-9f0a-4b1c-2d3e-4f5a6b7c8d9e" CustomSortOrder="8" SourceTermId="5b6c7d8e-9f0a-4b1c-2d3e-4f5a6b7c8d9e">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Nordic Language and Literature" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Økonomifag" ID="6c7d8e9f-0a1b-4c2d-3e4f-5a6b7c8d9e0f" CustomSortOrder="9" SourceTermId="6c7d8e9f-0a1b-4c2d-3e4f-5a6b7c8d9e0f">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Economics" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Organisasjon og ledelse" ID="7d8e9f0a-1b2c-4d3e-4f5a-6b7c8d9e0f1a" CustomSortOrder="10" SourceTermId="7d8e9f0a-1b2c-4d3e-4f5a-6b7c8d9e0f1a">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Organization and Management" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Pedagogikk" ID="8e9f0a1b-2c3d-4e4f-5a6b-7c8d9e0f1a2b" CustomSortOrder="11" SourceTermId="8e9f0a1b-2c3d-4e4f-5a6b-7c8d9e0f1a2b">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Pedagogy" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Pedagogikk ved lærerutdanningene" ID="9f0a1b2c-3d4e-4f5a-6b7c-8d9e0f1a2b3c" CustomSortOrder="12" SourceTermId="9f0a1b2c-3d4e-4f5a-6b7c-8d9e0f1a2b3c">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Pedagogy in Teacher Education" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Psykologi" ID="0a1b2c3d-4e5f-4a6b-7c8d-9e0f1a2b3c4d" CustomSortOrder="13" SourceTermId="0a1b2c3d-4e5f-4a6b-7c8d-9e0f1a2b3c4d">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Psychology" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Rettsvitenskap, filosofi og internasjonale studier" ID="1b2c3d4e-5f6a-4b7c-8d9e-0f1a2b3c4d5e" CustomSortOrder="14" SourceTermId="1b2c3d4e-5f6a-4b7c-8d9e-0f1a2b3c4d5e">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Law, Philosophy and International Studies" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Samfunnsfag, religion og etikk" ID="2c3d4e5f-6a7b-4c8d-9e0f-1a2b3c4d5e6f" CustomSortOrder="15" SourceTermId="2c3d4e5f-6a7b-4c8d-9e0f-1a2b3c4d5e6f">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Social Studies, Religion and Ethics" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Skog- og utmarksfag" ID="3d4e5f6a-7b8c-4d9e-0f1a-2b3c4d5e6f7a" CustomSortOrder="16" SourceTermId="3d4e5f6a-7b8c-4d9e-0f1a-2b3c4d5e6f7a">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Forestry and Outdoor Sciences" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Sosialvitenskap og veiledning" ID="4e5f6a7b-8c9d-4e0f-1a2b-3c4d5e6f7a8b" CustomSortOrder="17" SourceTermId="4e5f6a7b-8c9d-4e0f-1a2b-3c4d5e6f7a8b">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Social Sciences and Counseling" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="Spill utdanninger" ID="5f6a7b8c-9d0e-4f1a-2b3c-4d5e6f7a8b9c" CustomSortOrder="18" SourceTermId="5f6a7b8c-9d0e-4f1a-2b3c-4d5e6f7a8b9c">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Game Education" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
+                    <pnp:Term Name="TV-utdanninger" ID="6a7b8c9d-0e1f-4a2b-3c4d-5e6f7a8b9c0d" CustomSortOrder="19" SourceTermId="6a7b8c9d-0e1f-4a2b-3c4d-5e6f7a8b9c0d">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="TV Education" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
                 </pnp:Terms>
             </pnp:TermSet>
             <pnp:TermSet Name="Forskergruppe" ID="15f5bff7-06e6-4e99-a26c-956d59dcbe91">
                 <pnp:Terms>
-                    <pnp:Term Name="Test" />
+                    <pnp:Term Name="Test" ID="7b8c9d0e-1f2a-4b3c-4d5e-6f7a8b9c0d1e" CustomSortOrder="1" SourceTermId="7b8c9d0e-1f2a-4b3c-4d5e-6f7a8b9c0d1e">
+                        <pnp:Labels>
+                            <pnp:Label Language="1033" Value="Test" IsDefaultForLanguage="true" />
+                        </pnp:Labels>
+                    </pnp:Term>
                 </pnp:Terms>
             </pnp:TermSet>
         </pnp:TermSets>

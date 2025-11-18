@@ -1,8 +1,8 @@
-<pnp:ClientSidePage PageName="Publiseringer.aspx" PromoteAsNewsArticle="false" Overwrite="true" Layout="SingleWebPartAppPage" EnableComments="false" Title="Publiseringer" xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+<pnp:ClientSidePage PageName="{resource:Pages_Publishing_PageName}" PromoteAsNewsArticle="false" Overwrite="true" Layout="SingleWebPartAppPage" EnableComments="false" Title="{resource:Pages_Publishing_PageTitle}" xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
     <pnp:Sections>
         <pnp:Section Order="1" Type="OneColumn">
             <pnp:Controls>
-                <pnp:CanvasControl WebPartType="Custom" JsonControlData="{&quot;properties&quot;:{&quot;dataSource&quot;:&quot;Alle publiseringer&quot;,&quot;dataSourceCategory&quot;:&quot;Publiseringer&quot;,&quot;showCommandBar&quot;:true,&quot;showSearchBox&quot;:true,&quot;showExcelExportButton&quot;:true,&quot;showFilters&quot;:true,&quot;showViewSelector&quot;:true}}" ControlId="6c0e484d-f6da-40d4-81fc-ec1389ef29a8" Order="1" Column="1" />
+                <pnp:CanvasControl WebPartType="Custom" JsonControlData="{&quot;properties&quot;:{&quot;dataSource&quot;:&quot;{resource:Lists_DataSources_Category_Publishing_All}&quot;,&quot;dataSourceCategory&quot;:&quot;{resource:Lists_DataSources_Category_Publishing}&quot;,&quot;showCommandBar&quot;:true,&quot;showSearchBox&quot;:true,&quot;showExcelExportButton&quot;:true,&quot;showFilters&quot;:true,&quot;showViewSelector&quot;:true}}" ControlId="6c0e484d-f6da-40d4-81fc-ec1389ef29a8" Order="1" Column="1" />
             </pnp:Controls>
         </pnp:Section>
     </pnp:Sections>

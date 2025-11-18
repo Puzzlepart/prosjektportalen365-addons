@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root"
+        xmlns=""
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="File_ResearchTemplate_Url" xml:space="preserve">
+        <value>ProjectExtensions/ResearchTemplate.txt</value>
+    </data>
+    <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
+        <value>Project Extensions</value>
+    </data>
+    <data name="File_ResearchTemplate_Level" xml:space="preserve">
+        <value>Published</value>
+    </data>
+    <data name="Files_ResearchTemplate_Title" xml:space="preserve">
+        <value>Research Template</value>
+    </data>
+    <data name="Files_ResearchTemplate_Description" xml:space="preserve">
+        <value>Customizations for research projects</value>
+    </data>
+    <data name="Pages_Publishing_PageName" xml:space="preserve">
+        <value>Publishings.aspx</value>
+    </data>
+    <data name="Pages_Publishing_PageTitle" xml:space="preserve">
+        <value>Publishings</value>
+    </data>
+    <data name="Lists_DataSources_Title" xml:space="preserve">
+        <value>Data Sources</value>
+    </data>
+    <data name="Lists_DataSources_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_DataSources_Url" xml:space="preserve">
+        <value>Lists/DataSources</value>
+    </data>
+    <data name="Lists_DataSources_Fields_Title_Value" xml:space="preserve">
+        <value>All Publications</value>
+    </data>
+    <data name="Lists_DataSources_Fields_GtDataSourceCategory_Value" xml:space="preserve">
+        <value>Publications</value>
+    </data>
+    <data name="Lists_DataSources_Fields_GtDataSourceLevel_Value" xml:space="preserve">
+        <value>Portfolio</value>
+    </data>
+    <data name="Lists_PhaseChecklistResearch_Title" xml:space="preserve">
+        <value>Phase Checklist Research</value>
+    </data>
+    <data name="Lists_PhaseChecklistResearch_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_PhaseChecklistResearch_Url" xml:space="preserve">
+        <value>Lists/PhaseChecklistResearch</value>
+    </data>
+    <data name="View_AllItems_DisplayName" xml:space="preserve">
+        <value>All Items</value>
+    </data>
+    <data name="Lists_PhaseChecklistResearch_View_Url" xml:space="preserve">
+        <value>Lists/PhaseChecklistResearch/AllItems.aspx</value>
+    </data>
+    <data name="SiteFields_GtDataRowUniqueKey_DisplayName" xml:space="preserve">
+        <value>Unique Key</value>
+    </data>
+    <data name="SiteFields_CustomFields_Group" xml:space="preserve">
+        <value>Project Portal Columns (Custom)</value>
+    </data>
+    <data name="SiteFields_Portfolio_Group" xml:space="preserve">
+        <value>Project Portal Columns (Portfolio)</value>
+    </data>
+    <data name="SiteFields_Project_Group" xml:space="preserve">
+        <value>Project Portal Columns (Project)</value>
+    </data>
+    <data name="Lists_ListContent_Title" xml:space="preserve">
+        <value>List Content</value>
+    </data>
+    <data name="Lists_ListContent_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_ListContent_Url" xml:space="preserve">
+        <value>Lists/ListContent</value>
+    </data>
+    <data name="DisplayForm_ListContent_Url" xml:space="preserve">
+        <value>Lists/ListContent/DispForm.aspx</value>
+    </data>
+    <data name="EditForm_ListContent_Url" xml:space="preserve">
+        <value>Lists/ListContent/EditForm.aspx</value>
+    </data>
+    <data name="NewForm_ListContent_Url" xml:space="preserve">
+        <value>Lists/ListContent/NewForm.aspx</value>
+    </data>
+    <data name="Lists_ListContent_Fields_Title_Value" xml:space="preserve">
+        <value>Phase Checklist Research</value>
+    </data>
+    <data name="Lists_ListContent_Fields_GtDescription_Value" xml:space="preserve">
+        <value>Copy content from research checklist</value>
+    </data>
+    <data name="Lists_ListContent_Fields_GtLccSourceList_Value" xml:space="preserve">
+        <value>Phase Checklist Research</value>
+    </data>
+    <data name="Lists_ListContent_Fields_GtLccDestinationList_Value" xml:space="preserve">
+        <value>Phase Checklist</value>
+    </data>
+    <data name="Lists_TemplateOptions_Title" xml:space="preserve">
+        <value>Template Setup</value>
+    </data>
+    <data name="Lists_TemplateOptions_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_TemplateOptions_Url" xml:space="preserve">
+        <value>Lists/TemplateSetup</value>
+    </data>
+    <data name="Lists_TemplateLayout_Field_Title_Value" xml:space="preserve">
+        <value>Research Template</value>
+    </data>
+    <data name="Lists_TemplateLayout_Field_GtProjectColumns_Value" xml:space="preserve">
+        <value>Columns for Project Portal (Project)</value>
+    </data>
+    <data name="Lists_TemplateLayout_Field_GtProjectCustomColumns_Value" xml:space="preserve">
+        <value>Custom Columns for Project Portal</value>
+    </data>
+    <data name="Lists_TemplateLayout_Field_GtDescription_Value" xml:space="preserve">
+        <value>This is the research template for Project Portal 365.</value>
+    </data>
+    <data name="Lists_TemplateLayout_Field_GtDocumentTemplateLibrary_Value" xml:space="preserve">
+        <value>Template Library</value>
+    </data>
+    <data name="Lists_TemplateLayout_Field_FieldConfigurationName_Value" xml:space="preserve">
+        <value>Research</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Title" xml:space="preserve">
+        <value>Project Content Columns</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Url" xml:space="preserve">
+        <value>Lists/ProjectContentColumns</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_DeliveryNumber_Value" xml:space="preserve">
+        <value>Delivery Number</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_Publishing_Value" xml:space="preserve">
+        <value>Publications</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_DeliveryOverview_Value" xml:space="preserve">
+        <value>Delivery Overview</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_PubResultId_Value" xml:space="preserve">
+        <value>CRISTIN Result ID</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_PubChannel_Value" xml:space="preserve">
+        <value>Publication Channel</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_PubRole_Value" xml:space="preserve">
+        <value>Role in Publication</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_PubIsPublished_Value" xml:space="preserve">
+        <value>Is Publication Published?</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_PubDate_Value" xml:space="preserve">
+        <value>Publication Date</value>
+    </data>
+    <data name="Lists_ProjectContentColumns_Fields_PubLink_Value" xml:space="preserve">
+        <value>Link to CRISTIN/NVA</value>
+    </data>
+    <data name="Lists_ProjectColumns_Title" xml:space="preserve">
+        <value>Project Columns</value>
+    </data>
+    <data name="Lists_ProjectColumns_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_ProjectColumns_Url" xml:space="preserve">
+        <value>Lists/ProjectColumns</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ProjectNumber_Value" xml:space="preserve">
+        <value>Project Number</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_Financier_Value" xml:space="preserve">
+        <value>Financier</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_FinancierOther_Value" xml:space="preserve">
+        <value>Financier (Other)</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_Announcement_Value" xml:space="preserve">
+        <value>Announcement</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ApplicationSum_Value" xml:space="preserve">
+        <value>Application Amount</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ProjectSum_Value" xml:space="preserve">
+        <value>Amount to University</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_Deadline_Value" xml:space="preserve">
+        <value>Application Deadline</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ApplicationStatus_Value" xml:space="preserve">
+        <value>Application Status</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_Faculty_Value" xml:space="preserve">
+        <value>Faculty</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_Institute_Value" xml:space="preserve">
+        <value>Institute</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ResearchGroup_Value" xml:space="preserve">
+        <value>Research Group</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ResearchGroupOther_Value" xml:space="preserve">
+        <value>Research Group (Other)</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_CristinCode_Value" xml:space="preserve">
+        <value>Cristin Project Code</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_ProjectRole_Value" xml:space="preserve">
+        <value>Role in Project</value>
+    </data>
+    <data name="Lists_ProjectColumns_Fields_StartupDate_Value" xml:space="preserve">
+        <value>Startup Date</value>
+    </data>
+    <data name="ContentTypes_ProjectResearch_Name" xml:space="preserve">
+        <value>Project Portal Content Types</value>
+    </data>
+    <data name="ContentTypes_ProjectResearch_Description" xml:space="preserve">
+        <value>Content type for research projects</value>
+    </data>
+    <data name="ContentTypes_Group" xml:space="preserve">
+        <value>Project Portal Content Types</value>
+    </data>
+    <data name="SiteFields_GtcApplicationSum_DisplayName" xml:space="preserve">
+        <value>Application Amount</value>
+    </data>
+    <data name="SiteFields_GtcApplicationSum_Description" xml:space="preserve">
+        <value>Amount for the application</value>
+    </data>
+    <data name="SiteFields_GtcDeadline_DisplayName" xml:space="preserve">
+        <value>Application Deadline</value>
+    </data>
+    <data name="SiteFields_GtcDeadline_Description" xml:space="preserve">
+        <value>Date for application deadline</value>
+    </data>
+    <data name="SiteFields_GtcCristinCode_DisplayName" xml:space="preserve">
+        <value>Cristin Project Code</value>
+    </data>
+    <data name="SiteFields_GtcCristinCode_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcDeliveryNumber_DisplayName" xml:space="preserve">
+        <value>Delivery Number</value>
+    </data>
+    <data name="SiteFields_GtcDeliveryNumber_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcFaculty_DisplayName" xml:space="preserve">
+        <value>Faculty</value>
+    </data>
+    <data name="SiteFields_GtcFaculty_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcFacultyText_DisplayName" xml:space="preserve">
+        <value>Faculty (Text)</value>
+    </data>
+    <data name="SiteFields_GtcFacultyText_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_DisplayName" xml:space="preserve">
+        <value>Application Status</value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_Description" xml:space="preserve">
+        <value>Current status of the application</value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_Choice_UnderDevelopment" xml:space="preserve">
+        <value>Under Development</value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_Choice_Sent" xml:space="preserve">
+        <value>Sent</value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_Choice_Allocated" xml:space="preserve">
+        <value>Allocated</value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_Choice_Signed" xml:space="preserve">
+        <value>Signed</value>
+    </data>
+    <data name="SiteFields_GtcApplicationStatus_Choice_Rejected" xml:space="preserve">
+        <value>Rejected</value>
+    </data>
+    <data name="SiteFields_GtcFinancier_DisplayName" xml:space="preserve">
+        <value>Financier</value>
+    </data>
+    <data name="SiteFields_GtcFinancier_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcFinancierOther_DisplayName" xml:space="preserve">
+        <value>Financier (Other)</value>
+    </data>
+    <data name="SiteFields_GtcFinancierOther_Description" xml:space="preserve">
+        <value>If the financier was not found in the list, you can specify it here.</value>
+    </data>
+    <data name="SiteFields_GtcFinancierText_DisplayName" xml:space="preserve">
+        <value>Financier (Text)</value>
+    </data>
+    <data name="SiteFields_GtcFinancierText_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcInstitute_DisplayName" xml:space="preserve">
+        <value>Institute</value>
+    </data>
+    <data name="SiteFields_GtcInstitute_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcAnnouncement_DisplayName" xml:space="preserve">
+        <value>Announcement</value>
+    </data>
+    <data name="SiteFields_GtcAnnouncement_Description" xml:space="preserve">
+        <value>Title for announcement</value>
+    </data>
+    <data name="SiteFields_GtcPhaseReference_DisplayName" xml:space="preserve">
+        <value>Reference</value>
+    </data>
+    <data name="SiteFields_GtcPhaseReference_Description" xml:space="preserve">
+        <value>Reference for the checkpoint</value>
+    </data>
+    <data name="SiteFields_GtcInstituteText_DisplayName" xml:space="preserve">
+        <value>Institute (Text)</value>
+    </data>
+    <data name="SiteFields_GtcInstituteText_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcProjectRole_DisplayName" xml:space="preserve">
+        <value>Role in Project</value>
+    </data>
+    <data name="SiteFields_GtcProjectRole_Description" xml:space="preserve">
+        <value>Role for the current project</value>
+    </data>
+    <data name="SiteFields_GtcProjectRole_Choice_Coordinator" xml:space="preserve">
+        <value>Coordinator</value>
+    </data>
+    <data name="SiteFields_GtcProjectRole_Choice_Partner" xml:space="preserve">
+        <value>Partner</value>
+    </data>
+    <data name="SiteFields_GtcProjectRole_Choice_MonoBeneficiary" xml:space="preserve">
+        <value>Mono Beneficiary</value>
+    </data>
+    <data name="SiteFields_GtcProjectSum_DisplayName" xml:space="preserve">
+        <value>Amount to University</value>
+    </data>
+    <data name="SiteFields_GtcProjectSum_Description" xml:space="preserve">
+        <value>The amount going to the university</value>
+    </data>
+    <data name="SiteFields_GtcResearchGroup_DisplayName" xml:space="preserve">
+        <value>Research Group</value>
+    </data>
+    <data name="SiteFields_GtcResearchGroup_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcResearchGroupOther_DisplayName" xml:space="preserve">
+        <value>Research Group (Other)</value>
+    </data>
+    <data name="SiteFields_GtcResearchGroupOther_Description" xml:space="preserve">
+        <value>If the research group was not found in the list, you can specify it here.</value>
+    </data>
+    <data name="SiteFields_GtcResearchGroupText_DisplayName" xml:space="preserve">
+        <value>Research Group (Text)</value>
+    </data>
+    <data name="SiteFields_GtcResearchGroupText_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="SiteFields_GtcStartupDate_DisplayName" xml:space="preserve">
+        <value>Startup Date</value>
+    </data>
+    <data name="SiteFields_GtcStartupDate_Description" xml:space="preserve">
+        <value>Start date for project implementation upon allocation of funds. Marked as a milestone on the Timeline.</value>
+    </data>
+    <data name="SiteFields_GtcPubChannel_DisplayName" xml:space="preserve">
+        <value>Publication Channel</value>
+    </data>
+    <data name="SiteFields_GtcPubChannel_Description" xml:space="preserve">
+        <value>Where is the publication published?</value>
+    </data>
+    <data name="SiteFields_GtProjectLifecycleStatus_DisplayName" xml:space="preserve">
+        <value>Project Status</value>
+    </data>
+    <data name="SiteFields_GtProjectLifecycleStatus_Description" xml:space="preserve">
+        <value>What is the status of your project?</value>
+    </data>
+    <data name="ListFields_GtcEtDeliveryTitle_Description" xml:space="preserve">
+        <value>Which delivery?</value>
+    </data>
+    <data name="ListFields_GtcEtDeliveryTitle_DisplayName" xml:space="preserve">
+        <value>Delivery</value>
+    </data>
+    <data name="ListFields_GtcEtDeliveryNumber_Description" xml:space="preserve">
+        <value>Which delivery?</value>
+    </data>
+    <data name="ListFields_GtcEtDeliveryNumber_DisplayName" xml:space="preserve">
+        <value>Delivery: Delivery Number</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_HumanTestSubject" xml:space="preserve">
+        <value>Humans, Test Subject</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_HumanTissueSamples" xml:space="preserve">
+        <value>Human Cells or Tissue Samples</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_PersonalData" xml:space="preserve">
+        <value>Personal Data</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_AnimalResearch" xml:space="preserve">
+        <value>Animals, Animal Research, Laboratory Animals</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_EnvironmentHealthSafety" xml:space="preserve">
+        <value>Environment, Health and Safety</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_MisUseOfResults" xml:space="preserve">
+        <value>Misuse of Results</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_OtherChallenges" xml:space="preserve">
+        <value>Other Ethical Challenges</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_HumanStemCells" xml:space="preserve">
+        <value>Human Embryos and Stem Cells</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Choice_ArtificialIntelligence" xml:space="preserve">
+        <value>Artificial Intelligence</value>
+    </data>
+    <data name="ListFields_GtcEtChallenge_Description" xml:space="preserve">
+        <value>Describe the ethical challenges</value>
+    </data>
+    <data name="ListFields_GtcEtChallenge_DisplayName" xml:space="preserve">
+        <value>Describe Challenge</value>
+    </data>
+    <data name="ListFields_GtcEtAction_Description" xml:space="preserve">
+        <value>Describe the measures the project implements to reduce or limit ethical challenges</value>
+    </data>
+    <data name="ListFields_GtcEtAction_DisplayName" xml:space="preserve">
+        <value>Describe Measures</value>
+    </data>
+    <data name="ListFields_GtcEtHurtPotential_Description" xml:space="preserve">
+        <value>What is the damage potential?</value>
+    </data>
+    <data name="ListFields_GtcEtHurtPotential_DisplayName" xml:space="preserve">
+        <value>Damage Potential</value>
+    </data>
+    <data name="ListFields_GtcEtTestSubject_Description" xml:space="preserve">
+        <value>Who/what are the test subjects?</value>
+    </data>
+    <data name="ListFields_GtcEtTestSubject_DisplayName" xml:space="preserve">
+        <value>Test Subjects</value>
+    </data>
+    <data name="ListFields_GtcEtStorage_Description" xml:space="preserve">
+        <value>How should results be stored?</value>
+    </data>
+    <data name="ListFields_GtcEtStorage_DisplayName" xml:space="preserve">
+        <value>Storage</value>
+    </data>
+    <data name="ListFields_GtcEtRegulations_Description" xml:space="preserve">
+        <value>Which laws and regulations must the project comply with? Is data subject to export regulations?</value>
+    </data>
+    <data name="ListFields_GtcEtRegulations_DisplayName" xml:space="preserve">
+        <value>Laws and Regulations</value>
+    </data>
+    <data name="ListFields_GtcEtSharing_Description" xml:space="preserve">
+        <value>What ethical challenges must be addressed regarding sharing/dissemination of data?</value>
+    </data>
+    <data name="ListFields_GtcEtSharing_DisplayName" xml:space="preserve">
+        <value>Sharing of Results</value>
+    </data>
+    <data name="ListFields_GtcEtApproval_Description" xml:space="preserve">
+        <value>Which committee must approve?</value>
+    </data>
+    <data name="ListFields_GtcEtApproval_DisplayName" xml:space="preserve">
+        <value>Approval</value>
+    </data>
+    <data name="ListFields_GtcEtApproval_Choice_ResearchEthicsCommitte" xml:space="preserve">
+        <value>Committee for Research Ethics (KoFE)</value>
+    </data>
+    <data name="ListFields_GtcEtApproval_Choice_RegionalEthicsCommitte" xml:space="preserve">
+        <value>Regional Ethics Committee (REK)</value>
+    </data>
+    <data name="ListFields_GtcEtApproval_Choice_NorwegianFoodSafetyAuthority" xml:space="preserve">
+        <value>Norwegian Food Safety Authority</value>
+    </data>
+    <data name="ListFields_GtcEtRisk_Description" xml:space="preserve">
+        <value>Select the risk analysis relevant to the assessment (Retrieves data from the Uncertainty Register)</value>
+    </data>
+    <data name="ListFields_GtcEtRisk_DisplayName" xml:space="preserve">
+        <value>Risk Assessment</value>
+    </data>
+    <data name="ListFields_GtcOrgBelonging_Description" xml:space="preserve">
+        <value>Which organization does the person belong to?</value>
+    </data>
+    <data name="ListFields_GtcOrgBelonging_DisplayName" xml:space="preserve">
+        <value>Belongs To</value>
+    </data>
+    <data name="ListFields_GtcOrgAcronym_Description" xml:space="preserve">
+        <value>What is the abbreviation of the organization?</value>
+    </data>
+    <data name="ListFields_GtcOrgAcronym_DisplayName" xml:space="preserve">
+        <value>Org. Acronym</value>
+    </data>
+    <data name="ListFields_GtcOrgShortDescription_Description" xml:space="preserve">
+        <value>Give a brief description of the organization.</value>
+    </data>
+    <data name="ListFields_GtcOrgShortDescription_DisplayName" xml:space="preserve">
+        <value>Brief Description of Organization</value>
+    </data>
+    <data name="ListFields_GtcOrgHomepage_Description" xml:space="preserve">
+        <value>Organization homepage</value>
+    </data>
+    <data name="ListFields_GtcOrgHomepage_DisplayName" xml:space="preserve">
+        <value>Homepage</value>
+    </data>
+    <data name="ListFields_GtcOrgRole_Description" xml:space="preserve">
+        <value>What role does the person have in their organization</value>
+    </data>
+    <data name="ListFields_GtcOrgRole_DisplayName" xml:space="preserve">
+        <value>Role in Organization</value>
+    </data>
+    <data name="ListFields_GtcOrgProjectRole_Description" xml:space="preserve">
+        <value>What role does the person have in the project?</value>
+    </data>
+    <data name="ListFields_GtcOrgProjectRole_DisplayName" xml:space="preserve">
+        <value>Role in Project</value>
+    </data>
+    <data name="ListFields_GtcOrgResponsibleFor_Description" xml:space="preserve">
+        <value>Select which deliveries in the project the person is responsible for</value>
+    </data>
+    <data name="ListFields_GtcOrgResponsibleFor_DisplayName" xml:space="preserve">
+        <value>Responsible For</value>
+    </data>
+    <data name="ListFields_GtcOrgMail_Description" xml:space="preserve">
+        <value>Add email address for the person</value>
+    </data>
+    <data name="ListFields_GtcOrgMail_DisplayName" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="ListFields_GtcOrgFromDate_Description" xml:space="preserve">
+        <value>From when is the person part of the project?</value>
+    </data>
+    <data name="ListFields_GtcOrgFromDate_DisplayName" xml:space="preserve">
+        <value>From</value>
+    </data>
+    <data name="ListFields_GtcOrgToDate_Description" xml:space="preserve">
+        <value>When is the person leaving the project?</value>
+    </data>
+    <data name="ListFields_GtcOrgToDate_DisplayName" xml:space="preserve">
+        <value>To</value>
+    </data>
+    <data name="Lists_DataSources_Category_Publishing_All" xml:space="preserve">
+        <value>All Publications</value>
+    </data>
+    <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
+        <value>Publications</value>
+    </data>
+    <data name="SiteFields_GtcPubRole_DisplayName" xml:space="preserve">
+        <value>Role in Publication</value>
+    </data>
+    <data name="SiteFields_GtcPubRole_Description" xml:space="preserve">
+        <value>Is the employee first, last, or co-author? Specify name and role.</value>
+    </data>
+    <data name="SiteFields_GtcPubResultId_DisplayName" xml:space="preserve">
+        <value>CRISTIN Result ID</value>
+    </data>
+    <data name="SiteFields_GtcPubResultId_Description" xml:space="preserve">
+        <value>What is the CRISTIN result ID for the publication?</value>
+    </data>
+    <data name="SiteFields_GtcPubLink_DisplayName" xml:space="preserve">
+        <value>Link to CRISTIN/NVA</value>
+    </data>
+    <data name="SiteFields_GtcPubLink_Description" xml:space="preserve">
+        <value>Find the publication on CRISTIN/NVA, and copy the entire link here. Include HTTPS://</value>
+    </data>
+    <data name="SiteFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
+        <value>Is Publication Published?</value>
+    </data>
+    <data name="SiteFields_GtcPubIsPublished_Description" xml:space="preserve">
+        <value>Is the publication published?</value>
+    </data>
+    <data name="SiteFields_GtcPubDate_DisplayName" xml:space="preserve">
+        <value>Publication Date</value>
+    </data>
+    <data name="SiteFields_GtcPubDate_Description" xml:space="preserve">
+        <value>When is the publication planned/published</value>
+    </data>
+    <data name="Lists_Projects_Title" xml:space="preserve">
+        <value>Projects</value>
+    </data>
+    <data name="Lists_Projects_Description" xml:space="preserve">
+        <value></value>
+    </data>
+    <data name="Lists_Projects_Url" xml:space="preserve">
+        <value>Lists/Projects</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_DisplayName" xml:space="preserve">
+        <value>Category</value>
+    </data>
+    <data name="ListFields_GtcEtCategory_Description" xml:space="preserve">
+        <value>Which ethical category?</value>
+    </data>
+    <data name="ListFields_GtcWBSDeliveryNumber_Description" xml:space="preserve">
+        <value>Which delivery?</value>
+    </data>
+    <data name="ListFields_GtcWBSDeliveryNumber_DisplayName" xml:space="preserve">
+        <value>Delivery: Delivery Number</value>
+    </data>
+    <data name="ListFields_GtcWBSDeliveryTitle_Description" xml:space="preserve">
+        <value>Which delivery?</value>
+    </data>
+    <data name="ListFields_GtcWBSDeliveryTitle_DisplayName" xml:space="preserve">
+        <value>Delivery</value>
+    </data>
+    <data name="ListFields_GtcWBSTodo_Description" xml:space="preserve">
+        <value>Describe the work to be done</value>
+    </data>
+    <data name="ListFields_GtcWBSTodo_DisplayName" xml:space="preserve">
+        <value>What Should Be Done?</value>
+    </data>
+    <data name="ListFields_GtcWBSScope_Description" xml:space="preserve">
+        <value>Select scope type</value>
+    </data>
+    <data name="ListFields_GtcWBSScope_DisplayName" xml:space="preserve">
+        <value>Scope</value>
+    </data>
+    <data name="ListFields_GtcWBSScope_Choice_Hours" xml:space="preserve">
+        <value>Hours</value>
+    </data>
+    <data name="ListFields_GtcWBSScope_Choice_PersonMonths" xml:space="preserve">
+        <value>Person Months</value>
+    </data>
+    <data name="ListFields_GtcWBSScope_Choice_YearsOfWork" xml:space="preserve">
+        <value>Years of Work</value>
+    </data>
+    <data name="ListFields_GtcWBSStartDate_Description" xml:space="preserve">
+        <value>When should this be done?</value>
+    </data>
+    <data name="ListFields_GtcWBSStartDate_DisplayName" xml:space="preserve">
+        <value>Start Date</value>
+    </data>
+    <data name="ListFields_GtcWBSEndDate_Description" xml:space="preserve">
+        <value>When should this be completed?</value>
+    </data>
+    <data name="ListFields_GtcWBSEndDate_DisplayName" xml:space="preserve">
+        <value>End Date</value>
+    </data>
+    <data name="ListFields_GtcWBSAmount_Description" xml:space="preserve">
+        <value>Select number of hours/Person months/Years of work</value>
+    </data>
+    <data name="ListFields_GtcWBSAmount_DisplayName" xml:space="preserve">
+        <value>Amount</value>
+    </data>
+    <data name="ListFields_GtcWBSExecute_Description" xml:space="preserve">
+        <value>Who in the project organization should do it? (Retrieved from Project Organization)</value>
+    </data>
+    <data name="ListFields_GtcWBSExecute_DisplayName" xml:space="preserve">
+        <value>Who Should Do It?</value>
+    </data>
+    <data name="ListFields_GtcWBSExecuteRole_Description" xml:space="preserve">
+        <value>Who in the project organization should do it? (Retrieved from Project Organization)</value>
+    </data>
+    <data name="ListFields_GtcWBSExecuteRole_DisplayName" xml:space="preserve">
+        <value>Who Should Do It?: Role in Project</value>
+    </data>
+    <data name="ListFields_GtcWBSExecuteRole0_Description" xml:space="preserve">
+        <value>Who in the project organization should do it? (Retrieved from Project Organization)</value>
+    </data>
+    <data name="ListFields_GtcWBSExecuteRole0_DisplayName" xml:space="preserve">
+        <value>Who Should Do It?: Belongs To</value>
+    </data>
+    <data name="ListFields_GtcWBSDependent_Description" xml:space="preserve">
+        <value>Select other deliveries that must be completed before starting</value>
+    </data>
+    <data name="ListFields_GtcWBSDependent_DisplayName" xml:space="preserve">
+        <value>Dependent On</value>
+    </data>
+    <data name="ListFields_GtcWBSDependecyDelivery_Description" xml:space="preserve">
+        <value>Select other deliveries that must be completed before starting</value>
+    </data>
+    <data name="ListFields_GtcWBSDependecyDelivery_DisplayName" xml:space="preserve">
+        <value>Dependent On: Delivery Number</value>
+    </data>
+    <data name="ListFields_GtcWBSDependentDescription_Description" xml:space="preserve">
+        <value>Describe why these deliveries are dependencies</value>
+    </data>
+    <data name="ListFields_GtcWBSDependentDescription_DisplayName" xml:space="preserve">
+        <value>Description of Dependencies</value>
+    </data>
+    <data name="ListFields_GtcWBSOtherDependencies_Description" xml:space="preserve">
+        <value>What other dependencies exist in time, resources, and competence that the delivery needs?</value>
+    </data>
+    <data name="ListFields_GtcWBSOtherDependencies_DisplayName" xml:space="preserve">
+        <value>Other Dependencies</value>
+    </data>
+    <data name="ListFields_GtcWBSAffects_Description" xml:space="preserve">
+        <value>Which other deliveries does this delivery affect</value>
+    </data>
+    <data name="ListFields_GtcWBSAffects_DisplayName" xml:space="preserve">
+        <value>What Other Impacts Does This Delivery Have?</value>
+    </data>
+    <data name="ListFields_GtcWBSAffectsDelivery_Description" xml:space="preserve">
+        <value>Which other deliveries does this delivery affect</value>
+    </data>
+    <data name="ListFields_GtcWBSAffectsDelivery_DisplayName" xml:space="preserve">
+        <value>What Other Impacts Does This Delivery Have?: Delivery Number</value>
+    </data>
+    <data name="ListFields_GtcWBSAffectsDescription_Description" xml:space="preserve">
+        <value>Describe how this delivery affects other project deliveries.</value>
+    </data>
+    <data name="ListFields_GtcWBSAffectsDescription_DisplayName" xml:space="preserve">
+        <value>Describe Impact</value>
+    </data>
+    <data name="Choice_GtProjectLifecycleStatus_Active" xml:space="preserve">
+        <value>Active</value>
+    </data>
+    <data name="Choice_GtProjectLifecycleStatus_Awaiting" xml:space="preserve">
+        <value>Awaiting</value>
+    </data>
+    <data name="Choice_GtProjectLifecycleStatus_Closed" xml:space="preserve">
+        <value>Closed</value>
+    </data>
+    <data name="ListFields_GtcPubResultId_Description" xml:space="preserve">
+        <value>What is the CRISTIN result ID for the publication?</value>
+    </data>
+    <data name="ListFields_GtcPubResultId_DisplayName" xml:space="preserve">
+        <value>CRISTIN Result ID</value>
+    </data>
+    <data name="ListFields_GtcPubChannel_Description" xml:space="preserve">
+        <value>Where is the publication published?</value>
+    </data>
+    <data name="ListFields_GtcPubChannel_DisplayName" xml:space="preserve">
+        <value>Publication Channel</value>
+    </data>
+    <data name="ListFields_GtcPubRole_Description" xml:space="preserve">
+        <value>Is the employee first, last, or co-author? Specify name and role.</value>
+    </data>
+    <data name="ListFields_GtcPubRole_DisplayName" xml:space="preserve">
+        <value>Role in Publication</value>
+    </data>
+    <data name="ListFields_GtcPubIsPublished_Description" xml:space="preserve">
+        <value>Is the publication published?</value>
+    </data>
+    <data name="ListFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
+        <value>Is Publication Published?</value>
+    </data>
+    <data name="ListFields_GtcPubDate_Description" xml:space="preserve">
+        <value>When is the publication planned/published</value>
+    </data>
+    <data name="ListFields_GtcPubDate_DisplayName" xml:space="preserve">
+        <value>Publication Date</value>
+    </data>
+    <data name="ListFields_GtcPubLink_Description" xml:space="preserve">
+        <value>Find the publication on CRISTIN/NVA, and copy the entire link here. Include HTTPS://</value>
+    </data>
+    <data name="ListFields_GtcPubLink_DisplayName" xml:space="preserve">
+        <value>Link to CRISTIN/NVA</value>
+    </data>
+</root>

@@ -1,73 +1,73 @@
-<pnp:ListInstance Title="Prosjektinnholdskolonner" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Prosjektinnholdskolonner" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" ContentTypesEnabled="true" RemoveExistingContentTypes="false" EnableFolderCreation="false" EnableAttachments="false"
+<pnp:ListInstance Title="{resource:Lists_ProjectContentColumns_Title}" Description="{resource:Lists_ProjectContentColumns_Description}" DocumentTemplate="" TemplateType="100" Url="{resource:Lists_ProjectContentColumns_Url}" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50000" DraftVersionVisibility="0" ContentTypesEnabled="true" RemoveExistingContentTypes="false" EnableFolderCreation="false" EnableAttachments="false"
     xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
     <pnp:DataRows UpdateBehavior="Overwrite" KeyColumn="GtInternalName">
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">170</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Leveransenummer</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_DeliveryNumber_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcDeliveryNumber</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcDeliveryNumberOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Leveranseoversikt</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_DeliveryOverview_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">800</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">CRISTIN resultat-ID</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubResultId_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubResultId</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubResultIdOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">810</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Publiseringskanal</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubChannel_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubChannel</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubChannelOWSMTXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Note</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">320</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">820</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Rolle i publikasjonen</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubRole_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubRole</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubRoleOWSMTXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Note</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">320</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">830</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Er publikasjonen publisert?</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubIsPublished_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubIsPublished</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubIsPublishedOWSBOOL</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Boolean</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">840</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Publiseringsdato</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubDate_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubDate</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubDateOWSDATE</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">120</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">850</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Lenke til CRISTIN/NVA</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubLink_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubLink</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubLinkOWSURLH</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">URL</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
         </pnp:DataRow>

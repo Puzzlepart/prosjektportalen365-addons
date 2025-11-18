@@ -1,15 +1,15 @@
-﻿<pnp:ListInstance Title="Datakilder" TemplateType="100" Url="Lists/Datakilder" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false"
+﻿<pnp:ListInstance Title="{resource:Lists_DataSources_Title}" Description="{resource:Lists_DataSources_Description}" TemplateType="100" Url="{resource:Lists_DataSources_Url}" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false"
     xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
     <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtDataSourceId">1786c21c-6a40-4cc6-8f19-a6e10c6ca14c</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">Alle publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_DataSources_Fields_Title_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x01004B2B9889EA2C462FBE9B54B0D462E96B* DepartmentId:{{sitecollectionid}}</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">Publiseringer</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Fields_GtDataSourceCategory_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentRefiners"></pnp:DataValue>
             <pnp:DataValue FieldName="GtIconName">PublishCourse</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceLevel">Portefølje</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceLevel">{resource:Lists_DataSources_Fields_GtDataSourceLevel_Value}</pnp:DataValue>
         </pnp:DataRow>
     </pnp:DataRows>
 </pnp:ListInstance>

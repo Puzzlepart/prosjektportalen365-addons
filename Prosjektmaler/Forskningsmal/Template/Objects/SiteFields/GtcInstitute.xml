@@ -1,4 +1,4 @@
-<Field DisplayName="Institutt" Group="Egendefinerte kolonner for Prosjektportalen" ID="{74d25b44-88c2-4739-ab0f-54df577159df}" List="{{listid:TaxonomyHiddenList}}" Name="GtcInstitute" ShowField="Term1044" StaticName="GtcInstitute" Type="TaxonomyFieldType" WebId="{siteid}">
+<Field DisplayName="{resource:SiteFields_GtcInstitute_DisplayName}" Description="{resource:SiteFields_GtcInstitute_Description}" Group="{resource:SiteFields_CustomFields_Group}" ID="{74d25b44-88c2-4739-ab0f-54df577159df}" List="{{listid:TaxonomyHiddenList}}" Name="GtcInstitute" ShowField="Term1044" StaticName="GtcInstitute" Type="TaxonomyFieldType" WebId="{siteid}">
   <Customization>
     <ArrayOfProperty>
       <Property>
