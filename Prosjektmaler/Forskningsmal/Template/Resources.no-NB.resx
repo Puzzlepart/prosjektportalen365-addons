@@ -61,11 +61,14 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="File_ResearchTemplate_Url" xml:space="preserve">
-        <value>ProjectExtensions/Forskningsmal.txt</value>
+    <data name="File_ResearchTemplate_Path" xml:space="preserve">
+        <value>Content\ProjectExtensions\Forskningsmal.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Prosjekttillegg</value>
+    </data>
+     <data name="Folder_ResearchTemplate_Url" xml:space="preserve">
+        <value>ProjectExtensions/Prosjekttillegg</value>
     </data>
     <data name="File_ResearchTemplate_Level" xml:space="preserve">
         <value>Published</value>
@@ -604,6 +607,12 @@
     <data name="Lists_DataSources_Category_Publishing_All" xml:space="preserve">
         <value>Alle publiseringer</value>
     </data>
+    <data name="Lists_ProjectExtensions_Title" xml:space="preserve">
+        <value>Prosjekttillegg</value>
+    </data>
+    <data name="Lists_ProjectExtensions_Url" xml:space="preserve">
+        <value>ProjectExtensions</value>
+    </data>
     <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
         <value>Publiseringer</value>
     </data>
@@ -636,6 +645,18 @@
     </data>
     <data name="SiteFields_GtcPubDate_Description" xml:space="preserve">
         <value>Når er publikasjonen planlagt/publisert</value>
+    </data>
+    <data name="SiteFields_GtDescription_DisplayName" xml:space="preserve">
+        <value>Beskrivelse</value>
+    </data>
+     <data name="SiteFields_GtExtensionDefault_DisplayName" xml:space="preserve">
+        <value>Standard</value>
+    </data>
+    <data name="SiteFields_GtExtensionHidden_DisplayName" xml:space="preserve">
+        <value>Skjult</value>
+    </data>
+    <data name="SiteFields_GtExtensionLocked_DisplayName" xml:space="preserve">
+        <value>Låst</value>
     </data>
     <data name="Lists_Projects_Title" xml:space="preserve">
         <value>Prosjekter</value>

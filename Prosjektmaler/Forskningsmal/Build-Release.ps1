@@ -36,6 +36,13 @@ Write-Host "Copying resource files..." -ForegroundColor Gray
 Copy-Item -Path "$PNP_TEMPLATES_BASEPATH/Resources.en-US.resx" -Destination $RELEASE_PATH_TEMPLATES -Force -ErrorAction SilentlyContinue
 Copy-Item -Path "$PNP_TEMPLATES_BASEPATH/Resources.no-NB.resx" -Destination $RELEASE_PATH_TEMPLATES -Force -ErrorAction SilentlyContinue
 
+# Copy Content folder to release
+Write-Host "Copying Content folder..." -ForegroundColor Gray
+if (Test-Path "$PNP_TEMPLATES_BASEPATH/Content") {
+    $RELEASE_PATH_CONTENT = (New-Item -Path "$RELEASE_PATH/Content" -ItemType Directory -Force).FullName
+    Copy-Item -Path "$PNP_TEMPLATES_BASEPATH/Content/*" -Destination $RELEASE_PATH_CONTENT -Recurse -Force -ErrorAction SilentlyContinue
+}
+
 Copy-Item -Path "$PSScriptRoot/SiteScripts/*" -Destination $RELEASE_PATH_SITESCRIPTS -Force
 Copy-Item -Path "$PSScriptRoot/Install.ps1" -Destination $RELEASE_PATH -Force
 

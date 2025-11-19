@@ -61,11 +61,14 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="File_ResearchTemplate_Url" xml:space="preserve">
-        <value>ProjectExtensions/ResearchTemplate.txt</value>
+    <data name="File_ResearchTemplate_Path" xml:space="preserve">
+        <value>Content\ProjectExtensions\Researchtemplate.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Project Extensions</value>
+    </data>
+    <data name="Folder_ResearchTemplate_Url" xml:space="preserve">
+        <value>ProjectExtensions/Project Extensions</value>
     </data>
     <data name="File_ResearchTemplate_Level" xml:space="preserve">
         <value>Published</value>
@@ -607,6 +610,12 @@
     <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
         <value>Publications</value>
     </data>
+     <data name="Lists_ProjectExtensions_Title" xml:space="preserve">
+        <value>Project Extensions</value>
+    </data>
+    <data name="Lists_ProjectExtensions_Url" xml:space="preserve">
+        <value>ProjectExtensions</value>
+    </data>
     <data name="SiteFields_GtcPubRole_DisplayName" xml:space="preserve">
         <value>Role in Publication</value>
     </data>
@@ -636,6 +645,18 @@
     </data>
     <data name="SiteFields_GtcPubDate_Description" xml:space="preserve">
         <value>When is the publication planned/published</value>
+    </data>
+     <data name="SiteFields_GtDescription_DisplayName" xml:space="preserve">
+        <value>Description</value>
+    </data>
+    <data name="SiteFields_GtExtensionDefault_DisplayName" xml:space="preserve">
+        <value>Default</value>
+    </data>
+    <data name="SiteFields_GtExtensionHidden_DisplayName" xml:space="preserve">
+        <value>Hidden</value>
+    </data>
+    <data name="SiteFields_GtExtensionLocked_DisplayName" xml:space="preserve">
+        <value>Locked</value>
     </data>
     <data name="Lists_Projects_Title" xml:space="preserve">
         <value>Projects</value>
