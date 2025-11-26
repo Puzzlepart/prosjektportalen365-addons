@@ -3,71 +3,71 @@
     <pnp:DataRows UpdateBehavior="Overwrite" KeyColumn="GtInternalName">
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">170</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_DeliveryNumber_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcDeliveryNumber_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcDeliveryNumber</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcDeliveryNumberOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_DeliveryOverview_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_ProjectDeliveries}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">800</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubResultId_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcPubResultId_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubResultId</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubResultIdOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_Publishing}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">100</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">810</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubChannel_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcPubChannel_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubChannel</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubChannelOWSMTXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Note</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_Publishing}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">320</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">820</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubRole_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcPubRole_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubRole</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubRoleOWSMTXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Note</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_Publishing}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">320</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">830</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubIsPublished_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcPubChannel_Description}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubIsPublished</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubIsPublishedOWSBOOL</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Boolean</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_Publishing}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">840</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubDate_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcPubDate_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubDate</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubDateOWSDATE</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_Publishing}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">120</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">200</pnp:DataValue>
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">850</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectContentColumns_Fields_PubLink_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcPubLink_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcPubLink</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcPubLinkOWSURLH</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">URL</pnp:DataValue>
-            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_ProjectContentColumns_Fields_Publishing_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Category_Publishing}</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMinWidth">150</pnp:DataValue>
             <pnp:DataValue FieldName="GtColMaxWidth">250</pnp:DataValue>
         </pnp:DataRow>

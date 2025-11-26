@@ -3,7 +3,7 @@
     <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtDataSourceId">1786c21c-6a40-4cc6-8f19-a6e10c6ca14c</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_DataSources_Fields_Title_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:Lists_DataSources_Category_Publishing_All}</pnp:DataValue>
             <pnp:DataValue FieldName="GtSearchQuery">ContentTypeId:0x01004B2B9889EA2C462FBE9B54B0D462E96B* DepartmentId:{{sitecollectionid}}</pnp:DataValue>
             <pnp:DataValue FieldName="GtDataSourceCategory">{resource:Lists_DataSources_Fields_GtDataSourceCategory_Value}</pnp:DataValue>
             <pnp:DataValue FieldName="GtProjectContentColumns"></pnp:DataValue>

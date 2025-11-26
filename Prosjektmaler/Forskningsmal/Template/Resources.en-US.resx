@@ -79,10 +79,10 @@
     <data name="Files_ResearchTemplate_Description" xml:space="preserve">
         <value>Customizations for research projects</value>
     </data>
-    <data name="Pages_Publishing_PageName" xml:space="preserve">
+    <data name="ClientSidePages_Publishing_PageName" xml:space="preserve">
         <value>Publishings.aspx</value>
     </data>
-    <data name="Pages_Publishing_PageTitle" xml:space="preserve">
+    <data name="ClientSidePages_Publishing_PageTitle" xml:space="preserve">
         <value>Publishings</value>
     </data>
     <data name="Lists_DataSources_Title" xml:space="preserve">
@@ -94,9 +94,6 @@
     <data name="Lists_DataSources_Url" xml:space="preserve">
         <value>Lists/DataSources</value>
     </data>
-    <data name="Lists_DataSources_Fields_Title_Value" xml:space="preserve">
-        <value>All Publications</value>
-    </data>
     <data name="Lists_DataSources_Fields_GtDataSourceCategory_Value" xml:space="preserve">
         <value>Publications</value>
     </data>
@@ -105,6 +102,12 @@
     </data>
     <data name="Lists_PhaseChecklistResearch_Title" xml:space="preserve">
         <value>Phase Checklist Research</value>
+    </data>
+    <data name="Lists_ListContent_PhaseCheckpoints_Title" xml:space="preserve">
+        <value>Phase checkpoints Research</value>
+    </data>
+    <data name="Lists_ListContent_PhaseCheckpoints_Description" xml:space="preserve">
+        <value>Phase checkpoints for Research Projects</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Description" xml:space="preserve">
         <value></value>
@@ -139,52 +142,25 @@
     <data name="Lists_ListContent_Url" xml:space="preserve">
         <value>Lists/ListContent</value>
     </data>
-    <data name="DisplayForm_ListContent_Url" xml:space="preserve">
-        <value>Lists/ListContent/DispForm.aspx</value>
-    </data>
-    <data name="EditForm_ListContent_Url" xml:space="preserve">
-        <value>Lists/ListContent/EditForm.aspx</value>
-    </data>
-    <data name="NewForm_ListContent_Url" xml:space="preserve">
-        <value>Lists/ListContent/NewForm.aspx</value>
-    </data>
-    <data name="Lists_ListContent_Fields_Title_Value" xml:space="preserve">
-        <value>Phase Checklist Research</value>
-    </data>
-    <data name="Lists_ListContent_Fields_GtDescription_Value" xml:space="preserve">
-        <value>Copy content from research checklist</value>
-    </data>
-    <data name="Lists_ListContent_Fields_GtLccSourceList_Value" xml:space="preserve">
-        <value>Phase Checklist Research</value>
-    </data>
-    <data name="Lists_ListContent_Fields_GtLccDestinationList_Value" xml:space="preserve">
-        <value>Phase Checklist</value>
-    </data>
     <data name="Lists_TemplateOptions_Title" xml:space="preserve">
-        <value>Template Setup</value>
+        <value>Template Options</value>
     </data>
     <data name="Lists_TemplateOptions_Description" xml:space="preserve">
         <value></value>
     </data>
     <data name="Lists_TemplateOptions_Url" xml:space="preserve">
-        <value>Lists/TemplateSetup</value>
+        <value>Lists/TemplateOptions</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_Title_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
         <value>Research Template</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_GtProjectColumns_Value" xml:space="preserve">
-        <value>Columns for Project Portal (Project)</value>
-    </data>
-    <data name="Lists_TemplateLayout_Field_GtProjectCustomColumns_Value" xml:space="preserve">
-        <value>Custom Columns for Project Portal</value>
-    </data>
-    <data name="Lists_TemplateLayout_Field_GtDescription_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>This is the research template for Project Portal 365.</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_GtDocumentTemplateLibrary_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary" xml:space="preserve">
         <value>Template Library</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_FieldConfigurationName_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_FieldConfigurationName" xml:space="preserve">
         <value>Research</value>
     </data>
     <data name="Lists_ProjectContentColumns_Title" xml:space="preserve">
@@ -196,32 +172,8 @@
     <data name="Lists_ProjectContentColumns_Url" xml:space="preserve">
         <value>Lists/ProjectContentColumns</value>
     </data>
-    <data name="Lists_ProjectContentColumns_Fields_DeliveryNumber_Value" xml:space="preserve">
-        <value>Delivery Number</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_Publishing_Value" xml:space="preserve">
-        <value>Publications</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_DeliveryOverview_Value" xml:space="preserve">
+    <data name="Lists_DataSources_Category_ProjectDeliveries" xml:space="preserve">
         <value>Delivery Overview</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubResultId_Value" xml:space="preserve">
-        <value>CRISTIN Result ID</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubChannel_Value" xml:space="preserve">
-        <value>Publication Channel</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubRole_Value" xml:space="preserve">
-        <value>Role in Publication</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubIsPublished_Value" xml:space="preserve">
-        <value>Is Publication Published?</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubDate_Value" xml:space="preserve">
-        <value>Publication Date</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubLink_Value" xml:space="preserve">
-        <value>Link to CRISTIN/NVA</value>
     </data>
     <data name="Lists_ProjectColumns_Title" xml:space="preserve">
         <value>Project Columns</value>
@@ -234,48 +186,6 @@
     </data>
     <data name="Lists_ProjectColumns_Fields_ProjectNumber_Value" xml:space="preserve">
         <value>Project Number</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Financier_Value" xml:space="preserve">
-        <value>Financier</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_FinancierOther_Value" xml:space="preserve">
-        <value>Financier (Other)</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Announcement_Value" xml:space="preserve">
-        <value>Announcement</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ApplicationSum_Value" xml:space="preserve">
-        <value>Application Amount</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ProjectSum_Value" xml:space="preserve">
-        <value>Amount to University</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Deadline_Value" xml:space="preserve">
-        <value>Application Deadline</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ApplicationStatus_Value" xml:space="preserve">
-        <value>Application Status</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Faculty_Value" xml:space="preserve">
-        <value>Faculty</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Institute_Value" xml:space="preserve">
-        <value>Institute</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ResearchGroup_Value" xml:space="preserve">
-        <value>Research Group</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ResearchGroupOther_Value" xml:space="preserve">
-        <value>Research Group (Other)</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_CristinCode_Value" xml:space="preserve">
-        <value>Cristin Project Code</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ProjectRole_Value" xml:space="preserve">
-        <value>Role in Project</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_StartupDate_Value" xml:space="preserve">
-        <value>Startup Date</value>
     </data>
     <data name="ContentTypes_ProjectResearch_Name" xml:space="preserve">
         <value>Project Portal Content Types</value>
@@ -610,12 +520,6 @@
     <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
         <value>Publications</value>
     </data>
-     <data name="Lists_ProjectExtensions_Title" xml:space="preserve">
-        <value>Project Extensions</value>
-    </data>
-    <data name="Lists_ProjectExtensions_Url" xml:space="preserve">
-        <value>ProjectExtensions</value>
-    </data>
     <data name="SiteFields_GtcPubRole_DisplayName" xml:space="preserve">
         <value>Role in Publication</value>
     </data>
@@ -645,18 +549,6 @@
     </data>
     <data name="SiteFields_GtcPubDate_Description" xml:space="preserve">
         <value>When is the publication planned/published</value>
-    </data>
-     <data name="SiteFields_GtDescription_DisplayName" xml:space="preserve">
-        <value>Description</value>
-    </data>
-    <data name="SiteFields_GtExtensionDefault_DisplayName" xml:space="preserve">
-        <value>Default</value>
-    </data>
-    <data name="SiteFields_GtExtensionHidden_DisplayName" xml:space="preserve">
-        <value>Hidden</value>
-    </data>
-    <data name="SiteFields_GtExtensionLocked_DisplayName" xml:space="preserve">
-        <value>Locked</value>
     </data>
     <data name="Lists_Projects_Title" xml:space="preserve">
         <value>Projects</value>

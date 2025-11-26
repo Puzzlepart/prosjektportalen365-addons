@@ -7,7 +7,7 @@
             <pnp:DataValue FieldName="GtInternalName">GtProjectNumber</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectNumberOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldOverrides">{
-            "Research": {
+            "{resource:Lists_TemplateOptions_ResearchTemplate_FieldConfigurationName}": {
                 "nb-no": {
                     "displayName": "Prosjektnummer, finansiør",
                     "description": "Hvis relevant, legg inn tilhørende prosjektnummer (finansiør)"
@@ -28,7 +28,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">31</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_Financier_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcFinancier_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcFinancier</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcFinancierTextOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
@@ -42,7 +42,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">32</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_FinancierOther_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcFinancierOther_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcFinancierOther</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcFinancierOtherOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
@@ -56,7 +56,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">33</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_Announcement_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcAnnouncement_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcAnnouncement</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcAnnouncementOWSURLH</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">URL</pnp:DataValue>
@@ -70,7 +70,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">34</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ApplicationSum_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcApplicationSum_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcApplicationSum</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcApplicationSumOWSCURR</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Currency</pnp:DataValue>
@@ -84,7 +84,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">35</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ProjectSum_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcProjectSum_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcProjectSum</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcProjectSumOWSCURR</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Currency</pnp:DataValue>
@@ -98,7 +98,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">36</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_Deadline_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcDeadline_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcDeadline</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcDeadlineOWSDATE</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>
@@ -112,7 +112,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">101</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ApplicationStatus_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcApplicationStatus_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcApplicationStatus</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcApplicationStatusOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
@@ -126,7 +126,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">102</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_Faculty_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcFaculty_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcFaculty</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcFacultyTextOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
@@ -140,7 +140,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">103</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_Institute_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcInstitute_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcInstitute</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcInstituteTextOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
@@ -154,7 +154,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">104</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ResearchGroup_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcResearchGroup_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcResearchGroup</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcResearchGroupTextOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
@@ -168,7 +168,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">105</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ResearchGroupOther_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcResearchGroupOther_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcResearchGroupOther</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcResearchGroupOtherOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Tags</pnp:DataValue>
@@ -182,7 +182,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">106</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_CristinCode_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcCristinCode_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcCristinCode</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcCristinCodeOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
@@ -196,7 +196,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">107</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ProjectRole_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcProjectRole_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcProjectRole</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcProjectRoleOWSCHCS</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Text</pnp:DataValue>
@@ -210,7 +210,7 @@
         </pnp:DataRow>
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">121</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_StartupDate_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtcStartupDate_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtcStartupDate</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtcStartupDateOWSDATE</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldDataType">Date</pnp:DataValue>

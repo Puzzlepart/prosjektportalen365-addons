@@ -2,19 +2,19 @@
   xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
   <pnp:DataRows KeyColumn="Title" UpdateBehavior="Overwrite">
     <pnp:DataRow>
-      <pnp:DataValue FieldName="Title">{resource:Lists_TemplateLayout_Field_Title_Value}</pnp:DataValue>
+      <pnp:DataValue FieldName="Title">{resource:Lists_TemplateOptions_ResearchTemplate_Title}</pnp:DataValue>
       <pnp:DataValue FieldName="Order">300</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectTemplate">1</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectContentType">0x0100805E9E4FEAAB4F0EABAB2600D30DB70C09</pnp:DataValue>
       <pnp:DataValue FieldName="GtProjectStatusContentType">0x010022252E35737A413FB56A1BA53862F6D5</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectColumns">{resource:Lists_TemplateLayout_Field_GtProjectColumns_Value}</pnp:DataValue>
-      <pnp:DataValue FieldName="GtProjectCustomColumns">{resource:Lists_TemplateLayout_Field_GtProjectCustomColumns_Value}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtProjectColumns">{resource:SiteFields_Project_Group}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtProjectCustomColumns">{resource:SiteFields_CustomFields_Group}</pnp:DataValue>
       <pnp:DataValue FieldName="IsDefaultExtensionsLocked">False</pnp:DataValue>
       <pnp:DataValue FieldName="IsDefaultListContentLocked">False</pnp:DataValue>
-      <pnp:DataValue FieldName="GtDescription">{resource:Lists_TemplateLayout_Field_GtDescription_Value}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtDescription">{resource:Lists_TemplateOptions_ResearchTemplate_Description}</pnp:DataValue>
       <pnp:DataValue FieldName="IconName">TestPlan</pnp:DataValue>
-      <pnp:DataValue FieldName="GtDocumentTemplateLibrary">{resource:Lists_TemplateLayout_Field_GtDocumentTemplateLibrary_Value}</pnp:DataValue>
-      <pnp:DataValue FieldName="FieldConfigurationName">{resource:Lists_TemplateLayout_Field_FieldConfigurationName_Value}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtDocumentTemplateLibrary">{resource:Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary}</pnp:DataValue>
+      <pnp:DataValue FieldName="FieldConfigurationName">{resource:Lists_TemplateOptions_ResearchTemplate_FieldConfigurationName}</pnp:DataValue>
     </pnp:DataRow>
   </pnp:DataRows>
 </pnp:ListInstance>

@@ -1,11 +1,10 @@
-<pnp:ListInstance Title="{resource:Lists_ListContent_Title}" Description="{resource:Lists_ListContent_Description}" DocumentTemplate="" TemplateType="100" Url="{resource:Lists_ListContent_Url}" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="5000" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" ContentTypesEnabled="true" Hidden="true" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/{resource:DisplayForm_ListContent_Url}" DefaultEditFormUrl="{site}/{resource:EditForm_ListContent_Url}" DefaultNewFormUrl="{site}/{resource:NewForm_ListContent_Url}" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage=""
-  xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
+<pnp:ListInstance Title="{resource:Lists_ListContent_Title}" Description="{resource:Lists_ListContent_Description}" DocumentTemplate="" TemplateType="100" Url="{resource:Lists_ListContent_Url}" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="5000" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" ContentTypesEnabled="true" Hidden="true" EnableAttachments="false" EnableFolderCreation="false" xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
   <pnp:DataRows KeyColumn="Title" UpdateBehavior="Overwrite">
     <pnp:DataRow>
-      <pnp:DataValue FieldName="Title">{resource:Lists_ListContent_Fields_Title_Value}</pnp:DataValue>
-      <pnp:DataValue FieldName="GtDescription">{resource:Lists_ListContent_Fields_GtDescription_Value}</pnp:DataValue>
-      <pnp:DataValue FieldName="GtLccSourceList">{resource:Lists_ListContent_Fields_GtLccSourceList_Value}</pnp:DataValue>
-      <pnp:DataValue FieldName="GtLccDestinationList">{resource:Lists_ListContent_Fields_GtLccDestinationList_Value}</pnp:DataValue>
+      <pnp:DataValue FieldName="Title">{resource:Lists_ListContent_PhaseCheckpoints_Title}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtDescription">{resource:Lists_ListContent_PhaseCheckpoints_Description}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtLccSourceList">{resource:Lists_PhaseChecklistResearch_Title}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtLccDestinationList">{resource:Lists_PhaseChecklistResearch_Title}</pnp:DataValue>
       <pnp:DataValue FieldName="GtLccFields">GtSortOrder,Title,GtProjectPhase,GtcPhaseReference</pnp:DataValue>
       <pnp:DataValue FieldName="GtLccDefault">0</pnp:DataValue>
       <pnp:DataValue FieldName="GtLccHidden">0</pnp:DataValue>

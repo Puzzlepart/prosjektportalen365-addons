@@ -67,7 +67,7 @@
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Prosjekttillegg</value>
     </data>
-     <data name="Folder_ResearchTemplate_Url" xml:space="preserve">
+    <data name="Folder_ResearchTemplate_Url" xml:space="preserve">
         <value>ProjectExtensions/Prosjekttillegg</value>
     </data>
     <data name="File_ResearchTemplate_Level" xml:space="preserve">
@@ -79,10 +79,10 @@
     <data name="Files_ResearchTemplate_Description" xml:space="preserve">
         <value>Tilpasninger for forskningsprosjekter</value>
     </data>
-    <data name="Pages_Publishing_PageName" xml:space="preserve">
+    <data name="ClientSidePages_Publishing_PageName" xml:space="preserve">
         <value>Publiseringer.aspx</value>
     </data>
-    <data name="Pages_Publishing_PageTitle" xml:space="preserve">
+    <data name="ClientSidePages_Publishing_PageTitle" xml:space="preserve">
         <value>Publiseringer</value>
     </data>
     <data name="Lists_DataSources_Title" xml:space="preserve">
@@ -94,9 +94,6 @@
     <data name="Lists_DataSources_Url" xml:space="preserve">
         <value>Lists/Datakilder</value>
     </data>
-    <data name="Lists_DataSources_Fields_Title_Value" xml:space="preserve">
-        <value>Alle publiseringer</value>
-    </data>
     <data name="Lists_DataSources_Fields_GtDataSourceCategory_Value" xml:space="preserve">
         <value>Publiseringer</value>
     </data>
@@ -105,6 +102,12 @@
     </data>
     <data name="Lists_PhaseChecklistResearch_Title" xml:space="preserve">
         <value>Fasesjekkliste forskning</value>
+    </data>
+    <data name="Lists_ListContent_PhaseCheckpoints_Title" xml:space="preserve">
+        <value>Fasesjekkpunkter Forskning</value>
+    </data>
+    <data name="Lists_ListContent_PhaseCheckpoints_Description" xml:space="preserve">
+        <value>Fasesjekkpunkter for forskningsprosjekter</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Description" xml:space="preserve">
         <value></value>
@@ -136,27 +139,6 @@
     <data name="Lists_ListContent_Url" xml:space="preserve">
         <value>Lists/Listeinnhold</value>
     </data>
-    <data name="DisplayForm_ListContent_Url" xml:space="preserve">
-        <value>Lists/Listeinnhold/DispForm.aspx</value>
-    </data>
-    <data name="EditForm_ListContent_Url" xml:space="preserve">
-        <value>Lists/Listeinnhold/EditForm.aspx</value>
-    </data>
-    <data name="NewForm_ListContent_Url" xml:space="preserve">
-        <value>Lists/Listeinnhold/NewForm.aspx</value>
-    </data>
-    <data name="Lists_ListContent_Fields_Title_Value" xml:space="preserve">
-        <value>Fasesjekkliste forskning</value>
-    </data>
-    <data name="Lists_ListContent_Fields_GtDescription_Value" xml:space="preserve">
-        <value>Kopier innhold fra sjekkliste for forskning</value>
-    </data>
-    <data name="Lists_ListContent_Fields_GtLccSourceList_Value" xml:space="preserve">
-        <value>Fasesjekkliste forskning</value>
-    </data>
-    <data name="Lists_ListContent_Fields_GtLccDestinationList_Value" xml:space="preserve">
-        <value>Fasesjekkliste</value>
-    </data>
     <data name="Lists_TemplateOptions_Title" xml:space="preserve">
         <value>Maloppsett</value>
     </data>
@@ -169,22 +151,16 @@
     <data name="SiteFields_CustomFields_Group" xml:space="preserve">
         <value>Egendefinerte kolonner for Prosjektportalen</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_Title_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
         <value>Forskningsmal</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_GtProjectColumns_Value" xml:space="preserve">
-        <value>Kolonner for Prosjektportalen (Prosjekt)</value>
-    </data>
-    <data name="Lists_TemplateLayout_Field_GtProjectCustomColumns_Value" xml:space="preserve">
-        <value>Egendefinerte kolonner for Prosjektportalen</value>
-    </data>
-    <data name="Lists_TemplateLayout_Field_GtDescription_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>Dette er forskningsmalen for Prosjektportalen 365.</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_GtDocumentTemplateLibrary_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary" xml:space="preserve">
         <value>Malbibliotek</value>
     </data>
-    <data name="Lists_TemplateLayout_Field_FieldConfigurationName_Value" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_FieldConfigurationName" xml:space="preserve">
         <value>Forskning</value>
     </data>
     <data name="Lists_ProjectContentColumns_Title" xml:space="preserve">
@@ -196,32 +172,8 @@
     <data name="Lists_ProjectContentColumns_Url" xml:space="preserve">
         <value>Lists/Prosjektinnholdskolonner</value>
     </data>
-    <data name="Lists_ProjectContentColumns_Fields_DeliveryNumber_Value" xml:space="preserve">
-        <value>Leveransenummer</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_Publishing_Value" xml:space="preserve">
-        <value>Publiseringer</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_DeliveryOverview_Value" xml:space="preserve">
+    <data name="Lists_DataSources_Category_ProjectDeliveries" xml:space="preserve">
         <value>Leveranseoversikt</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubResultId_Value" xml:space="preserve">
-        <value>CRISTIN resultat-ID</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubChannel_Value" xml:space="preserve">
-        <value>Publiseringskanal</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubRole_Value" xml:space="preserve">
-        <value>Rolle i publikasjonen</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubIsPublished_Value" xml:space="preserve">
-        <value>Er publikasjonen publisert?</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubDate_Value" xml:space="preserve">
-        <value>Publiseringsdato</value>
-    </data>
-    <data name="Lists_ProjectContentColumns_Fields_PubLink_Value" xml:space="preserve">
-        <value>Lenke til CRISTIN/NVA</value>
     </data>
     <data name="Lists_ProjectColumns_Title" xml:space="preserve">
         <value>Prosjektkolonner</value>
@@ -234,48 +186,6 @@
     </data>
     <data name="Lists_ProjectColumns_Fields_ProjectNumber_Value" xml:space="preserve">
         <value>Prosjektnummer</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Financier_Value" xml:space="preserve">
-        <value>Finansiør</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_FinancierOther_Value" xml:space="preserve">
-        <value>Finansiør (Annet)</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Announcement_Value" xml:space="preserve">
-        <value>Utlysning</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ApplicationSum_Value" xml:space="preserve">
-        <value>Søknadssum</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ProjectSum_Value" xml:space="preserve">
-        <value>Sum til universitetet</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Deadline_Value" xml:space="preserve">
-        <value>Søknadsfrist</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ApplicationStatus_Value" xml:space="preserve">
-        <value>Status søknad</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Faculty_Value" xml:space="preserve">
-        <value>Fakultet</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_Institute_Value" xml:space="preserve">
-        <value>Institutt</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ResearchGroup_Value" xml:space="preserve">
-        <value>Forskergruppe</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ResearchGroupOther_Value" xml:space="preserve">
-        <value>Forskergruppe (Annet)</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_CristinCode_Value" xml:space="preserve">
-        <value>Cristin prosjektkode</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_ProjectRole_Value" xml:space="preserve">
-        <value>Rolle i prosjektet</value>
-    </data>
-    <data name="Lists_ProjectColumns_Fields_StartupDate_Value" xml:space="preserve">
-        <value>Oppstartsdato</value>
     </data>
     <data name="ContentTypes_ProjectResearch_Name" xml:space="preserve">
         <value>Prosjekt (Forskning)</value>
@@ -599,19 +509,13 @@
         <value>Fra</value>
     </data>
     <data name="ListFields_GtcOrgToDate_Description" xml:space="preserve">
-        <value>Når er vekommende ute av prosjektet?</value>
+        <value>Når er vedkommende ute av prosjektet?</value>
     </data>
     <data name="ListFields_GtcOrgToDate_DisplayName" xml:space="preserve">
         <value>Til</value>
     </data>
     <data name="Lists_DataSources_Category_Publishing_All" xml:space="preserve">
         <value>Alle publiseringer</value>
-    </data>
-    <data name="Lists_ProjectExtensions_Title" xml:space="preserve">
-        <value>Prosjekttillegg</value>
-    </data>
-    <data name="Lists_ProjectExtensions_Url" xml:space="preserve">
-        <value>ProjectExtensions</value>
     </data>
     <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
         <value>Publiseringer</value>
@@ -645,18 +549,6 @@
     </data>
     <data name="SiteFields_GtcPubDate_Description" xml:space="preserve">
         <value>Når er publikasjonen planlagt/publisert</value>
-    </data>
-    <data name="SiteFields_GtDescription_DisplayName" xml:space="preserve">
-        <value>Beskrivelse</value>
-    </data>
-     <data name="SiteFields_GtExtensionDefault_DisplayName" xml:space="preserve">
-        <value>Standard</value>
-    </data>
-    <data name="SiteFields_GtExtensionHidden_DisplayName" xml:space="preserve">
-        <value>Skjult</value>
-    </data>
-    <data name="SiteFields_GtExtensionLocked_DisplayName" xml:space="preserve">
-        <value>Låst</value>
     </data>
     <data name="Lists_Projects_Title" xml:space="preserve">
         <value>Prosjekter</value>
