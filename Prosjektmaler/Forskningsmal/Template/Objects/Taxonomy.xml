@@ -8,17 +8,17 @@
                             <pnp:Label Language="1033" Value="Applied Ecology, Agriculture and Biotechnology" IsDefaultForLanguage="true" />
                         </pnp:Labels>
                     </pnp:Term>
-                    <pnp:Term Name="Hovedadministrasjonen" ID="d2e987aa-5268-4f72-9876-917418f2c56e" SourceTermId="d2e987aa-5268-4f72-9876-917418f2c56e" CustomSortOrder="4">
+                    <pnp:Term Name="Hovedadministrasjonen" ID="d2e987aa-5268-4f72-9876-917418f2c56e" SourceTermId="d2e987aa-5268-4f72-9876-917418f2c56e" CustomSortOrder="2">
                         <pnp:Labels>
                             <pnp:Label Language="1033" Value="Central Administration" IsDefaultForLanguage="true" />
                         </pnp:Labels>
                     </pnp:Term>
-                    <pnp:Term Name="Lærerutdanning og pedagogikk" ID="e6e168f9-289a-48a0-ba48-b3b819478315" SourceTermId="e6e168f9-289a-48a0-ba48-b3b819478315" CustomSortOrder="5">
+                    <pnp:Term Name="Lærerutdanning og pedagogikk" ID="e6e168f9-289a-48a0-ba48-b3b819478315" SourceTermId="e6e168f9-289a-48a0-ba48-b3b819478315" CustomSortOrder="3">
                         <pnp:Labels>
                             <pnp:Label Language="1033" Value="Teacher Education and Pedagogy" IsDefaultForLanguage="true" />
                         </pnp:Labels>
                     </pnp:Term>
-                    <pnp:Term Name="Økonomi og samfunnsvitenskap" ID="ec0a88d0-631b-4492-a647-eb329d168d88" SourceTermId="ec0a88d0-631b-4492-a647-eb329d168d88">
+                    <pnp:Term Name="Økonomi og samfunnsvitenskap" ID="ec0a88d0-631b-4492-a647-eb329d168d88" SourceTermId="ec0a88d0-631b-4492-a647-eb329d168d88" CustomSortOrder="4">
                         <pnp:Labels>
                             <pnp:Label Language="1033" Value="Economics and Social Sciences" IsDefaultForLanguage="true" />
                         </pnp:Labels>
@@ -37,7 +37,7 @@
                             <pnp:Label Language="1033" Value="English" IsDefaultForLanguage="true" />
                         </pnp:Labels>
                     </pnp:Term>
-                    <pnp:Term Name="Folkehelse- og idrettsvitenskap"  ID="17cc6b82-a816-4297-96e8-68301dc9ec22" SourceTermId="17cc6b82-a816-4297-96e8-68301dc9ec22" CustomSortOrder="3">
+                    <pnp:Term Name="Folkehelse- og idrettsvitenskap" ID="17cc6b82-a816-4297-96e8-68301dc9ec22" SourceTermId="17cc6b82-a816-4297-96e8-68301dc9ec22" CustomSortOrder="3">
                         <pnp:Labels>
                             <pnp:Label Language="1033" Value="Public Health and Sports Sciences" IsDefaultForLanguage="true" />
                         </pnp:Labels>
