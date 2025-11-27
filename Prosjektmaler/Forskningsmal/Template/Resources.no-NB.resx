@@ -67,9 +67,6 @@
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Prosjekttillegg</value>
     </data>
-    <data name="Folder_ResearchTemplate_Url" xml:space="preserve">
-        <value>ProjectExtensions/Prosjekttillegg</value>
-    </data>
     <data name="File_ResearchTemplate_Level" xml:space="preserve">
         <value>Published</value>
     </data>
@@ -89,15 +86,12 @@
         <value>Datakilder</value>
     </data>
     <data name="Lists_DataSources_Description" xml:space="preserve">
-        <value></value>
+        <value>Spørringer på porteføljenivå (unntatt porteføljeoversikt)</value>
     </data>
     <data name="Lists_DataSources_Url" xml:space="preserve">
         <value>Lists/Datakilder</value>
     </data>
-    <data name="Lists_DataSources_Fields_GtDataSourceCategory_Value" xml:space="preserve">
-        <value>Publiseringer</value>
-    </data>
-    <data name="Lists_DataSources_Fields_GtDataSourceLevel_Value" xml:space="preserve">
+    <data name="Lists_DataSources_Level_Portfolio" xml:space="preserve">
         <value>Portefølje</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Title" xml:space="preserve">
@@ -110,7 +104,7 @@
         <value>Fasesjekkpunkter for forskningsprosjekter</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Description" xml:space="preserve">
-        <value></value>
+        <value>Standard fasesjekkpunkter for forskningsprosjekter</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Url" xml:space="preserve">
         <value>Lists/FasesjekklisteForskning</value>
@@ -134,7 +128,7 @@
         <value>Listeinnhold</value>
     </data>
     <data name="Lists_ListContent_Description" xml:space="preserve">
-        <value></value>
+        <value>Oppsett av listeinnhold for nye områder</value>
     </data>
     <data name="Lists_ListContent_Url" xml:space="preserve">
         <value>Lists/Listeinnhold</value>
@@ -143,7 +137,7 @@
         <value>Maloppsett</value>
     </data>
     <data name="Lists_TemplateOptions_Description" xml:space="preserve">
-        <value></value>
+        <value>Oppsett av maler for nye områder</value>
     </data>
     <data name="Lists_TemplateOptions_Url" xml:space="preserve">
         <value>Lists/Maloppsett</value>
@@ -154,7 +148,7 @@
     <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
         <value>Forskningsmal</value>
     </data>
-    <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
+    <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
         <value>Dette er forskningsmalen for Prosjektportalen 365.</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary" xml:space="preserve">
@@ -167,7 +161,7 @@
         <value>Prosjektinnholdskolonner</value>
     </data>
     <data name="Lists_ProjectContentColumns_Description" xml:space="preserve">
-        <value></value>
+        <value>Administrer prosjektinnholds-kolonner (synlighet og metadata)</value>
     </data>
     <data name="Lists_ProjectContentColumns_Url" xml:space="preserve">
         <value>Lists/Prosjektinnholdskolonner</value>
@@ -179,12 +173,12 @@
         <value>Prosjektkolonner</value>
     </data>
     <data name="Lists_ProjectColumns_Description" xml:space="preserve">
-        <value></value>
+        <value>Administrer prosjektkolonner (synlighet og metadata)</value>
     </data>
     <data name="Lists_ProjectColumns_Url" xml:space="preserve">
         <value>Lists/Prosjektkolonner</value>
     </data>
-    <data name="Lists_ProjectColumns_Fields_ProjectNumber_Value" xml:space="preserve">
+    <data name="SiteFields_GtProjectNumber_DisplayName" xml:space="preserve">
         <value>Prosjektnummer</value>
     </data>
     <data name="ContentTypes_ProjectResearch_Name" xml:space="preserve">
@@ -514,7 +508,7 @@
     <data name="ListFields_GtcOrgToDate_DisplayName" xml:space="preserve">
         <value>Til</value>
     </data>
-    <data name="Lists_DataSources_Category_Publishing_All" xml:space="preserve">
+    <data name="Lists_DataSources_Category_PublishingAll" xml:space="preserve">
         <value>Alle publiseringer</value>
     </data>
     <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
@@ -554,7 +548,7 @@
         <value>Prosjekter</value>
     </data>
     <data name="Lists_Projects_Description" xml:space="preserve">
-        <value></value>
+        <value>Inneholder alle prosjektene i porteføljen, og egenskapene som er synkronisert for disse.</value>
     </data>
     <data name="Lists_Projects_Url" xml:space="preserve">
         <value>Lists/Prosjekter</value>
@@ -684,6 +678,9 @@
     </data>
     <data name="Choice_GtProjectLifecycleStatus_Closed" xml:space="preserve">
         <value>Avsluttet</value>
+    </data>
+    <data name="Choice_GtProjectLifecycleStatus_Terminated" xml:space="preserve">
+        <value>Terminert</value>
     </data>
     <data name="ListFields_GtcPubResultId_Description" xml:space="preserve">
         <value>Hva er CRISTIN resultat-ID for publikasjonen?</value>

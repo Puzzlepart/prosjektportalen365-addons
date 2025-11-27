@@ -1,5 +1,5 @@
 <pnp:Files xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
-    <pnp:File Src="{resource:File_ResearchTemplate_Path}" Folder="{resource:Folder_ResearchTemplate_Url}" Level="Published" Overwrite="true">
+    <pnp:File Src="{resource:File_ResearchTemplate_Path}" Folder="{resource:Folder_ResearchTemplate_Name}" Level="Published" Overwrite="true">
         <pnp:Properties>
             <pnp:Property Key="Title" Value="{resource:Files_ResearchTemplate_Title}" />
             <pnp:Property Key="GtDescription" Value="{resource:Files_ResearchTemplate_Description}" />

@@ -3,7 +3,7 @@
     <pnp:DataRows UpdateBehavior="Overwrite" KeyColumn="GtInternalName">
         <pnp:DataRow>
             <pnp:DataValue FieldName="GtSortOrder">30</pnp:DataValue>
-            <pnp:DataValue FieldName="Title">{resource:Lists_ProjectColumns_Fields_ProjectNumber_Value}</pnp:DataValue>
+            <pnp:DataValue FieldName="Title">{resource:SiteFields_GtProjectNumber_DisplayName}</pnp:DataValue>
             <pnp:DataValue FieldName="GtInternalName">GtProjectNumber</pnp:DataValue>
             <pnp:DataValue FieldName="GtManagedProperty">GtProjectNumberOWSTEXT</pnp:DataValue>
             <pnp:DataValue FieldName="GtFieldOverrides">{

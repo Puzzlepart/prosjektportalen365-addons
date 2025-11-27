@@ -65,10 +65,7 @@
         <value>Content\ProjectExtensions\Researchtemplate.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
-        <value>Project Extensions</value>
-    </data>
-    <data name="Folder_ResearchTemplate_Url" xml:space="preserve">
-        <value>ProjectExtensions/Project Extensions</value>
+        <value>ProjectExtensions</value>
     </data>
     <data name="File_ResearchTemplate_Level" xml:space="preserve">
         <value>Published</value>
@@ -89,15 +86,12 @@
         <value>Data Sources</value>
     </data>
     <data name="Lists_DataSources_Description" xml:space="preserve">
-        <value></value>
+        <value>Queries at portfolio level (except for portfolio overview)</value>
     </data>
     <data name="Lists_DataSources_Url" xml:space="preserve">
         <value>Lists/DataSources</value>
     </data>
-    <data name="Lists_DataSources_Fields_GtDataSourceCategory_Value" xml:space="preserve">
-        <value>Publications</value>
-    </data>
-    <data name="Lists_DataSources_Fields_GtDataSourceLevel_Value" xml:space="preserve">
+    <data name="Lists_DataSources_Level_Portfolio" xml:space="preserve">
         <value>Portfolio</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Title" xml:space="preserve">
@@ -110,7 +104,7 @@
         <value>Phase checkpoints for Research Projects</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Description" xml:space="preserve">
-        <value></value>
+        <value>Checklist for the Research projects.</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_Url" xml:space="preserve">
         <value>Lists/PhaseChecklistResearch</value>
@@ -137,7 +131,7 @@
         <value>List Content</value>
     </data>
     <data name="Lists_ListContent_Description" xml:space="preserve">
-        <value></value>
+        <value>Setup of list content for new project sites</value>
     </data>
     <data name="Lists_ListContent_Url" xml:space="preserve">
         <value>Lists/ListContent</value>
@@ -146,7 +140,7 @@
         <value>Template Options</value>
     </data>
     <data name="Lists_TemplateOptions_Description" xml:space="preserve">
-        <value></value>
+        <value>Setup of templates for new project sites</value>
     </data>
     <data name="Lists_TemplateOptions_Url" xml:space="preserve">
         <value>Lists/TemplateOptions</value>
@@ -154,7 +148,7 @@
     <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
         <value>Research Template</value>
     </data>
-    <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
+    <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
         <value>This is the research template for Project Portal 365.</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary" xml:space="preserve">
@@ -167,7 +161,7 @@
         <value>Project Content Columns</value>
     </data>
     <data name="Lists_ProjectContentColumns_Description" xml:space="preserve">
-        <value></value>
+        <value>Manage project content columns (visibility and metadata)</value>
     </data>
     <data name="Lists_ProjectContentColumns_Url" xml:space="preserve">
         <value>Lists/ProjectContentColumns</value>
@@ -179,12 +173,12 @@
         <value>Project Columns</value>
     </data>
     <data name="Lists_ProjectColumns_Description" xml:space="preserve">
-        <value></value>
+        <value>Manage project columns (visibility and metadata)</value>
     </data>
     <data name="Lists_ProjectColumns_Url" xml:space="preserve">
         <value>Lists/ProjectColumns</value>
     </data>
-    <data name="Lists_ProjectColumns_Fields_ProjectNumber_Value" xml:space="preserve">
+    <data name="SiteFields_GtProjectNumber_DisplayName" xml:space="preserve">
         <value>Project Number</value>
     </data>
     <data name="ContentTypes_ProjectResearch_Name" xml:space="preserve">
@@ -514,7 +508,7 @@
     <data name="ListFields_GtcOrgToDate_DisplayName" xml:space="preserve">
         <value>To</value>
     </data>
-    <data name="Lists_DataSources_Category_Publishing_All" xml:space="preserve">
+    <data name="Lists_DataSources_Category_PublishingAll" xml:space="preserve">
         <value>All Publications</value>
     </data>
     <data name="Lists_DataSources_Category_Publishing" xml:space="preserve">
@@ -554,7 +548,7 @@
         <value>Projects</value>
     </data>
     <data name="Lists_Projects_Description" xml:space="preserve">
-        <value></value>
+        <value>Contains all projects in the portfolio, and the properties that are synchronized for these.</value>
     </data>
     <data name="Lists_Projects_Url" xml:space="preserve">
         <value>Lists/Projects</value>
@@ -684,6 +678,9 @@
     </data>
     <data name="Choice_GtProjectLifecycleStatus_Closed" xml:space="preserve">
         <value>Closed</value>
+    </data>
+    <data name="Choice_GtProjectLifecycleStatus_Terminated" xml:space="preserve">
+        <value>Terminated</value>
     </data>
     <data name="ListFields_GtcPubResultId_Description" xml:space="preserve">
         <value>What is the CRISTIN result ID for the publication?</value>

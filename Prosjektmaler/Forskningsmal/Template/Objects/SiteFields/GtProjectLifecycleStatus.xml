@@ -4,5 +4,6 @@
         <CHOICE>{resource:Choice_GtProjectLifecycleStatus_Active}</CHOICE>
         <CHOICE>{resource:Choice_GtProjectLifecycleStatus_Awaiting}</CHOICE>
         <CHOICE>{resource:Choice_GtProjectLifecycleStatus_Closed}</CHOICE>
+        <CHOICE>{resource:Choice_GtProjectLifecycleStatus_Terminated}</CHOICE>
     </CHOICES>
 </Field>
