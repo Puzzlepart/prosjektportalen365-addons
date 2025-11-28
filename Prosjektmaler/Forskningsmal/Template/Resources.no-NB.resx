@@ -62,7 +62,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="File_ResearchTemplate_Path" xml:space="preserve">
-        <value>Content\ProjectExtensions\Forskningsmal.txt</value>
+        <value>Content\Research_content.no-NB\ProjectExtensions\Forskningsmal.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Prosjekttillegg</value>
@@ -148,10 +148,10 @@
     <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
         <value>Forskningsmal</value>
     </data>
-    <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>Dette er forskningsmalen for Prosjektportalen 365.</value>
     </data>
-    <data name="Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary" xml:space="preserve">
+    <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
         <value>Malbibliotek</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_FieldConfigurationName" xml:space="preserve">
@@ -717,5 +717,428 @@
     </data>
     <data name="ListFields_GtcPubLink_DisplayName" xml:space="preserve">
         <value>Lenke til CRISTIN/NVA</value>
+    </data>
+    <data name="ContentTypes_ProjectDelivery_Name" xml:space="preserve">
+        <value>Prosjektleveranse</value>
+    </data>
+    <data name="ContentTypes_Checkpoint_Name" xml:space="preserve">
+        <value>Sjekkpunkt</value>
+    </data>
+    <data name="ContentTypes_PublishingElement_Name" xml:space="preserve">
+        <value>Publiseringelement</value>
+    </data>
+    <data name="Lists_PhaseChecklist_Title" xml:space="preserve">
+        <value>Fasesjekkliste</value>
+    </data>
+    <data name="Choice_GtChecklistStatus_Archived" xml:space="preserve">
+        <value>Arkivert</value>
+    </data>
+    <data name="View_Archived_DisplayName" xml:space="preserve">
+        <value>Arkivert</value>
+    </data>
+    <data name="View_ByStatus_DisplayName" xml:space="preserve">
+        <value>Per status</value>
+    </data>
+    <data name="Lists_ProjectDeliveries_Title" xml:space="preserve">
+        <value>Prosjektleveranser</value>
+    </data>
+    <data name="ListFields_DeliveryStakeholders_DisplayName" xml:space="preserve">
+        <value>Interessent(er)</value>
+    </data>
+    <data name="Lists_Stakeholders_Title" xml:space="preserve">
+        <value>Interessentregister</value>
+    </data>
+    <data name="ListFields_DeliveryStakeholders_Description" xml:space="preserve">
+        <value>Oppgi hvilken interessent(er) leveransen påvirker</value>
+    </data>
+    <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
+        <value>Etiske vurderinger</value>
+    </data>
+    <data name="Fields_Category_DisplayName" xml:space="preserve">
+        <value>Kategori</value>
+    </data>
+    <data name="Fields_Category_Description" xml:space="preserve">
+        <value>Hvilken etisk kategori?</value>
+    </data>
+    <data name="Choices_Ethical_Humans" xml:space="preserve">
+        <value>Menesker, test-subjekt</value>
+    </data>
+    <data name="Choices_Ethical_HumanCells" xml:space="preserve">
+        <value>Menneskelige celler eller vevsprøver</value>
+    </data>
+    <data name="Choices_Ethical_PersonalData" xml:space="preserve">
+        <value>Personlig data</value>
+    </data>
+    <data name="Choices_Ethical_Animals" xml:space="preserve">
+        <value>Dyr, forskning på dyr, lab-dyr</value>
+    </data>
+    <data name="Choices_Ethical_HSE" xml:space="preserve">
+        <value>Miljø, helse og sikkerhet</value>
+    </data>
+    <data name="Choices_Ethical_Misuse" xml:space="preserve">
+        <value>Misbruk av resultater</value>
+    </data>
+    <data name="Choices_Ethical_Other" xml:space="preserve">
+        <value>Andre etiske utfordringer</value>
+    </data>
+    <data name="Choices_Ethical_Embryos" xml:space="preserve">
+        <value>Mennskelige embryoer og stamcelle</value>
+    </data>
+    <data name="Choices_Ethical_AI" xml:space="preserve">
+        <value>Kunstig intelligens</value>
+    </data>
+    <data name="Choices_Ethical_Approval_KoFE" xml:space="preserve">
+        <value>Komité for forskningsetikk (KoFE)</value>
+    </data>
+    <data name="Choices_Ethical_Approval_REK" xml:space="preserve">
+        <value>Regional Etisk Komité (REK)</value>
+    </data>
+    <data name="Choices_Ethical_Approval_Mattilsynet" xml:space="preserve">
+        <value>Mattilsynet</value>
+    </data>
+    <data name="Fields_DescribeChallenge_DisplayName" xml:space="preserve">
+        <value>Beskriv utfordringen</value>
+    </data>
+    <data name="Fields_DescribeChallenge_Description" xml:space="preserve">
+        <value>Beskriv de etiske utfordringene</value>
+    </data>
+    <data name="Fields_DescribeMeasures_DisplayName" xml:space="preserve">
+        <value>Beskriv tiltak</value>
+    </data>
+    <data name="Fields_DescribeMeasures_Description" xml:space="preserve">
+        <value>Beskriv tiltakene prosjektet implementer for å redusere eller begrense de etiske utfordringene</value>
+    </data>
+    <data name="Fields_HarmPotential_DisplayName" xml:space="preserve">
+        <value>Skadepotensial</value>
+    </data>
+    <data name="Fields_HarmPotential_Description" xml:space="preserve">
+        <value>Hva er skadepotensiale?</value>
+    </data>
+    <data name="Fields_TestSubjects_DisplayName" xml:space="preserve">
+        <value>Test subjekter</value>
+    </data>
+    <data name="Fields_TestSubjects_Description" xml:space="preserve">
+        <value>Hvem/ hva er testsubjektene?</value>
+    </data>
+    <data name="Fields_Storage_DisplayName" xml:space="preserve">
+        <value>Lagring</value>
+    </data>
+    <data name="Fields_Storage_Description" xml:space="preserve">
+        <value>Hvordan skal resultater lagres?</value>
+    </data>
+    <data name="Fields_Regulations_DisplayName" xml:space="preserve">
+        <value>Lover og regelverk</value>
+    </data>
+    <data name="Fields_Regulations_Description" xml:space="preserve">
+        <value>Hvilke lover og regelverk må prosjektet forholde seg til? Er data underlagt eksportregelverk?</value>
+    </data>
+    <data name="Fields_SharingResults_DisplayName" xml:space="preserve">
+        <value>Deling av resultater</value>
+    </data>
+    <data name="Fields_SharingResults_Description" xml:space="preserve">
+        <value>Hvilke etiske utfordringer må man forholde seg til mtp på deling/ formidling av dataen?</value>
+    </data>
+    <data name="Fields_Approval_DisplayName" xml:space="preserve">
+        <value>Godkjenning</value>
+    </data>
+    <data name="Fields_Approval_Description" xml:space="preserve">
+        <value>Hvilken komite må godkjenne?</value>
+    </data>
+    <data name="Fields_RiskAssessment_DisplayName" xml:space="preserve">
+        <value>Risikovurdering</value>
+    </data>
+    <data name="Fields_RiskAssessment_Description" xml:space="preserve">
+        <value>Velg den risikoanalysen som er relevant for vurderingen ( Henter data fra Usikkerhetsregisteret)</value>
+    </data>
+    <data name="Lists_ProjectOrganization_Title" xml:space="preserve">
+        <value>Prosjektorganisasjon</value>
+    </data>
+    <data name="Fields_Affiliation_DisplayName" xml:space="preserve">
+        <value>Tilhører</value>
+    </data>
+    <data name="Fields_Affiliation_Description" xml:space="preserve">
+        <value>Hvilken organisasjon tilhører vedkommende?</value>
+    </data>
+    <data name="Fields_OrgAcronym_DisplayName" xml:space="preserve">
+        <value>Org. Akronym</value>
+    </data>
+    <data name="Fields_OrgAcronym_Description" xml:space="preserve">
+        <value>Hva er forkortelsen til organisasjonen?</value>
+    </data>
+    <data name="Fields_OrgDescription_DisplayName" xml:space="preserve">
+        <value>Kort beskrivelse av organisasjonen</value>
+    </data>
+    <data name="Fields_OrgDescription_Description" xml:space="preserve">
+        <value>Gi en kort beskrivelse av organisasjonen.</value>
+    </data>
+    <data name="Fields_Homepage_DisplayName" xml:space="preserve">
+        <value>Hjemmeside</value>
+    </data>
+    <data name="Fields_Homepage_Description" xml:space="preserve">
+        <value>Hjemme side til organisasjonen</value>
+    </data>
+    <data name="Fields_OrgRole_DisplayName" xml:space="preserve">
+        <value>Rolle i organisasjonen</value>
+    </data>
+    <data name="Fields_OrgRole_Description" xml:space="preserve">
+        <value>Hvilken rolle har personen i sin organisasjon</value>
+    </data>
+    <data name="Fields_ResponsibleFor_DisplayName" xml:space="preserve">
+        <value>Ansvarlig for</value>
+    </data>
+    <data name="Fields_ResponsibleFor_Description" xml:space="preserve">
+        <value>Velg hvilke leveranser i prosjektet vedkommende har ansvar for</value>
+    </data>
+    <data name="Fields_Email_DisplayName" xml:space="preserve">
+        <value>E-post</value>
+    </data>
+    <data name="Fields_Email_Description" xml:space="preserve">
+        <value>Legg til e-post til vedkommende</value>
+    </data>
+    <data name="Fields_FromDate_DisplayName" xml:space="preserve">
+        <value>Fra</value>
+    </data>
+    <data name="Fields_FromDate_Description" xml:space="preserve">
+        <value>Fra når er personen med i prosjektet?</value>
+    </data>
+    <data name="Fields_ToDate_DisplayName" xml:space="preserve">
+        <value>Til</value>
+    </data>
+    <data name="Fields_ToDate_Description" xml:space="preserve">
+        <value>Når er vekommende ute av prosjektet?</value>
+    </data>
+    <data name="Lists_WBS_Title" xml:space="preserve">
+        <value>Work Breakdown Structure</value>
+    </data>
+    <data name="Fields_Todo_DisplayName" xml:space="preserve">
+        <value>Hva skal gjøres?</value>
+    </data>
+    <data name="Fields_Todo_Description" xml:space="preserve">
+        <value>Beskriv arbeidet som skal gjøres</value>
+    </data>
+    <data name="Fields_Scope_DisplayName" xml:space="preserve">
+        <value>Omfang</value>
+    </data>
+    <data name="Fields_Scope_Description" xml:space="preserve">
+        <value>Velg omgangstype</value>
+    </data>
+    <data name="Choices_Scope_Hours" xml:space="preserve">
+        <value>Timer</value>
+    </data>
+    <data name="Choices_Scope_ManYears" xml:space="preserve">
+        <value>Person months</value>
+    </data>
+    <data name="Choices_Scope_YearWorks" xml:space="preserve">
+        <value>Årsverk</value>
+    </data>
+    <data name="Fields_StartDate_DisplayName" xml:space="preserve">
+        <value>Start dato</value>
+    </data>
+    <data name="Fields_StartDate_Description" xml:space="preserve">
+        <value>Når skal dette gjøres?</value>
+    </data>
+    <data name="Fields_EndDate_DisplayName" xml:space="preserve">
+        <value>Slutt dato</value>
+    </data>
+    <data name="Fields_EndDate_Description" xml:space="preserve">
+        <value>Når skal dette være ferdigstilt?</value>
+    </data>
+    <data name="Fields_Amount_DisplayName" xml:space="preserve">
+        <value>Antall</value>
+    </data>
+    <data name="Fields_Amount_Description" xml:space="preserve">
+        <value>Velg antall timer/ Person months/ Årsverk</value>
+    </data>
+    <data name="Fields_WhoExecute_DisplayName" xml:space="preserve">
+        <value>Hvem skal gjøre det?</value>
+    </data>
+    <data name="Fields_WhoExecute_Description" xml:space="preserve">
+        <value>Hvem i prosjektorganisasjonen skal gjøre det? (Hentes ifra Prosjektorganisasjon)</value>
+    </data>
+    <data name="Fields_DependentOn_DisplayName" xml:space="preserve">
+        <value>Avhengig av</value>
+    </data>
+    <data name="Fields_DependentOn_Description" xml:space="preserve">
+        <value>Velg andre leveranser som man er avhengige av er ferdig før man kan begynne</value>
+    </data>
+    <data name="Fields_DepDescription_DisplayName" xml:space="preserve">
+        <value>Beskrivelse av avhengigheter</value>
+    </data>
+    <data name="Fields_DepDescription_Description" xml:space="preserve">
+        <value>Beskriv hvorfor man er avhengige av disse leveransene</value>
+    </data>
+    <data name="Fields_OtherDep_DisplayName" xml:space="preserve">
+        <value>Andre avhengigheter</value>
+    </data>
+    <data name="Fields_OtherDep_Description" xml:space="preserve">
+        <value>Hvilke andre avhengigheter finnes det i tid, ressurser og kompetanse som leveransen trenger?</value>
+    </data>
+    <data name="Fields_Affects_DisplayName" xml:space="preserve">
+        <value>Hvilke andre påvirkninger har denne leveransen?</value>
+    </data>
+    <data name="Fields_Affects_Description" xml:space="preserve">
+        <value>Hvilke andre leveranser påvirker denne leveransen</value>
+    </data>
+    <data name="Fields_AffectsDesc_DisplayName" xml:space="preserve">
+        <value>Beskriv påvirkning</value>
+    </data>
+    <data name="Fields_AffectsDesc_Description" xml:space="preserve">
+        <value>Beskriv hvordan denne leveransen påvirker andre prosjektleveranser.</value>
+    </data>
+    <data name="Lists_Publishing_Title" xml:space="preserve">
+        <value>Publiseringer</value>
+    </data>
+    <data name="Navigation_MandatoryFunctions_Title" xml:space="preserve">
+        <value>Obligatoriske funksjoner</value>
+    </data>
+    <data name="Navigation_PlanningAndControl_Title" xml:space="preserve">
+        <value>Planlegging og styring</value>
+    </data>
+    <data name="Navigation_ProjectTimeline_Title" xml:space="preserve">
+        <value>Prosjekttidslinje</value>
+    </data>
+    <data name="Navigation_Administration_Title" xml:space="preserve">
+        <value>Administrasjon</value>
+    </data>
+    <data name="Navigation_MeetingMinutes_Title" xml:space="preserve">
+        <value>Møtereferat</value>
+    </data>
+    <data name="Navigation_RNDTools_Title" xml:space="preserve">
+        <value>FoU Verktøy</value>
+    </data>
+    <data name="Navigation_General_Title" xml:space="preserve">
+        <value>Generelt</value>
+    </data>
+    <data name="WebParts_GroupCalendar_Title" xml:space="preserve">
+        <value>Gruppekalender</value>
+    </data>
+    <data name="WebParts_Risk_Title" xml:space="preserve">
+        <value>Risiko</value>
+    </data>
+    <data name="WebParts_Risk_Callout_Strategy" xml:space="preserve">
+        <value>Usikkerhetstrategi:</value>
+    </data>
+    <data name="WebParts_Risk_Callout_Proximity" xml:space="preserve">
+        <value>Nærhet:</value>
+    </data>
+    <data name="WebParts_Risk_Callout_Status" xml:space="preserve">
+        <value>Status usikkerhet:</value>
+    </data>
+    <data name="Navigation_Home_Title" xml:space="preserve">
+        <value>Hjem</value>
+    </data>
+    <data name="ClientSidePages_ProjectStatus_Name" xml:space="preserve">
+        <value>Prosjektstatus.aspx</value>
+    </data>
+    <data name="Navigation_ProjectStatus_Title" xml:space="preserve">
+        <value>Prosjektstatus</value>
+    </data>
+    <data name="Navigation_ProjectLog_Url" xml:space="preserve">
+        <value>Lists/Prosjektlogg/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ProjectLog_Title" xml:space="preserve">
+        <value>Prosjektlogg</value>
+    </data>
+    <data name="Navigation_Uncertainty_Url" xml:space="preserve">
+        <value>Lists/Usikkerhet/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_Uncertainty_Title" xml:space="preserve">
+        <value>Usikkerhet</value>
+    </data>
+    <data name="Navigation_Documents_Url" xml:space="preserve">
+        <value>Dokumenter/Forms/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_Documents_Title" xml:space="preserve">
+        <value>Dokumenter</value>
+    </data>
+    <data name="Navigation_StakeholderRegister_Url" xml:space="preserve">
+        <value>Lists/Interessentregister/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_StakeholderRegister_Title" xml:space="preserve">
+        <value>Interessentregister</value>
+    </data>
+    <data name="Navigation_CommunicationPlan_Url" xml:space="preserve">
+        <value>Lists/Kommunikasjonsplan/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_CommunicationPlan_Title" xml:space="preserve">
+        <value>Kommunikasjonsplan</value>
+    </data>
+    <data name="Navigation_WBS_Url" xml:space="preserve">
+        <value>Lists/WorkBreakdownStructure/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ProjectDeliveries_Url" xml:space="preserve">
+        <value>Lists/Prosjektleveranser/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ProjectTimeline_Url" xml:space="preserve">
+        <value>SitePages/Prosjekttidslinje.aspx</value>
+    </data>
+    <data name="ClientSidePages_Tasks_PageName" xml:space="preserve">
+        <value>Oppgaver.aspx</value>
+    </data>
+    <data name="Navigation_Tasks_Title" xml:space="preserve">
+        <value>Oppgaver</value>
+    </data>
+    <data name="ClientSidePages_BenefitOverview_PageName" xml:space="preserve">
+        <value>Gevinstoversikt.aspx</value>
+    </data>
+    <data name="Navigation_BenefitsOverview_Title" xml:space="preserve">
+        <value>Gevinstoversikt</value>
+    </data>
+    <data name="Navigation_ChangeAnalysis_Url" xml:space="preserve">
+        <value>Lists/Endringsanalyse/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ChangeAnalysis_Title" xml:space="preserve">
+        <value>Endringsanalyse</value>
+    </data>
+    <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
+        <value>Lists/Gevinstanalyse/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_BenefitsAnalysis_Title" xml:space="preserve">
+        <value>Gevinstanalyse og gevinstrealiseringsplan</value>
+    </data>
+    <data name="Navigation_MeasurementIndicators_Url" xml:space="preserve">
+        <value>Lists/Mleindikatorer/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_MeasurementIndicators_Title" xml:space="preserve">
+        <value>Måleindikatorer</value>
+    </data>
+    <data name="Navigation_BenefitsFollowup_Url" xml:space="preserve">
+        <value>Lists/Gevinstoppflging/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_BenefitsFollowup_Title" xml:space="preserve">
+        <value>Gevinstoppfølging</value>
+    </data>
+    <data name="Navigation_ProjectOrganization_Url" xml:space="preserve">
+        <value>Lists/Prosjektorganisasjon/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_EthicalAssessments_Url" xml:space="preserve">
+        <value>Lists/Etiske vurderinger/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_Publishing_Url" xml:space="preserve">
+        <value>Lists/Publiseringer/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_PhaseChecklist_Url" xml:space="preserve">
+        <value>Lists/Fasesjekkliste/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_SiteContent_Title" xml:space="preserve">
+        <value>Områdeinnhold</value>
+    </data>
+    <data name="ClientSidePages_Home_Title" xml:space="preserve">
+        <value>Hjem</value>
+    </data>
+    <data name="WebParts_ProjectInformation_Title" xml:space="preserve">
+        <value>Prosjektinformasjon</value>
+    </data>
+    <data name="WebParts_ProjectNews_Title" xml:space="preserve">
+        <value>Prosjektnyheter</value>
+    </data>
+    <data name="WebParts_ProjectPhase_Title" xml:space="preserve">
+        <value>Fase</value>
+    </data>
+    <data name="WebParts_CurrentPhase_Title" xml:space="preserve">
+        <value>Gjeldende fase</value>
+    </data>
+    <data name="WebParts_Tasks_Title" xml:space="preserve">
+        <value>Oppgaver</value>
     </data>
 </root>

@@ -62,7 +62,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="File_ResearchTemplate_Path" xml:space="preserve">
-        <value>Content\ProjectExtensions\Researchtemplate.txt</value>
+        <value>Content\Research_content.en-US\ProjectExtensions\Researchtemplate.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>ProjectExtensions</value>
@@ -148,10 +148,10 @@
     <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
         <value>Research Template</value>
     </data>
-    <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
+    <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>This is the research template for Project Portal 365.</value>
     </data>
-    <data name="Lists_TemplateOptions_ResearchTemplate_DocumentTemplateLibrary" xml:space="preserve">
+    <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
         <value>Template Library</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_FieldConfigurationName" xml:space="preserve">
@@ -717,5 +717,428 @@
     </data>
     <data name="ListFields_GtcPubLink_DisplayName" xml:space="preserve">
         <value>Link to CRISTIN/NVA</value>
+    </data>
+    <data name="ContentTypes_ProjectDelivery_Name" xml:space="preserve">
+        <value>Project Delivery</value>
+    </data>
+    <data name="ContentTypes_Checkpoint_Name" xml:space="preserve">
+        <value>Checkpoint</value>
+    </data>
+    <data name="ContentTypes_PublishingElement_Name" xml:space="preserve">
+        <value>Publishing Element</value>
+    </data>
+    <data name="Lists_PhaseChecklist_Title" xml:space="preserve">
+        <value>Phase Checklist</value>
+    </data>
+    <data name="Choice_GtChecklistStatus_Archived" xml:space="preserve">
+        <value>Archived</value>
+    </data>
+    <data name="View_Archived_DisplayName" xml:space="preserve">
+        <value>Archived</value>
+    </data>
+    <data name="View_ByStatus_DisplayName" xml:space="preserve">
+        <value>By status</value>
+    </data>
+    <data name="Lists_ProjectDeliveries_Title" xml:space="preserve">
+        <value>Project Deliveries</value>
+    </data>
+    <data name="ListFields_DeliveryStakeholders_DisplayName" xml:space="preserve">
+        <value>Delivery stakeholders</value>
+    </data>
+    <data name="Lists_Stakeholders_Title" xml:space="preserve">
+        <value>Stakeholders</value>
+    </data>
+    <data name="ListFields_DeliveryStakeholders_Description" xml:space="preserve">
+        <value>Specify which stakeholder(s) the delivery affects</value>
+    </data>
+    <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
+        <value>Ethical Assessments</value>
+    </data>
+    <data name="Fields_Category_DisplayName" xml:space="preserve">
+        <value>Category</value>
+    </data>
+    <data name="Fields_Category_Description" xml:space="preserve">
+        <value>Which ethical category?</value>
+    </data>
+    <data name="Choices_Ethical_Humans" xml:space="preserve">
+        <value>Humans, test subjects</value>
+    </data>
+    <data name="Choices_Ethical_HumanCells" xml:space="preserve">
+        <value>Human cells or tissue samples</value>
+    </data>
+    <data name="Choices_Ethical_PersonalData" xml:space="preserve">
+        <value>Personal data</value>
+    </data>
+    <data name="Choices_Ethical_Animals" xml:space="preserve">
+        <value>Animals, research on animals, lab animals</value>
+    </data>
+    <data name="Choices_Ethical_HSE" xml:space="preserve">
+        <value>Environment, health and safety</value>
+    </data>
+    <data name="Choices_Ethical_Misuse" xml:space="preserve">
+        <value>Misuse of results</value>
+    </data>
+    <data name="Choices_Ethical_Other" xml:space="preserve">
+        <value>Other ethical challenges</value>
+    </data>
+    <data name="Choices_Ethical_Embryos" xml:space="preserve">
+        <value>Human embryos and stem cells</value>
+    </data>
+    <data name="Choices_Ethical_AI" xml:space="preserve">
+        <value>Artificial Intelligence</value>
+    </data>
+    <data name="Choices_Ethical_Approval_KoFE" xml:space="preserve">
+        <value>Committee for Research Ethics (KoFE)</value>
+    </data>
+    <data name="Choices_Ethical_Approval_REK" xml:space="preserve">
+        <value>Regional Ethics Committee (REK)</value>
+    </data>
+    <data name="Choices_Ethical_Approval_Mattilsynet" xml:space="preserve">
+        <value>Norwegian Food Safety Authority</value>
+    </data>
+    <data name="Fields_DescribeChallenge_DisplayName" xml:space="preserve">
+        <value>Describe the challenge</value>
+    </data>
+    <data name="Fields_DescribeChallenge_Description" xml:space="preserve">
+        <value>Describe the ethical challenges</value>
+    </data>
+    <data name="Fields_DescribeMeasures_DisplayName" xml:space="preserve">
+        <value>Describe measures</value>
+    </data>
+    <data name="Fields_DescribeMeasures_Description" xml:space="preserve">
+        <value>Describe the measures the project implements to reduce or limit the ethical challenges</value>
+    </data>
+    <data name="Fields_HarmPotential_DisplayName" xml:space="preserve">
+        <value>Potential for harm</value>
+    </data>
+    <data name="Fields_HarmPotential_Description" xml:space="preserve">
+        <value>What is the potential for harm?</value>
+    </data>
+    <data name="Fields_TestSubjects_DisplayName" xml:space="preserve">
+        <value>Test subjects</value>
+    </data>
+    <data name="Fields_TestSubjects_Description" xml:space="preserve">
+        <value>Who/what are the test subjects?</value>
+    </data>
+    <data name="Fields_Storage_DisplayName" xml:space="preserve">
+        <value>Storage</value>
+    </data>
+    <data name="Fields_Storage_Description" xml:space="preserve">
+        <value>How will results be stored?</value>
+    </data>
+    <data name="Fields_Regulations_DisplayName" xml:space="preserve">
+        <value>Laws and regulations</value>
+    </data>
+    <data name="Fields_Regulations_Description" xml:space="preserve">
+        <value>Which laws and regulations must the project adhere to? Is data subject to export regulations?</value>
+    </data>
+    <data name="Fields_SharingResults_DisplayName" xml:space="preserve">
+        <value>Sharing of results</value>
+    </data>
+    <data name="Fields_SharingResults_Description" xml:space="preserve">
+        <value>Which ethical challenges must be considered regarding sharing/dissemination of the data?</value>
+    </data>
+    <data name="Fields_Approval_DisplayName" xml:space="preserve">
+        <value>Approval</value>
+    </data>
+    <data name="Fields_Approval_Description" xml:space="preserve">
+        <value>Which committee must approve?</value>
+    </data>
+    <data name="Fields_RiskAssessment_DisplayName" xml:space="preserve">
+        <value>Risk Assessment</value>
+    </data>
+    <data name="Fields_RiskAssessment_Description" xml:space="preserve">
+        <value>Select the risk analysis relevant for the assessment (Retrieves data from the Uncertainty Register)</value>
+    </data>
+    <data name="Lists_ProjectOrganization_Title" xml:space="preserve">
+        <value>Project Organization</value>
+    </data>
+    <data name="Fields_Affiliation_DisplayName" xml:space="preserve">
+        <value>Affiliation</value>
+    </data>
+    <data name="Fields_Affiliation_Description" xml:space="preserve">
+        <value>Which organization does the person belong to?</value>
+    </data>
+    <data name="Fields_OrgAcronym_DisplayName" xml:space="preserve">
+        <value>Org. Acronym</value>
+    </data>
+    <data name="Fields_OrgAcronym_Description" xml:space="preserve">
+        <value>What is the abbreviation for the organization?</value>
+    </data>
+    <data name="Fields_OrgDescription_DisplayName" xml:space="preserve">
+        <value>Short description of the organization</value>
+    </data>
+    <data name="Fields_OrgDescription_Description" xml:space="preserve">
+        <value>Give a short description of the organization.</value>
+    </data>
+    <data name="Fields_Homepage_DisplayName" xml:space="preserve">
+        <value>Homepage</value>
+    </data>
+    <data name="Fields_Homepage_Description" xml:space="preserve">
+        <value>Homepage of the organization</value>
+    </data>
+    <data name="Fields_OrgRole_DisplayName" xml:space="preserve">
+        <value>Role in the organization</value>
+    </data>
+    <data name="Fields_OrgRole_Description" xml:space="preserve">
+        <value>What role does the person have in their organization?</value>
+    </data>
+    <data name="Fields_ResponsibleFor_DisplayName" xml:space="preserve">
+        <value>Responsible for</value>
+    </data>
+    <data name="Fields_ResponsibleFor_Description" xml:space="preserve">
+        <value>Select which project deliverables the person is responsible for</value>
+    </data>
+    <data name="Fields_Email_DisplayName" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="Fields_Email_Description" xml:space="preserve">
+        <value>Add email for the person</value>
+    </data>
+    <data name="Fields_FromDate_DisplayName" xml:space="preserve">
+        <value>From</value>
+    </data>
+    <data name="Fields_FromDate_Description" xml:space="preserve">
+        <value>From when is the person involved in the project?</value>
+    </data>
+    <data name="Fields_ToDate_DisplayName" xml:space="preserve">
+        <value>To</value>
+    </data>
+    <data name="Fields_ToDate_Description" xml:space="preserve">
+        <value>When is the person out of the project?</value>
+    </data>
+    <data name="Lists_WBS_Title" xml:space="preserve">
+        <value>Work Breakdown Structure</value>
+    </data>
+    <data name="Fields_Todo_DisplayName" xml:space="preserve">
+        <value>What needs to be done?</value>
+    </data>
+    <data name="Fields_Todo_Description" xml:space="preserve">
+        <value>Describe the work to be done</value>
+    </data>
+    <data name="Fields_Scope_DisplayName" xml:space="preserve">
+        <value>Scope</value>
+    </data>
+    <data name="Fields_Scope_Description" xml:space="preserve">
+        <value>Select scope type</value>
+    </data>
+    <data name="Choices_Scope_Hours" xml:space="preserve">
+        <value>Hours</value>
+    </data>
+    <data name="Choices_Scope_ManYears" xml:space="preserve">
+        <value>Person-years</value>
+    </data>
+    <data name="Choices_Scope_YearWorks" xml:space="preserve">
+        <value>Man-years</value>
+    </data>
+    <data name="Fields_StartDate_DisplayName" xml:space="preserve">
+        <value>Start date</value>
+    </data>
+    <data name="Fields_StartDate_Description" xml:space="preserve">
+        <value>When should this be done?</value>
+    </data>
+    <data name="Fields_EndDate_DisplayName" xml:space="preserve">
+        <value>End date</value>
+    </data>
+    <data name="Fields_EndDate_Description" xml:space="preserve">
+        <value>When should this be completed?</value>
+    </data>
+    <data name="Fields_Amount_DisplayName" xml:space="preserve">
+        <value>Amount</value>
+    </data>
+    <data name="Fields_Amount_Description" xml:space="preserve">
+        <value>Select number of hours/person months/man-years</value>
+    </data>
+    <data name="Fields_WhoExecute_DisplayName" xml:space="preserve">
+        <value>Who will do it?</value>
+    </data>
+    <data name="Fields_WhoExecute_Description" xml:space="preserve">
+        <value>Who in the project organization will do it? (Retrieved from Project Organization)</value>
+    </data>
+    <data name="Fields_DependentOn_DisplayName" xml:space="preserve">
+        <value>Dependent on</value>
+    </data>
+    <data name="Fields_DependentOn_Description" xml:space="preserve">
+        <value>Select other deliverables that must be finished before starting</value>
+    </data>
+    <data name="Fields_DepDescription_DisplayName" xml:space="preserve">
+        <value>Description of dependencies</value>
+    </data>
+    <data name="Fields_DepDescription_Description" xml:space="preserve">
+        <value>Describe why one is dependent on these deliverables</value>
+    </data>
+    <data name="Fields_OtherDep_DisplayName" xml:space="preserve">
+        <value>Other dependencies</value>
+    </data>
+    <data name="Fields_OtherDep_Description" xml:space="preserve">
+        <value>What other dependencies exist in time, resources, and competence that the deliverable needs?</value>
+    </data>
+    <data name="Fields_Affects_DisplayName" xml:space="preserve">
+        <value>What other impacts does this deliverable have?</value>
+    </data>
+    <data name="Fields_Affects_Description" xml:space="preserve">
+        <value>Which other deliverables affect this deliverable</value>
+    </data>
+    <data name="Fields_AffectsDesc_DisplayName" xml:space="preserve">
+        <value>Describe impact</value>
+    </data>
+    <data name="Fields_AffectsDesc_Description" xml:space="preserve">
+        <value>Describe how this deliverable affects other project deliverables.</value>
+    </data>
+    <data name="Lists_Publishing_Title" xml:space="preserve">
+        <value>Publications</value>
+    </data>
+    <data name="Navigation_MandatoryFunctions_Title" xml:space="preserve">
+        <value>Mandatory functions</value>
+    </data>
+    <data name="Navigation_PlanningAndControl_Title" xml:space="preserve">
+        <value>Planning and control</value>
+    </data>
+    <data name="Navigation_ProjectTimeline_Title" xml:space="preserve">
+        <value>Project Timeline</value>
+    </data>
+    <data name="Navigation_Administration_Title" xml:space="preserve">
+        <value>Administration</value>
+    </data>
+    <data name="Navigation_MeetingMinutes_Title" xml:space="preserve">
+        <value>Meeting Minutes</value>
+    </data>
+    <data name="Navigation_RNDTools_Title" xml:space="preserve">
+        <value>R&amp;D Tools</value>
+    </data>
+    <data name="Navigation_General_Title" xml:space="preserve">
+        <value>General</value>
+    </data>
+    <data name="WebParts_GroupCalendar_Title" xml:space="preserve">
+        <value>Group Calendar</value>
+    </data>
+    <data name="WebParts_Risk_Title" xml:space="preserve">
+        <value>Risk</value>
+    </data>
+    <data name="WebParts_Risk_Callout_Strategy" xml:space="preserve">
+        <value>Uncertainty strategy:</value>
+    </data>
+    <data name="WebParts_Risk_Callout_Proximity" xml:space="preserve">
+        <value>Proximity:</value>
+    </data>
+    <data name="WebParts_Risk_Callout_Status" xml:space="preserve">
+        <value>Status uncertainty:</value>
+    </data>
+    <data name="Navigation_Home_Title" xml:space="preserve">
+        <value>Home</value>
+    </data>
+    <data name="ClientSidePages_ProjectStatus_Name" xml:space="preserve">
+        <value>ProjectStatus.aspx</value>
+    </data>
+    <data name="Navigation_ProjectStatus_Title" xml:space="preserve">
+        <value>Project Status</value>
+    </data>
+    <data name="Navigation_ProjectLog_Url" xml:space="preserve">
+        <value>Lists/ProjectLog/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ProjectLog_Title" xml:space="preserve">
+        <value>Project Log</value>
+    </data>
+    <data name="Navigation_Uncertainty_Url" xml:space="preserve">
+        <value>Lists/Uncertainty/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_Uncertainty_Title" xml:space="preserve">
+        <value>Uncertainty</value>
+    </data>
+    <data name="Navigation_Documents_Url" xml:space="preserve">
+        <value>Documents/Forms/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_Documents_Title" xml:space="preserve">
+        <value>Documents</value>
+    </data>
+    <data name="Navigation_StakeholderRegister_Url" xml:space="preserve">
+        <value>Lists/Stakeholders/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_StakeholderRegister_Title" xml:space="preserve">
+        <value>Stakeholder Register</value>
+    </data>
+    <data name="Navigation_CommunicationPlan_Url" xml:space="preserve">
+        <value>Lists/CommunicationPlan/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_CommunicationPlan_Title" xml:space="preserve">
+        <value>Communication Plan</value>
+    </data>
+    <data name="Navigation_WBS_Url" xml:space="preserve">
+        <value>Lists/WorkBreakdownStructure/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ProjectDeliveries_Url" xml:space="preserve">
+        <value>Lists/ProjectDeliveries/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ProjectTimeline_Url" xml:space="preserve">
+        <value>SitePages/ProjectTimeline.aspx</value>
+    </data>
+    <data name="ClientSidePages_Tasks_PageName" xml:space="preserve">
+        <value>Tasks.aspx</value>
+    </data>
+    <data name="Navigation_Tasks_Title" xml:space="preserve">
+        <value>Tasks</value>
+    </data>
+    <data name="ClientSidePages_BenefitOverview_PageName" xml:space="preserve">
+        <value>BenefitOverview.aspx</value>
+    </data>
+    <data name="Navigation_BenefitsOverview_Title" xml:space="preserve">
+        <value>Benefits Overview</value>
+    </data>
+    <data name="Navigation_ChangeAnalysis_Url" xml:space="preserve">
+        <value>Lists/ChangeAnalysis/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_ChangeAnalysis_Title" xml:space="preserve">
+        <value>Change Analysis</value>
+    </data>
+    <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
+        <value>Lists/BenefitsAnalysis/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_BenefitsAnalysis_Title" xml:space="preserve">
+        <value>Benefit Analysis and Realization Plan</value>
+    </data>
+    <data name="Navigation_MeasurementIndicators_Url" xml:space="preserve">
+        <value>Lists/MeasurementIndicators/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_MeasurementIndicators_Title" xml:space="preserve">
+        <value>Measurement Indicators</value>
+    </data>
+    <data name="Navigation_BenefitsFollowup_Url" xml:space="preserve">
+        <value>Lists/BenefitsFollowup/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_BenefitsFollowup_Title" xml:space="preserve">
+        <value>Benefits Follow-up</value>
+    </data>
+    <data name="Navigation_ProjectOrganization_Url" xml:space="preserve">
+        <value>Lists/ProjectOrganization/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_EthicalAssessments_Url" xml:space="preserve">
+        <value>Lists/EthicalAssessments/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_Publishing_Url" xml:space="preserve">
+        <value>Lists/Publications/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_PhaseChecklist_Url" xml:space="preserve">
+        <value>Lists/PhaseChecklist/AllItems.aspx</value>
+    </data>
+    <data name="Navigation_SiteContent_Title" xml:space="preserve">
+        <value>Site Content</value>
+    </data>
+    <data name="ClientSidePages_Home_Title" xml:space="preserve">
+        <value>Home</value>
+    </data>
+    <data name="WebParts_ProjectInformation_Title" xml:space="preserve">
+        <value>Project Information</value>
+    </data>
+    <data name="WebParts_ProjectNews_Title" xml:space="preserve">
+        <value>Project News</value>
+    </data>
+    <data name="WebParts_ProjectPhase_Title" xml:space="preserve">
+        <value>Phase</value>
+    </data>
+    <data name="WebParts_CurrentPhase_Title" xml:space="preserve">
+        <value>Current Phase</value>
+    </data>
+    <data name="WebParts_Tasks_Title" xml:space="preserve">
+        <value>Tasks</value>
     </data>
 </root>
