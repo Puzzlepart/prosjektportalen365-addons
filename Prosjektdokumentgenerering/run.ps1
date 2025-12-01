@@ -6,20 +6,38 @@ param(
 )
 
 # Helper function to connect to SharePoint with managed identity or ClientId/Secret
-function Connect-SharePoint($Url) {
+# This function detects the execution context:
+# - In Azure Automation ($PSPrivateMetadata exists): Uses managed identity authentication
+# - Outside Azure Automation: Uses ClientId/Secret from Automation variables (requires Azure Automation context)
+function Connect-SharePoint {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Url
+    )
+    
     $pnpParams = @{ 
         Url = $Url
     }
+    
     if ($null -ne $PSPrivateMetadata) {
         # Azure Automation runbook context - use managed identity
+        Write-Output "Using managed identity authentication for $Url"
         $pnpParams.Add("ManagedIdentity", $true)
     }
     else {
-        # Local/manual execution - use ClientId/Secret from Automation variables
-        $clientId = Get-AutomationVariable -Name "ClientId"
-        $clientSecret = Get-AutomationVariable -Name "ClientSecret"
-        $pnpParams.Add("ClientId", $clientId)
-        $pnpParams.Add("ClientSecret", $clientSecret)
+        # Fallback to ClientId/Secret from Automation variables
+        # Note: This requires running in an Azure Automation context
+        try {
+            $clientId = Get-AutomationVariable -Name "ClientId"
+            $clientSecret = Get-AutomationVariable -Name "ClientSecret"
+            Write-Output "Using ClientId/Secret authentication for $Url"
+            $pnpParams.Add("ClientId", $clientId)
+            $pnpParams.Add("ClientSecret", $clientSecret)
+        }
+        catch {
+            Write-Error "Failed to retrieve authentication variables. This script must run in Azure Automation context."
+            throw
+        }
     }
 
     Connect-PnPOnline @pnpParams
