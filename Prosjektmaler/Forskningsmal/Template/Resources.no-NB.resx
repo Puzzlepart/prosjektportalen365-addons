@@ -70,6 +70,12 @@
     <data name="File_ResearchTemplate_Level" xml:space="preserve">
         <value>Published</value>
     </data>
+    <data name="Lists_ProjectExtensions_Title" xml:space="preserve">
+        <value>Prosjekttillegg</value>
+    </data>
+    <data name="Lists_ProjectExtensions_Url" xml:space="preserve">
+        <value>Prosjekttillegg</value>
+    </data>
     <data name="Files_ResearchTemplate_Title" xml:space="preserve">
         <value>Forskningsmal</value>
     </data>

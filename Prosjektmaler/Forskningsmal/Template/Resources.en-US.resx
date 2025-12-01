@@ -160,6 +160,12 @@
     <data name="Lists_InstallationLog_Url" xml:space="preserve">
         <value>Lists/InstallationLog</value>
     </data>
+    <data name="Lists_ProjectExtensions_Title" xml:space="preserve">
+        <value>Project Extensions</value>
+    </data>
+    <data name="Lists_ProjectExtensions_Url" xml:space="preserve">
+        <value>ProjectExtensions</value>
+    </data>
     <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
         <value>Template Library</value>
     </data>

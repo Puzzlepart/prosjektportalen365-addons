@@ -115,25 +115,32 @@ try {
 
   Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId -ErrorAction Stop
 
-  $ListContent = Get-PnPListItem -List Listeinnhold
-  $Prosjekttillegg = Get-PnPListItem -List Prosjekttillegg
-  $Maloppsett = Get-PnPListItem -List Maloppsett
+  $ListContentList = Get-PnPList -Identity (Get-Resource -Name "Lists_ListContent_Title") -ErrorAction Stop
+  $ProjectExtensionsList = Get-PnPList -Identity (Get-Resource -Name "Lists_ProjectExtensions_Title") -ErrorAction Stop
+  $TemplateOptionsList = Get-PnPList -Identity (Get-Resource -Name "Lists_TemplateOptions_Title") -ErrorAction Stop
+
+  $ListContent = Get-PnPListItem -List $ListContentList.Id
+  $ProjectExtension = Get-PnPListItem -List $ProjectExtensionsList.Id
+  $TemplateOption = Get-PnPListItem -List $TemplateOptionsList.Id
+  $ResearchTemplateOption = (Get-Resource -Name "Files_ResearchTemplate_Title")
+  $ResearchTemplateCheckList = (Get-Resource -Name "Lists_ListContent_PhaseCheckpoints_Title")
+  $ResearchProjectExtension = (Get-Resource -Name "Lists_ProjectExtensions_Title")
   
-  $MalOppsettTemplate = $Maloppsett | Where-Object { $_["Title"] -eq "Forskning" }
+  $MalOppsettTemplate = $TemplateOption | Where-Object { $_["Title"] -eq $ResearchTemplateOption }
   if ($null -ne $MalOppsettTemplate) {
-    $TemplateChecklist = $ListContent | Where-Object { $_["Title"] -eq "Fasesjekkpunkter Forskning" }
+    $TemplateChecklist = $ListContent | Where-Object { $_["Title"] -eq $ResearchTemplateCheckList }
     $TemplateDefaultContent = @()
     $TemplateDefaultContent += [Microsoft.SharePoint.Client.FieldLookupValue]@{"LookupId" = $TemplateChecklist.Id }
     $MalOppsettTemplate["ListContentConfigLookup"] = $TemplateDefaultContent
 
-    $TemplateTillegg = $Prosjekttillegg | Where-Object { $_["Title"] -eq "Forskningsmal" }
+    $TemplateTillegg = $ProjectExtension | Where-Object { $_["Title"] -eq $ResearchProjectExtension }
     $MalOppsettTemplate["GtProjectExtensions"] = [Microsoft.SharePoint.Client.FieldLookupValue]@{"LookupId" = $TemplateTillegg.Id }
   
     $MalOppsettTemplate.SystemUpdate()
     $MalOppsettTemplate.Context.ExecuteQuery()
   }
   else {
-    Write-Host "[WARNING] Failed to find Forskningsmal template. Please check the Maloppsett list." -ForegroundColor Yellow
+    Write-Host "[WARNING] Failed to find $ResearchProjectExtension template. Please check the $TemplateOptionsList list." -ForegroundColor Yellow
   }
 }
 catch {
