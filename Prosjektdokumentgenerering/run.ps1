@@ -5,17 +5,32 @@ param(
     [string]$requestedBy = "System"
 )
 
+# Helper function to connect to SharePoint with managed identity or ClientId/Secret
+function Connect-SharePoint($Url) {
+    $pnpParams = @{ 
+        Url = $Url
+    }
+    if ($null -ne $PSPrivateMetadata) {
+        # Azure Automation runbook context - use managed identity
+        $pnpParams.Add("ManagedIdentity", $true)
+    }
+    else {
+        # Local/manual execution - use ClientId/Secret from Automation variables
+        $clientId = Get-AutomationVariable -Name "ClientId"
+        $clientSecret = Get-AutomationVariable -Name "ClientSecret"
+        $pnpParams.Add("ClientId", $clientId)
+        $pnpParams.Add("ClientSecret", $clientSecret)
+    }
 
-# Authenticate as App (App registration with ClientId/Secret)
-$clientId = Get-AutomationVariable -Name "ClientId"
-$clientSecret = Get-AutomationVariable -Name "ClientSecret"
+    Connect-PnPOnline @pnpParams
+}
 
-Connect-PnPOnline -Url $projectUrl -ClientId $clientId -ClientSecret $clientSecret
+# Connect to project site
+Connect-SharePoint -Url $projectUrl
 Write-Output "Koblet til $projectUrl"
 
-
 # Connect to Hub site to download template
-Connect-PnPOnline -Url $hubSiteUrl -ClientId $clientId -ClientSecret $clientSecret
+Connect-SharePoint -Url $hubSiteUrl
 
 $tempDir = [System.IO.Path]::GetTempPath()
 $fileName = Split-Path $templatePath -Leaf
@@ -209,7 +224,7 @@ function Replace-TokensInPptx {
 function Get-TokenMap {
     param($projectUrl, $tokens)
 
-    Connect-PnPOnline -Url $projectUrl -ClientId $clientId -ClientSecret $clientSecret
+    Connect-SharePoint -Url $projectUrl
     $map = @{}
 
     foreach ($token in $tokens) {
@@ -274,7 +289,7 @@ $tokenMap = Get-TokenMap -projectUrl $projectUrl -tokens $tokensFound
 $newPptx = Replace-TokensInPptx -pptxPath $localPath -tokenMap $tokenMap
 
 # Upload the generated PPTX back to the project's document library
-Connect-PnPOnline -Url $projectUrl -ClientId $clientId -ClientSecret $clientSecret
+Connect-SharePoint -Url $projectUrl
 
 $targetFolder = "Delte dokumenter/Styringsdokumenter"
 $fileName = ("{0}_{1:yy.MM.dd}.pptx" -f (Split-Path $templatePath -LeafBase), (Get-Date))
