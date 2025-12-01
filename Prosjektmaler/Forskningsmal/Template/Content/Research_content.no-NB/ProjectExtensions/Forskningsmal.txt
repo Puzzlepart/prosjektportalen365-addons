@@ -3,7 +3,7 @@
     "Parameters": {
         "ProvisionSiteFields": "Kolonner for Prosjektportalen (Prosjekt)",
         "CustomSiteFields": "Egendefinerte kolonner for Prosjektportalen",
-        "ProjectContentTypeId": "0x0100805E9E4FEAAB4F0EABAB2600D30DB70C",
+        "ProjectContentTypeId": "0x0100805E9E4FEAAB4F0EABAB2600D30DB70C09",
         "ProjectStatusContentTypeId": "0x010022252E35737A413FB56A1BA53862F6D5"
     },
     "ContentTypes": [

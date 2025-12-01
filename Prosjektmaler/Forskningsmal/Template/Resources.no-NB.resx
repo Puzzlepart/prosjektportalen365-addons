@@ -62,7 +62,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="File_ResearchTemplate_Path" xml:space="preserve">
-        <value>Content\Research_content.no-NB\ProjectExtensions\Forskningsmal.txt</value>
+        <value>Content/Research_content.no-NB/ProjectExtensions/Forskningsmal.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Prosjekttillegg</value>
@@ -111,6 +111,15 @@
     </data>
     <data name="View_AllItems_DisplayName" xml:space="preserve">
         <value>Alle elementer</value>
+    </data>
+    <data name="Lists_InstallationLog_Description" xml:space="preserve">
+        <value>Installasjons- og oppgraderingshistorikk.</value>
+    </data>
+    <data name="Lists_InstallationLog_Title" xml:space="preserve">
+        <value>Installasjonslogg</value>
+    </data>
+    <data name="Lists_InstallationLog_Url" xml:space="preserve">
+        <value>Lists/Installasjonslogg</value>
     </data>
     <data name="Lists_PhaseChecklistResearch_View_Url" xml:space="preserve">
         <value>Lists/FasesjekklisteForskning/AllItems.aspx</value>

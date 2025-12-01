@@ -62,7 +62,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="File_ResearchTemplate_Path" xml:space="preserve">
-        <value>Content\Research_content.en-US\ProjectExtensions\Researchtemplate.txt</value>
+        <value>Content/Research_content.en-US/ProjectExtensions/Researchtemplate.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>ProjectExtensions</value>
@@ -150,6 +150,15 @@
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>This is the research template for Project Portal 365.</value>
+    </data>
+    <data name="Lists_InstallationLog_Description" xml:space="preserve">
+        <value>Installation and upgrade history.</value>
+    </data>
+    <data name="Lists_InstallationLog_Title" xml:space="preserve">
+        <value>Installation Log</value>
+    </data>
+    <data name="Lists_InstallationLog_Url" xml:space="preserve">
+        <value>Lists/InstallationLog</value>
     </data>
     <data name="Lists_TemplateLibrary_Title" xml:space="preserve">
         <value>Template Library</value>

@@ -3,9 +3,22 @@ Param(
   [string]$Url,
   [Parameter(Mandatory = $false, HelpMessage = "Client ID of the Entra Id application used for interactive logins. Defaults to the multi-tenant Prosjektportalen app")]
   [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a",
+  [Parameter(Mandatory = $false, HelpMessage = "Language")]
+  [ValidateSet('Norwegian', 'English')]
+  [string]$Language = "English",
   [Parameter(Mandatory = $false, HelpMessage = "Do you want to perform an upgrade?")]
   [switch]$Upgrade
 )
+
+#region Handling installation language and culture
+$LanguageCodes = @{
+  "Norwegian" = 'no-NB';
+  "English"   = 'en-US';
+}
+
+$LanguageCode = $LanguageCodes[$Language]
+. "$PSScriptRoot/Scripts/Resources.ps1"
+Initialize-Resources -LanguageCode $LanguageCode
 
 <#
 Starts an action and writes the action name to the console. Make sure to update the $global:ACTIONS_COUNT before
@@ -33,7 +46,8 @@ $AdminSiteUrl = (@($Uri.Scheme, "://", $Uri.Authority) -join "").Replace(".share
 $TemplatesBasePath = "$PSScriptRoot/Templates"
 #endregion
 
-Set-PnPTraceLog -Off
+$LogFilePath = "$PSScriptRoot/Install_Log_$([datetime]::Now.ToString("yy-MM-ddThh-mm-ss")).txt"
+Start-PnPTraceLog -Path $LogFilePath -Level Debug
 
 # TODO: Replace version from package.json/git-tag
 Write-Host "Installing Prosjektportalen Forskningsmal version 1.0.0" -ForegroundColor Cyan
@@ -64,7 +78,8 @@ foreach ($SiteScript in $SiteScripts) {
 $SiteDesignMain = Get-PnPSiteDesign -Identity $SiteDesignMainName
 if ($null -eq $SiteDesignMain) {
   Write-Host "[WARNING] Site design '$SiteDesignMainName' not found. Skipping update." -ForegroundColor Yellow
-} else {
+}
+else {
   $SiteDesignMain = Set-PnPSiteDesign -Identity $SiteDesignMain -SiteScriptIds $SiteScriptMainIds
 }
 
@@ -80,7 +95,8 @@ foreach ($SiteScript in $SiteScripts) {
 $SiteDesignTest = Get-PnPSiteDesign -Identity $SiteDesignTestName
 if ($null -eq $SiteDesignTest) {
   Write-Host "[WARNING] Site design '$SiteDesignTestName' not found. Skipping update." -ForegroundColor Yellow
-} else {
+}
+else {
   $SiteDesignTest = Set-PnPSiteDesign -Identity $SiteDesignTest -SiteScriptIds $SiteScriptTestIds
 }
 EndAction
@@ -130,7 +146,8 @@ EndAction
 #region Logging installation
 Write-Host "[INFO] Logging installation entry" 
 Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId -ErrorAction Stop
-$LastInstall = Get-PnPListItem -List "Installasjonslogg" -Query "<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query></View>" | Select-Object -First 1 -Wait
+$InstallationEntriesList = Get-PnPList -Identity (Get-Resource -Name "Lists_InstallationLog_Title") -ErrorAction Stop
+$LastInstall = Get-PnPListItem -List $InstallationEntriesList.Id -Query "<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query></View>" | Select-Object -First 1 -Wait
 $PreviousVersion = "N/A"
 if ($null -ne $LastInstall) {
   $PreviousVersion = $LastInstall.FieldValues["InstallVersion"]
@@ -153,6 +170,8 @@ if ($null -ne $CurrentUser.Email) {
   $InstallEntry.InstallUser = $CurrentUser.Email
 }
 
-$LoggedEntry = Add-PnPListItem -List "Installasjonslogg" -Values $InstallEntry -ErrorAction Continue
+$LoggedEntry = Add-PnPListItem -List $InstallationEntriesList.Id -Values $InstallEntry -ErrorAction Continue
+
+Stop-PnPTraceLog -StopFileLogging
 
 Write-Host "Installation of Forskningsmalen complete!" -ForegroundColor Green

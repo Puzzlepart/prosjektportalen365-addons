@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run generate-project-templates",
+    "build-research": "npm run generate-research-templates",
     "generate-resx-json": "node ./.tasks/generate-resx-json.js",
-    "generate-project-templates": "npm run generate-resx-json && node ./.tasks/generate-project-templates.js"
+    "generate-research-templates": "npm run generate-resx-json && node ./.tasks/generate-research-templates.js"
   },
   "dependencies": {
     "@ptkdev/json-token-replace": "^1.2.2",

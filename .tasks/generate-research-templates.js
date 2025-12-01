@@ -14,7 +14,7 @@ const templateNames = {
         'Research': 'Forskningsmal'
     },
     'en-US': {
-        'Research': 'ResearchTemplate'
+        'Research': 'Researchtemplate'
     }
 }
 
