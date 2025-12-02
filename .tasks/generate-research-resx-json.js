@@ -1,13 +1,13 @@
+// generate-resx-json.js
+
 const path = require('path');
 const fs = require('fs');
 const { convertResx } = require('resx-json-typescript-converter');
 
-// Define the output directory and filenames
 const outputDir = path.resolve(__dirname, '../');
 const generatedFile = path.join(outputDir, 'Resources.json');
 const targetFile = path.join(outputDir, 'Resources-research.json');
 
-// 1. Run the conversion (Generates Resources.json)
 convertResx([
     path.resolve(__dirname, '../Prosjektmaler/Forskningsmal/Template/Resources.en-US.resx'),
     path.resolve(__dirname, '../Prosjektmaler/Forskningsmal/Template/Resources.no-NB.resx')
@@ -21,7 +21,6 @@ convertResx([
     }
 );
 
-// 2. Rename the file to Resources-abc.json
 try {
     if (fs.existsSync(generatedFile)) {
         fs.renameSync(generatedFile, targetFile);

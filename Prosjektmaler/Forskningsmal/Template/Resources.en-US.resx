@@ -362,10 +362,10 @@
         <value>What is the status of your project?</value>
     </data>
     <data name="ListFields_GtcEtDeliveryTitle_Description" xml:space="preserve">
-        <value>Which delivery?</value>
+        <value>Which deliverable?</value>
     </data>
     <data name="ListFields_GtcEtDeliveryTitle_DisplayName" xml:space="preserve">
-        <value>Delivery</value>
+        <value>Deliverable</value>
     </data>
     <data name="ListFields_GtcEtDeliveryNumber_Description" xml:space="preserve">
         <value>Which delivery?</value>
@@ -374,55 +374,55 @@
         <value>Delivery: Delivery Number</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_HumanTestSubject" xml:space="preserve">
-        <value>Humans, Test Subject</value>
+        <value>People, test subject</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_HumanTissueSamples" xml:space="preserve">
-        <value>Human Cells or Tissue Samples</value>
+        <value>Human cells or tissue samples</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_PersonalData" xml:space="preserve">
-        <value>Personal Data</value>
+        <value>Personal data</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_AnimalResearch" xml:space="preserve">
-        <value>Animals, Animal Research, Laboratory Animals</value>
+        <value>Animals, research on animals, lab animals</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_EnvironmentHealthSafety" xml:space="preserve">
-        <value>Environment, Health and Safety</value>
+        <value>Environment, health and safety</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_MisUseOfResults" xml:space="preserve">
-        <value>Misuse of Results</value>
+        <value>Misuse of results</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_OtherChallenges" xml:space="preserve">
-        <value>Other Ethical Challenges</value>
+        <value>Other ethical challenges</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_HumanStemCells" xml:space="preserve">
-        <value>Human Embryos and Stem Cells</value>
+        <value>Human embryos and stem cell</value>
     </data>
     <data name="ListFields_GtcEtCategory_Choice_ArtificialIntelligence" xml:space="preserve">
-        <value>Artificial Intelligence</value>
+        <value>Artificial intelligence</value>
     </data>
     <data name="ListFields_GtcEtChallenge_Description" xml:space="preserve">
         <value>Describe the ethical challenges</value>
     </data>
     <data name="ListFields_GtcEtChallenge_DisplayName" xml:space="preserve">
-        <value>Describe Challenge</value>
+        <value>Describe the challenge</value>
     </data>
     <data name="ListFields_GtcEtAction_Description" xml:space="preserve">
-        <value>Describe the measures the project implements to reduce or limit ethical challenges</value>
+        <value>Describe the measures the project implements to reduce or limit the ethical challenges</value>
     </data>
     <data name="ListFields_GtcEtAction_DisplayName" xml:space="preserve">
-        <value>Describe Measures</value>
+        <value>Describe measures</value>
     </data>
     <data name="ListFields_GtcEtHurtPotential_Description" xml:space="preserve">
-        <value>What is the damage potential?</value>
+        <value>What is the potential for harm?</value>
     </data>
     <data name="ListFields_GtcEtHurtPotential_DisplayName" xml:space="preserve">
-        <value>Damage Potential</value>
+        <value>Potential for damage</value>
     </data>
     <data name="ListFields_GtcEtTestSubject_Description" xml:space="preserve">
         <value>Who/what are the test subjects?</value>
     </data>
     <data name="ListFields_GtcEtTestSubject_DisplayName" xml:space="preserve">
-        <value>Test Subjects</value>
+        <value>Test subjects/informants</value>
     </data>
     <data name="ListFields_GtcEtStorage_Description" xml:space="preserve">
         <value>How should results be stored?</value>
@@ -431,10 +431,10 @@
         <value>Storage</value>
     </data>
     <data name="ListFields_GtcEtRegulations_Description" xml:space="preserve">
-        <value>Which laws and regulations must the project comply with? Is data subject to export regulations?</value>
+        <value>What laws and regulations does the project have to comply with? Is data subject to export regulations?</value>
     </data>
     <data name="ListFields_GtcEtRegulations_DisplayName" xml:space="preserve">
-        <value>Laws and Regulations</value>
+        <value>Laws and regulations</value>
     </data>
     <data name="ListFields_GtcEtSharing_Description" xml:space="preserve">
         <value>What ethical challenges must be addressed regarding sharing/dissemination of data?</value>
@@ -455,13 +455,13 @@
         <value>Regional Ethics Committee (REK)</value>
     </data>
     <data name="ListFields_GtcEtApproval_Choice_NorwegianFoodSafetyAuthority" xml:space="preserve">
-        <value>Norwegian Food Safety Authority</value>
+        <value>The Norwegian Food Safety Authority</value>
     </data>
     <data name="ListFields_GtcEtRisk_Description" xml:space="preserve">
-        <value>Select the risk analysis relevant to the assessment (Retrieves data from the Uncertainty Register)</value>
+        <value>Select the risk analysis that is relevant to the assessment (Retrieves data from the Uncertainty Register)</value>
     </data>
     <data name="ListFields_GtcEtRisk_DisplayName" xml:space="preserve">
-        <value>Risk Assessment</value>
+        <value>Risk assessment</value>
     </data>
     <data name="ListFields_GtcOrgBelonging_Description" xml:space="preserve">
         <value>Which organization does the person belong to?</value>
@@ -533,7 +533,7 @@
         <value>Role in Publication</value>
     </data>
     <data name="SiteFields_GtcPubRole_Description" xml:space="preserve">
-        <value>Is the employee first, last, or co-author? Specify name and role.</value>
+        <value>Are employees first, last or co-authored? Enter name and role.</value>
     </data>
     <data name="SiteFields_GtcPubResultId_DisplayName" xml:space="preserve">
         <value>CRISTIN Result ID</value>
@@ -542,10 +542,10 @@
         <value>What is the CRISTIN result ID for the publication?</value>
     </data>
     <data name="SiteFields_GtcPubLink_DisplayName" xml:space="preserve">
-        <value>Link to CRISTIN/NVA</value>
+        <value>URL link to CRISTIN/ NVA</value>
     </data>
     <data name="SiteFields_GtcPubLink_Description" xml:space="preserve">
-        <value>Find the publication on CRISTIN/NVA, and copy the entire link here. Include HTTPS://</value>
+        <value>Find the publication at CRISTIN/NVA, and copy the full link here. Include HTTPS://.</value>
     </data>
     <data name="SiteFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
         <value>Is Publication Published?</value>
@@ -581,16 +581,16 @@
         <value>Delivery: Delivery Number</value>
     </data>
     <data name="ListFields_GtcWBSDeliveryTitle_Description" xml:space="preserve">
-        <value>Which delivery?</value>
+        <value>Which deliverable?</value>
     </data>
     <data name="ListFields_GtcWBSDeliveryTitle_DisplayName" xml:space="preserve">
-        <value>Delivery</value>
+        <value>Deliverable</value>
     </data>
     <data name="ListFields_GtcWBSTodo_Description" xml:space="preserve">
         <value>Describe the work to be done</value>
     </data>
     <data name="ListFields_GtcWBSTodo_DisplayName" xml:space="preserve">
-        <value>What Should Be Done?</value>
+        <value>What should be done?</value>
     </data>
     <data name="ListFields_GtcWBSScope_Description" xml:space="preserve">
         <value>Select scope type</value>
@@ -602,10 +602,10 @@
         <value>Hours</value>
     </data>
     <data name="ListFields_GtcWBSScope_Choice_PersonMonths" xml:space="preserve">
-        <value>Person Months</value>
+        <value>Person months</value>
     </data>
     <data name="ListFields_GtcWBSScope_Choice_YearsOfWork" xml:space="preserve">
-        <value>Years of Work</value>
+        <value>Man-years</value>
     </data>
     <data name="ListFields_GtcWBSStartDate_Description" xml:space="preserve">
         <value>When should this be done?</value>
@@ -626,28 +626,28 @@
         <value>Amount</value>
     </data>
     <data name="ListFields_GtcWBSExecute_Description" xml:space="preserve">
-        <value>Who in the project organization should do it? (Retrieved from Project Organization)</value>
+        <value>Who in the project organization will do the work? (Retrieved from the Project Organization)</value>
     </data>
     <data name="ListFields_GtcWBSExecute_DisplayName" xml:space="preserve">
-        <value>Who Should Do It?</value>
+        <value>Responsebility</value>
     </data>
     <data name="ListFields_GtcWBSExecuteRole_Description" xml:space="preserve">
-        <value>Who in the project organization should do it? (Retrieved from Project Organization)</value>
+        <value>Who in the project organization will do the work? (Retrieved from the Project Organization)</value>
     </data>
     <data name="ListFields_GtcWBSExecuteRole_DisplayName" xml:space="preserve">
         <value>Who Should Do It?: Role in Project</value>
     </data>
     <data name="ListFields_GtcWBSExecuteRole0_Description" xml:space="preserve">
-        <value>Who in the project organization should do it? (Retrieved from Project Organization)</value>
+        <value>Who in the project organization will do the work? (Retrieved from the Project Organization)</value>
     </data>
     <data name="ListFields_GtcWBSExecuteRole0_DisplayName" xml:space="preserve">
         <value>Who Should Do It?: Belongs To</value>
     </data>
     <data name="ListFields_GtcWBSDependent_Description" xml:space="preserve">
-        <value>Select other deliveries that must be completed before starting</value>
+        <value>Choose other deliveries that you depend on being completed before you can start</value>
     </data>
     <data name="ListFields_GtcWBSDependent_DisplayName" xml:space="preserve">
-        <value>Dependent On</value>
+        <value>Dependencies</value>
     </data>
     <data name="ListFields_GtcWBSDependecyDelivery_Description" xml:space="preserve">
         <value>Select other deliveries that must be completed before starting</value>
@@ -656,25 +656,25 @@
         <value>Dependent On: Delivery Number</value>
     </data>
     <data name="ListFields_GtcWBSDependentDescription_Description" xml:space="preserve">
-        <value>Describe why these deliveries are dependencies</value>
+        <value>Describe why you are dependent on these deliveries</value>
     </data>
     <data name="ListFields_GtcWBSDependentDescription_DisplayName" xml:space="preserve">
-        <value>Description of Dependencies</value>
+        <value>Description of dependencies</value>
     </data>
     <data name="ListFields_GtcWBSOtherDependencies_Description" xml:space="preserve">
-        <value>What other dependencies exist in time, resources, and competence that the delivery needs?</value>
+        <value>What other dependencies are there in terms of time, resources and expertise that the deliverable needs?</value>
     </data>
     <data name="ListFields_GtcWBSOtherDependencies_DisplayName" xml:space="preserve">
-        <value>Other Dependencies</value>
+        <value>Other dependencies</value>
     </data>
     <data name="ListFields_GtcWBSAffects_Description" xml:space="preserve">
         <value>Which other deliveries does this delivery affect</value>
     </data>
     <data name="ListFields_GtcWBSAffects_DisplayName" xml:space="preserve">
-        <value>What Other Impacts Does This Delivery Have?</value>
+        <value>Dependencies of deliverable</value>
     </data>
     <data name="ListFields_GtcWBSAffectsDelivery_Description" xml:space="preserve">
-        <value>Which other deliveries does this delivery affect</value>
+        <value>Describe why you are dependent on these deliveries</value>
     </data>
     <data name="ListFields_GtcWBSAffectsDelivery_DisplayName" xml:space="preserve">
         <value>What Other Impacts Does This Delivery Have?: Delivery Number</value>
@@ -701,37 +701,37 @@
         <value>What is the CRISTIN result ID for the publication?</value>
     </data>
     <data name="ListFields_GtcPubResultId_DisplayName" xml:space="preserve">
-        <value>CRISTIN Result ID</value>
+        <value>CRISTIN result ID</value>
     </data>
     <data name="ListFields_GtcPubChannel_Description" xml:space="preserve">
         <value>Where is the publication published?</value>
     </data>
     <data name="ListFields_GtcPubChannel_DisplayName" xml:space="preserve">
-        <value>Publication Channel</value>
+        <value>Publishing channel</value>
     </data>
     <data name="ListFields_GtcPubRole_Description" xml:space="preserve">
-        <value>Is the employee first, last, or co-author? Specify name and role.</value>
+        <value>Are employees first, last or co-authored? Enter name and role.</value>
     </data>
     <data name="ListFields_GtcPubRole_DisplayName" xml:space="preserve">
         <value>Role in Publication</value>
     </data>
     <data name="ListFields_GtcPubIsPublished_Description" xml:space="preserve">
-        <value>Is the publication published?</value>
+        <value>Has the publication been published?</value>
     </data>
     <data name="ListFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
-        <value>Is Publication Published?</value>
+        <value>Has the publication been published?</value>
     </data>
     <data name="ListFields_GtcPubDate_Description" xml:space="preserve">
         <value>When is the publication planned/published</value>
     </data>
     <data name="ListFields_GtcPubDate_DisplayName" xml:space="preserve">
-        <value>Publication Date</value>
+        <value>Publication date</value>
     </data>
     <data name="ListFields_GtcPubLink_Description" xml:space="preserve">
-        <value>Find the publication on CRISTIN/NVA, and copy the entire link here. Include HTTPS://</value>
+        <value>Find the publication at CRISTIN/NVA, and copy the full link here. Include HTTPS://.</value>
     </data>
     <data name="ListFields_GtcPubLink_DisplayName" xml:space="preserve">
-        <value>Link to CRISTIN/NVA</value>
+        <value>URL link to CRISTIN/ NVA</value>
     </data>
     <data name="ContentTypes_ProjectDelivery_Name" xml:space="preserve">
         <value>Project Delivery</value>
@@ -743,7 +743,7 @@
         <value>Publishing Element</value>
     </data>
     <data name="Lists_PhaseChecklist_Title" xml:space="preserve">
-        <value>Phase Checklist</value>
+        <value>Phase checklist</value>
     </data>
     <data name="Choice_GtChecklistStatus_Archived" xml:space="preserve">
         <value>Archived</value>
@@ -755,19 +755,19 @@
         <value>By status</value>
     </data>
     <data name="Lists_ProjectDeliveries_Title" xml:space="preserve">
-        <value>Project Deliveries</value>
+        <value>Project deliverables</value>
     </data>
     <data name="ListFields_DeliveryStakeholders_DisplayName" xml:space="preserve">
         <value>Delivery stakeholders</value>
     </data>
     <data name="Lists_Stakeholders_Title" xml:space="preserve">
-        <value>Stakeholders</value>
+        <value>Stakeholder register</value>
     </data>
     <data name="ListFields_DeliveryStakeholders_Description" xml:space="preserve">
         <value>Specify which stakeholder(s) the delivery affects</value>
     </data>
     <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
-        <value>Ethical Assessments</value>
+        <value>Ethical considerations</value>
     </data>
     <data name="Fields_Category_DisplayName" xml:space="preserve">
         <value>Category</value>
@@ -776,7 +776,7 @@
         <value>Which ethical category?</value>
     </data>
     <data name="Choices_Ethical_Humans" xml:space="preserve">
-        <value>Humans, test subjects</value>
+        <value>People, test subject</value>
     </data>
     <data name="Choices_Ethical_HumanCells" xml:space="preserve">
         <value>Human cells or tissue samples</value>
@@ -797,19 +797,19 @@
         <value>Other ethical challenges</value>
     </data>
     <data name="Choices_Ethical_Embryos" xml:space="preserve">
-        <value>Human embryos and stem cells</value>
+        <value>Human embryos and stem cell</value>
     </data>
     <data name="Choices_Ethical_AI" xml:space="preserve">
-        <value>Artificial Intelligence</value>
+        <value>Artificial intelligence</value>
     </data>
     <data name="Choices_Ethical_Approval_KoFE" xml:space="preserve">
         <value>Committee for Research Ethics (KoFE)</value>
     </data>
     <data name="Choices_Ethical_Approval_REK" xml:space="preserve">
-        <value>Regional Ethics Committee (REK)</value>
+        <value>Regional Ethics Committee (REC)</value>
     </data>
     <data name="Choices_Ethical_Approval_Mattilsynet" xml:space="preserve">
-        <value>Norwegian Food Safety Authority</value>
+        <value>The Norwegian Food Safety Authority</value>
     </data>
     <data name="Fields_DescribeChallenge_DisplayName" xml:space="preserve">
         <value>Describe the challenge</value>
@@ -824,7 +824,7 @@
         <value>Describe the measures the project implements to reduce or limit the ethical challenges</value>
     </data>
     <data name="Fields_HarmPotential_DisplayName" xml:space="preserve">
-        <value>Potential for harm</value>
+        <value>Potential for damage</value>
     </data>
     <data name="Fields_HarmPotential_Description" xml:space="preserve">
         <value>What is the potential for harm?</value>
@@ -839,13 +839,13 @@
         <value>Storage</value>
     </data>
     <data name="Fields_Storage_Description" xml:space="preserve">
-        <value>How will results be stored?</value>
+        <value>How should results be stored?</value>
     </data>
     <data name="Fields_Regulations_DisplayName" xml:space="preserve">
         <value>Laws and regulations</value>
     </data>
     <data name="Fields_Regulations_Description" xml:space="preserve">
-        <value>Which laws and regulations must the project adhere to? Is data subject to export regulations?</value>
+        <value>What laws and regulations does the project have to comply with? Is data subject to export regulations?</value>
     </data>
     <data name="Fields_SharingResults_DisplayName" xml:space="preserve">
         <value>Sharing of results</value>
@@ -860,13 +860,13 @@
         <value>Which committee must approve?</value>
     </data>
     <data name="Fields_RiskAssessment_DisplayName" xml:space="preserve">
-        <value>Risk Assessment</value>
+        <value>Risk assessment</value>
     </data>
     <data name="Fields_RiskAssessment_Description" xml:space="preserve">
-        <value>Select the risk analysis relevant for the assessment (Retrieves data from the Uncertainty Register)</value>
+        <value>Select the risk analysis that is relevant to the assessment (Retrieves data from the Uncertainty Register)</value>
     </data>
     <data name="Lists_ProjectOrganization_Title" xml:space="preserve">
-        <value>Project Organization</value>
+        <value>Project organization</value>
     </data>
     <data name="Fields_Affiliation_DisplayName" xml:space="preserve">
         <value>Affiliation</value>
@@ -926,13 +926,13 @@
         <value>Work Breakdown Structure</value>
     </data>
     <data name="Fields_Todo_DisplayName" xml:space="preserve">
-        <value>What needs to be done?</value>
+        <value>What should be done?</value>
     </data>
     <data name="Fields_Todo_Description" xml:space="preserve">
         <value>Describe the work to be done</value>
     </data>
     <data name="Fields_Scope_DisplayName" xml:space="preserve">
-        <value>Scope</value>
+        <value>Extent</value>
     </data>
     <data name="Fields_Scope_Description" xml:space="preserve">
         <value>Select scope type</value>
@@ -941,7 +941,7 @@
         <value>Hours</value>
     </data>
     <data name="Choices_Scope_ManYears" xml:space="preserve">
-        <value>Person-years</value>
+        <value>Person months</value>
     </data>
     <data name="Choices_Scope_YearWorks" xml:space="preserve">
         <value>Man-years</value>
@@ -1004,10 +1004,10 @@
         <value>Publications</value>
     </data>
     <data name="Navigation_MandatoryFunctions_Title" xml:space="preserve">
-        <value>Mandatory functions</value>
+        <value>Required features</value>
     </data>
     <data name="Navigation_PlanningAndControl_Title" xml:space="preserve">
-        <value>Planning and control</value>
+        <value>Planning and management</value>
     </data>
     <data name="Navigation_ProjectTimeline_Title" xml:space="preserve">
         <value>Project Timeline</value>
@@ -1019,7 +1019,7 @@
         <value>Meeting Minutes</value>
     </data>
     <data name="Navigation_RNDTools_Title" xml:space="preserve">
-        <value>R&amp;D Tools</value>
+        <value>R&amp;D tools</value>
     </data>
     <data name="Navigation_General_Title" xml:space="preserve">
         <value>General</value>
@@ -1052,7 +1052,7 @@
         <value>Lists/ProjectLog/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectLog_Title" xml:space="preserve">
-        <value>Project Log</value>
+        <value>Project log</value>
     </data>
     <data name="Navigation_Uncertainty_Url" xml:space="preserve">
         <value>Lists/Uncertainty/AllItems.aspx</value>
@@ -1070,13 +1070,13 @@
         <value>Lists/Stakeholders/AllItems.aspx</value>
     </data>
     <data name="Navigation_StakeholderRegister_Title" xml:space="preserve">
-        <value>Stakeholder Register</value>
+        <value>Stakeholder register</value>
     </data>
     <data name="Navigation_CommunicationPlan_Url" xml:space="preserve">
         <value>Lists/CommunicationPlan/AllItems.aspx</value>
     </data>
     <data name="Navigation_CommunicationPlan_Title" xml:space="preserve">
-        <value>Communication Plan</value>
+        <value>Communication plan</value>
     </data>
     <data name="Navigation_WBS_Url" xml:space="preserve">
         <value>Lists/WorkBreakdownStructure/AllItems.aspx</value>
@@ -1097,31 +1097,31 @@
         <value>BenefitOverview.aspx</value>
     </data>
     <data name="Navigation_BenefitsOverview_Title" xml:space="preserve">
-        <value>Benefits Overview</value>
+        <value>Benefit Overview</value>
     </data>
     <data name="Navigation_ChangeAnalysis_Url" xml:space="preserve">
         <value>Lists/ChangeAnalysis/AllItems.aspx</value>
     </data>
     <data name="Navigation_ChangeAnalysis_Title" xml:space="preserve">
-        <value>Change Analysis</value>
+        <value>Change analysis</value>
     </data>
     <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
         <value>Lists/BenefitsAnalysis/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsAnalysis_Title" xml:space="preserve">
-        <value>Benefit Analysis and Realization Plan</value>
+        <value>Benefit analysis and benefit realization plan</value>
     </data>
     <data name="Navigation_MeasurementIndicators_Url" xml:space="preserve">
         <value>Lists/MeasurementIndicators/AllItems.aspx</value>
     </data>
     <data name="Navigation_MeasurementIndicators_Title" xml:space="preserve">
-        <value>Measurement Indicators</value>
+        <value>Measurement indicators</value>
     </data>
     <data name="Navigation_BenefitsFollowup_Url" xml:space="preserve">
         <value>Lists/BenefitsFollowup/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsFollowup_Title" xml:space="preserve">
-        <value>Benefits Follow-up</value>
+        <value>Profit follow-up</value>
     </data>
     <data name="Navigation_ProjectOrganization_Url" xml:space="preserve">
         <value>Lists/ProjectOrganization/AllItems.aspx</value>
@@ -1136,7 +1136,7 @@
         <value>Lists/PhaseChecklist/AllItems.aspx</value>
     </data>
     <data name="Navigation_SiteContent_Title" xml:space="preserve">
-        <value>Site Content</value>
+        <value>Content</value>
     </data>
     <data name="ClientSidePages_Home_Title" xml:space="preserve">
         <value>Home</value>
