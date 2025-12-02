@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { convertResx } = require('resx-json-typescript-converter');
 
-const outputDir = path.resolve(__dirname, '../');
+const outputDir = path.resolve(__dirname, '../Prosjektmaler/Forskningsmal/Template');
 const generatedFile = path.join(outputDir, 'Resources.json');
 const targetFile = path.join(outputDir, 'Resources-research.json');
 
