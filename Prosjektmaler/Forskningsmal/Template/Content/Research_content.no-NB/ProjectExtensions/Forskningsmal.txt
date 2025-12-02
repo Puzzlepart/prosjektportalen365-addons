@@ -1,5 +1,4 @@
 {
-    "Version": "0.0.1",
     "Parameters": {
         "ProvisionSiteFields": "Kolonner for Prosjektportalen (Prosjekt)",
         "CustomSiteFields": "Egendefinerte kolonner for Prosjektportalen",
@@ -555,9 +554,10 @@
             "Title": "Hjem",
             "PageLayoutType": "Home",
             "CommentsDisabled": true,
+            "Overwrite": true,
             "VerticalSection": [
                 {
-                    "Id": "{{ControlId_ProjectInformationWebPart}}",
+                    "Id": "b8bec0be-2354-443d-a3ca-24b36e8ea7dc",
                     "Properties": {
                         "title": "Prosjektinformasjon",
                         "hideStatusReport": true,
@@ -565,7 +565,7 @@
                     }
                 },
                 {
-                    "Id": "{{ControlId_ProjectNewsWebPart}}",
+                    "Id": "a5df8fdf-b508-4b66-98a6-d83bc2597f63",
                     "Properties": {
                         "title": "Prosjektnyheter",
                         "showChrome": true,
@@ -622,6 +622,6 @@
         }
     ],
     "WebSettings": {
-        "WelcomePage": "SitePages/Hjem.aspx"
+        "WelcomePage": "SitePages/ProjectHome.aspx"
     }
 }

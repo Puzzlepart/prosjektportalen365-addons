@@ -1,5 +1,4 @@
 {
-    "Version": "{version}",
     "Parameters": {
         "ProvisionSiteFields": "{{SiteFields_Project_Group}}",
         "CustomSiteFields": "{{SiteFields_CustomFields_Group}}",
@@ -555,9 +554,10 @@
             "Title": "{{ClientSidePages_Home_Title}}",
             "PageLayoutType": "Home",
             "CommentsDisabled": true,
+            "Overwrite": true,
             "VerticalSection": [
                 {
-                    "Id": "{{ControlId_ProjectInformationWebPart}}",
+                    "Id": "b8bec0be-2354-443d-a3ca-24b36e8ea7dc",
                     "Properties": {
                         "title": "{{WebParts_ProjectInformation_Title}}",
                         "hideStatusReport": true,
@@ -565,7 +565,7 @@
                     }
                 },
                 {
-                    "Id": "{{ControlId_ProjectNewsWebPart}}",
+                   "Id": "a5df8fdf-b508-4b66-98a6-d83bc2597f63",
                     "Properties": {
                         "title": "{{WebParts_ProjectNews_Title}}",
                         "showChrome": true,
@@ -622,6 +622,6 @@
         }
     ],
     "WebSettings": {
-        "WelcomePage": "SitePages/Hjem.aspx"
+        "WelcomePage": "SitePages/ProjectHome.aspx"
     }
 }

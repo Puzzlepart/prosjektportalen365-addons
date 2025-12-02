@@ -122,22 +122,22 @@ try {
   $ListContent = Get-PnPListItem -List $ListContentList.Id
   $ProjectExtension = Get-PnPListItem -List $ProjectExtensionsList.Id
   $TemplateOption = Get-PnPListItem -List $TemplateOptionsList.Id
-  $ResearchTemplateOption = (Get-Resource -Name "Files_ResearchTemplate_Title")
+  $ResearchTemplateOption = (Get-Resource -Name "Lists_ProjectExtensions_Title")
   $ResearchTemplateCheckList = (Get-Resource -Name "Lists_ListContent_PhaseCheckpoints_Title")
-  $ResearchProjectExtension = (Get-Resource -Name "Lists_ProjectExtensions_Title")
+  $ResearchProjectExtension = (Get-Resource -Name "Files_ResearchTemplate_Title")
   
-  $MalOppsettTemplate = $TemplateOption | Where-Object { $_["Title"] -eq $ResearchTemplateOption }
-  if ($null -ne $MalOppsettTemplate) {
+  $TemplateLayout = $TemplateOption | Where-Object { $_["Title"] -eq $ResearchTemplateOption }
+  if ($null -ne $TemplateLayout) {
     $TemplateChecklist = $ListContent | Where-Object { $_["Title"] -eq $ResearchTemplateCheckList }
     $TemplateDefaultContent = @()
     $TemplateDefaultContent += [Microsoft.SharePoint.Client.FieldLookupValue]@{"LookupId" = $TemplateChecklist.Id }
-    $MalOppsettTemplate["ListContentConfigLookup"] = $TemplateDefaultContent
+    $TemplateLayout["ListContentConfigLookup"] = $TemplateDefaultContent
 
-    $TemplateTillegg = $ProjectExtension | Where-Object { $_["Title"] -eq $ResearchProjectExtension }
-    $MalOppsettTemplate["GtProjectExtensions"] = [Microsoft.SharePoint.Client.FieldLookupValue]@{"LookupId" = $TemplateTillegg.Id }
+    $TemplateExtension = $ProjectExtension | Where-Object { $_["Title"] -eq $ResearchProjectExtension }
+    $TemplateLayout["GtProjectExtensions"] = [Microsoft.SharePoint.Client.FieldLookupValue]@{"LookupId" = $TemplateExtension.Id }
   
-    $MalOppsettTemplate.SystemUpdate()
-    $MalOppsettTemplate.Context.ExecuteQuery()
+    $TemplateLayout.SystemUpdate()
+    $TemplateLayout.Context.ExecuteQuery()
   }
   else {
     Write-Host "[WARNING] Failed to find $ResearchProjectExtension template. Please check the $TemplateOptionsList list." -ForegroundColor Yellow
