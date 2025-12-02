@@ -361,166 +361,166 @@
     <data name="SiteFields_GtProjectLifecycleStatus_Description" xml:space="preserve">
         <value>Hvilken status har prosjektet ditt?</value>
     </data>
-    <data name="ListFields_GtcEtDeliveryTitle_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtDeliveryTitle_Description" xml:space="preserve">
         <value>Hvilken leveranse?</value>
     </data>
-    <data name="ListFields_GtcEtDeliveryTitle_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtDeliveryTitle_DisplayName" xml:space="preserve">
         <value>Leveranse</value>
     </data>
-    <data name="ListFields_GtcEtDeliveryNumber_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtDeliveryNumber_Description" xml:space="preserve">
         <value>Hvilken leveranse?</value>
     </data>
-    <data name="ListFields_GtcEtDeliveryNumber_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtDeliveryNumber_DisplayName" xml:space="preserve">
         <value>Leveranse: Leveranse nummer</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_HumanTestSubject" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_HumanTestSubject" xml:space="preserve">
         <value>Menesker, test-subjekt</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_HumanTissueSamples" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_HumanTissueSamples" xml:space="preserve">
         <value>Mennskeskelige celler eller vevsprøver</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_PersonalData" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_PersonalData" xml:space="preserve">
         <value>Personlig data</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_AnimalResearch" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_AnimalResearch" xml:space="preserve">
         <value>Dyr, forskning på dyr, lab-dyr</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_EnvironmentHealthSafety" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_EnvironmentHealthSafety" xml:space="preserve">
         <value>Miljø, helse og sikkerhet</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_MisUseOfResults" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_MisUseOfResults" xml:space="preserve">
         <value>Misbruk av resultater</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_OtherChallenges" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_OtherChallenges" xml:space="preserve">
         <value>Andre etiske utfordringer</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_HumanStemCells" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_HumanStemCells" xml:space="preserve">
         <value>Mennskelige embryoer og stamcelle</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Choice_ArtificialIntelligence" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Choice_ArtificialIntelligence" xml:space="preserve">
         <value>Kunstig intelligens</value>
     </data>
-    <data name="ListFields_GtcEtChallenge_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtChallenge_Description" xml:space="preserve">
         <value>Beskriv de etiske utfordringene</value>
     </data>
-    <data name="ListFields_GtcEtChallenge_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtChallenge_DisplayName" xml:space="preserve">
         <value>Beskriv utfordringen</value>
     </data>
-    <data name="ListFields_GtcEtAction_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtAction_Description" xml:space="preserve">
         <value>Beskriv tiltakene prosjektet implementer for å redusere eller begrense de etiske utfordringene</value>
     </data>
-    <data name="ListFields_GtcEtAction_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtAction_DisplayName" xml:space="preserve">
         <value>Beskriv tiltak</value>
     </data>
-    <data name="ListFields_GtcEtHurtPotential_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtHurtPotential_Description" xml:space="preserve">
         <value>Hva er skadepotensiale?</value>
     </data>
-    <data name="ListFields_GtcEtHurtPotential_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtHurtPotential_DisplayName" xml:space="preserve">
         <value>Skadepotensial</value>
     </data>
-    <data name="ListFields_GtcEtTestSubject_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtTestSubject_Description" xml:space="preserve">
         <value>Hvem/ hva er testsubjektene?</value>
     </data>
-    <data name="ListFields_GtcEtTestSubject_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtTestSubject_DisplayName" xml:space="preserve">
         <value>Test subjekter/ informanter</value>
     </data>
-    <data name="ListFields_GtcEtStorage_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtStorage_Description" xml:space="preserve">
         <value>Hvordan skal resultater lagres?</value>
     </data>
-    <data name="ListFields_GtcEtStorage_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtStorage_DisplayName" xml:space="preserve">
         <value>Lagring</value>
     </data>
-    <data name="ListFields_GtcEtRegulations_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtRegulations_Description" xml:space="preserve">
         <value>Hvilke lover og regelverk må prosjektet forholde seg til? Er data underlagt eksportregelverk?</value>
     </data>
-    <data name="ListFields_GtcEtRegulations_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtRegulations_DisplayName" xml:space="preserve">
         <value>Lover og regelverk</value>
     </data>
-    <data name="ListFields_GtcEtSharing_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtSharing_Description" xml:space="preserve">
         <value>Hvilke etiske utfordringer må man forholde seg til mtp på deling/ formidling av dataen?</value>
     </data>
-    <data name="ListFields_GtcEtSharing_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtSharing_DisplayName" xml:space="preserve">
         <value>Deling av resultater</value>
     </data>
-    <data name="ListFields_GtcEtApproval_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtApproval_Description" xml:space="preserve">
         <value>Hvilken komite må godkjenne?</value>
     </data>
-    <data name="ListFields_GtcEtApproval_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtApproval_DisplayName" xml:space="preserve">
         <value>Godkjenning</value>
     </data>
-    <data name="ListFields_GtcEtApproval_Choice_ResearchEthicsCommitte" xml:space="preserve">
+    <data name="SiteFields_GtcEtApproval_Choice_ResearchEthicsCommitte" xml:space="preserve">
         <value>Komité for forskningsetikk (KoFE)</value>
     </data>
-    <data name="ListFields_GtcEtApproval_Choice_RegionalEthicsCommitte" xml:space="preserve">
+    <data name="SiteFields_GtcEtApproval_Choice_RegionalEthicsCommitte" xml:space="preserve">
         <value>Regional Etisk Komité (REK)</value>
     </data>
-    <data name="ListFields_GtcEtApproval_Choice_NorwegianFoodSafetyAuthority" xml:space="preserve">
+    <data name="SiteFields_GtcEtApproval_Choice_NorwegianFoodSafetyAuthority" xml:space="preserve">
         <value>Mattilsynet</value>
     </data>
-    <data name="ListFields_GtcEtRisk_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtRisk_Description" xml:space="preserve">
         <value>Velg den risikoanalysen som er relevant for vurderingen (Henter data fra Usikkerhetsregisteret)</value>
     </data>
-    <data name="ListFields_GtcEtRisk_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtRisk_DisplayName" xml:space="preserve">
         <value>Risikovurdering</value>
     </data>
-    <data name="ListFields_GtcOrgBelonging_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgBelonging_Description" xml:space="preserve">
         <value>Hvilken organisasjon tilhører vedkommende?</value>
     </data>
-    <data name="ListFields_GtcOrgBelonging_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgBelonging_DisplayName" xml:space="preserve">
         <value>Tilhører</value>
     </data>
-    <data name="ListFields_GtcOrgAcronym_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgAcronym_Description" xml:space="preserve">
         <value>Hva er forkortelsen til organisasjonen?</value>
     </data>
-    <data name="ListFields_GtcOrgAcronym_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgAcronym_DisplayName" xml:space="preserve">
         <value>Org. Akronym</value>
     </data>
-    <data name="ListFields_GtcOrgShortDescription_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgShortDescription_Description" xml:space="preserve">
         <value>Gi en kort beskrivelse av organisasjonen.</value>
     </data>
-    <data name="ListFields_GtcOrgShortDescription_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgShortDescription_DisplayName" xml:space="preserve">
         <value>Kort beskrivelse av organisasjonen</value>
     </data>
-    <data name="ListFields_GtcOrgHomepage_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgHomepage_Description" xml:space="preserve">
         <value>Hjemme side til organisasjonen</value>
     </data>
-    <data name="ListFields_GtcOrgHomepage_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgHomepage_DisplayName" xml:space="preserve">
         <value>Hjemmeside</value>
     </data>
-    <data name="ListFields_GtcOrgRole_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgRole_Description" xml:space="preserve">
         <value>Hvilken rolle har personen i sin organisasjon</value>
     </data>
-    <data name="ListFields_GtcOrgRole_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgRole_DisplayName" xml:space="preserve">
         <value>Rolle i organisasjonen</value>
     </data>
-    <data name="ListFields_GtcOrgProjectRole_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgProjectRole_Description" xml:space="preserve">
         <value>Hvilken rolle har vedkommende i prosjektet?</value>
     </data>
-    <data name="ListFields_GtcOrgProjectRole_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgProjectRole_DisplayName" xml:space="preserve">
         <value>Rolle i prosjektet</value>
     </data>
-    <data name="ListFields_GtcOrgResponsibleFor_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgResponsibleFor_Description" xml:space="preserve">
         <value>Velg hvilke leveranser i prosjektet vedkommende har ansvar for</value>
     </data>
-    <data name="ListFields_GtcOrgResponsibleFor_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgResponsibleFor_DisplayName" xml:space="preserve">
         <value>Ansvarlig for</value>
     </data>
-    <data name="ListFields_GtcOrgMail_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgMail_Description" xml:space="preserve">
         <value>Legg til e-post til vedkommende</value>
     </data>
-    <data name="ListFields_GtcOrgMail_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgMail_DisplayName" xml:space="preserve">
         <value>E-post</value>
     </data>
-    <data name="ListFields_GtcOrgFromDate_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgFromDate_Description" xml:space="preserve">
         <value>Fra når er personen med i prosjektet?</value>
     </data>
-    <data name="ListFields_GtcOrgFromDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgFromDate_DisplayName" xml:space="preserve">
         <value>Fra</value>
     </data>
-    <data name="ListFields_GtcOrgToDate_Description" xml:space="preserve">
+    <data name="SiteFields_GtcOrgToDate_Description" xml:space="preserve">
         <value>Når er vedkommende ute av prosjektet?</value>
     </data>
-    <data name="ListFields_GtcOrgToDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcOrgToDate_DisplayName" xml:space="preserve">
         <value>Til</value>
     </data>
     <data name="Lists_DataSources_Category_PublishingAll" xml:space="preserve">
@@ -568,121 +568,121 @@
     <data name="Lists_Projects_Url" xml:space="preserve">
         <value>Lists/Prosjekter</value>
     </data>
-    <data name="ListFields_GtcEtCategory_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_DisplayName" xml:space="preserve">
         <value>Kategori</value>
     </data>
-    <data name="ListFields_GtcEtCategory_Description" xml:space="preserve">
+    <data name="SiteFields_GtcEtCategory_Description" xml:space="preserve">
         <value>Hvilken etisk kategori?</value>
     </data>
-    <data name="ListFields_GtcWBSDeliveryNumber_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDeliveryNumber_Description" xml:space="preserve">
         <value>Hvilken leveranse?</value>
     </data>
-    <data name="ListFields_GtcWBSDeliveryNumber_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDeliveryNumber_DisplayName" xml:space="preserve">
         <value>Leveranse: Leveranse nummer</value>
     </data>
-    <data name="ListFields_GtcWBSDeliveryTitle_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDeliveryTitle_Description" xml:space="preserve">
         <value>Hvilken leveranse?</value>
     </data>
-    <data name="ListFields_GtcWBSDeliveryTitle_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDeliveryTitle_DisplayName" xml:space="preserve">
         <value>Leveranse</value>
     </data>
-    <data name="ListFields_GtcWBSTodo_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSTodo_Description" xml:space="preserve">
         <value>Beskriv arbeidet som skal gjøres</value>
     </data>
-    <data name="ListFields_GtcWBSTodo_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSTodo_DisplayName" xml:space="preserve">
         <value>Hva skal gjøres?</value>
     </data>
-    <data name="ListFields_GtcWBSScope_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSScope_Description" xml:space="preserve">
         <value>Velg omfangstype</value>
     </data>
-    <data name="ListFields_GtcWBSScope_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSScope_DisplayName" xml:space="preserve">
         <value>Omfang</value>
     </data>
-    <data name="ListFields_GtcWBSScope_Choice_Hours" xml:space="preserve">
+    <data name="SiteFields_GtcWBSScope_Choice_Hours" xml:space="preserve">
         <value>Timer</value>
     </data>
-    <data name="ListFields_GtcWBSScope_Choice_PersonMonths" xml:space="preserve">
+    <data name="SiteFields_GtcWBSScope_Choice_PersonMonths" xml:space="preserve">
         <value>Person måneder</value>
     </data>
-    <data name="ListFields_GtcWBSScope_Choice_YearsOfWork" xml:space="preserve">
+    <data name="SiteFields_GtcWBSScope_Choice_YearsOfWork" xml:space="preserve">
         <value>Årsverk</value>
     </data>
-    <data name="ListFields_GtcWBSStartDate_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSStartDate_Description" xml:space="preserve">
         <value>Når skal dette gjøres?</value>
     </data>
-    <data name="ListFields_GtcWBSStartDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSStartDate_DisplayName" xml:space="preserve">
         <value>Start dato</value>
     </data>
-    <data name="ListFields_GtcWBSEndDate_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSEndDate_Description" xml:space="preserve">
         <value>Når skal dette være ferdigstilt?</value>
     </data>
-    <data name="ListFields_GtcWBSEndDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSEndDate_DisplayName" xml:space="preserve">
         <value>Slutt dato</value>
     </data>
-    <data name="ListFields_GtcWBSAmount_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAmount_Description" xml:space="preserve">
         <value>Velg antall timer/ Person months/ Årsverk</value>
     </data>
-    <data name="ListFields_GtcWBSAmount_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAmount_DisplayName" xml:space="preserve">
         <value>Antall</value>
     </data>
-    <data name="ListFields_GtcWBSExecute_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSExecute_Description" xml:space="preserve">
         <value>Hvem i prosjektorganisasjonen skal gjøre det? (Hentes i fra Prosjektorganisasjonen)</value>
     </data>
-    <data name="ListFields_GtcWBSExecute_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSExecute_DisplayName" xml:space="preserve">
         <value>Hvem skal gjøre det?</value>
     </data>
-    <data name="ListFields_GtcWBSExecuteRole_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSExecuteRole_Description" xml:space="preserve">
         <value>Hvem i prosjektorganisasjonen skal gjøre det? (Hentes i fra Prosjektorganisasjonen)</value>
     </data>
-    <data name="ListFields_GtcWBSExecuteRole_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSExecuteRole_DisplayName" xml:space="preserve">
         <value>Hvem skal gjøre det?: Rolle i prosjektet</value>
     </data>
-    <data name="ListFields_GtcWBSExecuteRole0_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSExecuteRole0_Description" xml:space="preserve">
         <value>Hvem i prosjektorganisasjonen skal gjøre det? (Hentes i fra Prosjektorganisasjonen)</value>
     </data>
-    <data name="ListFields_GtcWBSExecuteRole0_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSExecuteRole0_DisplayName" xml:space="preserve">
         <value>Hvem skal gjøre det?: Tilhører</value>
     </data>
-    <data name="ListFields_GtcWBSDependent_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDependent_Description" xml:space="preserve">
         <value>Velg andre leveranser som man er avhengige av er ferdig før man kan begynne</value>
     </data>
-    <data name="ListFields_GtcWBSDependent_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDependent_DisplayName" xml:space="preserve">
         <value>Avhengig av</value>
     </data>
-    <data name="ListFields_GtcWBSDependecyDelivery_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDependecyDelivery_Description" xml:space="preserve">
         <value>Velg andre leveranser som man er avhengige av er ferdig før man kan begynne</value>
     </data>
-    <data name="ListFields_GtcWBSDependecyDelivery_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDependecyDelivery_DisplayName" xml:space="preserve">
         <value>Avhengig av: Leveranse nummer</value>
     </data>
-    <data name="ListFields_GtcWBSDependentDescription_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDependentDescription_Description" xml:space="preserve">
         <value>Beskriv hvorfor man er avhengige av disse leveransene</value>
     </data>
-    <data name="ListFields_GtcWBSDependentDescription_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSDependentDescription_DisplayName" xml:space="preserve">
         <value>Beskrivelse av avhengigheter</value>
     </data>
-    <data name="ListFields_GtcWBSOtherDependencies_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSOtherDependencies_Description" xml:space="preserve">
         <value>Hvilke andre avhengigheter finnes det i tid, ressurser og kompetanse som leveransen trenger?</value>
     </data>
-    <data name="ListFields_GtcWBSOtherDependencies_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSOtherDependencies_DisplayName" xml:space="preserve">
         <value>Andre avhengigheter</value>
     </data>
-    <data name="ListFields_GtcWBSAffects_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAffects_Description" xml:space="preserve">
         <value>Hvilke andre leveranser påvirker denne leveransen</value>
     </data>
-    <data name="ListFields_GtcWBSAffects_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAffects_DisplayName" xml:space="preserve">
         <value>Hvilke andre påvirkninger har denne leveransen?</value>
     </data>
-    <data name="ListFields_GtcWBSAffectsDelivery_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAffectsDelivery_Description" xml:space="preserve">
         <value>Hvilke andre leveranser påvirker denne leveransen</value>
     </data>
-    <data name="ListFields_GtcWBSAffectsDelivery_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAffectsDelivery_DisplayName" xml:space="preserve">
         <value>Hvilke andre påvirkninger har denne leveransen?: Leveranse nummer</value>
     </data>
-    <data name="ListFields_GtcWBSAffectsDescription_Description" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAffectsDescription_Description" xml:space="preserve">
         <value>Beskriv hvordan denne leveransen påvirker andre prosjektleveranser.</value>
     </data>
-    <data name="ListFields_GtcWBSAffectsDescription_DisplayName" xml:space="preserve">
+    <data name="SiteFields_GtcWBSAffectsDescription_DisplayName" xml:space="preserve">
         <value>Beskriv påvirkning</value>
     </data>
     <data name="Choice_GtProjectLifecycleStatus_Active" xml:space="preserve">
@@ -696,42 +696,6 @@
     </data>
     <data name="Choice_GtProjectLifecycleStatus_Terminated" xml:space="preserve">
         <value>Terminert</value>
-    </data>
-    <data name="ListFields_GtcPubResultId_Description" xml:space="preserve">
-        <value>Hva er CRISTIN resultat-ID´en for publikasjonen?</value>
-    </data>
-    <data name="ListFields_GtcPubResultId_DisplayName" xml:space="preserve">
-        <value>CRISTIN resultat-ID</value>
-    </data>
-    <data name="ListFields_GtcPubChannel_Description" xml:space="preserve">
-        <value>Hvor er publikasjonen publisert?</value>
-    </data>
-    <data name="ListFields_GtcPubChannel_DisplayName" xml:space="preserve">
-        <value>Publiseringskanal</value>
-    </data>
-    <data name="ListFields_GtcPubRole_Description" xml:space="preserve">
-        <value>Er den ansatte første, siste eller medforfatter? Angi navn og rolle.</value>
-    </data>
-    <data name="ListFields_GtcPubRole_DisplayName" xml:space="preserve">
-        <value>Rolle i publikasjonen</value>
-    </data>
-    <data name="ListFields_GtcPubIsPublished_Description" xml:space="preserve">
-        <value>Er publikasjonen publisert?</value>
-    </data>
-    <data name="ListFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
-        <value>Er publikasjonen publisert?</value>
-    </data>
-    <data name="ListFields_GtcPubDate_Description" xml:space="preserve">
-        <value>Når er publikasjonen planlagt/ publisert</value>
-    </data>
-    <data name="ListFields_GtcPubDate_DisplayName" xml:space="preserve">
-        <value>Publiseringsdato</value>
-    </data>
-    <data name="ListFields_GtcPubLink_Description" xml:space="preserve">
-        <value>Finn publikasjonen på CRISTIN/NVA, og kopier hele lenken inn her. Få med HTTPS://</value>
-    </data>
-    <data name="ListFields_GtcPubLink_DisplayName" xml:space="preserve">
-        <value>URL lenke til CRISTIN/ NVA</value>
     </data>
     <data name="ContentTypes_ProjectDelivery_Name" xml:space="preserve">
         <value>Prosjektleveranse</value>
@@ -757,22 +721,22 @@
     <data name="Lists_ProjectDeliveries_Title" xml:space="preserve">
         <value>Prosjektleveranser</value>
     </data>
-    <data name="ListFields_DeliveryStakeholders_DisplayName" xml:space="preserve">
+    <data name="SiteFields_DeliveryStakeholders_DisplayName" xml:space="preserve">
         <value>Interessent(er)</value>
     </data>
     <data name="Lists_Stakeholders_Title" xml:space="preserve">
         <value>Interessentregister</value>
     </data>
-    <data name="ListFields_DeliveryStakeholders_Description" xml:space="preserve">
+    <data name="SiteFields_DeliveryStakeholders_Description" xml:space="preserve">
         <value>Oppgi hvilken interessent(er) leveransen påvirker</value>
     </data>
     <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
         <value>Etiske vurderinger</value>
     </data>
-    <data name="Fields_Category_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Category_DisplayName" xml:space="preserve">
         <value>Kategori</value>
     </data>
-    <data name="Fields_Category_Description" xml:space="preserve">
+    <data name="SiteFields_Category_Description" xml:space="preserve">
         <value>Hvilken etisk kategori?</value>
     </data>
     <data name="Choices_Ethical_Humans" xml:space="preserve">
@@ -811,130 +775,130 @@
     <data name="Choices_Ethical_Approval_Mattilsynet" xml:space="preserve">
         <value>Mattilsynet</value>
     </data>
-    <data name="Fields_DescribeChallenge_DisplayName" xml:space="preserve">
+    <data name="SiteFields_DescribeChallenge_DisplayName" xml:space="preserve">
         <value>Beskriv utfordringen</value>
     </data>
-    <data name="Fields_DescribeChallenge_Description" xml:space="preserve">
+    <data name="SiteFields_DescribeChallenge_Description" xml:space="preserve">
         <value>Beskriv de etiske utfordringene</value>
     </data>
-    <data name="Fields_DescribeMeasures_DisplayName" xml:space="preserve">
+    <data name="SiteFields_DescribeMeasures_DisplayName" xml:space="preserve">
         <value>Beskriv tiltak</value>
     </data>
-    <data name="Fields_DescribeMeasures_Description" xml:space="preserve">
+    <data name="SiteFields_DescribeMeasures_Description" xml:space="preserve">
         <value>Beskriv tiltakene prosjektet implementer for å redusere eller begrense de etiske utfordringene</value>
     </data>
-    <data name="Fields_HarmPotential_DisplayName" xml:space="preserve">
+    <data name="SiteFields_HarmPotential_DisplayName" xml:space="preserve">
         <value>Skadepotensial</value>
     </data>
-    <data name="Fields_HarmPotential_Description" xml:space="preserve">
+    <data name="SiteFields_HarmPotential_Description" xml:space="preserve">
         <value>Hva er skadepotensiale?</value>
     </data>
-    <data name="Fields_TestSubjects_DisplayName" xml:space="preserve">
+    <data name="SiteFields_TestSubjects_DisplayName" xml:space="preserve">
         <value>Test subjekter</value>
     </data>
-    <data name="Fields_TestSubjects_Description" xml:space="preserve">
+    <data name="SiteFields_TestSubjects_Description" xml:space="preserve">
         <value>Hvem/ hva er testsubjektene?</value>
     </data>
-    <data name="Fields_Storage_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Storage_DisplayName" xml:space="preserve">
         <value>Lagring</value>
     </data>
-    <data name="Fields_Storage_Description" xml:space="preserve">
+    <data name="SiteFields_Storage_Description" xml:space="preserve">
         <value>Hvordan skal resultater lagres?</value>
     </data>
-    <data name="Fields_Regulations_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Regulations_DisplayName" xml:space="preserve">
         <value>Lover og regelverk</value>
     </data>
-    <data name="Fields_Regulations_Description" xml:space="preserve">
+    <data name="SiteFields_Regulations_Description" xml:space="preserve">
         <value>Hvilke lover og regelverk må prosjektet forholde seg til? Er data underlagt eksportregelverk?</value>
     </data>
-    <data name="Fields_SharingResults_DisplayName" xml:space="preserve">
+    <data name="SiteFields_SharingResults_DisplayName" xml:space="preserve">
         <value>Deling av resultater</value>
     </data>
-    <data name="Fields_SharingResults_Description" xml:space="preserve">
+    <data name="SiteFields_SharingResults_Description" xml:space="preserve">
         <value>Hvilke etiske utfordringer må man forholde seg til mtp på deling/ formidling av dataen?</value>
     </data>
-    <data name="Fields_Approval_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Approval_DisplayName" xml:space="preserve">
         <value>Godkjenning</value>
     </data>
-    <data name="Fields_Approval_Description" xml:space="preserve">
+    <data name="SiteFields_Approval_Description" xml:space="preserve">
         <value>Hvilken komite må godkjenne?</value>
     </data>
-    <data name="Fields_RiskAssessment_DisplayName" xml:space="preserve">
+    <data name="SiteFields_RiskAssessment_DisplayName" xml:space="preserve">
         <value>Risikovurdering</value>
     </data>
-    <data name="Fields_RiskAssessment_Description" xml:space="preserve">
+    <data name="SiteFields_RiskAssessment_Description" xml:space="preserve">
         <value>Velg den risikoanalysen som er relevant for vurderingen (Henter data fra Usikkerhetsregisteret)</value>
     </data>
     <data name="Lists_ProjectOrganization_Title" xml:space="preserve">
         <value>Prosjektorganisasjon</value>
     </data>
-    <data name="Fields_Affiliation_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Affiliation_DisplayName" xml:space="preserve">
         <value>Tilhører</value>
     </data>
-    <data name="Fields_Affiliation_Description" xml:space="preserve">
+    <data name="SiteFields_Affiliation_Description" xml:space="preserve">
         <value>Hvilken organisasjon tilhører vedkommende?</value>
     </data>
-    <data name="Fields_OrgAcronym_DisplayName" xml:space="preserve">
+    <data name="SiteFields_OrgAcronym_DisplayName" xml:space="preserve">
         <value>Org. Akronym</value>
     </data>
-    <data name="Fields_OrgAcronym_Description" xml:space="preserve">
+    <data name="SiteFields_OrgAcronym_Description" xml:space="preserve">
         <value>Hva er forkortelsen til organisasjonen?</value>
     </data>
-    <data name="Fields_OrgDescription_DisplayName" xml:space="preserve">
+    <data name="SiteFields_OrgDescription_DisplayName" xml:space="preserve">
         <value>Kort beskrivelse av organisasjonen</value>
     </data>
-    <data name="Fields_OrgDescription_Description" xml:space="preserve">
+    <data name="SiteFields_OrgDescription_Description" xml:space="preserve">
         <value>Gi en kort beskrivelse av organisasjonen.</value>
     </data>
-    <data name="Fields_Homepage_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Homepage_DisplayName" xml:space="preserve">
         <value>Hjemmeside</value>
     </data>
-    <data name="Fields_Homepage_Description" xml:space="preserve">
+    <data name="SiteFields_Homepage_Description" xml:space="preserve">
         <value>Hjemme side til organisasjonen</value>
     </data>
-    <data name="Fields_OrgRole_DisplayName" xml:space="preserve">
+    <data name="SiteFields_OrgRole_DisplayName" xml:space="preserve">
         <value>Rolle i organisasjonen</value>
     </data>
-    <data name="Fields_OrgRole_Description" xml:space="preserve">
+    <data name="SiteFields_OrgRole_Description" xml:space="preserve">
         <value>Hvilken rolle har personen i sin organisasjon</value>
     </data>
-    <data name="Fields_ResponsibleFor_DisplayName" xml:space="preserve">
+    <data name="SiteFields_ResponsibleFor_DisplayName" xml:space="preserve">
         <value>Ansvarlig for</value>
     </data>
-    <data name="Fields_ResponsibleFor_Description" xml:space="preserve">
+    <data name="SiteFields_ResponsibleFor_Description" xml:space="preserve">
         <value>Velg hvilke leveranser i prosjektet vedkommende har ansvar for</value>
     </data>
-    <data name="Fields_Email_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Email_DisplayName" xml:space="preserve">
         <value>E-post</value>
     </data>
-    <data name="Fields_Email_Description" xml:space="preserve">
+    <data name="SiteFields_Email_Description" xml:space="preserve">
         <value>Legg til e-post til vedkommende</value>
     </data>
-    <data name="Fields_FromDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_FromDate_DisplayName" xml:space="preserve">
         <value>Fra</value>
     </data>
-    <data name="Fields_FromDate_Description" xml:space="preserve">
+    <data name="SiteFields_FromDate_Description" xml:space="preserve">
         <value>Fra når er personen med i prosjektet?</value>
     </data>
-    <data name="Fields_ToDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_ToDate_DisplayName" xml:space="preserve">
         <value>Til</value>
     </data>
-    <data name="Fields_ToDate_Description" xml:space="preserve">
+    <data name="SiteFields_ToDate_Description" xml:space="preserve">
         <value>Når er vekommende ute av prosjektet?</value>
     </data>
     <data name="Lists_WBS_Title" xml:space="preserve">
         <value>Work Breakdown Structure</value>
     </data>
-    <data name="Fields_Todo_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Todo_DisplayName" xml:space="preserve">
         <value>Hva skal gjøres?</value>
     </data>
-    <data name="Fields_Todo_Description" xml:space="preserve">
+    <data name="SiteFields_Todo_Description" xml:space="preserve">
         <value>Beskriv arbeidet som skal gjøres</value>
     </data>
-    <data name="Fields_Scope_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Scope_DisplayName" xml:space="preserve">
         <value>Omfang</value>
     </data>
-    <data name="Fields_Scope_Description" xml:space="preserve">
+    <data name="SiteFields_Scope_Description" xml:space="preserve">
         <value>Velg omgangstype</value>
     </data>
     <data name="Choices_Scope_Hours" xml:space="preserve">
@@ -946,58 +910,58 @@
     <data name="Choices_Scope_YearWorks" xml:space="preserve">
         <value>Årsverk</value>
     </data>
-    <data name="Fields_StartDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_StartDate_DisplayName" xml:space="preserve">
         <value>Start dato</value>
     </data>
-    <data name="Fields_StartDate_Description" xml:space="preserve">
+    <data name="SiteFields_StartDate_Description" xml:space="preserve">
         <value>Når skal dette gjøres?</value>
     </data>
-    <data name="Fields_EndDate_DisplayName" xml:space="preserve">
+    <data name="SiteFields_EndDate_DisplayName" xml:space="preserve">
         <value>Slutt dato</value>
     </data>
-    <data name="Fields_EndDate_Description" xml:space="preserve">
+    <data name="SiteFields_EndDate_Description" xml:space="preserve">
         <value>Når skal dette være ferdigstilt?</value>
     </data>
-    <data name="Fields_Amount_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Amount_DisplayName" xml:space="preserve">
         <value>Antall</value>
     </data>
-    <data name="Fields_Amount_Description" xml:space="preserve">
+    <data name="SiteFields_Amount_Description" xml:space="preserve">
         <value>Velg antall timer/ Person months/ Årsverk</value>
     </data>
-    <data name="Fields_WhoExecute_DisplayName" xml:space="preserve">
+    <data name="SiteFields_WhoExecute_DisplayName" xml:space="preserve">
         <value>Hvem skal gjøre det?</value>
     </data>
-    <data name="Fields_WhoExecute_Description" xml:space="preserve">
+    <data name="SiteFields_WhoExecute_Description" xml:space="preserve">
         <value>Hvem i prosjektorganisasjonen skal gjøre det? (Hentes ifra Prosjektorganisasjon)</value>
     </data>
-    <data name="Fields_DependentOn_DisplayName" xml:space="preserve">
+    <data name="SiteFields_DependentOn_DisplayName" xml:space="preserve">
         <value>Avhengig av</value>
     </data>
-    <data name="Fields_DependentOn_Description" xml:space="preserve">
+    <data name="SiteFields_DependentOn_Description" xml:space="preserve">
         <value>Velg andre leveranser som man er avhengige av er ferdig før man kan begynne</value>
     </data>
-    <data name="Fields_DepDescription_DisplayName" xml:space="preserve">
+    <data name="SiteFields_DepDescription_DisplayName" xml:space="preserve">
         <value>Beskrivelse av avhengigheter</value>
     </data>
-    <data name="Fields_DepDescription_Description" xml:space="preserve">
+    <data name="SiteFields_DepDescription_Description" xml:space="preserve">
         <value>Beskriv hvorfor man er avhengige av disse leveransene</value>
     </data>
-    <data name="Fields_OtherDep_DisplayName" xml:space="preserve">
+    <data name="SiteFields_OtherDep_DisplayName" xml:space="preserve">
         <value>Andre avhengigheter</value>
     </data>
-    <data name="Fields_OtherDep_Description" xml:space="preserve">
+    <data name="SiteFields_OtherDep_Description" xml:space="preserve">
         <value>Hvilke andre avhengigheter finnes det i tid, ressurser og kompetanse som leveransen trenger?</value>
     </data>
-    <data name="Fields_Affects_DisplayName" xml:space="preserve">
+    <data name="SiteFields_Affects_DisplayName" xml:space="preserve">
         <value>Hvilke andre påvirkninger har denne leveransen?</value>
     </data>
-    <data name="Fields_Affects_Description" xml:space="preserve">
+    <data name="SiteFields_Affects_Description" xml:space="preserve">
         <value>Hvilke andre leveranser påvirker denne leveransen</value>
     </data>
-    <data name="Fields_AffectsDesc_DisplayName" xml:space="preserve">
+    <data name="SiteFields_AffectsDesc_DisplayName" xml:space="preserve">
         <value>Beskriv påvirkning</value>
     </data>
-    <data name="Fields_AffectsDesc_Description" xml:space="preserve">
+    <data name="SiteFields_AffectsDesc_Description" xml:space="preserve">
         <value>Beskriv hvordan denne leveransen påvirker andre prosjektleveranser.</value>
     </data>
     <data name="Lists_Publishing_Title" xml:space="preserve">
