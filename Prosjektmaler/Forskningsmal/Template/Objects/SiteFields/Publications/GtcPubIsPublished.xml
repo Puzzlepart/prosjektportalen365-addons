@@ -1,3 +1,3 @@
-<Field Description="Er publikasjonen publisert?" DisplayName="Er publikasjonen publisert?" Name="GtcPubIsPublished" Type="Boolean" ID="{9d2d9ec7-3218-4d16-be3a-de6d8525affa}" Group="Kolonner for Prosjektportalen (Prosjekt)" StaticName="GtcPubIsPublished">
+<Field DisplayName="{resource:SiteFields_GtcPubIsPublished_DisplayName}" Description="{resource:SiteFields_GtcPubIsPublished_Description}" Name="GtcPubIsPublished" Type="Boolean" ID="{9d2d9ec7-3218-4d16-be3a-de6d8525affa}" Group="{resource:SiteFields_Project_Group}" StaticName="GtcPubIsPublished">
   <Default>0</Default>
 </Field>

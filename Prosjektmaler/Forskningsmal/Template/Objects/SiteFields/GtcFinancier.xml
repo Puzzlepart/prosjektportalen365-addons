@@ -1,4 +1,4 @@
-<Field DisplayName="Finansiør" Group="Egendefinerte kolonner for Prosjektportalen" ID="{fac22313-ea4c-4459-97db-8c9b5bced16f}" List="{{listid:TaxonomyHiddenList}}" Name="GtcFinancier" ShowField="Term1044" StaticName="GtcFinancier" Type="TaxonomyFieldType" WebId="{siteid}">
+<Field DisplayName="{resource:SiteFields_GtcFinancier_DisplayName}" Description="{resource:SiteFields_GtcFinancier_Description}" Group="{resource:SiteFields_CustomFields_Group}" ID="{fac22313-ea4c-4459-97db-8c9b5bced16f}" List="{{listid:TaxonomyHiddenList}}" Name="GtcFinancier" ShowField="Term1044" StaticName="GtcFinancier" Type="TaxonomyFieldType" WebId="{siteid}">
   <Customization>
     <ArrayOfProperty>
       <Property>

@@ -27,12 +27,19 @@ $RELEASE_PATH = $RELEASE_FOLDER.FullName
 
 $RELEASE_PATH_TEMPLATES = (New-Item -Path "$RELEASE_PATH/Templates" -ItemType Directory -Force).FullName
 $RELEASE_PATH_SITESCRIPTS = (New-Item -Path "$RELEASE_PATH/SiteScripts" -ItemType Directory -Force).FullName
+$RELEASE_PATH_SCRIPTS = (New-Item -Path "$RELEASE_PATH/Scripts" -ItemType Directory -Force).FullName
+
 
 Set-Location $PSScriptRoot
 Convert-PnPFolderToSiteTemplate -Out "$RELEASE_PATH_TEMPLATES/Forskningsmal.pnp" -Folder $PNP_TEMPLATES_BASEPATH -Force
 
 Copy-Item -Path "$PSScriptRoot/SiteScripts/*" -Destination $RELEASE_PATH_SITESCRIPTS -Force
+Copy-Item -Path "$PSScriptRoot/Scripts/*" -Destination $RELEASE_PATH_SCRIPTS -Force
 Copy-Item -Path "$PSScriptRoot/Install.ps1" -Destination $RELEASE_PATH -Force
+$resourceFiles = Get-ChildItem -Path "$PSScriptRoot/Template" -Filter "*.resx" -File
+foreach ($file in $resourceFiles) {
+    Copy-Item -Path $file.FullName -Destination $RELEASE_PATH -Force
+}
 
 Remove-Item -Path "$($RELEASE_PATH).zip" -Force -ErrorAction SilentlyContinue
 

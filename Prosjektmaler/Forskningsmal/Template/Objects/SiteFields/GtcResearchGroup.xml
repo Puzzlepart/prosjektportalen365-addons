@@ -1,4 +1,4 @@
-<Field DisplayName="Forskergruppe" Group="Egendefinerte kolonner for Prosjektportalen" ID="{e91cb472-14f3-4c2f-a3d2-9b6dcd94278e}" List="{{listid:TaxonomyHiddenList}}" Name="GtcResearchGroup" ShowField="Term1044" StaticName="GtcResearchGroup" Type="TaxonomyFieldType" WebId="{siteid}">
+<Field DisplayName="{resource:SiteFields_GtcResearchGroup_DisplayName}" Description="{resource:SiteFields_GtcResearchGroup_Description}" Group="{resource:SiteFields_CustomFields_Group}" ID="{e91cb472-14f3-4c2f-a3d2-9b6dcd94278e}" List="{{listid:TaxonomyHiddenList}}" Name="GtcResearchGroup" ShowField="Term1044" StaticName="GtcResearchGroup" Type="TaxonomyFieldType" WebId="{siteid}">
   <Customization>
     <ArrayOfProperty>
       <Property>

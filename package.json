@@ -4,7 +4,15 @@
   "description": "Addons for Prosjektportalen og Prosjektportalen 365",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-research": "npm run generate-research-templates",
+    "generate-research-resx-json": "node ./.tasks/generate-research-resx-json.js",
+    "generate-research-templates": "npm run generate-research-resx-json && node ./.tasks/generate-research-templates.js"
+  },
+  "dependencies": {
+    "@ptkdev/json-token-replace": "^1.2.2",
+    "resx-json-typescript-converter": "^1.0.1",
+    "glob": "~11.0.2"
   },
   "repository": {
     "type": "git",
