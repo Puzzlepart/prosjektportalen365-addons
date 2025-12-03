@@ -63,32 +63,35 @@ function Find-TokensInPptx {
     param([string]$pptxPath)
     
     $tempFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($pptxPath, $tempFolder)
-    
-    $foundTokens = @()
-    $xmlFiles = Get-ChildItem -Path $tempFolder -Recurse -Include *.xml
-    
-    foreach ($file in $xmlFiles) {
-        $content = Get-Content -LiteralPath $file.FullName -Raw
+    try {
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($pptxPath, $tempFolder)
         
-        # Extract all <a:t> text elements and concatenate them to find tokens
-        $textElements = [regex]::Matches($content, '<a:t>([^<]*)</a:t>')
-        $concatenatedText = ($textElements | ForEach-Object { $_.Groups[1].Value }) -join ''
+        $foundTokens = @()
+        $xmlFiles = Get-ChildItem -Path $tempFolder -Recurse -Include *.xml
         
-        # Find all tokens in the concatenated text
-        $matches = [regex]::Matches($concatenatedText, '\{\{([^}]+)\}\}')
-        
-        foreach ($match in $matches) {
-            $fullToken = $match.Value
+        foreach ($file in $xmlFiles) {
+            $content = Get-Content -LiteralPath $file.FullName -Raw
             
-            if ($foundTokens -notcontains $fullToken) {
-                $foundTokens += $fullToken
+            # Extract all <a:t> text elements and concatenate them to find tokens
+            $textElements = [regex]::Matches($content, '<a:t>([^<]*)</a:t>')
+            $concatenatedText = ($textElements | ForEach-Object { $_.Groups[1].Value }) -join ''
+            
+            # Find all tokens in the concatenated text
+            $matches = [regex]::Matches($concatenatedText, '\{\{([^}]+)\}\}')
+            
+            foreach ($match in $matches) {
+                $fullToken = $match.Value
+                
+                if ($foundTokens -notcontains $fullToken) {
+                    $foundTokens += $fullToken
+                }
             }
         }
     }
-    
-    # Clean up temp folder
-    Remove-Item $tempFolder -Recurse -Force
+    finally {
+        # Clean up temp folder
+        Remove-Item $tempFolder -Recurse -Force
+    }
     
     return $foundTokens
 }
