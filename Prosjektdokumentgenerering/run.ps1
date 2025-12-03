@@ -123,7 +123,23 @@ function Replace-TokensInPptx {
             # Special handling for table data - only if there are multiple fields (tabs) AND multiple rows
             # Single field tokens should be treated as plain text
             if ($value -match "`t" -and $value -match "`n") {
-                
+                # Validate that all rows have the same number of columns (tab-separated values)
+                $rows = $value -split "`n"
+                $columnCounts = @()
+                foreach ($row in $rows) {
+                    # Remove any trailing carriage return for Windows line endings
+                    $cleanRow = $row.TrimEnd("`r")
+                    if ($cleanRow -eq "") { continue }
+                    $columns = $cleanRow -split "`t"
+                    $columnCounts += @($columns.Count)
+                }
+                $uniqueColumnCounts = $columnCounts | Select-Object -Unique
+                if ($uniqueColumnCounts.Count -ne 1) {
+                    Write-Warning "Token '$key' value does not have consistent column counts per row. Treating as plain text."
+                    # Fallback to plain text replacement
+                    $content = $content -replace [regex]::Escape($key), [regex]::Escape($value)
+                    continue
+                }
                 # Find the table row containing this token by searching for <a:tr> containing the concatenated text
                 # Use a simpler pattern that looks for any part of the token text
                 $rowPattern = '(?s)<a:tr[^>]*>.*?</a:tr>'
