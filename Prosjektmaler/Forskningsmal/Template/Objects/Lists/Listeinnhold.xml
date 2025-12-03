@@ -3,7 +3,7 @@
     <pnp:DataRow>
       <pnp:DataValue FieldName="Title">{resource:Lists_ListContent_PhaseCheckpoints_Title}</pnp:DataValue>
       <pnp:DataValue FieldName="GtDescription">{resource:Lists_ListContent_PhaseCheckpoints_Description}</pnp:DataValue>
-      <pnp:DataValue FieldName="GtLccSourceList">{resource:Lists_PhaseChecklist_Title}</pnp:DataValue>
+      <pnp:DataValue FieldName="GtLccSourceList">{resource:Lists_PhaseChecklistResearch_Title}</pnp:DataValue>
       <pnp:DataValue FieldName="GtLccDestinationList">{resource:Lists_PhaseChecklist_Title}</pnp:DataValue>
       <pnp:DataValue FieldName="GtLccFields">GtSortOrder,Title,GtProjectPhase,GtcPhaseReference</pnp:DataValue>
       <pnp:DataValue FieldName="GtLccDefault">0</pnp:DataValue>
