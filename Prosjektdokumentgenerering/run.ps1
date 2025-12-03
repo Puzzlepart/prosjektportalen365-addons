@@ -5,17 +5,50 @@ param(
     [string]$requestedBy = "System"
 )
 
+# Helper function to connect to SharePoint with managed identity or ClientId/Secret
+# This function detects the execution context:
+# - In Azure Automation ($PSPrivateMetadata exists): Uses managed identity authentication
+# - Outside Azure Automation: Uses ClientId/Secret from Automation variables (requires Azure Automation context)
+function Connect-SharePoint {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Url
+    )
+    
+    $pnpParams = @{ 
+        Url = $Url
+    }
+    
+    if ($null -ne $PSPrivateMetadata) {
+        # Azure Automation runbook context - use managed identity
+        Write-Output "Using managed identity authentication for $Url"
+        $pnpParams.Add("ManagedIdentity", $true)
+    }
+    else {
+        # Fallback to ClientId/Secret from Automation variables
+        # Note: This requires running in an Azure Automation context
+        try {
+            $clientId = Get-AutomationVariable -Name "ClientId"
+            $clientSecret = Get-AutomationVariable -Name "ClientSecret"
+            Write-Output "Using ClientId/Secret authentication for $Url"
+            $pnpParams.Add("ClientId", $clientId)
+            $pnpParams.Add("ClientSecret", $clientSecret)
+        }
+        catch {
+            Write-Error "Failed to retrieve authentication variables. This script must run in Azure Automation context."
+            throw
+        }
+    }
 
-# Authenticate as App (App registration with ClientId/Secret)
-$clientId = Get-AutomationVariable -Name "ClientId"
-$clientSecret = Get-AutomationVariable -Name "ClientSecret"
+    Connect-PnPOnline @pnpParams
+}
 
-Connect-PnPOnline -Url $projectUrl -ClientId $clientId -ClientSecret $clientSecret
+# Connect to project site
+Connect-SharePoint -Url $projectUrl
 Write-Output "Koblet til $projectUrl"
 
-
 # Connect to Hub site to download template
-Connect-PnPOnline -Url $hubSiteUrl -ClientId $clientId -ClientSecret $clientSecret
+Connect-SharePoint -Url $hubSiteUrl
 
 $tempDir = [System.IO.Path]::GetTempPath()
 $fileName = Split-Path $templatePath -Leaf
@@ -209,7 +242,7 @@ function Replace-TokensInPptx {
 function Get-TokenMap {
     param($projectUrl, $tokens)
 
-    Connect-PnPOnline -Url $projectUrl -ClientId $clientId -ClientSecret $clientSecret
+    Connect-SharePoint -Url $projectUrl
     $map = @{}
 
     foreach ($token in $tokens) {
@@ -274,7 +307,7 @@ $tokenMap = Get-TokenMap -projectUrl $projectUrl -tokens $tokensFound
 $newPptx = Replace-TokensInPptx -pptxPath $localPath -tokenMap $tokenMap
 
 # Upload the generated PPTX back to the project's document library
-Connect-PnPOnline -Url $projectUrl -ClientId $clientId -ClientSecret $clientSecret
+Connect-SharePoint -Url $projectUrl
 
 $targetFolder = "Delte dokumenter/Styringsdokumenter"
 $fileName = ("{0}_{1:yy.MM.dd}.pptx" -f (Split-Path $templatePath -LeafBase), (Get-Date))
