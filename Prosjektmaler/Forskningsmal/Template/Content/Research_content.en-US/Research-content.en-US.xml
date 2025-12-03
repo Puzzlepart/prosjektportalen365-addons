@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2022/09/ProvisioningSchema">
+    <pnp:Preferences></pnp:Preferences>
+    <pnp:Templates ID="CONTAINER-TEMPLATE-PP-RESEARCH-CONTENT-EN-US">
+        <pnp:ProvisioningTemplate ID="TEMPLATE-PP-RESEARCH-EN-US" Scope="RootSite">
+            <pnp:Lists>
+                <pnp:ListInstance Title="Phase Checklist Research" Description="Standard phase checkpoints for research projects" DocumentTemplate="" TemplateType="100" Url="Lists/PhaseChecklistResearch" EnableVersioning="true" DraftVersionVisibility="0" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false">
+                    <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Identify research needs</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">100</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Literature review</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">150</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/systematisk-litteratursok/,Systematic literature search at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Hypothesis formulation</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">200</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Stakeholder analysis</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">250</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Identify calls or funding sources</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">300</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/forskningsmidler-og-prosjekter/,Research funding at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">DECISION POINT 1: Submit One-Pager for approval</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">350</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Research design</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">400</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Benefit realization analysis (Impact and sustainability)</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">450</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Ethical considerations</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">500</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Resource planning</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">550</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Uncertainty analysis</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">600</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Cultural study of project partners</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">650</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Screening of partners</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">700</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Develop letters of intent with partners</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">750</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">DECISION POINT 2: Submission of project description to Dean</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Concept phase|99e85650-33de-4af4-b8db-edffbc8a310b</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">800</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Detailed project plan</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">900</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Data management plan</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">950</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/forskningsdata/datahandteringsplan/,Data management at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Privacy / Data Protection</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1000</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/personvern-og-forskningsetikk/,Privacy in Research at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Identify and establish work packages and project deliverables, conduct WBS</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1050</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Ethical considerations</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1100</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/personvern-og-forskningsetikk/,Ethics in Research at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Budgeting</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1150</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/innafor/arbeidsstotte/okonomi-og-innkjop/,The Finance Department at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Team organization</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1200</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Communication plan</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1250</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Stakeholder analysis</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1300</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Application development</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1350</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">DECISION POINT 3: Submission of application</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1400</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Continue planning after application submission</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1450</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Plan startup phase</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1500</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">DECISION POINT 4: Management anchoring - Project manager's mandate and project plan, signing of GRANT/Award contract</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1550</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Data collection</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1600</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Quality control</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1650</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Ongoing evaluation</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1700</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Documentation</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1750</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Data analysis</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1800</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">DECISION POINT 5: Project closure</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Closing phase|30e03c52-8c3e-4cfe-9b18-ca71593ce130</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1850</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Reporting</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Closing phase|30e03c52-8c3e-4cfe-9b18-ca71593ce130</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1900</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Dissemination</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Realization phase|b7ba84f0-70b9-45c4-8c50-8f73bf15bbec</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1950</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Evaluation</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Realization phase|b7ba84f0-70b9-45c4-8c50-8f73bf15bbec</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">2000</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Implementation</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Realization phase|b7ba84f0-70b9-45c4-8c50-8f73bf15bbec</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">2050</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Follow-up</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Realization phase|b7ba84f0-70b9-45c4-8c50-8f73bf15bbec</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">2100</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Long-term monitoring</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Realization phase|b7ba84f0-70b9-45c4-8c50-8f73bf15bbec</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">2200</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Kick-off</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1560</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Conduct startup meeting for project group (Project manager, work package leaders, any advisors)</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Implementation phase|99d7765a-c786-4792-a1a1-866ef0f982b9</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1570</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Strategic assessment</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Idea phase|6edb42ac-9aaf-4f07-9cf5-5dfdf9ab0c32</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">310</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Planning of Intellectual Property Rights (IPR)</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1320</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/immaterielle-rettigheter/,Intellectual property rights at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Commercialization of research results</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1330</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/bibliotek/forskningsstotte/kommersialisering-av-forskning/,Procedure for commercialization of research results at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Export control</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1340</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference">https://www.inn.no/om-universitetet/sikkerhet-beredskap-og-krise/eksportkontroll/,Export control in research at the University</pnp:DataValue>
+                        </pnp:DataRow>
+                        <pnp:DataRow>
+                            <pnp:DataValue FieldName="Title">Submit privacy notice</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtProjectPhase">Planning phase|cda4f1e1-3488-4e57-8a04-6973df239689</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtSortOrder">1001</pnp:DataValue>
+                            <pnp:DataValue FieldName="GtcPhaseReference" />
+                        </pnp:DataRow>
+                    </pnp:DataRows>
+                </pnp:ListInstance>
+            </pnp:Lists>
+        </pnp:ProvisioningTemplate>
+    </pnp:Templates>
+</pnp:Provisioning>

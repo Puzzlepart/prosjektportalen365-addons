@@ -1,4 +1,4 @@
-<pnp:ListInstance Title="Prosjekter" TemplateType="100" Url="Lists/Prosjekter" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false" RemoveExistingContentTypes="false"
+<pnp:ListInstance Title="{resource:Lists_Projects_Title}" Description="{resource:Lists_Projects_Description}" TemplateType="100" Url="{resource:Lists_Projects_Url}" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false" RemoveExistingContentTypes="false"
     xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
     <pnp:ContentTypeBindings>
         <pnp:ContentTypeBinding ContentTypeID="0x0100805E9E4FEAAB4F0EABAB2600D30DB70C09" Default="true" />

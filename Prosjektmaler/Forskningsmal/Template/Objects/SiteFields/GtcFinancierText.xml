@@ -1,1 +1,1 @@
-<Field DisplayName="Finansiør (tekst)" Group="Egendefinerte kolonner for Prosjektportalen" ID="{facaf7c2-0f03-415e-b83f-94fbc4e75e4d}" Name="GtcFinancierText" StaticName="GtcFinancierText" Type="Text" ShowInEditForm="FALSE" />
+<Field DisplayName="{resource:SiteFields_GtcFinancierText_DisplayName}" Description="{resource:SiteFields_GtcFinancierText_Description}" Group="{resource:SiteFields_CustomFields_Group}" ID="{facaf7c2-0f03-415e-b83f-94fbc4e75e4d}" Name="GtcFinancierText" StaticName="GtcFinancierText" Type="Text" ShowInEditForm="FALSE" />

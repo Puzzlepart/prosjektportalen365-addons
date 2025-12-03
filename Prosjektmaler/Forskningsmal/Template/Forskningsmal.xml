@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2021/03/ProvisioningSchema">
-  <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
+  <pnp:Preferences></pnp:Preferences>
+  <pnp:Localizations>
+    <pnp:Localization LCID="1044" Name="Norwegian" ResourceFile="Resources.no-NB.resx" />
+    <pnp:Localization LCID="1033" Name="English (US)" ResourceFile="Resources.en-US.resx" />
+  </pnp:Localizations>
   <pnp:Templates ID="CONTAINER-TEMPLATE-PROSJEKTPORTALEN">
     <pnp:ProvisioningTemplate ID="TEMPLATE-PROSJEKTPORTALEN-FORSKNINGSMAL" Version="1" BaseSiteTemplate="GROUP#0" Scope="RootSite">
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="Objects/ClientSidePages/@.xml" />

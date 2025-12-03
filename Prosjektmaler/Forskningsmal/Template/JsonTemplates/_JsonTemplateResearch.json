@@ -1,0 +1,627 @@
+{
+    "Parameters": {
+        "ProvisionSiteFields": "{{SiteFields_Project_Group}}",
+        "CustomSiteFields": "{{SiteFields_CustomFields_Group}}",
+        "ProjectContentTypeId": "0x0100805E9E4FEAAB4F0EABAB2600D30DB70C09",
+        "ProjectStatusContentTypeId": "0x010022252E35737A413FB56A1BA53862F6D5"
+    },
+    "ContentTypes": [
+        {
+            "ID": "0x0100D7B74DE815F946D3B0F99D19F9B36B68",
+            "Name": "{{ContentTypes_ProjectDelivery_Name}}",
+            "Description": "",
+            "Group": "{{ContentTypes_Group}}",
+            "FieldRefs": [
+                {
+                    "ID": "99430a99-1354-418f-921f-7ddfdb6c0d7f",
+                    "Name": "GtDeliveryDescription"
+                },
+                {
+                    "ID": "219a5cdf-799c-48ee-8869-ea39e4b9a6aa",
+                    "Name": "GtDeliveryStartTime"
+                },
+                {
+                    "ID": "eb78509b-4109-474e-aca8-90d024a960de",
+                    "Name": "GtDeliveryEndTime"
+                },
+                {
+                    "ID": "c8e260c2-6887-4f9e-a713-7200246c3b1c",
+                    "Name": "GtDeliveryQualityExpectations"
+                },
+                {
+                    "ID": "149a30c2-056d-44f0-9cb5-29bfc632ca25",
+                    "Name": "GtDeliveryAcceptanceCriteria"
+                },
+                {
+                    "ID": "3dd7058b-0ba1-46e5-b40a-4f2f542638ea",
+                    "Name": "GtDeliveryQualityTolerance"
+                },
+                {
+                    "ID": "c845028e-3395-49d4-86fe-6d94992c38c2",
+                    "Name": "GtDeliveryQualityResponsible"
+                },
+                {
+                    "ID": "3bcfaa2c-e9bd-4a22-bf65-af4d68c308e7",
+                    "Name": "GtDeliveryAcceptanceMethod"
+                },
+                {
+                    "ID": "dc856c1d-0b98-4d38-9918-d7068f74bd8b",
+                    "Name": "GtDeliveryAcceptanceResponsible"
+                },
+                {
+                    "ID": "ce9474dd-407b-4480-951a-5381857fad6a",
+                    "Name": "GtDeliveryAcceptanceDate"
+                },
+                {
+                    "ID": "4322afd6-5f0f-4a22-819a-cb61668e6ede",
+                    "Name": "GtDeliveryStatus"
+                },
+                {
+                    "ID": "4393ed3c-1599-4ab3-8444-444ab35754bb",
+                    "Name": "GtDeliveryStatusComment"
+                },
+                {
+                    "ID": "4d342fb6-a0e0-4064-b794-c1d36c922997",
+                    "Name": "GtTag"
+                },
+                {
+                    "ID": "33001fe3-bfea-4a82-9219-d535ddff4001",
+                    "Name": "GtcDeliveryNumber"
+                }
+            ]
+        },
+        {
+            "ID": "0x0100486B1F8AEA24486FBA1C1BA9146C360C",
+            "Name": "{{ContentTypes_Checkpoint_Name}}",
+            "Description": "",
+            "Group": "{{ContentTypes_Group}}",
+            "FieldRefs": [
+                {
+                    "ID": "0e82c395-9ed9-43f9-871a-208215b18558",
+                    "Name": "GtSortOrder"
+                },
+                {
+                    "ID": "325543a5-815d-485d-a9a5-e0773ad762e9",
+                    "Name": "GtProjectPhase"
+                },
+                {
+                    "ID": "249527a3-c7f9-4ea5-9c33-f942c06c9215",
+                    "Name": "GtChecklistStatus"
+                },
+                {
+                    "ID": "509a6bfe-004e-41f9-bd73-9a0e02d5c4a7",
+                    "Name": "GtComment"
+                },
+                {
+                    "ID": "0ef193a1-84bd-4913-993e-df2751f5c827",
+                    "Name": "GtcPhaseReference"
+                }
+            ]
+        },
+        {
+            "ID": "0x01004B2B9889EA2C462FBE9B54B0D462E96B",
+            "Name": "{{ContentTypes_PublishingElement_Name}}",
+            "Description": "",
+            "Group": "{{ContentTypes_Group}}",
+            "FieldRefs": [
+                {
+                    "ID": "99fda828-0bfc-44fc-898e-7c941b9252da",
+                    "Name": "GtcPubResultId"
+                },
+                {
+                    "ID": "cd6b78ee-9af7-4b9c-9e46-d9e9a67f00e6",
+                    "Name": "GtcPubChannel"
+                },
+                {
+                    "ID": "0173a845-a466-444d-adbc-e5f2ecfe075f",
+                    "Name": "GtcPubRole"
+                },
+                {
+                    "ID": "9d2d9ec7-3218-4d16-be3a-de6d8525affa",
+                    "Name": "GtcPubIsPublished"
+                },
+                {
+                    "ID": "90d297eb-1b8a-4db7-bc07-2422abb4f1e4",
+                    "Name": "GtcPubDate"
+                },
+                {
+                    "ID": "2f5a2d76-8910-4fb7-a3b3-ebb529f97ab2",
+                    "Name": "GtcPubLink"
+                }
+            ]
+        }
+    ],
+    "Lists": [
+        {
+            "Title": "{{Lists_PhaseChecklist_Title}}",
+            "Description": "",
+            "Template": 100,
+            "ContentTypesEnabled": true,
+            "RemoveExistingContentTypes": true,
+            "ContentTypeBindings": [
+                {
+                    "ContentTypeID": "0x0100486B1F8AEA24486FBA1C1BA9146C360C"
+                }
+            ],
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "FieldRefs": [
+                {
+                    "ID": "0ef193a1-84bd-4913-993e-df2751f5c827",
+                    "Name": "GtcPhaseReference",
+                    "Required": false
+                }
+            ],
+            "Views": [
+                {
+                    "Title": "{{View_AllItems_DisplayName}}",
+                    "ViewFields": [
+                        "GtSortOrder",
+                        "LinkTitle",
+                        "GtProjectPhase",
+                        "GtChecklistStatus",
+                        "GtComment",
+                        "GtcPhaseReference"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 50,
+                        "ViewQuery": "<OrderBy><FieldRef Name=\"GtSortOrder\" /><FieldRef Name=\"ID\" /></OrderBy><Where><Neq><FieldRef Name=\"GtChecklistStatus\" /><Value Type=\"Text\">{{Choice_GtChecklistStatus_Archived}}</Value></Neq>\n</Where>"
+                    }
+                },
+                {
+                    "Title": "{{View_Archived_DisplayName}}",
+                    "ViewFields": [
+                        "GtSortOrder",
+                        "LinkTitle",
+                        "GtProjectPhase",
+                        "GtComment",
+                        "GtcPhaseReference"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 50,
+                        "ViewQuery": "<OrderBy><FieldRef Name=\"GtSortOrder\" /><FieldRef Name=\"ID\" /></OrderBy><Where><Eq><FieldRef Name=\"GtChecklistStatus\" /><Value Type=\"Text\">{{Choice_GtChecklistStatus_Archived}}</Value></Eq>\n</Where>"
+                    }
+                },
+                {
+                    "Title": "{{View_ByStatus_DisplayName}}",
+                    "ViewFields": [
+                        "GtSortOrder",
+                        "LinkTitle",
+                        "GtProjectPhase",
+                        "GtComment",
+                        "GtcPhaseReference"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 50,
+                        "ViewQuery": "<GroupBy Collapse=\"TRUE\" GroupLimit=\"30\"><FieldRef Name=\"GtChecklistStatus\" Ascending=\"FALSE\" />\n</GroupBy>\n<OrderBy><FieldRef Name=\"GtSortOrder\" /><FieldRef Name=\"ID\" />\n</OrderBy>"
+                    }
+                }
+            ]
+        },
+        {
+            "Title": "{{Lists_ProjectDeliveries_Title}}",
+            "Description": "",
+            "Template": 100,
+            "ContentTypesEnabled": true,
+            "RemoveExistingContentTypes": true,
+            "ContentTypeBindings": [
+                {
+                    "ContentTypeID": "0x0100D7B74DE815F946D3B0F99D19F9B36B68"
+                }
+            ],
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "Fields": [
+                "<Field Type=\"LookupMulti\" DisplayName=\"{{SiteFields_DeliveryStakeholders_DisplayName}}\" List=\"{listid:{{Lists_Stakeholders_Title}}}\" ShowField=\"Title\" ID=\"{6d90e0b6-73e6-48fb-aa1e-b897b214f934}\" Description=\"{{SiteFields_DeliveryStakeholders_Description}}\" Name=\"GtDeliveryStakeholders\" StaticName=\"GtDeliveryStakeholders\" Name=\"GtDeliveryStakeholders\" Mult=\"TRUE\" />"
+            ],
+            "FieldRefs": [
+                {
+                    "ID": "33001fe3-bfea-4a82-9219-d535ddff4001",
+                    "Name": "GtcDeliveryNumber",
+                    "Required": false
+                }
+            ],
+            "Views": [
+                {
+                    "Title": "{{View_AllItems_DisplayName}}",
+                    "ViewFields": [
+                        "LinkTitle",
+                        "GtDeliveryDescription",
+                        "GtDeliveryStartTime",
+                        "GtDeliveryEndTime",
+                        "GtDeliveryStatus",
+                        "GtDeliveryStatusComment"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 30,
+                        "Paged": true,
+                        "ViewQuery": ""
+                    }
+                }
+            ]
+        },
+        {
+            "Title": "{{Lists_EthicalAssessments_Title}}",
+            "Description": "",
+            "Template": 100,
+            "ContentTypesEnabled": true,
+            "RemoveExistingContentTypes": true,
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "Fields": [
+                "<Field ID=\"{11394811-a2f4-4f53-92a8-0cbf82b91ad8}\" Name=\"GtcEtCategory\" DisplayName=\"{{SiteFields_Category_DisplayName}}\" Type=\"Choice\" Group=\"{{SiteFields_Project_Group}}\" Description=\"{{SiteFields_Category_Description}}\" StaticName=\"GtcEtCategory\" CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;forEach&quot;:&quot;__INTERNAL__ in @currentField&quot;,&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$__INTERNAL__]&quot;,&quot;{{Choices_Ethical_Approval_KoFE}}&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$__INTERNAL__]&quot;,&quot;{{Choices_Ethical_Approval_REK}}&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$__INTERNAL__]&quot;,&quot;{{Choices_Ethical_Approval_Mattilsynet}}&quot;]},&quot;sp-css-backgroundColor-BgCyan sp-css-color-CyanFont&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}},&quot;txtContent&quot;:&quot;[$__INTERNAL__]&quot;}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\"><CHOICES><CHOICE>{{Choices_Ethical_Humans}}</CHOICE><CHOICE>{{Choices_Ethical_HumanCells}}</CHOICE><CHOICE>{{Choices_Ethical_PersonalData}}</CHOICE><CHOICE>{{Choices_Ethical_Animals}}</CHOICE><CHOICE>{{Choices_Ethical_HSE}}</CHOICE><CHOICE>{{Choices_Ethical_Misuse}}</CHOICE><CHOICE>{{Choices_Ethical_Other}}</CHOICE><CHOICE>{{Choices_Ethical_Embryos}}</CHOICE><CHOICE>{{Choices_Ethical_AI}}</CHOICE></CHOICES></Field>",
+                "<Field Description=\"{{SiteFields_GtcEtDeliveryTitle_Description}}\" DisplayName=\"{{SiteFields_GtcEtDeliveryTitle_DisplayName}}\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcEtDeliveryTitle\" ShowField=\"Title\" Title=\"{{SiteFields_GtcEtDeliveryTitle_DisplayName}}\" Type=\"LookupMulti\" ID=\"{f4d12193-0e0b-489e-aedf-dd8507ce25db}\" StaticName=\"GtcEtDeliveryTitle\" />",
+                "<Field Description=\"{{SiteFields_GtcEtDeliveryNumber_Description}}\" DisplayName=\"{{SiteFields_GtcEtDeliveryNumber_DisplayName}}\" FieldRef=\"f4d12193-0e0b-489e-aedf-dd8507ce25db\" IsModern=\"TRUE\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcEtDeliveryNumber\" ShowField=\"GtcDeliveryNumber\" Title=\"{{SiteFields_GtcEtDeliveryNumber_DisplayName}}\" Type=\"LookupMulti\" ID=\"{124178b7-0093-4dc9-8d7e-e0e2f77279ea}\" StaticName=\"GtcEtDeliveryNumber\" ReadOnly=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_DescribeChallenge_Description}}\" DisplayName=\"{{SiteFields_DescribeChallenge_DisplayName}}\" Name=\"GtcEtChallenge\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_DescribeChallenge_DisplayName}}\" Type=\"Note\" ID=\"{1d2d524d-57c9-468c-a4f1-a237adfc7a37}\" StaticName=\"GtcEtChallenge\" />",
+                "<Field Description=\"{{SiteFields_DescribeMeasures_Description}}\" DisplayName=\"{{SiteFields_DescribeMeasures_DisplayName}}\" Name=\"GtcEtAction\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_DescribeMeasures_DisplayName}}\" Type=\"Note\" ID=\"{64f70b7c-0b97-497a-a943-1c96de97ffea}\" StaticName=\"GtcEtAction\" />",
+                "<Field Description=\"{{SiteFields_HarmPotential_Description}}\" DisplayName=\"{{SiteFields_HarmPotential_DisplayName}}\" Name=\"GtcEtHurtPotential\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_HarmPotential_DisplayName}}\" Type=\"Note\" ID=\"{ad97955d-e7f2-4fa1-8045-9cd6f61c5c60}\" StaticName=\"GtcEtHurtPotential\" />",
+                "<Field Description=\"{{SiteFields_TestSubjects_Description}}\" DisplayName=\"{{SiteFields_TestSubjects_DisplayName}}\" Name=\"GtcEtTestSubject\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_TestSubjects_DisplayName}}\" Type=\"Note\" ID=\"{f070e591-6b35-469c-acb7-0f62616311d9}\" StaticName=\"GtcEtTestSubject\" />",
+                "<Field Description=\"{{SiteFields_Storage_Description}}\" DisplayName=\"{{SiteFields_Storage_DisplayName}}\" Name=\"GtcEtStorage\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_Storage_DisplayName}}\" Type=\"Note\" ID=\"{dedf6274-311f-4b4f-8a64-e9c446fffc61}\" StaticName=\"GtcEtStorage\" />",
+                "<Field Description=\"{{SiteFields_Regulations_Description}}\" DisplayName=\"{{SiteFields_Regulations_DisplayName}}\" Name=\"GtcEtRegulations\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_Regulations_DisplayName}}\" Type=\"Note\" ID=\"{ece1d767-8636-4be3-9d2e-de0328186f86}\" StaticName=\"GtcEtRegulations\" />",
+                "<Field Description=\"{{SiteFields_SharingResults_Description}}\" DisplayName=\"{{SiteFields_SharingResults_DisplayName}}\" Format=\"Dropdown\" Name=\"GtcEtSharing\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_SharingResults_DisplayName}}\" Type=\"Note\" ID=\"{1336808e-64bf-4d8b-9e64-dc0326b1c82a}\" StaticName=\"GtcEtSharing\" />",
+                "<Field Description=\"{{SiteFields_Approval_Description}}\" DisplayName=\"{{SiteFields_Approval_DisplayName}}\" FillInChoice=\"FALSE\" Format=\"Dropdown\" Name=\"GtcEtApproval\" Title=\"{{SiteFields_Approval_DisplayName}}\" Type=\"MultiChoice\" ID=\"{47dc1c0e-d275-4f65-8774-610ccf9a76cd}\" StaticName=\"GtcEtApproval\" CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;forEach&quot;:&quot;__INTERNAL__ in @currentField&quot;,&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$__INTERNAL__]&quot;,&quot;{{Choices_Ethical_Approval_KoFE}}&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$__INTERNAL__]&quot;,&quot;{{Choices_Ethical_Approval_REK}}&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$__INTERNAL__]&quot;,&quot;{{Choices_Ethical_Approval_Mattilsynet}}&quot;]},&quot;sp-css-backgroundColor-BgCyan sp-css-color-CyanFont&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}},&quot;txtContent&quot;:&quot;[$__INTERNAL__]&quot;}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\" ><CHOICES><CHOICE>{{Choices_Ethical_Approval_KoFE}}</CHOICE><CHOICE>{{Choices_Ethical_Approval_REK}}</CHOICE><CHOICE>{{Choices_Ethical_Approval_Mattilsynet}}</CHOICE></CHOICES></Field>",
+                "<Field Description=\"{{SiteFields_RiskAssessment_Description}}\" DisplayName=\"{{SiteFields_RiskAssessment_DisplayName}}\" List=\"{listid:{{Navigation_Uncertainty_Title}}}\" Name=\"GtcEtRisk\" ShowField=\"Title\" Title=\"{{SiteFields_RiskAssessment_DisplayName}}\" Type=\"Lookup\" ID=\"{3db9e80c-b423-4b9f-b9c0-b759730979ae}\" StaticName=\"GtcEtRisk\" />"
+            ],
+            "Views": [
+                {
+                    "Title": "{{View_AllItems_DisplayName}}",
+                    "ViewFields": [
+                        "LinkTitle",
+                        "GtcEtCategory",
+                        "GtcEtDeliveryNumber",
+                        "GtcEtDeliveryTitle",
+                        "GtcEtChallenge",
+                        "GtcEtAction",
+                        "GtcEtHurtPotential",
+                        "GtcEtTestSubject",
+                        "GtcEtStorage",
+                        "GtcEtRegulations",
+                        "GtcEtSharing",
+                        "GtcEtApproval",
+                        "GtcEtRisk"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 30,
+                        "Paged": true,
+                        "ViewQuery": ""
+                    }
+                }
+            ]
+        },
+        {
+            "Title": "{{Lists_ProjectOrganization_Title}}",
+            "Description": "",
+            "Template": 100,
+            "ContentTypesEnabled": true,
+            "RemoveExistingContentTypes": true,
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "Fields": [
+                "<Field Description=\"{{SiteFields_Affiliation_Description}}\" DisplayName=\"{{SiteFields_Affiliation_DisplayName}}\" MaxLength=\"255\" Name=\"GtcOrgBelonging\" Title=\"{{SiteFields_Affiliation_DisplayName}}\" Type=\"Text\" ID=\"{3cd99d46-a89a-499b-beda-d43a528f8a18}\" StaticName=\"GtcOrgBelonging\" />",
+                "<Field Description=\"{{SiteFields_OrgAcronym_Description}}\" DisplayName=\"{{SiteFields_OrgAcronym_DisplayName}}\" MaxLength=\"255\" Name=\"GtcOrgAcronym\" Title=\"{{SiteFields_OrgAcronym_DisplayName}}\" Type=\"Text\" ID=\"{58a87c9d-d89a-4d33-a7e2-295067b11300}\" StaticName=\"GtcOrgAcronym\" />",
+                "<Field Description=\"{{SiteFields_OrgDescription_Description}}\" DisplayName=\"{{SiteFields_OrgDescription_DisplayName}}\" Name=\"GtcOrgShortDescription\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_OrgDescription_DisplayName}}\" Type=\"Note\" ID=\"{a9b8cf32-877e-4fc1-a4ab-f36c325cb8b0}\" StaticName=\"GtcOrgShortDescription\" />",
+                "<Field Description=\"{{SiteFields_Homepage_Description}}\" DisplayName=\"{{SiteFields_Homepage_DisplayName}}\" Format=\"Hyperlink\" Name=\"GtcOrgHomepage\" Title=\"{{SiteFields_Homepage_DisplayName}}\" Type=\"URL\" ID=\"{10670ee4-d377-416e-a6bd-e3728e56ed88}\" StaticName=\"GtcOrgHomepage\" />",
+                "<Field Description=\"{{SiteFields_OrgRole_Description}}\" DisplayName=\"{{SiteFields_OrgRole_DisplayName}}\" MaxLength=\"255\" Name=\"GtcOrgRole\" Title=\"{{SiteFields_OrgRole_DisplayName}}\" Type=\"Text\" ID=\"{9380c1db-e5e7-48ab-8f88-360147c57db5}\" StaticName=\"GtcOrgRole\" />",
+                "<Field Description=\"{{SiteFields_GtcOrgProjectRole_Description}}\" DisplayName=\"{{SiteFields_GtcOrgProjectRole_DisplayName}}\" MaxLength=\"255\" Name=\"GtcOrgProjectRole\" Title=\"{{SiteFields_GtcOrgProjectRole_DisplayName}}\" Type=\"Text\" ID=\"{5faab3cc-ac16-47ef-9b42-1db07734eb71}\" StaticName=\"GtcOrgProjectRole\" />",
+                "<Field Description=\"{{SiteFields_ResponsibleFor_Description}}\" DisplayName=\"{{SiteFields_ResponsibleFor_DisplayName}}\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcOrgResponsibleFor\" ShowField=\"Title\" Title=\"{{SiteFields_ResponsibleFor_DisplayName}}\" Type=\"LookupMulti\" ID=\"{12450ca5-328f-49ba-9bc2-71c93e0d9a3f}\" StaticName=\"GtcOrgResponsibleFor\" />",
+                "<Field Description=\"{{SiteFields_Email_Description}}\" DisplayName=\"{{SiteFields_Email_DisplayName}}\" MaxLength=\"255\" Name=\"GtcOrgMail\" Title=\"{{SiteFields_Email_DisplayName}}\" Type=\"Text\" ID=\"{a6006d2d-f9f0-401d-abdb-f92e3c044f37}\" StaticName=\"GtcOrgMail\" />",
+                "<Field Description=\"{{SiteFields_FromDate_Description}}\" DisplayName=\"{{SiteFields_FromDate_DisplayName}}\" FriendlyDisplayFormat=\"Relative\" Format=\"DateOnly\" Name=\"GtcOrgFromDate\" Title=\"{{SiteFields_FromDate_DisplayName}}\" Type=\"DateTime\" ID=\"{f8c89ba0-6f83-42a5-b32d-ab8311e18694}\" StaticName=\"GtcOrgFromDate\" />",
+                "<Field Description=\"{{SiteFields_ToDate_Description}}\" DisplayName=\"{{SiteFields_ToDate_DisplayName}}\" FriendlyDisplayFormat=\"Relative\" Format=\"DateOnly\" Name=\"GtcOrgToDate\" Title=\"{{SiteFields_ToDate_DisplayName}}\" Type=\"DateTime\" ID=\"{d5204e03-8ccc-4eff-a9a9-5b9ca94a91cc}\" StaticName=\"GtcOrgToDate\" />"
+            ],
+            "Views": [
+                {
+                    "Title": "{{View_AllItems_DisplayName}}",
+                    "ViewFields": [
+                        "LinkTitle",
+                        "GtcOrgBelonging",
+                        "GtcOrgAcronym",
+                        "GtcOrgShortDescription",
+                        "GtcOrgHomepage",
+                        "GtcOrgRole",
+                        "GtcOrgProjectRole",
+                        "GtcOrgResponsibleFor",
+                        "GtcOrgMail",
+                        "GtcOrgFromDate",
+                        "GtcOrgToDate"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 30,
+                        "Paged": true,
+                        "ViewQuery": ""
+                    }
+                }
+            ]
+        },
+        {
+            "Title": "{{Lists_WBS_Title}}",
+            "Description": "",
+            "Template": 100,
+            "ContentTypesEnabled": true,
+            "RemoveExistingContentTypes": true,
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "Fields": [
+                "<Field Description=\"{{SiteFields_GtcWBSDeliveryNumber_Description}}\" DisplayName=\"{{SiteFields_GtcWBSDeliveryNumber_DisplayName}}\" FieldRef=\"59964734-da26-43db-af6b-4f1f6b7d74f8\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSDeliveryNumber\" ShowField=\"GtcDeliveryNumber\" Title=\"{{SiteFields_GtcWBSDeliveryNumber_DisplayName}}\" Type=\"LookupMulti\" ID=\"{c510fac6-03df-4762-897b-bffb149d47da}\" StaticName=\"GtcWBSDeliveryNumber\" ReadOnly=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_GtcWBSDeliveryTitle_Description}}\" DisplayName=\"{{SiteFields_GtcWBSDeliveryTitle_DisplayName}}\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSDeliveryTitle\" ShowField=\"Title\" Title=\"{{SiteFields_GtcWBSDeliveryTitle_DisplayName}}\" Type=\"LookupMulti\" ID=\"{59964734-da26-43db-af6b-4f1f6b7d74f8}\" StaticName=\"GtcWBSDeliveryTitle\" />",
+                "<Field Description=\"{{SiteFields_Todo_Description}}\" DisplayName=\"{{SiteFields_Todo_DisplayName}}\" Name=\"GtcWBSTodo\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_Todo_DisplayName}}\" Type=\"Note\" ID=\"{f20da800-f8e9-4883-ba65-43895b004341}\" StaticName=\"GtcWBSTodo\" />",
+                "<Field Description=\"{{SiteFields_Scope_Description}}\" DisplayName=\"{{SiteFields_Scope_DisplayName}}\" FillInChoice=\"FALSE\" Name=\"GtcWBSScope\" Title=\"{{SiteFields_Scope_DisplayName}}\" Type=\"Choice\" ID=\"{72326fc0-c851-4bba-a2da-b8e55d301f08}\" StaticName=\"GtcWBSScope\" CustomFormatter=\"{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;{{Choices_Scope_Hours}}&quot;]},&quot;sp-css-backgroundColor-BgCornflowerBlue sp-field-fontSizeSmall sp-css-color-CornflowerBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;{{Choices_Scope_ManYears}}&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-field-fontSizeSmall sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;{{Choices_Scope_YearWorks}}&quot;]},&quot;sp-css-backgroundColor-BgGold sp-field-fontSizeSmall sp-css-color-GoldFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;@currentField&quot;,&quot;&quot;]},&quot;&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}},&quot;txtContent&quot;:&quot;@currentField&quot;}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}\"><CHOICES><CHOICE>{{Choices_Scope_Hours}}</CHOICE><CHOICE>{{Choices_Scope_ManYears}}</CHOICE><CHOICE>{{Choices_Scope_YearWorks}}</CHOICE></CHOICES></Field>",
+                "<Field Description=\"{{SiteFields_StartDate_Description}}\" DisplayName=\"{{SiteFields_StartDate_DisplayName}}\" FriendlyDisplayFormat=\"Disabled\" Format=\"DateOnly\" Name=\"GtcWBSStartDate\" Title=\"{{SiteFields_StartDate_DisplayName}}\" Type=\"DateTime\" ID=\"{0bad3503-a987-4c56-87d0-3dbb0f8bdb09}\" StaticName=\"GtcWBSStartDate\" />",
+                "<Field Description=\"{{SiteFields_EndDate_Description}}\" DisplayName=\"{{SiteFields_EndDate_DisplayName}}\" FriendlyDisplayFormat=\"Disabled\" Format=\"DateOnly\" Name=\"GtcWBSEndDate\" Title=\"{{SiteFields_EndDate_DisplayName}}\" Type=\"DateTime\" ID=\"{dac0efe4-5e16-46fc-bc80-761f85c3f936}\" StaticName=\"GtcWBSEndDate\" />",
+                "<Field Description=\"{{SiteFields_Amount_Description}}\" DisplayName=\"{{SiteFields_Amount_DisplayName}}\" Name=\"GtcWBSAmount\" Percentage=\"FALSE\" Title=\"{{SiteFields_Amount_DisplayName}}\" Type=\"Number\" Unit=\"None\" ID=\"{40ec8ae1-0a14-4d00-b477-5189541dafd6}\" StaticName=\"GtcWBSAmount\" CommaSeparator=\"TRUE\" CustomUnitOnRight=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_WhoExecute_Description}}\" DisplayName=\"{{SiteFields_WhoExecute_DisplayName}}\" List=\"{listid:{{Lists_ProjectOrganization_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSExecute\" ShowField=\"Title\" Title=\"{{SiteFields_WhoExecute_DisplayName}}\" Type=\"LookupMulti\" ID=\"{e17868af-d7fa-4f70-9277-cfdbda32e251}\" StaticName=\"GtcWBSExecute\" />",
+                "<Field Description=\"{{SiteFields_GtcWBSExecuteRole_Description}}\" DisplayName=\"{{SiteFields_GtcWBSExecuteRole_DisplayName}}\" FieldRef=\"e17868af-d7fa-4f70-9277-cfdbda32e251\" List=\"{listid:{{Lists_ProjectOrganization_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSExecuteRole\" ShowField=\"GtcOrgProjectRole\" Title=\"{{SiteFields_GtcWBSExecuteRole_DisplayName}}\" Type=\"LookupMulti\" ID=\"{9cd28e12-eac0-4635-911d-3c4e37df4895}\" StaticName=\"GtcWBSExecuteRole\" ReadOnly=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_GtcWBSExecuteRole0_Description}}\" DisplayName=\"{{SiteFields_GtcWBSExecuteRole0_DisplayName}}\" FieldRef=\"e17868af-d7fa-4f70-9277-cfdbda32e251\" List=\"{listid:{{Lists_ProjectOrganization_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSExecuteRole0\" ShowField=\"GtcOrgBelonging\" Title=\"{{SiteFields_GtcWBSExecuteRole0_DisplayName}}\" Type=\"LookupMulti\" ID=\"{4425bac0-74a8-4d6c-b3a1-cbefe3aa5db1}\" StaticName=\"GtcWBSExecuteRole0\" ReadOnly=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_DependentOn_Description}}\" DisplayName=\"{{SiteFields_DependentOn_DisplayName}}\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSDependent\" ShowField=\"Title\" Title=\"{{SiteFields_DependentOn_DisplayName}}\" Type=\"LookupMulti\" ID=\"{d9ec1e2e-fe48-4198-8fc0-e65d64114d50}\" StaticName=\"GtcWBSDependent\" />",
+                "<Field Description=\"{{SiteFields_GtcWBSDependecyDelivery_Description}}\" DisplayName=\"{{SiteFields_GtcWBSDependecyDelivery_DisplayName}}\" FieldRef=\"d9ec1e2e-fe48-4198-8fc0-e65d64114d50\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Mult=\"TRUE\" Name=\"GtcWBSDependecyDelivery\" ShowField=\"GtcDeliveryNumber\" Title=\"{{SiteFields_GtcWBSDependecyDelivery_DisplayName}}\" Type=\"LookupMulti\" ID=\"{42598608-7fb9-44be-8a8c-2af8ea9c66f9}\" StaticName=\"GtcWBSDependecyDelivery\" ReadOnly=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_DepDescription_Description}}\" DisplayName=\"{{SiteFields_DepDescription_DisplayName}}\" Name=\"GtcWBSDependentDescription\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_DepDescription_DisplayName}}\" Type=\"Note\" ID=\"{1d36bf7c-1dc9-4e0c-a1d0-977871283587}\" StaticName=\"GtcWBSDependentDescription\" />",
+                "<Field Description=\"{{SiteFields_OtherDep_Description}}\" DisplayName=\"{{SiteFields_OtherDep_DisplayName}}\" Name=\"GtcWBSOtherDependencies\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_OtherDep_DisplayName}}\" Type=\"Note\" ID=\"{9be917d0-6e90-4d03-a2b0-8e185a02033f}\" StaticName=\"GtcWBSOtherDependencies\" />",
+                "<Field Description=\"{{SiteFields_Affects_Description}}\" DisplayName=\"{{SiteFields_Affects_DisplayName}}\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Name=\"GtcWBSAffects\" ShowField=\"Title\" Title=\"{{SiteFields_Affects_DisplayName}}\" Type=\"Lookup\" ID=\"{cfae1859-1521-4820-9b06-8262dbf15f6b}\" StaticName=\"GtcWBSAffects\" />",
+                "<Field Description=\"{{SiteFields_GtcWBSAffectsDelivery_Description}}\" DisplayName=\"{{SiteFields_GtcWBSAffectsDelivery_DisplayName}}\" FieldRef=\"cfae1859-1521-4820-9b06-8262dbf15f6b\" List=\"{listid:{{Lists_ProjectDeliveries_Title}}}\" Name=\"GtcWBSAffectsDelivery\" ShowField=\"GtcDeliveryNumber\" Title=\"{{SiteFields_GtcWBSAffectsDelivery_DisplayName}}\" Type=\"Lookup\" ID=\"{e821ee76-9100-46cf-9795-2612246f82ad}\" StaticName=\"GtcWBSAffectsDelivery\" ReadOnly=\"TRUE\" />",
+                "<Field Description=\"{{SiteFields_AffectsDesc_Description}}\" DisplayName=\"{{SiteFields_AffectsDesc_DisplayName}}\" Name=\"GtcWBSAffectsDescription\" RichText=\"FALSE\" RichTextMode=\"Compatible\" Title=\"{{SiteFields_AffectsDesc_DisplayName}}\" Type=\"Note\" ID=\"{02330c31-6031-4e05-9455-407eb7401aaa}\" StaticName=\"GtcWBSAffectsDescription\" />"
+            ],
+            "Views": [
+                {
+                    "Title": "{{View_AllItems_DisplayName}}",
+                    "ViewFields": [
+                        "LinkTitle",
+                        "GtcWBSDeliveryNumber",
+                        "GtcWBSDeliveryTitle",
+                        "GtcWBSTodo",
+                        "GtcWBSScope",
+                        "GtcWBSStartDate",
+                        "GtcWBSEndDate",
+                        "GtcWBSAmount",
+                        "GtcWBSExecute",
+                        "GtcWBSExecuteRole",
+                        "GtcWBSExecuteRole0",
+                        "GtcWBSDependent",
+                        "GtcWBSDependecyDelivery",
+                        "GtcWBSDependentDescription",
+                        "GtcWBSOtherDependencies",
+                        "GtcWBSAffects",
+                        "GtcWBSAffectsDelivery",
+                        "GtcWBSAffectsDescription"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 30,
+                        "Paged": true,
+                        "ViewQuery": ""
+                    }
+                }
+            ]
+        },
+        {
+            "Title": "{{Lists_Publishing_Title}}",
+            "Description": "",
+            "Template": 100,
+            "ContentTypesEnabled": true,
+            "RemoveExistingContentTypes": true,
+            "ContentTypeBindings": [
+                {
+                    "ContentTypeID": "0x01004B2B9889EA2C462FBE9B54B0D462E96B"
+                }
+            ],
+            "AdditionalSettings": {
+                "EnableVersioning": true
+            },
+            "Views": [
+                {
+                    "Title": "{{View_AllItems_DisplayName}}",
+                    "ViewFields": [
+                        "LinkTitle",
+                        "GtcPubResultId",
+                        "GtcPubChannel",
+                        "GtcPubRole",
+                        "GtcPubIsPublished",
+                        "GtcPubDate",
+                        "GtcPubLink"
+                    ],
+                    "AdditionalSettings": {
+                        "RowLimit": 30,
+                        "Paged": true,
+                        "ViewQuery": ""
+                    }
+                }
+            ]
+        }
+    ],
+    "Navigation": {
+        "QuickLaunch": [
+            {
+                "Url": "SitePages/ProjectHome.aspx",
+                "Title": "{{Navigation_Home_Title}}"
+            },
+            {
+                "Url": "http://linkless.header/",
+                "Title": "{{Navigation_MandatoryFunctions_Title}}"
+            },
+            {
+                "Url": "SitePages/{{ClientSidePages_ProjectStatus_Name}}",
+                "Title": "{{Navigation_ProjectStatus_Title}}"
+            },
+            {
+                "Url": "{{Navigation_ProjectLog_Url}}",
+                "Title": "{{Navigation_ProjectLog_Title}}"
+            },
+            {
+                "Url": "{{Navigation_Uncertainty_Url}}",
+                "Title": "{{Navigation_Uncertainty_Title}}"
+            },
+            {
+                "Url": "{{Navigation_Documents_Url}}",
+                "Title": "{{Navigation_Documents_Title}}"
+            },
+            {
+                "Url": "http://linkless.header/",
+                "Title": "{{Navigation_PlanningAndControl_Title}}"
+            },
+            {
+                "Url": "{{Navigation_StakeholderRegister_Url}}",
+                "Title": "{{Navigation_StakeholderRegister_Title}}"
+            },
+            {
+                "Url": "{{Navigation_CommunicationPlan_Url}}",
+                "Title": "{{Navigation_CommunicationPlan_Title}}"
+            },
+            {
+                "Url": "{{Navigation_WBS_Url}}",
+                "Title": "{{Lists_WBS_Title}}"
+            },
+            {
+                "Url": "{{Navigation_ProjectDeliveries_Url}}",
+                "Title": "{{Lists_ProjectDeliveries_Title}}"
+            },
+            {
+                "Url": "{{Navigation_ProjectTimeline_Url}}",
+                "Title": "{{Navigation_ProjectTimeline_Title}}"
+            },
+            {
+                "Url": "SitePages/{{ClientSidePages_Tasks_PageName}}",
+                "Title": "{{Navigation_Tasks_Title}}"
+            },
+            {
+                "Url": "SitePages/{{ClientSidePages_BenefitOverview_PageName}}",
+                "Title": "{{Navigation_BenefitsOverview_Title}}",
+                "Children": [
+                    {
+                        "Url": "{{Navigation_ChangeAnalysis_Url}}",
+                        "Title": "{{Navigation_ChangeAnalysis_Title}}"
+                    },
+                    {
+                        "Url": "{{Navigation_BenefitsAnalysis_Url}}",
+                        "Title": "{{Navigation_BenefitsAnalysis_Title}}"
+                    },
+                    {
+                        "Url": "{{Navigation_MeasurementIndicators_Url}}",
+                        "Title": "{{Navigation_MeasurementIndicators_Title}}"
+                    },
+                    {
+                        "Url": "{{Navigation_BenefitsFollowup_Url}}",
+                        "Title": "{{Navigation_BenefitsFollowup_Title}}"
+                    },
+                    {
+                        "Url": "SitePages/{{ClientSidePages_BenefitOverview_PageName}}",
+                        "Title": "{{Navigation_BenefitsOverview_Title}}"
+                    }
+                ]
+            },
+            {
+                "Url": "http://linkless.header/",
+                "Title": "{{Navigation_Administration_Title}}"
+            },
+            {
+                "Url": "_layouts/15/groupstatus.aspx?Target=NOTEBOOK",
+                "Title": "{{Navigation_MeetingMinutes_Title}}"
+            },
+            {
+                "Url": "{{Navigation_ProjectOrganization_Url}}",
+                "Title": "{{Lists_ProjectOrganization_Title}}"
+            },
+            {
+                "Url": "http://linkless.header/",
+                "Title": "{{Navigation_RNDTools_Title}}"
+            },
+            {
+                "Url": "{{Navigation_EthicalAssessments_Url}}",
+                "Title": "{{Lists_EthicalAssessments_Title}}"
+            },
+            {
+                "Url": "{{Navigation_Publishing_Url}}",
+                "Title": "{{Lists_Publishing_Title}}"
+            },
+            {
+                "Url": "http://linkless.header/",
+                "Title": "{{Navigation_General_Title}}"
+            },
+            {
+                "Url": "{{Navigation_PhaseChecklist_Url}}",
+                "Title": "{{Lists_PhaseChecklist_Title}}"
+            },
+            {
+                "Url": "_layouts/15/viewlsts.aspx",
+                "Title": "{{Navigation_SiteContent_Title}}"
+            }
+        ]
+    },
+    "ClientSidePages": [
+        {
+            "Name": "Hjem.aspx",
+            "Title": "{{ClientSidePages_Home_Title}}",
+            "PageLayoutType": "Home",
+            "CommentsDisabled": true,
+            "Overwrite": true,
+            "VerticalSection": [
+                {
+                    "Id": "b8bec0be-2354-443d-a3ca-24b36e8ea7dc",
+                    "Properties": {
+                        "title": "{{WebParts_ProjectInformation_Title}}",
+                        "hideStatusReport": true,
+                        "adminPageLink": "Admin.aspx"
+                    }
+                },
+                {
+                    "Id": "a9097537-6860-4e05-99f3-4ee21782687f",
+                    "Properties": {
+                        "title": "{{WebParts_ProjectNews_Title}}",
+                        "newsFolderName": "{{Lists_Global_Settings_Category_General_ProjectNewsFolderName_Value}}",
+                        "maxVisibleNews": 4
+                    }
+                },
+                {
+                    "Id": "6676088b-e28e-4a90-b9cb-d0d0303cd2eb",
+                    "Properties": {
+                        "showPerPage": 3,
+                        "title": "{{WebParts_GroupCalendar_Title}}",
+                        "timeSpanLimitInMonth": 6
+                    }
+                }
+            ],
+            "Sections": [
+                {
+                    "Columns": [
+                        {
+                            "Factor": 12,
+                            "Controls": [
+                                {
+                                    "Id": "{{ControlId_ProjectPhasesWebPart}}",
+                                    "Properties": {
+                                        "phaseField": "{{WebParts_ProjectPhase_Title}}",
+                                        "syncPropertiesAfterPhaseChange": true,
+                                        "showSubText": true,
+                                        "subTextTruncateLength": 50,
+                                        "currentPhaseViewName": "{{WebParts_CurrentPhase_Title}}"
+                                    }
+                                },
+                                {
+                                    "Id": "e536ae15-0748-4d96-b160-3abb30f1b71e",
+                                    "Properties": {
+                                        "title": "{{WebParts_Risk_Title}}",
+                                        "listName": "{{Navigation_Uncertainty_Title}}",
+                                        "fullWidth": true,
+                                        "calloutTemplate": "<h3>{Title}</h3>\n<p><strong>{{WebParts_Risk_Callout_Strategy}} </strong>{GtRiskStrategy}</p>\n<p><strong>{{WebParts_Risk_Callout_Proximity}} </strong>{GtRiskProximity}</p>\n<p><strong>{{WebParts_Risk_Callout_Status}} </strong>{GtRiskStatus}</p>"
+                                    }
+                                },
+                                {
+                                    "Id": "39c4c1c2-63fa-41be-8cc2-f6c0b49b253d",
+                                    "Properties": {
+                                        "title": "{{WebParts_Tasks_Title}}",
+                                        "isFullScreen": false,
+                                        "plannerViewMode": "bucketchart"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "WebSettings": {
+        "WelcomePage": "SitePages/ProjectHome.aspx"
+    }
+}

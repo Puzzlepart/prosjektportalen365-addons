@@ -1,1 +1,1 @@
-<Field DisplayName="Cristin prosjektkode" Group="Egendefinerte kolonner for Prosjektportalen" ID="{5adbe057-ef1f-4009-9ab8-515c6c099b4d}" Name="GtcCristinCode" StaticName="GtcCristinCode" Type="Text" />
+<Field DisplayName="{resource:SiteFields_GtcCristinCode_DisplayName}" Description="{resource:SiteFields_GtcCristinCode_Description}" Group="{resource:SiteFields_CustomFields_Group}" ID="{5adbe057-ef1f-4009-9ab8-515c6c099b4d}" Name="GtcCristinCode" StaticName="GtcCristinCode" Type="Text" />

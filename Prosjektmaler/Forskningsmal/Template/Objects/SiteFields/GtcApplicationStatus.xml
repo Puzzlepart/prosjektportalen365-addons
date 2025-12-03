@@ -1,1 +1,9 @@
-<Field ID="{ee0875de-9b5f-4661-bd99-9bb72e34abeb}" Name="GtcApplicationStatus" DisplayName="Status søknad" Type="Choice" Group="Egendefinerte kolonner for Prosjektportalen" Description="Gjeldende status for søknaden" StaticName="GtcApplicationStatus"><CHOICES><CHOICE>Under utvikling</CHOICE><CHOICE>Sendt</CHOICE><CHOICE>Tildelt</CHOICE><CHOICE>Signert</CHOICE><CHOICE>Avslått</CHOICE></CHOICES></Field>
+<Field ID="{ee0875de-9b5f-4661-bd99-9bb72e34abeb}" DisplayName="{resource:SiteFields_GtcApplicationStatus_DisplayName}" Description="{resource:SiteFields_GtcApplicationStatus_Description}" Name="GtcApplicationStatus" Type="Choice" Group="{resource:SiteFields_CustomFields_Group}" StaticName="GtcApplicationStatus">
+    <CHOICES>
+        <CHOICE>{resource:SiteFields_GtcApplicationStatus_Choice_UnderDevelopment}</CHOICE>
+        <CHOICE>{resource:SiteFields_GtcApplicationStatus_Choice_Sent}</CHOICE>
+        <CHOICE>{resource:SiteFields_GtcApplicationStatus_Choice_Allocated}</CHOICE>
+        <CHOICE>{resource:SiteFields_GtcApplicationStatus_Choice_Signed}</CHOICE>
+        <CHOICE>{resource:SiteFields_GtcApplicationStatus_Choice_Rejected}</CHOICE>
+    </CHOICES>
+</Field>

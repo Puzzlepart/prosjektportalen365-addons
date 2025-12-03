@@ -1,3 +1,7 @@
 MoveSites_Log*.txt
 .vscode/*
 Prosjektmaler/*/release/*
+Resources.json
+Resources-research.json
+node_modules
+Prosjektmaler/Forskningsmal/Template/Content/Research_content.*/ProjectExtensions/*.txt
