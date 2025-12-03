@@ -238,6 +238,7 @@ function Replace-TokensInPptx {
     $newPptx = [System.IO.Path]::ChangeExtension($pptxPath, ".out.pptx")
     if (Test-Path $newPptx) { Remove-Item $newPptx -Force }
     [System.IO.Compression.ZipFile]::CreateFromDirectory($tempFolder, $newPptx)
+    Remove-Item $tempFolder -Recurse -Force
     return $newPptx
 }
 
