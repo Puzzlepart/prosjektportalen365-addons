@@ -314,6 +314,6 @@ $newPptx = Replace-TokensInPptx -pptxPath $localPath -tokenMap $tokenMap
 Connect-SharePoint -Url $projectUrl
 
 $targetFolder = "Delte dokumenter/Styringsdokumenter"
-$fileName = ("{0}_{1:yy.MM.dd}.pptx" -f (Split-Path $templatePath -LeafBase), (Get-Date))
+$fileName = ("{0}_{1:yyMMdd}.pptx" -f (Split-Path $templatePath -LeafBase), (Get-Date))
 Add-PnPFile -Path $newPptx -Folder $targetFolder -NewFileName $fileName
 Write-Output "Lastet opp $fileName til $targetFolder"
