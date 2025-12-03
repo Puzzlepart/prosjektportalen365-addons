@@ -1,6 +1,5 @@
 Param(
     [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp365",
-    [Parameter(Mandatory = $false)][switch]$AggregateBenefits,
     [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
 )
 
@@ -44,9 +43,6 @@ function Connect-SharePoint($Url) {
 }
 
 function Calculate-Achievement($StartValue, $DesiredValue, $MeasurementValue, $FractionDigits = 2) {
-    # Based on TypeScript implementation: calculcateAchievement
-    # achievement = ((this.Value - this.Indicator.StartValue) / (this.Indicator.DesiredValue - this.Indicator.StartValue)) * 100
-    
     if ([string]::IsNullOrEmpty($StartValue) -or [string]::IsNullOrEmpty($DesiredValue) -or [string]::IsNullOrEmpty($MeasurementValue)) {
         return $null
     }
@@ -70,14 +66,14 @@ function Calculate-Achievement($StartValue, $DesiredValue, $MeasurementValue, $F
         return $null
     }
 }
-function EnsureBenefitsListExists($Url) {
+function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
     $BenefitsListName = "Gevinstoversikt"
     $BenefitsList = Get-PnPList -Identity $BenefitsListName -ErrorAction SilentlyContinue
     if ($null -eq $BenefitsList) {
         Write-Output "Creating '$BenefitsListName' list in hub site $Url"
         $NewList = New-PnPList -Title $BenefitsListName -Template GenericList -EnableVersioning
 
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Unik gevinstnøkkel" -InternalName "GtcUniqueKey" -Type Text
+        $NewField = Add-PnPFieldFromXml -List $BenefitsListName -FieldXml $UniqueKeyFieldXml
         $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Prosjektnavn" -InternalName "GtcProjectName" -Type Text
         $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Prosjekt-URL" -InternalName "GtcProjectUrl" -Type Text
         $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Endring" -InternalName "GtcChangeTitle" -Type Text
@@ -287,10 +283,9 @@ if ($null -eq (Get-Command Connect-PnPOnline -ErrorAction SilentlyContinue)) {
     exit 0
 }
 
-if ($AggregateBenefits.IsPresent) {
-    Connect-SharePoint -Url $HubUrl
-    EnsureBenefitsListExists -Url $HubUrl
-}
+$UniqueKeyFieldXml = '<Field Type="Text" Name="GtcUniqueKey" DisplayName="Unik nøkkel" ID="{32832a92-8ccb-42a6-a4df-0763df3c35a5}" Required="FALSE" StaticName="GtcUniqueKey" ShowInNewForm="FALSE" ShowInEditForm="FALSE" />'
+Connect-SharePoint -Url $HubUrl
+EnsureBenefitsListExists -Url $HubUrl -UniqueKeyFieldXml $UniqueKeyFieldXml
 
 if (-not $UseManagedIdentity) {
     $AdminUrl = $HubUrl -replace "^(https://[^\.]+)\.sharepoint\.com.*$", '$1-admin.sharepoint.com/'
@@ -300,8 +295,8 @@ if (-not $UseManagedIdentity) {
     $ProjectsOfHub = Get-PnPHubSiteChild -Identity $HubUrl
     $CurrentUser = Get-PnPProperty -Property CurrentUser -ClientObject (Get-PnPContext).Web -ErrorAction SilentlyContinue
     $ProjectsOfHub | ForEach-Object {
-        #Write-Output "Setting owner of site $_ to current user $($CurrentUser.LoginName)"
-        #Set-PnPTenantSite -Identity $_ -Owner $CurrentUser.LoginName -ErrorAction SilentlyContinue
+        Write-Output "Setting owner of site $_ to current user $($CurrentUser.LoginName)"
+        Set-PnPTenantSite -Identity $_ -Owner $CurrentUser.LoginName -ErrorAction SilentlyContinue
     }
 }
 
@@ -314,38 +309,36 @@ Get-PnPListItem -List "Prosjekter" -PageSize 500 -Fields "Id", "Title", "GtSiteU
     Write-Output "Processing project site: $ProjectUrl"
     Connect-SharePoint -Url $ProjectUrl
 
-    if ($AggregateBenefits.IsPresent) {
-        Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
-        $AggregationItems = Aggregate-BenefitsToHub -ProjectName $ProjectName -ProjectUrl $ProjectUrl -HubUrl $HubUrl
-        Write-Output "Built array with $($AggregationItems.Count) items for project '$ProjectName'"
+    Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
+    $AggregationItems = Aggregate-BenefitsToHub -ProjectName $ProjectName -ProjectUrl $ProjectUrl -HubUrl $HubUrl
+    Write-Output "Built array with $($AggregationItems.Count) items for project '$ProjectName'"
         
-        if ( $AggregationItems.Count -eq 0) {
-            return
+    if ( $AggregationItems.Count -eq 0) {
+        return
+    }
+    foreach ($AggregationItem in $AggregationItems) {
+        # Convert the object to a hashtable for SharePoint operations
+        $ItemValues = @{}
+        $AggregationItem.PSObject.Properties | ForEach-Object {
+            $ItemValues[$_.Name] = $_.Value
         }
-        foreach ($AggregationItem in $AggregationItems) {
-            # Convert the object to a hashtable for SharePoint operations
-            $ItemValues = @{}
-            $AggregationItem.PSObject.Properties | ForEach-Object {
-                $ItemValues[$_.Name] = $_.Value
-            }
-            # Add Title field for SharePoint (using unique key as title)
-            $ItemValues["Title"] = $AggregationItem.GtcProjectName + " - " + $AggregationItem.GtcBenefitTitle
+        # Add Title field for SharePoint (using unique key as title)
+        $ItemValues["Title"] = $AggregationItem.GtcProjectName + " - " + $AggregationItem.GtcBenefitTitle
             
-            try {
-                Connect-SharePoint -Url $HubUrl
-                $ExistingItem = Get-PnPListItem -List "Gevinstoversikt" -Query "<View><Query><Where><Eq><FieldRef Name='GtcUniqueKey'/><Value Type='Text'>$($AggregationItem.GtcUniqueKey)</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
-                if ($null -ne $ExistingItem) {
-                    Write-Output "`tUpdating existing item '$($AggregationItem.GtcBenefitTitle)' with key '$($AggregationItem.GtcUniqueKey)'"
-                    $GevinstItem = Set-PnPListItem -List "Gevinstoversikt" -Identity $ExistingItem.Id -Values $ItemValues -ErrorAction Stop
-                }
-                else {
-                    Write-Output "`tCreating new item '$($AggregationItem.GtcBenefitTitle)' with key '$($AggregationItem.GtcUniqueKey)'"
-                    $GevinstItem = Add-PnPListItem -List "Gevinstoversikt" -Values $ItemValues -ErrorAction Stop
-                }
+        try {
+            Connect-SharePoint -Url $HubUrl
+            $ExistingItem = Get-PnPListItem -List "Gevinstoversikt" -Query "<View><Query><Where><Eq><FieldRef Name='GtcUniqueKey'/><Value Type='Text'>$($AggregationItem.GtcUniqueKey)</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
+            if ($null -ne $ExistingItem) {
+                Write-Output "`tUpdating existing item '$($AggregationItem.GtcBenefitTitle)' with key '$($AggregationItem.GtcUniqueKey)'"
+                $GevinstItem = Set-PnPListItem -List "Gevinstoversikt" -Identity $ExistingItem.Id -Values $ItemValues -ErrorAction Stop
             }
-            catch {
-                Write-Warning "`tFailed to process item, see error: $($_.Exception.Message)"
+            else {
+                Write-Output "`tCreating new item '$($AggregationItem.GtcBenefitTitle)' with key '$($AggregationItem.GtcUniqueKey)'"
+                $GevinstItem = Add-PnPListItem -List "Gevinstoversikt" -Values $ItemValues -ErrorAction Stop
             }
+        }
+        catch {
+            Write-Warning "`tFailed to process item, see error: $($_.Exception.Message)"
         }
     }
 }

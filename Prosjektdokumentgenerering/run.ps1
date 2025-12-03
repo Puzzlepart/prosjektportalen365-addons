@@ -1,8 +1,7 @@
 param(
-    [Parameter(Mandatory=$true)] [string]$projectUrl,
-    [Parameter(Mandatory=$true)] [string]$templatePath,
-    [Parameter(Mandatory=$true)] [string]$hubSiteUrl,
-    [string]$requestedBy = "System"
+    [Parameter(Mandatory=$true)] [string]$ProjectUrl,
+    [Parameter(Mandatory=$true)] [string]$TemplatePath,
+    [Parameter(Mandatory=$true)] [string]$HubSiteUrl
 )
 
 # Helper function to connect to SharePoint with managed identity or ClientId/Secret
@@ -15,24 +14,24 @@ function Connect-SharePoint {
         [string]$Url
     )
     
-    $pnpParams = @{ 
+    $PnpParams = @{ 
         Url = $Url
     }
     
     if ($null -ne $PSPrivateMetadata) {
         # Azure Automation runbook context - use managed identity
         Write-Output "Using managed identity authentication for $Url"
-        $pnpParams.Add("ManagedIdentity", $true)
+        $PnpParams.Add("ManagedIdentity", $true)
     }
     else {
         # Fallback to ClientId/Secret from Automation variables
         # Note: This requires running in an Azure Automation context
         try {
-            $clientId = Get-AutomationVariable -Name "ClientId"
-            $clientSecret = Get-AutomationVariable -Name "ClientSecret"
+            $ClientId = Get-AutomationVariable -Name "ClientId"
+            $ClientSecret = Get-AutomationVariable -Name "ClientSecret"
             Write-Output "Using ClientId/Secret authentication for $Url"
-            $pnpParams.Add("ClientId", $clientId)
-            $pnpParams.Add("ClientSecret", $clientSecret)
+            $PnpParams.Add("ClientId", $ClientId)
+            $PnpParams.Add("ClientSecret", $ClientSecret)
         }
         catch {
             Write-Error "Failed to retrieve authentication variables. This script must run in Azure Automation context."
@@ -40,296 +39,292 @@ function Connect-SharePoint {
         }
     }
 
-    Connect-PnPOnline @pnpParams
+    Connect-PnPOnline @PnpParams
 }
 
-# Connect to project site
-Connect-SharePoint -Url $projectUrl
-Write-Output "Koblet til $projectUrl"
-
 # Connect to Hub site to download template
-Connect-SharePoint -Url $hubSiteUrl
+Connect-SharePoint -Url $HubSiteUrl
 
-$tempDir = [System.IO.Path]::GetTempPath()
-$fileName = Split-Path $templatePath -Leaf
-Get-PnPFile -Url $templatePath -Path $tempDir -FileName $fileName -AsFile -Force
-$localPath = Join-Path $tempDir $fileName
-Write-Output "Lastet ned mal: $templatePath"
+$TempDir = [System.IO.Path]::GetTempPath()
+$FileName = Split-Path $TemplatePath -Leaf
+Get-PnPFile -Url $TemplatePath -Path $TempDir -FileName $FileName -AsFile -Force | Out-Null
+$LocalPath = Join-Path $TempDir $FileName
+Write-Output "Lastet ned mal: $TemplatePath"
 
 # Parse tokens in PPTX
-Add-Type -AssemblyName System.IO.Compression.FileSystem
+Add-Type -AssemblyName System.IO.Compression.FileSystem | Out-Null
 
 function Find-TokensInPptx {
-    param([string]$pptxPath)
+    param([string]$PptxPath)
     
-    $tempFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
+    $TempFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
     try {
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($pptxPath, $tempFolder)
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($PptxPath, $TempFolder)
         
-        $foundTokens = @()
-        $xmlFiles = Get-ChildItem -Path $tempFolder -Recurse -Include *.xml
+        $FoundTokens = @()
+        $XmlFiles = Get-ChildItem -Path $TempFolder -Recurse -Include *.xml
         
-        foreach ($file in $xmlFiles) {
-            $content = Get-Content -LiteralPath $file.FullName -Raw
+        foreach ($File in $XmlFiles) {
+            $Content = Get-Content -LiteralPath $File.FullName -Raw
             
             # Extract all <a:t> text elements and concatenate them to find tokens
-            $textElements = [regex]::Matches($content, '<a:t>([^<]*)</a:t>')
-            $concatenatedText = ($textElements | ForEach-Object { $_.Groups[1].Value }) -join ''
+            $TextElements = [regex]::Matches($Content, '<a:t>([^<]*)</a:t>')
+            $ConcatenatedText = ($TextElements | ForEach-Object { $_.Groups[1].Value }) -join ''
             
             # Find all tokens in the concatenated text
-            $matches = [regex]::Matches($concatenatedText, '\{\{([^}]+)\}\}')
+            $Matches = [regex]::Matches($ConcatenatedText, '\{\{([^}]+)\}\}')
             
-            foreach ($match in $matches) {
-                $fullToken = $match.Value
+            foreach ($Match in $Matches) {
+                $FullToken = $Match.Value
                 
-                if ($foundTokens -notcontains $fullToken) {
-                    $foundTokens += $fullToken
+                if ($FoundTokens -notcontains $FullToken) {
+                    $FoundTokens += $FullToken
                 }
             }
         }
     }
     finally {
         # Clean up temp folder
-        Remove-Item $tempFolder -Recurse -Force
+        Remove-Item $TempFolder -Recurse -Force | Out-Null
     }
     
-    return $foundTokens
+    return $FoundTokens
 }
 
 function Replace-TokensInPptx {
-    param([string]$pptxPath, [hashtable]$tokenMap)
+    param([string]$PptxPath, [hashtable]$TokenMap)
 
-    $tempFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($pptxPath, $tempFolder)
+    $TempFolder = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($PptxPath, $TempFolder)
 
-    $xmlFiles = Get-ChildItem -Path $tempFolder -Recurse -Include *.xml
+    $XmlFiles = Get-ChildItem -Path $TempFolder -Recurse -Include *.xml
     
-    foreach ($file in $xmlFiles) {
-        $content = Get-Content -LiteralPath $file.FullName -Raw
-        $originalContent = $content
+    foreach ($File in $XmlFiles) {
+        $Content = Get-Content -LiteralPath $File.FullName -Raw
+        $OriginalContent = $Content
         
-        foreach ($key in $tokenMap.Keys) {
+        foreach ($Key in $TokenMap.Keys) {
             # Check if token exists in concatenated text (handles split tokens)
-            $textElements = [regex]::Matches($content, '<a:t>([^<]*)</a:t>')
-            $concatenatedText = ($textElements | ForEach-Object { $_.Groups[1].Value }) -join ''
+            $TextElements = [regex]::Matches($Content, '<a:t>([^<]*)</a:t>')
+            $ConcatenatedText = ($TextElements | ForEach-Object { $_.Groups[1].Value }) -join ''
             
-            if ($concatenatedText -notmatch [regex]::Escape($key)) {
+            if ($ConcatenatedText -notmatch [regex]::Escape($Key)) {
                 continue
             }
             
-            $value = $tokenMap[$key]
-            $replacementCount = 0
+            $Value = $TokenMap[$Key]
+            $ReplacementCount = 0
             
             # Special handling for table data - only if there are multiple fields (tabs) AND multiple rows
             # Single field tokens should be treated as plain text
-            if ($value -match "`t" -and $value -match "`n") {
+            if ($Value -match "`t" -and $Value -match "`n") {
                 # Validate that all rows have the same number of columns (tab-separated values)
-                $rows = $value -split "`n"
-                $columnCounts = @()
-                foreach ($row in $rows) {
+                $Rows = $Value -split "`n"
+                $ColumnCounts = @()
+                foreach ($Row in $Rows) {
                     # Remove any trailing carriage return for Windows line endings
-                    $cleanRow = $row.TrimEnd("`r")
-                    if ($cleanRow -eq "") { continue }
-                    $columns = $cleanRow -split "`t"
-                    $columnCounts += @($columns.Count)
+                    $CleanRow = $Row.TrimEnd("`r")
+                    if ($CleanRow -eq "") { continue }
+                    $Columns = $CleanRow -split "`t"
+                    $ColumnCounts += @($Columns.Count)
                 }
-                $uniqueColumnCounts = $columnCounts | Select-Object -Unique
-                if ($uniqueColumnCounts.Count -ne 1) {
-                    Write-Warning "Token '$key' value does not have consistent column counts per row. Treating as plain text."
+                $UniqueColumnCounts = $ColumnCounts | Select-Object -Unique
+                if ($UniqueColumnCounts.Count -ne 1) {
+                    Write-Warning "Token '$Key' value does not have consistent column counts per row. Treating as plain text."
                     # Fallback to plain text replacement
-                    $content = $content -replace [regex]::Escape($key), [regex]::Escape($value)
+                    $Content = $Content -replace [regex]::Escape($Key), [regex]::Escape($Value)
                     continue
                 }
                 # Find the table row containing this token by searching for <a:tr> containing the concatenated text
                 # Use a simpler pattern that looks for any part of the token text
-                $rowPattern = '(?s)<a:tr[^>]*>.*?</a:tr>'
-                $allRows = [regex]::Matches($content, $rowPattern)
+                $RowPattern = '(?s)<a:tr[^>]*>.*?</a:tr>'
+                $AllRows = [regex]::Matches($Content, $RowPattern)
                 
-                $templateRow = $null
-                foreach ($row in $allRows) {
+                $TemplateRow = $null
+                foreach ($Row in $AllRows) {
                     # Extract text from this row and check if it contains the token
-                    $rowTextMatches = [regex]::Matches($row.Value, '<a:t>([^<]*)</a:t>')
-                    $rowText = ($rowTextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
+                    $RowTextMatches = [regex]::Matches($Row.Value, '<a:t>([^<]*)</a:t>')
+                    $RowText = ($RowTextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
                     
-                    if ($rowText -match [regex]::Escape($key)) {
-                        $templateRow = $row.Value
+                    if ($RowText -match [regex]::Escape($Key)) {
+                        $TemplateRow = $Row.Value
                         break
                     }
                 }
                 
-                if ($templateRow) {
+                if ($TemplateRow) {
                     
-                    $lines = $value -split "`n"
-                    $newRows = @()
+                    $Lines = $Value -split "`n"
+                    $NewRows = @()
                     
-                    foreach ($line in $lines) {
+                    foreach ($Line in $Lines) {
                         # Skip truly empty lines, but keep lines with just tabs (empty cells)
-                        if ($line -eq '') { continue }
+                        if ($Line -eq '') { continue }
                         
-                        $cells = $line -split "`t"
-                        $newRow = $templateRow
+                        $Cells = $Line -split "`t"
+                        $NewRow = $TemplateRow
                         
                         # Extract all table cells (<a:tc>) from the row
-                        $cellMatches = [regex]::Matches($newRow, '(?s)<a:tc>.*?</a:tc>')
+                        $CellMatches = [regex]::Matches($NewRow, '(?s)<a:tc>.*?</a:tc>')
                         
                         # Replace each table cell's text with corresponding cell data
-                        $offset = 0
-                        for ($i = 0; $i -lt [Math]::Min($cells.Count, $cellMatches.Count); $i++) {
-                            $escapedCell = [System.Security.SecurityElement]::Escape($cells[$i])
-                            $oldCell = $cellMatches[$i].Value
+                        $Offset = 0
+                        for ($I = 0; $I -lt [Math]::Min($Cells.Count, $CellMatches.Count); $I++) {
+                            $EscapedCell = [System.Security.SecurityElement]::Escape($Cells[$I])
+                            $OldCell = $CellMatches[$I].Value
                             
                             # Replace ALL text in the cell with new value
                             # Find all <a:r> elements and replace them with a single new one
-                            if ($oldCell -match '<a:r>') {
+                            if ($OldCell -match '<a:r>') {
                                 # Get the paragraph part before first <a:r>
-                                $beforeRuns = $oldCell -replace '(<a:r>.*$)', ''
+                                $BeforeRuns = $OldCell -replace '(<a:r>.*$)', ''
                                 # Get the paragraph part after last </a:r>
-                                $afterRuns = $oldCell -replace '(^.*</a:r>)', ''
+                                $AfterRuns = $OldCell -replace '(^.*</a:r>)', ''
                                 # Create new cell with single text run
-                                $newCell = $beforeRuns + "<a:r><a:rPr/><a:t>$escapedCell</a:t></a:r>" + $afterRuns
-                            } elseif ($oldCell -match '<a:p>') {
+                                $NewCell = $BeforeRuns + "<a:r><a:rPr/><a:t>$EscapedCell</a:t></a:r>" + $AfterRuns
+                            } elseif ($OldCell -match '<a:p>') {
                                 # Cell has paragraph but no text runs, add one
-                                $newCell = $oldCell -replace '(<a:p[^>]*>)', "`$1<a:r><a:rPr/><a:t>$escapedCell</a:t></a:r>"
+                                $NewCell = $OldCell -replace '(<a:p[^>]*>)', "`$1<a:r><a:rPr/><a:t>$EscapedCell</a:t></a:r>"
                             } else {
                                 # Shouldn't happen, but keep original
-                                $newCell = $oldCell
+                                $NewCell = $OldCell
                             }
                             
                             # Find and replace in the newRow using index to handle multiple identical cells
-                            $cellIndex = $newRow.IndexOf($oldCell, $offset)
-                            if ($cellIndex -ge 0) {
-                                $newRow = $newRow.Remove($cellIndex, $oldCell.Length).Insert($cellIndex, $newCell)
-                                $offset = $cellIndex + $newCell.Length
+                            $CellIndex = $NewRow.IndexOf($OldCell, $Offset)
+                            if ($CellIndex -ge 0) {
+                                $NewRow = $NewRow.Remove($CellIndex, $OldCell.Length).Insert($CellIndex, $NewCell)
+                                $Offset = $CellIndex + $NewCell.Length
                             }
                         }
-                        $newRows += $newRow
+                        $NewRows += $NewRow
                     }
                     
-                    $content = $content.Replace($templateRow, ($newRows -join "`n"))
+                    $Content = $Content.Replace($TemplateRow, ($NewRows -join "`n"))
                 }
                 continue
             }
             
             # For simple text replacement - find and replace split tokens
             # Find all paragraphs and check which one contains the token
-            $paragraphPattern = '(?s)<a:p[^>]*>.*?</a:p>'
-            $allParagraphs = [regex]::Matches($content, $paragraphPattern)
+            $ParagraphPattern = '(?s)<a:p[^>]*>.*?</a:p>'
+            $AllParagraphs = [regex]::Matches($Content, $ParagraphPattern)
             
-            $foundParagraph = $null
-            foreach ($para in $allParagraphs) {
+            $FoundParagraph = $null
+            foreach ($Para in $AllParagraphs) {
                 # Extract text from this paragraph and check if it contains the token
-                $paraTextMatches = [regex]::Matches($para.Value, '<a:t>([^<]*)</a:t>')
-                $paraText = ($paraTextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
+                $ParaTextMatches = [regex]::Matches($Para.Value, '<a:t>([^<]*)</a:t>')
+                $ParaText = ($ParaTextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
                 
-                if ($paraText -match [regex]::Escape($key)) {
-                    $foundParagraph = $para.Value
+                if ($ParaText -match [regex]::Escape($Key)) {
+                    $FoundParagraph = $Para.Value
                     break
                 }
             }
             
-            if ($foundParagraph) {
+            if ($FoundParagraph) {
                 # Extract text from all <a:t> elements in the paragraph
-                $textMatches = [regex]::Matches($foundParagraph, '<a:t>([^<]*)</a:t>')
-                $paragraphText = ($textMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
+                $TextMatches = [regex]::Matches($FoundParagraph, '<a:t>([^<]*)</a:t>')
+                $ParagraphText = ($TextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
                 
                 # Replace the token in the concatenated text
-                $newText = $paragraphText -replace [regex]::Escape($key), [System.Security.SecurityElement]::Escape($value)
+                $NewText = $ParagraphText -replace [regex]::Escape($Key), [System.Security.SecurityElement]::Escape($Value)
                 
                 # Get the paragraph part before first <a:r>
-                $beforeRuns = $foundParagraph -replace '(<a:r>.*$)', ''
+                $BeforeRuns = $FoundParagraph -replace '(<a:r>.*$)', ''
                 # Get the paragraph part after last </a:r>
-                $afterRuns = $foundParagraph -replace '(^.*</a:r>)', ''
+                $AfterRuns = $FoundParagraph -replace '(^.*</a:r>)', ''
                 # Create new paragraph with single text run
-                $newParagraph = $beforeRuns + "<a:r><a:rPr/><a:t>$newText</a:t></a:r>" + $afterRuns
+                $NewParagraph = $BeforeRuns + "<a:r><a:rPr/><a:t>$NewText</a:t></a:r>" + $AfterRuns
                 
-                $content = $content.Replace($foundParagraph, $newParagraph)
+                $Content = $Content.Replace($FoundParagraph, $NewParagraph)
             }
         }
         
-        if ($content -ne $originalContent) {
-            Set-Content -LiteralPath $file.FullName -Value $content -Encoding UTF8
+        if ($Content -ne $OriginalContent) {
+            Set-Content -LiteralPath $File.FullName -Value $Content -Encoding UTF8 | Out-Null
         }
     }
 
-    $newPptx = [System.IO.Path]::ChangeExtension($pptxPath, ".out.pptx")
-    if (Test-Path $newPptx) { Remove-Item $newPptx -Force }
-    [System.IO.Compression.ZipFile]::CreateFromDirectory($tempFolder, $newPptx)
-    Remove-Item $tempFolder -Recurse -Force
-    return $newPptx
+    $NewPptx = [System.IO.Path]::ChangeExtension($PptxPath, ".out.pptx")
+    if (Test-Path $NewPptx) { Remove-Item $NewPptx -Force | Out-Null }
+    [System.IO.Compression.ZipFile]::CreateFromDirectory($TempFolder, $NewPptx) | Out-Null
+    Remove-Item $TempFolder -Recurse -Force | Out-Null
+    return $NewPptx
 }
 
 # Fetch data from project and build token map from SharePoint lists
 function Get-TokenMap {
-    param($projectUrl, $tokens)
+    param($ProjectUrl, $Tokens)
 
-    Connect-SharePoint -Url $projectUrl
-    $map = @{}
+    Connect-SharePoint -Url $ProjectUrl
+    $Map = @{}
 
-    foreach ($token in $tokens) {
+    foreach ($Token in $Tokens) {
         # Parse token format: {{List:ListName;Fields:Field1,Field2,Field3}}
-        if ($token -match '\{\{List:([^;]+);Fields:([^}]+)\}\}') {
-            $listName = $matches[1]
-            $fields = $matches[2] -split ','
+        if ($Token -match '\{\{List:([^;]+);Fields:([^}]+)\}\}') {
+            $ListName = $matches[1]
+            $Fields = $matches[2] -split ','
             
             # Fetch data from SharePoint list
-            $rows = Get-PnPListItem -List $listName -Fields $fields
-            $lines = @()
+            $Rows = Get-PnPListItem -List $ListName -Fields $Fields
+            $Lines = @()
             
-            foreach ($r in $rows) {
-                $cellValues = @()
-                foreach ($field in $fields) {
-                    $value = $r.FieldValues[$field]
+            foreach ($R in $Rows) {
+                $CellValues = @()
+                foreach ($Field in $Fields) {
+                    $Value = $R.FieldValues[$Field]
                     
-                    $extractedValue = ""
-                    if ($null -eq $value -or $value -eq "") {
-                        $extractedValue = ""
-                    } elseif ($value -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
+                    $ExtractedValue = ""
+                    if ($null -eq $Value -or $Value -eq "") {
+                        $ExtractedValue = ""
+                    } elseif ($Value -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
                         # Single lookup value
-                        $extractedValue = $value.LookupValue
-                    } elseif ($value -is [Array] -and $value.Count -gt 0 -and $value[0] -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
+                        $ExtractedValue = $Value.LookupValue
+                    } elseif ($Value -is [Array] -and $Value.Count -gt 0 -and $Value[0] -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
                         # Array of lookup values - join them with comma
-                        $extractedValue = ($value | ForEach-Object { $_.LookupValue }) -join ", "
+                        $ExtractedValue = ($Value | ForEach-Object { $_.LookupValue }) -join ", "
                     } else {
-                        $extractedValue = "$value"
+                        $ExtractedValue = "$Value"
                     }
                     
-                    $cellValues += $extractedValue
+                    $CellValues += $ExtractedValue
                 }
                 
                 # If only one field, just use the value; otherwise tab-separate
-                if ($fields.Count -eq 1) {
-                    $lines += $cellValues[0]
+                if ($Fields.Count -eq 1) {
+                    $Lines += $CellValues[0]
                 } else {
-                    $lineText = ($cellValues -join "`t")
-                    $lines += $lineText
+                    $LineText = ($CellValues -join "`t")
+                    $Lines += $LineText
                 }
             }
             
             # If only one field, join with newlines (plain text list); otherwise create table format
-            if ($fields.Count -eq 1) {
-                $map[$token] = ($lines -join "`n")
+            if ($Fields.Count -eq 1) {
+                $Map[$Token] = ($Lines -join "`n")
             } else {
-                $tableText = ($lines -join "`n")
-                $map[$token] = $tableText
+                $TableText = ($Lines -join "`n")
+                $Map[$Token] = $TableText
             }
         } else {
-            $map[$token] = ""
+            $Map[$Token] = ""
         }
     }
 
-    return $map
+    return $Map
 }
 
 # Find all tokens in the template
-$tokensFound = Find-TokensInPptx -pptxPath $localPath
-$tokenMap = Get-TokenMap -projectUrl $projectUrl -tokens $tokensFound
+$TokensFound = Find-TokensInPptx -PptxPath $LocalPath
+$TokenMap = Get-TokenMap -ProjectUrl $ProjectUrl -Tokens $TokensFound
 
-$newPptx = Replace-TokensInPptx -pptxPath $localPath -tokenMap $tokenMap
+$NewPptx = Replace-TokensInPptx -PptxPath $LocalPath -TokenMap $TokenMap
 
 # Upload the generated PPTX back to the project's document library
-Connect-SharePoint -Url $projectUrl
+Connect-SharePoint -Url $ProjectUrl
 
-$targetFolder = "Delte dokumenter/Styringsdokumenter"
-$fileName = ("{0}_{1:yyMMdd}.pptx" -f (Split-Path $templatePath -LeafBase), (Get-Date))
-Add-PnPFile -Path $newPptx -Folder $targetFolder -NewFileName $fileName
-Write-Output "Lastet opp $fileName til $targetFolder"
+$TargetFolder = "Delte dokumenter/Styringsdokumenter"
+$FileName = ("{0}_{1:yyMMdd}.pptx" -f (Split-Path $TemplatePath -LeafBase), (Get-Date))
+Add-PnPFile -Path $NewPptx -Folder $TargetFolder -NewFileName $FileName
+Write-Output "Lastet opp $FileName til $TargetFolder"
