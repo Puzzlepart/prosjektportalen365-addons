@@ -1,3 +1,6 @@
+###
+# How to start runbook from local context:
+# Start-AzAutomationRunbook -ResourceGroupName "Prosjektportalen" -AutomationAccountName "Prosjektportalen-Premium-Account" -Name "ProjectDocumentGeneration" -Parameters @{ProjectUrl="https://puzzlepart.sharepoint.com/sites/Vino001";TemplatePath="/sites/pp-vmp/Dokumentgenereringsmaler/MAL_Styringsdokument.pptx";HubSiteUrl="https://puzzlepart.sharepoint.com/sites/pp-vmp"}
 param(
     [Parameter(Mandatory=$true)] [string]$ProjectUrl,
     [Parameter(Mandatory=$true)] [string]$TemplatePath,
@@ -257,10 +260,16 @@ function Replace-TokensInPptx {
 function Get-TokenMap {
     param($ProjectUrl, $Tokens)
 
-    Connect-SharePoint -Url $ProjectUrl
+    Connect-SharePoint -Url $ProjectUrl | Out-Null
     $Map = @{}
 
     foreach ($Token in $Tokens) {
+        # Handle {{Today}} token - replace with current date
+        if ($Token -eq '{{Today}}') {
+            $Map[$Token] = Get-Date -Format "dd.MM.yyyy"
+            continue
+        }
+        
         # Parse token format: {{List:ListName;Fields:Field1,Field2,Field3}}
         if ($Token -match '\{\{List:([^;]+);Fields:([^}]+)\}\}') {
             $ListName = $matches[1]
@@ -322,9 +331,9 @@ $TokenMap = Get-TokenMap -ProjectUrl $ProjectUrl -Tokens $TokensFound
 $NewPptx = Replace-TokensInPptx -PptxPath $LocalPath -TokenMap $TokenMap
 
 # Upload the generated PPTX back to the project's document library
-Connect-SharePoint -Url $ProjectUrl
+Connect-SharePoint -Url $ProjectUrl | Out-Null
 
 $TargetFolder = "Delte dokumenter/Styringsdokumenter"
 $FileName = ("{0}_{1:yyMMdd}.pptx" -f (Split-Path $TemplatePath -LeafBase), (Get-Date))
-Add-PnPFile -Path $NewPptx -Folder $TargetFolder -NewFileName $FileName
+Add-PnPFile -Path $NewPptx -Folder $TargetFolder -NewFileName $FileName | Out-Null
 Write-Output "Lastet opp $FileName til $TargetFolder"
