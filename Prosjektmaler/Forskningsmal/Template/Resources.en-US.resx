@@ -707,7 +707,7 @@
         <value>Publishing Element</value>
     </data>
     <data name="Lists_PhaseChecklist_Title" xml:space="preserve">
-        <value>Phase checklist</value>
+        <value>Phase Checklist</value>
     </data>
     <data name="Choice_GtChecklistStatus_Archived" xml:space="preserve">
         <value>Archived</value>
@@ -719,19 +719,19 @@
         <value>By status</value>
     </data>
     <data name="Lists_ProjectDeliveries_Title" xml:space="preserve">
-        <value>Project deliverables</value>
+        <value>Project Deliveries</value>
     </data>
     <data name="SiteFields_DeliveryStakeholders_DisplayName" xml:space="preserve">
         <value>Delivery stakeholders</value>
     </data>
     <data name="Lists_Stakeholders_Title" xml:space="preserve">
-        <value>Stakeholder register</value>
+        <value>Stakeholder Register</value>
     </data>
     <data name="SiteFields_DeliveryStakeholders_Description" xml:space="preserve">
         <value>Specify which stakeholder(s) the delivery affects</value>
     </data>
     <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
-        <value>Ethical considerations</value>
+        <value>Ethical Considerations</value>
     </data>
     <data name="SiteFields_Category_DisplayName" xml:space="preserve">
         <value>Category</value>
@@ -830,7 +830,7 @@
         <value>Select the risk analysis that is relevant to the assessment (Retrieves data from the Uncertainty Register)</value>
     </data>
     <data name="Lists_ProjectOrganization_Title" xml:space="preserve">
-        <value>Project organization</value>
+        <value>Project Organization</value>
     </data>
     <data name="SiteFields_Affiliation_DisplayName" xml:space="preserve">
         <value>Affiliation</value>
@@ -968,10 +968,10 @@
         <value>Publications</value>
     </data>
     <data name="Navigation_MandatoryFunctions_Title" xml:space="preserve">
-        <value>Required features</value>
+        <value>Required Features</value>
     </data>
     <data name="Navigation_PlanningAndControl_Title" xml:space="preserve">
-        <value>Planning and management</value>
+        <value>Planning and Management</value>
     </data>
     <data name="Navigation_ProjectTimeline_Title" xml:space="preserve">
         <value>Project Timeline</value>
@@ -983,7 +983,7 @@
         <value>Meeting Minutes</value>
     </data>
     <data name="Navigation_RNDTools_Title" xml:space="preserve">
-        <value>R&amp;D tools</value>
+        <value>R&amp;D Tools</value>
     </data>
     <data name="Navigation_General_Title" xml:space="preserve">
         <value>General</value>
@@ -1013,10 +1013,10 @@
         <value>Project Status</value>
     </data>
     <data name="Navigation_ProjectLog_Url" xml:space="preserve">
-        <value>Lists/ProjectLog/AllItems.aspx</value>
+        <value>Lists/Project log/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectLog_Title" xml:space="preserve">
-        <value>Project log</value>
+        <value>Project Log</value>
     </data>
     <data name="Navigation_Uncertainty_Url" xml:space="preserve">
         <value>Lists/Uncertainty/AllItems.aspx</value>
@@ -1025,7 +1025,7 @@
         <value>Uncertainty</value>
     </data>
     <data name="Navigation_Documents_Url" xml:space="preserve">
-        <value>Documents/Forms/AllItems.aspx</value>
+        <value>Shared Documents/Forms/AllItems.aspx</value>
     </data>
     <data name="Navigation_Documents_Title" xml:space="preserve">
         <value>Documents</value>
@@ -1034,19 +1034,19 @@
         <value>Lists/Stakeholders/AllItems.aspx</value>
     </data>
     <data name="Navigation_StakeholderRegister_Title" xml:space="preserve">
-        <value>Stakeholder register</value>
+        <value>Stakeholder Register</value>
     </data>
     <data name="Navigation_CommunicationPlan_Url" xml:space="preserve">
-        <value>Lists/CommunicationPlan/AllItems.aspx</value>
+        <value>Lists/Communication plan/AllItems.aspx</value>
     </data>
     <data name="Navigation_CommunicationPlan_Title" xml:space="preserve">
-        <value>Communication plan</value>
+        <value>Communication Plan</value>
     </data>
     <data name="Navigation_WBS_Url" xml:space="preserve">
-        <value>Lists/WorkBreakdownStructure/AllItems.aspx</value>
+        <value>Lists/Work Breakdown Structure/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectDeliveries_Url" xml:space="preserve">
-        <value>Lists/ProjectDeliveries/AllItems.aspx</value>
+        <value>Lists/Project Deliveries/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectTimeline_Url" xml:space="preserve">
         <value>SitePages/ProjectTimeline.aspx</value>
@@ -1064,28 +1064,28 @@
         <value>Benefit Overview</value>
     </data>
     <data name="Navigation_ChangeAnalysis_Url" xml:space="preserve">
-        <value>Lists/ChangeAnalysis/AllItems.aspx</value>
+        <value>Lists/Change analysis/AllItems.aspx</value>
     </data>
     <data name="Navigation_ChangeAnalysis_Title" xml:space="preserve">
-        <value>Change analysis</value>
+        <value>Change Analysis</value>
     </data>
-    <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
-        <value>Lists/BenefitsAnalysis/AllItems.aspx</value>
+     <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
+        <value>Lists/Benefits analysis and realization plan/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsAnalysis_Title" xml:space="preserve">
-        <value>Benefit analysis and benefit realization plan</value>
+        <value>Benefits Analysis and Realization Plan</value>
     </data>
-    <data name="Navigation_MeasurementIndicators_Url" xml:space="preserve">
-        <value>Lists/MeasurementIndicators/AllItems.aspx</value>
+   <data name="Navigation_MeasurementIndicators_Url" xml:space="preserve">
+        <value>Lists/Measurement indicators/AllItems.aspx</value>
     </data>
     <data name="Navigation_MeasurementIndicators_Title" xml:space="preserve">
-        <value>Measurement indicators</value>
+        <value>Measurement Indicators</value>
     </data>
     <data name="Navigation_BenefitsFollowup_Url" xml:space="preserve">
-        <value>Lists/BenefitsFollowup/AllItems.aspx</value>
+        <value>Lists/Benefits followup/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsFollowup_Title" xml:space="preserve">
-        <value>Profit follow-up</value>
+        <value>Benefits Follow-up</value>
     </data>
     <data name="Navigation_ProjectOrganization_Url" xml:space="preserve">
         <value>Lists/ProjectOrganization/AllItems.aspx</value>
@@ -1097,10 +1097,10 @@
         <value>Lists/Publications/AllItems.aspx</value>
     </data>
     <data name="Navigation_PhaseChecklist_Url" xml:space="preserve">
-        <value>Lists/PhaseChecklist/AllItems.aspx</value>
+        <value>Lists/Phase Checklist/AllItems.aspx</value>
     </data>
     <data name="Navigation_SiteContent_Title" xml:space="preserve">
-        <value>Content</value>
+        <value>Site Contents</value>
     </data>
     <data name="ClientSidePages_Home_Title" xml:space="preserve">
         <value>Home</value>
@@ -1119,5 +1119,8 @@
     </data>
     <data name="WebParts_Tasks_Title" xml:space="preserve">
         <value>Tasks</value>
+    </data>
+    <data name="Lists_Global_Settings_Category_General_ProjectNewsFolderName_Value" xml:space="preserve">
+        <value>Projectnews</value>
     </data>
 </root>

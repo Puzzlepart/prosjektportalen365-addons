@@ -1025,7 +1025,7 @@
         <value>Usikkerhet</value>
     </data>
     <data name="Navigation_Documents_Url" xml:space="preserve">
-        <value>Dokumenter/Forms/AllItems.aspx</value>
+        <value>Delte dokumenter/Forms/AllItems.aspx</value>
     </data>
     <data name="Navigation_Documents_Title" xml:space="preserve">
         <value>Dokumenter</value>
@@ -1109,7 +1109,7 @@
         <value>Prosjektinformasjon</value>
     </data>
     <data name="WebParts_ProjectNews_Title" xml:space="preserve">
-        <value>Prosjektnyheter</value>
+        <value>Nyheter</value>
     </data>
     <data name="WebParts_ProjectPhase_Title" xml:space="preserve">
         <value>Fase</value>
@@ -1119,5 +1119,8 @@
     </data>
     <data name="WebParts_Tasks_Title" xml:space="preserve">
         <value>Oppgaver</value>
+    </data>
+    <data name="Lists_Global_Settings_Category_General_ProjectNewsFolderName_Value" xml:space="preserve">
+        <value>Prosjektnyheter</value>
     </data>
 </root>

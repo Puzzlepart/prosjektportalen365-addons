@@ -453,7 +453,7 @@
                 "Title": "Usikkerhet"
             },
             {
-                "Url": "Dokumenter/Forms/AllItems.aspx",
+                "Url": "Delte dokumenter/Forms/AllItems.aspx",
                 "Title": "Dokumenter"
             },
             {
@@ -565,11 +565,11 @@
                     }
                 },
                 {
-                    "Id": "a5df8fdf-b508-4b66-98a6-d83bc2597f63",
+                    "Id": "a9097537-6860-4e05-99f3-4ee21782687f",
                     "Properties": {
-                        "title": "Prosjektnyheter",
-                        "showChrome": true,
-                        "compactMode": true
+                        "title": "Nyheter",
+                        "newsFolderName": "Prosjektnyheter",
+                        "maxVisibleNews": 4
                     }
                 },
                 {

@@ -565,11 +565,11 @@
                     }
                 },
                 {
-                   "Id": "a5df8fdf-b508-4b66-98a6-d83bc2597f63",
+                    "Id": "a9097537-6860-4e05-99f3-4ee21782687f",
                     "Properties": {
                         "title": "{{WebParts_ProjectNews_Title}}",
-                        "showChrome": true,
-                        "compactMode": true
+                        "newsFolderName": "{{Lists_Global_Settings_Category_General_ProjectNewsFolderName_Value}}",
+                        "maxVisibleNews": 4
                     }
                 },
                 {
