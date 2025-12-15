@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp365",
+    [Parameter(Mandatory = $false)][string]$HubUrl,# = "https://prosjektportalen.sharepoint.com/sites/pp365",
     [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
 )
 
@@ -288,15 +288,23 @@ Connect-SharePoint -Url $HubUrl
 EnsureBenefitsListExists -Url $HubUrl -UniqueKeyFieldXml $UniqueKeyFieldXml
 
 if (-not $UseManagedIdentity) {
-    $AdminUrl = $HubUrl -replace "^(https://[^\.]+)\.sharepoint\.com.*$", '$1-admin.sharepoint.com/'
+    try {
+        $AdminUrl = $HubUrl -replace "^(https://[^\.]+)\.sharepoint\.com.*$", '$1-admin.sharepoint.com/'
 
-    Connect-SharePoint -Url $AdminUrl
-    $HubSite = Get-PnPHubSite -Identity $HubUrl
-    $ProjectsOfHub = Get-PnPHubSiteChild -Identity $HubUrl
-    $CurrentUser = Get-PnPProperty -Property CurrentUser -ClientObject (Get-PnPContext).Web -ErrorAction SilentlyContinue
-    $ProjectsOfHub | ForEach-Object {
-        Write-Output "Setting owner of site $_ to current user $($CurrentUser.LoginName)"
-        Set-PnPTenantSite -Identity $_ -Owner $CurrentUser.LoginName -ErrorAction SilentlyContinue
+        Connect-SharePoint -Url $AdminUrl
+        $HubSite = Get-PnPHubSite -Identity $HubUrl
+        $ProjectsOfHub = Get-PnPHubSiteChild -Identity $HubUrl
+        $CurrentUser = Get-PnPProperty -Property CurrentUser -ClientObject (Get-PnPContext).Web -ErrorAction SilentlyContinue
+        $ProjectsOfHub | ForEach-Object {
+            Write-Output "Setting owner of site $_ to current user $($CurrentUser.LoginName)"
+            Set-PnPTenantSite -Identity $_ -Owner $CurrentUser.LoginName -ErrorAction SilentlyContinue
+        }
+        Write-Output "Successfully assigned permissions to all hub sites."
+    }
+    catch {
+        Write-Warning "Unable to assign permissions to all sites. This requires SharePoint Administrator permissions."
+        Write-Warning "The script will continue and process only sites where you already have access."
+        Write-Output ""
     }
 }
 
