@@ -471,6 +471,22 @@ $TableRows
                             # Array of lookup values - join them with comma
                             $ExtractedValue = ($Value | ForEach-Object { $_.LookupValue }) -join ", "
                         }
+                        elseif ($Value -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
+                            # Single taxonomy value - use Label property
+                            $ExtractedValue = $Value.Label
+                        }
+                        elseif ($Value -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValueCollection]) {
+                            # Multiple taxonomy values - join labels with comma
+                            $ExtractedValue = ($Value | ForEach-Object { $_.Label }) -join ", "
+                        }
+                        elseif ($Value -is [Array] -and $Value.Count -gt 0 -and $Value[0] -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
+                            # Array of taxonomy values - join labels with comma
+                            $ExtractedValue = ($Value | ForEach-Object { $_.Label }) -join ", "
+                        }
+                        elseif ($Value -is [System.Collections.Hashtable] -and $Value.ContainsKey('Label')) {
+                            # Taxonomy value as hashtable (alternative format)
+                            $ExtractedValue = $Value.Label
+                        }
                         else {
                             $ExtractedValue = "$Value"
                         }
