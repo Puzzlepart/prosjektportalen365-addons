@@ -112,7 +112,6 @@ try {
             $PresContent = Get-Content -LiteralPath $PresentationXml -Raw
             if ($PresContent -match '<p:sldSz[^>]*cx="(\d+)"') {
                 $SlideWidth = [int]$matches[1]
-                Write-Warning "Detected slide width: $SlideWidth EMUs"
             }
         }
 
@@ -143,16 +142,13 @@ try {
                     # Extract table width ratio if present
                     if ($Value -match "###TABLEWIDTH###([0-9.]+)###") {
                         $CustomTableWidthRatio = [double]$matches[1]
-                        Write-Warning "Using custom table width ratio: $CustomTableWidthRatio"
                         $Value = $Value -replace "###TABLEWIDTH###[0-9.]+###", ""
                     }
                     
                     if ($Value -match "^###WIDTHS###([^#]+)###") {
                         $WidthsString = $matches[1]
-                        Write-Warning "Raw widths string from metadata: '$WidthsString'"
                         $CustomColumnWidths = @($WidthsString -split '\|' | ForEach-Object { 
                             $CleanValue = $_ -replace ',', '.'
-                            Write-Warning "  Parsing width: '$_' -> '$CleanValue' -> $([double]$CleanValue)"
                             [double]$CleanValue
                         })
                         $HasCustomWidths = $true
@@ -209,25 +205,17 @@ try {
                     if ($FoundShape -and $ShapeXfrm) {
                         # Use custom or default percentage of actual slide width for the table
                         $TableWidth = [int]($SlideWidth * $CustomTableWidthRatio)
-                        Write-Warning "Table width: $TableWidth EMUs ($CustomTableWidthRatio of slide width $SlideWidth)"
                         
                         # Calculate column widths based on custom widths or equal distribution
                         $ColumnWidthArray = @()
                         if ($HasCustomWidths -and $CustomColumnWidths.Count -eq $ColumnCount) {
                             # Use custom widths
-                            Write-Warning "Applying custom column widths for table with $ColumnCount columns (Table width: $TableWidth EMUs)"
                             foreach ($Width in $CustomColumnWidths) {
                                 $ColWidth = [int]($TableWidth * $Width)
                                 $ColumnWidthArray += $ColWidth
-                                Write-Warning "  Column with proportion $Width -> $ColWidth EMUs"
                             }
-                            $TotalWidth = ($ColumnWidthArray | Measure-Object -Sum).Sum
-                            Write-Warning "Total of all columns: $TotalWidth EMUs (should be ~$TableWidth)"
                         } else {
                             # Equal distribution
-                            if ($HasCustomWidths) {
-                                Write-Warning "Custom widths found but count mismatch: Expected $ColumnCount, got $($CustomColumnWidths.Count). Using equal distribution."
-                            }
                             $ColumnWidth = [int]($TableWidth / $ColumnCount)
                             for ($i = 0; $i -lt $ColumnCount; $i++) {
                                 $ColumnWidthArray += $ColumnWidth
@@ -410,11 +398,9 @@ $TableRows
                 if ($HasCustomWidths) {
                     $WidthSum = ($ColumnWidths | Measure-Object -Sum).Sum
                     if ($WidthSum -gt 0 -and [Math]::Abs($WidthSum - 1.0) -gt 0.01) {
-                        Write-Warning "Token '$Token': Column widths sum to $WidthSum instead of 1.0. Widths will be normalized."
                         # Normalize widths
                         $ColumnWidths = @($ColumnWidths | ForEach-Object { $_ / $WidthSum })
                     }
-                    Write-Warning "Token '$Token': Using custom column widths: $($ColumnWidths -join ', ')"
                 }
                 
                 # Store width metadata in token (will be parsed later during replacement)
