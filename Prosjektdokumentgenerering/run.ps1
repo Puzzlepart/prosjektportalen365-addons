@@ -7,15 +7,16 @@ param(
     [Parameter(Mandatory = $true)] [string]$ProjectUrl,
     [Parameter(Mandatory = $true)] [string]$TemplatePath,
     [Parameter(Mandatory = $true)] [string]$HubSiteUrl,
-    [Parameter(Mandatory = $false)] [string]$TargetFolder = "Delte dokumenter/Styringsdokumenter"
+    [Parameter(Mandatory = $false)] [string]$TargetFolder = "Delte dokumenter/Styringsdokumenter",
+    [Parameter(Mandatory = $false)] [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a"
 )
 
 try {
 
-    # Helper function to connect to SharePoint with managed identity or ClientId/Secret
+    # Helper function to connect to SharePoint with managed identity or interactive login
     # This function detects the execution context:
     # - In Azure Automation ($PSPrivateMetadata exists): Uses managed identity authentication
-    # - Outside Azure Automation: Uses ClientId/Secret from Automation variables (requires Azure Automation context)
+    # - Outside Azure Automation: Uses interactive login with delegated permissions
     function Connect-SharePoint {
         param(
             [Parameter(Mandatory = $true)]
@@ -32,18 +33,10 @@ try {
             $PnpParams.Add("ManagedIdentity", $true)
         }
         else {
-            # Fallback to ClientId/Secret from Automation variables
-            # Note: This requires running in an Azure Automation context
-            try {
-                $ClientId = Get-AutomationVariable -Name "ClientId"
-                $ClientSecret = Get-AutomationVariable -Name "ClientSecret"
-                Write-Output "Using ClientId/Secret authentication for $Url"
+            # Local/interactive context - use interactive login with delegated permissions
+            Write-Output "Using interactive login for $Url"
+            if ($ClientId) {
                 $PnpParams.Add("ClientId", $ClientId)
-                $PnpParams.Add("ClientSecret", $ClientSecret)
-            }
-            catch {
-                Write-Error "Failed to retrieve authentication variables. This script must run in Azure Automation context."
-                throw
             }
         }
 
@@ -63,7 +56,8 @@ try {
         throw "Failed to download template from $TemplatePath"
     }
 
-    Write-Output "Lastet ned mal: $TemplatePath"
+    $AbsoluteTemplateUrl = "$HubSiteUrl$TemplatePath"
+    Write-Output "Lastet ned mal: $AbsoluteTemplateUrl"
 
     # Parse tokens in PPTX
     Add-Type -AssemblyName System.IO.Compression.FileSystem | Out-Null
@@ -422,7 +416,9 @@ $TableRows
     $BaseFileName = [string](Split-Path $TemplatePath -LeafBase)
     $FileName = "{0}_{1:yyMMddHHmmss}.pptx" -f $BaseFileName, (Get-Date)
     Add-PnPFile -Path $NewPptx -Folder $TargetFolder -NewFileName $FileName | Out-Null
-    Write-Output "Lastet opp $FileName til $TargetFolder"
+    
+    $FileUrl = "/$TargetFolder/$FileName"
+    Write-Output "Lastet opp generert dokument til $FileUrl"
 
     # Clean up temporary files
     if (Test-Path $NewPptx) { Remove-Item $NewPptx -Force -ErrorAction SilentlyContinue }
