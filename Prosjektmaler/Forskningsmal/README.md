@@ -1,8 +1,8 @@
 # Forskningsmal for Prosjektportalen 365
 
-Forskningsmalen (FoU) for Prosjektportalen er en samling felter, lister, webdeler og tillegg som sammen utgjør en mal for forskningsprosjekter. Forskningsmalen er blitt utarbeidet i samarbeid med Høgskolen i Innlandet, og Puzzlepart har satt opp dette som mal for deling på GitHub. Videre forvaltning vil gjøres primært av Puzzlepart, og vi ønsker innspill på innholdet i malen. For spørsmål og innspill, logg gjerne en issue i dette området på GitHub eller send oss en e-post på <prosjektportalen@puzzlepart.com>.
+Forskningsmalen (FoU) for Prosjektportalen er en samling felter, lister, webdeler og tillegg som sammen utgjør en mal for forskningsprosjekter. Forskningsmalen er blitt utarbeidet i samarbeid med Høgskolen i Innlandet, og Puzzlepart har satt opp dette som mal for deling på GitHub. Videre forvaltning vil gjøres primært av Puzzlepart, og vi ønsker innspill på innholdet i malen. For spørsmål og innspill, logg gjerne en issue i dette området på GitHub eller send oss en e-post på <tarjei.ormestoyl@crayon.no>.
 
-Forskningsmalen installeres som tillegg til Prosjektportalen 365. Ved å installere forskningsmalen vil man få følgende satt opp i porteføljeområdet
+Forskningsmalen installeres som tillegg til Prosjektportalen. Ved å installere forskningsmalen vil man få følgende satt opp i porteføljeområdet
 
 1. Et nytt prosjekttillegg, `Forskningsmal`
 2. Fire nye lister i forskningsprosjektet, `Etiske vurderinger`, `Prosjektorganisasjon`, `Work Breakdown Structure` og `Publiseringer`
@@ -14,7 +14,7 @@ Forutsetninger:
 
 - Du har installert Prosjektportalen 365 på et område
 
-Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å installere med samme versjon som kommer med Prosjektportalen 365, som per 23.09.2024 er PnP.PowerShell 2.12.0.
+Denne pakken kommer ikke bundlet med PnP.PowerShell. Vi anbefaler sterkt å installere med samme versjon som kommer med Prosjektportalen 365, som per 16.12.2025 er PnP.PowerShell 3.1.0.
 
 1. Last ned release-pakken fra releases og pakk ut pakken lokalt.
 2. Kjør Install.ps1 med URL mot hub-området for å installere oppsettet.

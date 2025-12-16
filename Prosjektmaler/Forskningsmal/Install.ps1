@@ -50,10 +50,10 @@ $LogFilePath = "$PSScriptRoot/Install_Log_$([datetime]::Now.ToString("yy-MM-ddTh
 Start-PnPTraceLog -Path $LogFilePath -Level Debug
 
 # TODO: Replace version from package.json/git-tag
-Write-Host "Installing Prosjektportalen Forskningsmal version 1.0.0" -ForegroundColor Cyan
+Write-Host "Installing Prosjektportalen Forskningsmal version 1.0.1" -ForegroundColor Cyan
 
 #region Print installation user
-Connect-PnPOnline -Url $AdminSiteUrl -Interactive -ClientId $ClientId -ErrorAction Stop -WarningAction Ignore
+Connect-PnPOnline -Url $AdminSiteUrl -ClientId $ClientId -ErrorAction Stop -WarningAction Ignore
 $CurrentUser = Get-PnPProperty -Property CurrentUser -ClientObject (Get-PnPContext).Web
 Write-Host "[INFO] Installing with user [$($CurrentUser.Email)]"
 #endregion
@@ -113,7 +113,7 @@ EndAction
 StartAction("Configuring Forskningsmal tillegg and standardinnhold")
 try {
 
-  Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId -ErrorAction Stop
+  Connect-PnPOnline -Url $Url -ClientId $ClientId -ErrorAction Stop
 
   $ListContentList = Get-PnPList -Identity (Get-Resource -Name "Lists_ListContent_Title") -ErrorAction Stop
   $ProjectExtensionsList = Get-PnPList -Identity (Get-Resource -Name "Lists_ProjectExtensions_Title") -ErrorAction Stop
@@ -152,7 +152,7 @@ EndAction
 
 #region Logging installation
 Write-Host "[INFO] Logging installation entry" 
-Connect-PnPOnline -Url $Url -Interactive -ClientId $ClientId -ErrorAction Stop
+Connect-PnPOnline -Url $Url -ClientId $ClientId -ErrorAction Stop
 $InstallationEntriesList = Get-PnPList -Identity (Get-Resource -Name "Lists_InstallationLog_Title") -ErrorAction Stop
 $LastInstall = Get-PnPListItem -List $InstallationEntriesList.Id -Query "<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query></View>" | Select-Object -First 1 -Wait
 $PreviousVersion = "N/A"
@@ -161,7 +161,7 @@ if ($null -ne $LastInstall) {
 }
 
 # TODO: Replace version from package.json/git-tag
-$CustomizationInfo = "Prosjektportalen Forskningsmal 1.0.0"
+$CustomizationInfo = "Prosjektportalen Forskningsmal 1.0.1"
 $InstallStartTime = (Get-Date -Format o)
 $InstallEndTime = (Get-Date -Format o)
 

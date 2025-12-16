@@ -13,7 +13,7 @@ $PNP_TEMPLATES_BASEPATH = "$ROOT_PATH/Template"
 $GIT_HASH = git log --pretty=format:'%h' -n 1
 
 # TODO: Replace version from central location
-$RELEASE_NAME = "pp365-forskningsmal-1.0.0.$($GIT_HASH)"
+$RELEASE_NAME = "pp365-forskningsmal-1.0.1.$($GIT_HASH)"
 if ($USE_CHANNEL_CONFIG) {
     $RELEASE_NAME = "$($RELEASE_NAME)"
 }
