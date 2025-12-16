@@ -105,6 +105,17 @@ try {
         $TempFolder = [string](Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString()))
         [System.IO.Compression.ZipFile]::ExtractToDirectory($PptxPath, $TempFolder)
 
+        # Extract slide dimensions from presentation.xml
+        $PresentationXml = Join-Path $TempFolder "ppt\presentation.xml"
+        $SlideWidth = 9144000  # Default for 16:9
+        if (Test-Path $PresentationXml) {
+            $PresContent = Get-Content -LiteralPath $PresentationXml -Raw
+            if ($PresContent -match '<p:sldSz[^>]*cx="(\d+)"') {
+                $SlideWidth = [int]$matches[1]
+                Write-Warning "Detected slide width: $SlideWidth EMUs"
+            }
+        }
+
         $XmlFiles = Get-ChildItem -Path $TempFolder -Recurse -Include *.xml
     
         foreach ($File in $XmlFiles) {
@@ -124,7 +135,30 @@ try {
             
                 # Special handling for multi-column table data (tabs indicate columns, newlines indicate rows)
                 if ($Value -match "`t") {
-                    # Check if value contains header row marker
+                    # Check if value contains width metadata and header row marker
+                    $CustomColumnWidths = @()
+                    $HasCustomWidths = $false
+                    $CustomTableWidthRatio = 0.95  # Default
+                    
+                    # Extract table width ratio if present
+                    if ($Value -match "###TABLEWIDTH###([0-9.]+)###") {
+                        $CustomTableWidthRatio = [double]$matches[1]
+                        Write-Warning "Using custom table width ratio: $CustomTableWidthRatio"
+                        $Value = $Value -replace "###TABLEWIDTH###[0-9.]+###", ""
+                    }
+                    
+                    if ($Value -match "^###WIDTHS###([^#]+)###") {
+                        $WidthsString = $matches[1]
+                        Write-Warning "Raw widths string from metadata: '$WidthsString'"
+                        $CustomColumnWidths = @($WidthsString -split '\|' | ForEach-Object { 
+                            $CleanValue = $_ -replace ',', '.'
+                            Write-Warning "  Parsing width: '$_' -> '$CleanValue' -> $([double]$CleanValue)"
+                            [double]$CleanValue
+                        })
+                        $HasCustomWidths = $true
+                        $Value = $Value -replace "^###WIDTHS###[^#]+###", ""
+                    }
+                    
                     $HasHeader = $Value -match "^###HEADER###"
                     $ValueToProcess = $Value -replace "^###HEADER###", ""
                     
@@ -173,13 +207,35 @@ try {
                     }
                     
                     if ($FoundShape -and $ShapeXfrm) {
-                        # Use 90% of slide width (standard slide is 9144000 EMUs wide)
-                        $SlideWidth = 9144000
-                        $TableWidth = [int]($SlideWidth * 0.9)
-                        $ColumnWidth = [int]($TableWidth / $ColumnCount)
+                        # Use custom or default percentage of actual slide width for the table
+                        $TableWidth = [int]($SlideWidth * $CustomTableWidthRatio)
+                        Write-Warning "Table width: $TableWidth EMUs ($CustomTableWidthRatio of slide width $SlideWidth)"
                         
-                        # Center the table (5% margin on each side)
-                        $XOffset = [int]($SlideWidth * 0.05)
+                        # Calculate column widths based on custom widths or equal distribution
+                        $ColumnWidthArray = @()
+                        if ($HasCustomWidths -and $CustomColumnWidths.Count -eq $ColumnCount) {
+                            # Use custom widths
+                            Write-Warning "Applying custom column widths for table with $ColumnCount columns (Table width: $TableWidth EMUs)"
+                            foreach ($Width in $CustomColumnWidths) {
+                                $ColWidth = [int]($TableWidth * $Width)
+                                $ColumnWidthArray += $ColWidth
+                                Write-Warning "  Column with proportion $Width -> $ColWidth EMUs"
+                            }
+                            $TotalWidth = ($ColumnWidthArray | Measure-Object -Sum).Sum
+                            Write-Warning "Total of all columns: $TotalWidth EMUs (should be ~$TableWidth)"
+                        } else {
+                            # Equal distribution
+                            if ($HasCustomWidths) {
+                                Write-Warning "Custom widths found but count mismatch: Expected $ColumnCount, got $($CustomColumnWidths.Count). Using equal distribution."
+                            }
+                            $ColumnWidth = [int]($TableWidth / $ColumnCount)
+                            for ($i = 0; $i -lt $ColumnCount; $i++) {
+                                $ColumnWidthArray += $ColumnWidth
+                            }
+                        }
+                        
+                        # Center the table 
+                        $XOffset = [int](($SlideWidth - $TableWidth) / 2)
                         
                         # Extract Y position from original shape, or use default
                         if ($ShapeXfrm -match '<a:off[^>]*y="(\d+)"') {
@@ -195,7 +251,7 @@ try {
                         # Build table grid (column definitions)
                         $GridCols = ""
                         for ($i = 0; $i -lt $ColumnCount; $i++) {
-                            $GridCols += "<a:gridCol w=`"$ColumnWidth`"/>"
+                            $GridCols += "<a:gridCol w=`"$($ColumnWidthArray[$i])`"/>"
                         }
                         
                         # Build table rows
@@ -318,10 +374,56 @@ $TableRows
                 continue
             }
         
-            # Parse token format: {{List:ListName;Fields:Field1,Field2,Field3}}
-            if ($Token -match '\{\{List:([^;]+);Fields:([^}]+)\}\}') {
+            # Parse token format: {{List:ListName;Fields:Field1,Field2,Field3}} or {{List:ListName;Fields:Field1(0.1),Field2(0.2),Field3(0.7);Width:0.7}}
+            if ($Token -match '\{\{List:([^;]+);Fields:([^;]+)(?:;Width:([0-9.,]+))?\}\}') {
                 $ListName = $matches[1]
-                $FieldsArray = @($matches[2] -split ',' | ForEach-Object { $_.Trim() })
+                $FieldsSpec = $matches[2]
+                $TableWidthRatio = if ($matches[3]) { 
+                    $WidthValue = $matches[3] -replace ',', '.'
+                    [double]$WidthValue 
+                } else { 
+                    0.95  # Default to 95% of slide width
+                }
+                
+                # Parse field names and optional width specifications
+                $FieldsArray = @()
+                $ColumnWidths = @()
+                $HasCustomWidths = $false
+                
+                foreach ($FieldSpec in ($FieldsSpec -split ',' | ForEach-Object { $_.Trim() })) {
+                    # Match both dot and comma as decimal separator: FieldName(0.2) or FieldName(0,2)
+                    if ($FieldSpec -match '^([^(]+)\(([0-9.,]+)\)$') {
+                        # Field with width specification: FieldName(0.2)
+                        $FieldsArray += $matches[1].Trim()
+                        # Normalize decimal separator to dot for parsing
+                        $WidthString = $matches[2] -replace ',', '.'
+                        $ColumnWidths += [double]$WidthString
+                        $HasCustomWidths = $true
+                    } else {
+                        # Field without width specification
+                        $FieldsArray += $FieldSpec
+                        $ColumnWidths += 0
+                    }
+                }
+                
+                # Validate widths sum to ~1.0 if custom widths are specified
+                if ($HasCustomWidths) {
+                    $WidthSum = ($ColumnWidths | Measure-Object -Sum).Sum
+                    if ($WidthSum -gt 0 -and [Math]::Abs($WidthSum - 1.0) -gt 0.01) {
+                        Write-Warning "Token '$Token': Column widths sum to $WidthSum instead of 1.0. Widths will be normalized."
+                        # Normalize widths
+                        $ColumnWidths = @($ColumnWidths | ForEach-Object { $_ / $WidthSum })
+                    }
+                    Write-Warning "Token '$Token': Using custom column widths: $($ColumnWidths -join ', ')"
+                }
+                
+                # Store width metadata in token (will be parsed later during replacement)
+                $WidthMetadata = ""
+                if ($HasCustomWidths) {
+                    $WidthMetadata = "###WIDTHS###" + ($ColumnWidths -join "|") + "###"
+                }
+                # Store table width ratio
+                $WidthMetadata += "###TABLEWIDTH###$TableWidthRatio###"
             
                 # Fetch list fields to get display names
                 $FieldTitles = @()
@@ -394,7 +496,7 @@ $TableRows
                     # Add header row with field display names, separated by special marker ###HEADER###
                     $HeaderRow = ($FieldTitles -join "`t")
                     $TableText = ($Lines -join "`n")
-                    $Map[$Token] = "###HEADER###" + $HeaderRow + "`n" + $TableText
+                    $Map[$Token] = $WidthMetadata + "###HEADER###" + $HeaderRow + "`n" + $TableText
                 }
             }
             else {
