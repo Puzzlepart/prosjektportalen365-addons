@@ -4,4 +4,4 @@ Prosjektmaler/*/release/*
 Resources.json
 Resources-research.json
 node_modules
-Prosjektmaler/Forskningsmal/Template/Content/**/ProjectExtensions/*.txt
+Prosjektmaler/Forskningsmal/Template/Content/Research_content.*/*.txt

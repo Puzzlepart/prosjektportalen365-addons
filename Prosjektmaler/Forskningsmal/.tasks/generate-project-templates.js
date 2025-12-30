@@ -2,7 +2,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const pkg = require('../../package.json')
+const pkg = require('../package.json')
 const { format } = require('util')
 const { getFileContent } = require('./util')
 const JsonTokenReplace = require('@ptkdev/json-token-replace')
@@ -53,11 +53,11 @@ const channelReplaceValues = {}
 
 const JSON_MASTER_TEMPLATES_DIR = fs.readdirSync(path.resolve(__dirname, '../Template/JsonTemplates'))
 const JSON_TEMPLATE_PREFIX = '_JsonTemplate'
-const PROJECT_TEMPLATE_DIR = '../Template/Content/Portfolio_content.%s/ProjectTemplates/%s.txt'
+const PROJECT_TEMPLATE_DIR = '../Template/Content/Research_content.%s/%s.txt'
 
 // Ensure output directories exist
 Object.keys(RESOURCES_JSON).forEach(lng => {
-    const dir = path.resolve(__dirname, format('../Template/Content/Portfolio_content.%s/ProjectTemplates', lng))
+    const dir = path.resolve(__dirname, format('../Template/Content/Research_content.%s/', lng))
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true })
     }

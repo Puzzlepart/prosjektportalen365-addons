@@ -3,6 +3,14 @@
     <pnp:Preferences></pnp:Preferences>
     <pnp:Templates ID="CONTAINER-TEMPLATE-PP-RESEARCH-CONTENT-EN-US">
         <pnp:ProvisioningTemplate ID="TEMPLATE-PP-RESEARCH-EN-US" Scope="RootSite">
+            <pnp:Files>
+                <pnp:File Src="Content/Research_content.en-US/Researchtemplate.txt" Folder="ProjectExtensions" Level="Published" Overwrite="true">
+                    <pnp:Properties>
+                        <pnp:Property Key="Title" Value="Research Template" />
+                        <pnp:Property Key="GtDescription" Value="Customizations for research projects" />
+                    </pnp:Properties>
+                </pnp:File>
+            </pnp:Files>
             <pnp:Lists>
                 <pnp:ListInstance Title="Phase Checklist Research" Description="Standard phase checkpoints for research projects" DocumentTemplate="" TemplateType="100" Url="Lists/PhaseChecklistResearch" EnableVersioning="true" DraftVersionVisibility="0" ContentTypesEnabled="true" EnableFolderCreation="false" EnableAttachments="false">
                     <pnp:DataRows KeyColumn="Title" UpdateBehavior="Skip">
