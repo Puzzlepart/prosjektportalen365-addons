@@ -3,22 +3,9 @@ Param(
   [string]$Url,
   [Parameter(Mandatory = $false, HelpMessage = "Client ID of the Entra Id application used for interactive logins. Defaults to the multi-tenant Prosjektportalen app")]
   [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a",
-  [Parameter(Mandatory = $false, HelpMessage = "Language")]
-  [ValidateSet('Norwegian', 'English')]
-  [string]$Language = "English",
   [Parameter(Mandatory = $false, HelpMessage = "Do you want to perform an upgrade?")]
   [switch]$Upgrade
 )
-
-#region Handling installation language and culture
-$LanguageCodes = @{
-  "Norwegian" = 'no-NB';
-  "English"   = 'en-US';
-}
-
-$LanguageCode = $LanguageCodes[$Language]
-. "$PSScriptRoot/Scripts/Resources.ps1"
-Initialize-Resources -LanguageCode $LanguageCode
 
 <#
 Starts an action and writes the action name to the console. Make sure to update the $global:ACTIONS_COUNT before
@@ -115,6 +102,18 @@ try {
 
   Connect-PnPOnline -Url $Url -ClientId $ClientId -ErrorAction Stop
 
+  $Web = Get-PnPWeb -Include Language -ErrorAction Stop
+  [uint]$LanguageId = $Web.Language
+
+  if ($LanguageId -eq 1044) {
+    $LanguageCode = "no-NB"
+  }
+  else {
+    $LanguageCode = "en-US"
+  }
+  . "$PSScriptRoot/Scripts/Resources.ps1"
+  Initialize-Resources -LanguageCode $LanguageCode
+
   $ListContentList = Get-PnPList -Identity (Get-Resource -Name "Lists_ListContent_Title") -ErrorAction Stop
   $ProjectExtensionsList = Get-PnPList -Identity (Get-Resource -Name "Lists_ProjectExtensions_Title") -ErrorAction Stop
   $TemplateOptionsList = Get-PnPList -Identity (Get-Resource -Name "Lists_TemplateOptions_Title") -ErrorAction Stop
@@ -122,7 +121,7 @@ try {
   $ListContent = Get-PnPListItem -List $ListContentList.Id
   $ProjectExtension = Get-PnPListItem -List $ProjectExtensionsList.Id
   $TemplateOption = Get-PnPListItem -List $TemplateOptionsList.Id
-  $ResearchTemplateOption = (Get-Resource -Name "Lists_ProjectExtensions_Title")
+  $ResearchTemplateOption = (Get-Resource -Name "Lists_TemplateOptions_ResearchTemplate_Title")
   $ResearchTemplateCheckList = (Get-Resource -Name "Lists_ListContent_PhaseCheckpoints_Title")
   $ResearchProjectExtension = (Get-Resource -Name "Files_ResearchTemplate_Title")
   
@@ -156,8 +155,10 @@ Connect-PnPOnline -Url $Url -ClientId $ClientId -ErrorAction Stop
 $InstallationEntriesList = Get-PnPList -Identity (Get-Resource -Name "Lists_InstallationLog_Title") -ErrorAction Stop
 $LastInstall = Get-PnPListItem -List $InstallationEntriesList.Id -Query "<View><Query><OrderBy><FieldRef Name='Created' Ascending='False' /></OrderBy></Query></View>" | Select-Object -First 1 -Wait
 $PreviousVersion = "N/A"
+$InstallChannel = "main"
 if ($null -ne $LastInstall) {
   $PreviousVersion = $LastInstall.FieldValues["InstallVersion"]
+  $InstallChannel = $LastInstall.FieldValues["InstallChannel"]
 }
 
 # TODO: Replace version from package.json/git-tag
@@ -170,6 +171,7 @@ $InstallEntry = @{
   InstallStartTime = $InstallStartTime; 
   InstallEndTime   = $InstallEndTime; 
   InstallVersion   = $PreviousVersion;
+  InstallChannel   = $InstallChannel;
   InstallCommand   = $MyInvocation.Line.Substring(2);
 }
 

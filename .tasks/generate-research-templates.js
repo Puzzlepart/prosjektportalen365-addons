@@ -21,7 +21,7 @@ const templateNames = {
 const RESOURCES_JSON = getFileContent('Prosjektmaler/Forskningsmal/Template/Resources-research.json')
 const JSON_MASTER_TEMPLATES_DIR = fs.readdirSync(path.resolve(__dirname, '../Prosjektmaler/Forskningsmal/Template/JsonTemplates'))
 const JSON_TEMPLATE_PREFIX = '_JsonTemplate'
-const PROJECT_TEMPLATE_DIR = '../Prosjektmaler/Forskningsmal/Template/Content/Research_content.%s/ProjectExtensions/%s.txt'
+const PROJECT_TEMPLATE_DIR = '../Prosjektmaler/Forskningsmal/ProjectExtensions/%s.txt'
 
 // For each JSON template, replace the tokens and write the output to the correct folder.
 JSON_MASTER_TEMPLATES_DIR.forEach(templateFile => {

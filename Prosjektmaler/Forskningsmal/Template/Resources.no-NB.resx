@@ -62,7 +62,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="File_ResearchTemplate_Path" xml:space="preserve">
-        <value>Content/Research_content.no-NB/ProjectExtensions/Forskningsmal.txt</value>
+        <value>ProjectExtensions/Forskningsmal.txt</value>
     </data>
     <data name="Folder_ResearchTemplate_Name" xml:space="preserve">
         <value>Prosjekttillegg</value>
