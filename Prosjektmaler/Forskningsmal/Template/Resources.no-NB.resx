@@ -1043,7 +1043,7 @@
         <value>Kommunikasjonsplan</value>
     </data>
     <data name="Navigation_WBS_Url" xml:space="preserve">
-        <value>Lists/WorkBreakdownStructure/AllItems.aspx</value>
+        <value>Lists/Work Breakdown Structure/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectDeliveries_Url" xml:space="preserve">
         <value>Lists/Prosjektleveranser/AllItems.aspx</value>
@@ -1070,7 +1070,7 @@
         <value>Endringsanalyse</value>
     </data>
     <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
-        <value>Lists/Gevinstanalyse/AllItems.aspx</value>
+        <value>Lists/Gevinstanalyse og gevinstrealiseringsplan/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsAnalysis_Title" xml:space="preserve">
         <value>Gevinstanalyse og gevinstrealiseringsplan</value>

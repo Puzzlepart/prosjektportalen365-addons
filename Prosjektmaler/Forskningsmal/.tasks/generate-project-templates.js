@@ -53,22 +53,20 @@ const channelReplaceValues = {}
 
 const JSON_MASTER_TEMPLATES_DIR = fs.readdirSync(path.resolve(__dirname, '../Template/JsonTemplates'))
 const JSON_TEMPLATE_PREFIX = '_JsonTemplate'
-const PROJECT_TEMPLATE_DIR = '../Template/Content/Research_content.%s/%s.txt'
+const PROJECT_TEMPLATE_DIR = '../Template/ProjectExtensions/%s.txt'
 
-// Ensure output directories exist
-Object.keys(RESOURCES_JSON).forEach(lng => {
-    const dir = path.resolve(__dirname, format('../Template/Content/Research_content.%s/', lng))
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true })
-    }
-})
+// Ensure output directory exists
+const projectExtensionsDir = path.resolve(__dirname, '../Template/ProjectExtensions')
+if (!fs.existsSync(projectExtensionsDir)) {
+    fs.mkdirSync(projectExtensionsDir, { recursive: true })
+}
 
 // For each JSON template, replace the tokens and write the output to the correct folder.
 JSON_MASTER_TEMPLATES_DIR.forEach(templateFile => {
     const templateJson = getFileContent(`Template/JsonTemplates/${templateFile}`)
     const templateType = templateFile.substring(JSON_TEMPLATE_PREFIX.length).replace((/\.[^.]+/), '')
     const outputPaths = Object.keys(templateNames).reduce((acc, lng) => {
-        acc[lng] = path.resolve(__dirname, format(PROJECT_TEMPLATE_DIR, lng, templateNames[lng][templateType]))
+        acc[lng] = path.resolve(__dirname, format(PROJECT_TEMPLATE_DIR, templateNames[lng][templateType]))
         return acc
     }, {})
 
