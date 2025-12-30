@@ -5,6 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "@ptkdev/json-token-replace": "^1.2.2",
+    "xml2js": "^0.6.0"
+  },
   "keywords": ["Prosjektportalen", "forskningsmal", "SharePoint", "PnP", "Prosjektveiviseren"],
   "author": "Puzzlepart AS",
   "license": "MIT"
