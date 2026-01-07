@@ -161,7 +161,7 @@
         <value>Egendefinerte kolonner for Prosjektportalen</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
-        <value>Forskningsmal</value>
+        <value>Forskningsprosjekt</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>Dette er forskningsmalen for Prosjektportalen 365.</value>
@@ -730,7 +730,7 @@
     <data name="SiteFields_DeliveryStakeholders_Description" xml:space="preserve">
         <value>Oppgi hvilken interessent(er) leveransen påvirker</value>
     </data>
-    <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
+    <data name="Lists_EthicalConsiderations_Title" xml:space="preserve">
         <value>Etiske vurderinger</value>
     </data>
     <data name="SiteFields_Category_DisplayName" xml:space="preserve">
@@ -1090,7 +1090,7 @@
     <data name="Navigation_ProjectOrganization_Url" xml:space="preserve">
         <value>Lists/Prosjektorganisasjon/AllItems.aspx</value>
     </data>
-    <data name="Navigation_EthicalAssessments_Url" xml:space="preserve">
+    <data name="Navigation_EthicalConsiderations_Url" xml:space="preserve">
         <value>Lists/Etiske vurderinger/AllItems.aspx</value>
     </data>
     <data name="Navigation_Publishing_Url" xml:space="preserve">

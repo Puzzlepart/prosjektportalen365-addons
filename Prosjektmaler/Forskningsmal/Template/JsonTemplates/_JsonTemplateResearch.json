@@ -243,7 +243,7 @@
             ]
         },
         {
-            "Title": "{{Lists_EthicalAssessments_Title}}",
+            "Title": "{{Lists_EthicalConsiderations_Title}}",
             "Description": "",
             "Template": 100,
             "ContentTypesEnabled": true,
@@ -527,8 +527,8 @@
                 "Title": "{{Navigation_RNDTools_Title}}"
             },
             {
-                "Url": "{{Navigation_EthicalAssessments_Url}}",
-                "Title": "{{Lists_EthicalAssessments_Title}}"
+                "Url": "{{Navigation_EthicalConsiderations_Url}}",
+                "Title": "{{Lists_EthicalConsiderations_Title}}"
             },
             {
                 "Url": "{{Navigation_Publishing_Url}}",

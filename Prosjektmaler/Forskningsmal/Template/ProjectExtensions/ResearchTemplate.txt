@@ -453,7 +453,7 @@
                 "Title": "Uncertainty"
             },
             {
-                "Url": "Shared Documents/Forms/AllItems.aspx",
+                "Url": "Shared%20Documents/Forms/AllItems.aspx",
                 "Title": "Documents"
             },
             {
@@ -469,11 +469,11 @@
                 "Title": "Communication Plan"
             },
             {
-                "Url": "Lists/Work Breakdown Structure/AllItems.aspx",
+                "Url": "Lists/Work%20Breakdown%20Structure/AllItems.aspx",
                 "Title": "Work Breakdown Structure"
             },
             {
-                "Url": "Lists/Project Deliveries/AllItems.aspx",
+                "Url": "Lists/Project%20Deliveries/AllItems.aspx",
                 "Title": "Project Deliveries"
             },
             {
@@ -489,19 +489,19 @@
                 "Title": "Benefit Overview",
                 "Children": [
                     {
-                        "Url": "Lists/Change analysis/AllItems.aspx",
+                        "Url": "Lists/Change%20analysis/AllItems.aspx",
                         "Title": "Change Analysis"
                     },
                     {
-                        "Url": "Lists/Benefits analysis and realization plan/AllItems.aspx",
+                        "Url": "Lists/Benefits%20analysis%20and%20realization%20plan/AllItems.aspx",
                         "Title": "Benefits Analysis and Realization Plan"
                     },
                     {
-                        "Url": "Lists/Measurement indicators/AllItems.aspx",
+                        "Url": "Lists/Measurement%20Indicators/AllItems.aspx",
                         "Title": "Measurement Indicators"
                     },
                     {
-                        "Url": "Lists/Benefits followup/AllItems.aspx",
+                        "Url": "Lists/Benefits%20followup/AllItems.aspx",
                         "Title": "Benefits Follow-up"
                     },
                     {
@@ -519,7 +519,7 @@
                 "Title": "Meeting Minutes"
             },
             {
-                "Url": "Lists/ProjectOrganization/AllItems.aspx",
+                "Url": "Lists/Project%20Organization/AllItems.aspx",
                 "Title": "Project Organization"
             },
             {
@@ -527,7 +527,7 @@
                 "Title": "R&D Tools"
             },
             {
-                "Url": "Lists/EthicalAssessments/AllItems.aspx",
+                "Url": "Lists/Ethical%20Considerations/AllItems.aspx",
                 "Title": "Ethical Considerations"
             },
             {
@@ -539,7 +539,7 @@
                 "Title": "General"
             },
             {
-                "Url": "Lists/Phase Checklist/AllItems.aspx",
+                "Url": "Lists/Phase%20Checklist/AllItems.aspx",
                 "Title": "Phase Checklist"
             },
             {

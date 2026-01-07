@@ -146,7 +146,7 @@
         <value>Lists/TemplateOptions</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_Title" xml:space="preserve">
-        <value>Research Template</value>
+        <value>Research Project</value>
     </data>
     <data name="Lists_TemplateOptions_ResearchTemplate_Description" xml:space="preserve">
         <value>This is the research template for Project Portal 365.</value>
@@ -730,7 +730,7 @@
     <data name="SiteFields_DeliveryStakeholders_Description" xml:space="preserve">
         <value>Specify which stakeholder(s) the delivery affects</value>
     </data>
-    <data name="Lists_EthicalAssessments_Title" xml:space="preserve">
+    <data name="Lists_EthicalConsiderations_Title" xml:space="preserve">
         <value>Ethical Considerations</value>
     </data>
     <data name="SiteFields_Category_DisplayName" xml:space="preserve">
@@ -1025,7 +1025,7 @@
         <value>Uncertainty</value>
     </data>
     <data name="Navigation_Documents_Url" xml:space="preserve">
-        <value>Shared Documents/Forms/AllItems.aspx</value>
+        <value>Shared%20Documents/Forms/AllItems.aspx</value>
     </data>
     <data name="Navigation_Documents_Title" xml:space="preserve">
         <value>Documents</value>
@@ -1043,10 +1043,10 @@
         <value>Communication Plan</value>
     </data>
     <data name="Navigation_WBS_Url" xml:space="preserve">
-        <value>Lists/Work Breakdown Structure/AllItems.aspx</value>
+        <value>Lists/Work%20Breakdown%20Structure/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectDeliveries_Url" xml:space="preserve">
-        <value>Lists/Project Deliveries/AllItems.aspx</value>
+        <value>Lists/Project%20Deliveries/AllItems.aspx</value>
     </data>
     <data name="Navigation_ProjectTimeline_Url" xml:space="preserve">
         <value>SitePages/ProjectTimeline.aspx</value>
@@ -1064,40 +1064,40 @@
         <value>Benefit Overview</value>
     </data>
     <data name="Navigation_ChangeAnalysis_Url" xml:space="preserve">
-        <value>Lists/Change analysis/AllItems.aspx</value>
+        <value>Lists/Change%20analysis/AllItems.aspx</value>
     </data>
     <data name="Navigation_ChangeAnalysis_Title" xml:space="preserve">
         <value>Change Analysis</value>
     </data>
      <data name="Navigation_BenefitsAnalysis_Url" xml:space="preserve">
-        <value>Lists/Benefits analysis and realization plan/AllItems.aspx</value>
+        <value>Lists/Benefits%20analysis%20and%20realization%20plan/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsAnalysis_Title" xml:space="preserve">
         <value>Benefits Analysis and Realization Plan</value>
     </data>
    <data name="Navigation_MeasurementIndicators_Url" xml:space="preserve">
-        <value>Lists/Measurement indicators/AllItems.aspx</value>
+        <value>Lists/Measurement%20Indicators/AllItems.aspx</value>
     </data>
     <data name="Navigation_MeasurementIndicators_Title" xml:space="preserve">
         <value>Measurement Indicators</value>
     </data>
     <data name="Navigation_BenefitsFollowup_Url" xml:space="preserve">
-        <value>Lists/Benefits followup/AllItems.aspx</value>
+        <value>Lists/Benefits%20followup/AllItems.aspx</value>
     </data>
     <data name="Navigation_BenefitsFollowup_Title" xml:space="preserve">
         <value>Benefits Follow-up</value>
     </data>
     <data name="Navigation_ProjectOrganization_Url" xml:space="preserve">
-        <value>Lists/ProjectOrganization/AllItems.aspx</value>
+        <value>Lists/Project%20Organization/AllItems.aspx</value>
     </data>
-    <data name="Navigation_EthicalAssessments_Url" xml:space="preserve">
-        <value>Lists/EthicalAssessments/AllItems.aspx</value>
+    <data name="Navigation_EthicalConsiderations_Url" xml:space="preserve">
+        <value>Lists/Ethical%20Considerations/AllItems.aspx</value>
     </data>
     <data name="Navigation_Publishing_Url" xml:space="preserve">
         <value>Lists/Publications/AllItems.aspx</value>
     </data>
     <data name="Navigation_PhaseChecklist_Url" xml:space="preserve">
-        <value>Lists/Phase Checklist/AllItems.aspx</value>
+        <value>Lists/Phase%20Checklist/AllItems.aspx</value>
     </data>
     <data name="Navigation_SiteContent_Title" xml:space="preserve">
         <value>Site Contents</value>

@@ -135,6 +135,8 @@ try {
     $TemplateExtension = $ProjectExtension | Where-Object { $_["Title"] -eq $ResearchProjectExtension }
     $TemplateLayout["GtProjectExtensions"] = [Microsoft.SharePoint.Client.FieldLookupValue]@{"LookupId" = $TemplateExtension.Id }
   
+    $TemplateLayout["GtProjectTemplate"] = 1
+    
     $TemplateLayout.SystemUpdate()
     $TemplateLayout.Context.ExecuteQuery()
   }
