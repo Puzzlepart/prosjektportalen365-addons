@@ -218,7 +218,7 @@
         <value>Dato for søknadsfrist</value>
     </data>
     <data name="SiteFields_GtcCristinCode_DisplayName" xml:space="preserve">
-        <value>Cristin prosjektkode</value>
+        <value>Nasjonalt vitenarkiv (NVA) prosjektkode</value>
     </data>
     <data name="SiteFields_GtcCristinCode_Description" xml:space="preserve">
         <value></value>
@@ -536,16 +536,16 @@
         <value>Er den ansatte første, siste eller medforfatter? Angi navn og rolle.</value>
     </data>
     <data name="SiteFields_GtcPubResultId_DisplayName" xml:space="preserve">
-        <value>CRISTIN resultat-ID</value>
+        <value>Nasjonalt vitenarkiv (NVA) resultat-ID</value>
     </data>
     <data name="SiteFields_GtcPubResultId_Description" xml:space="preserve">
-        <value>Hva er CRISTIN resultat-ID´en for publikasjonen?</value>
+        <value>Hva er Nasjonalt vitenarkiv (NVA) resultat-ID´en for publikasjonen?</value>
     </data>
     <data name="SiteFields_GtcPubLink_DisplayName" xml:space="preserve">
-        <value>URL lenke til CRISTIN/ NVA</value>
+        <value>URL lenke til Nasjonalt vitenarkiv (NVA)</value>
     </data>
     <data name="SiteFields_GtcPubLink_Description" xml:space="preserve">
-        <value>Finn publikasjonen på CRISTIN/NVA, og kopier hele lenken inn her. Få med HTTPS://</value>
+        <value>Finn publikasjonen på Nasjonalt vitenarkiv (NVA), og kopier hele lenken inn her. Få med HTTPS://</value>
     </data>
     <data name="SiteFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
         <value>Er publikasjonen publisert?</value>

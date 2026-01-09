@@ -218,7 +218,7 @@
         <value>Date for application deadline</value>
     </data>
     <data name="SiteFields_GtcCristinCode_DisplayName" xml:space="preserve">
-        <value>Cristin Project Code</value>
+        <value>Nasjonalt vitenarkiv (NVA) Project Code</value>
     </data>
     <data name="SiteFields_GtcCristinCode_Description" xml:space="preserve">
         <value></value>
@@ -536,16 +536,16 @@
         <value>Are employees first, last or co-authored? Enter name and role.</value>
     </data>
     <data name="SiteFields_GtcPubResultId_DisplayName" xml:space="preserve">
-        <value>CRISTIN Result ID</value>
+        <value>Nasjonalt vitenarkiv (NVA) Result ID</value>
     </data>
     <data name="SiteFields_GtcPubResultId_Description" xml:space="preserve">
-        <value>What is the CRISTIN result ID for the publication?</value>
+        <value>What is the Nasjonalt vitenarkiv (NVA) result ID for the publication?</value>
     </data>
     <data name="SiteFields_GtcPubLink_DisplayName" xml:space="preserve">
-        <value>URL link to CRISTIN/ NVA</value>
+        <value>URL link to Nasjonalt vitenarkiv (NVA)</value>
     </data>
     <data name="SiteFields_GtcPubLink_Description" xml:space="preserve">
-        <value>Find the publication at CRISTIN/NVA, and copy the full link here. Include HTTPS://.</value>
+        <value>Find the publication at Nasjonalt vitenarkiv (NVA), and copy the full link here. Include HTTPS://.</value>
     </data>
     <data name="SiteFields_GtcPubIsPublished_DisplayName" xml:space="preserve">
         <value>Is Publication Published?</value>
