@@ -11,12 +11,9 @@ param(
     [Parameter(Mandatory = $false)] [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a"
 )
 
-try {
+$ErrorActionPreference = "Stop"
 
-    # Helper function to connect to SharePoint with managed identity or interactive login
-    # This function detects the execution context:
-    # - In Azure Automation ($PSPrivateMetadata exists): Uses managed identity authentication
-    # - Outside Azure Automation: Uses interactive login with delegated permissions
+try {
     function Connect-SharePoint {
         param(
             [Parameter(Mandatory = $true)]
@@ -43,7 +40,6 @@ try {
         Connect-PnPOnline @PnpParams
     }
 
-    # Connect to Hub site to download template
     Connect-SharePoint -Url $HubSiteUrl
 
     $TempDir = [string]([System.IO.Path]::GetTempPath()).TrimEnd('\', '/')
