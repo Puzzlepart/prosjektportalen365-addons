@@ -7,13 +7,21 @@ param(
     [Parameter(Mandatory = $true)] [string]$ProjectUrl,
     [Parameter(Mandatory = $true)] [string]$TemplatePath,
     [Parameter(Mandatory = $true)] [string]$HubSiteUrl,
-    [Parameter(Mandatory = $false)] [string]$TargetFolder = "Delte dokumenter/Styringsdokumenter",
+    [Parameter(Mandatory = $false)] [string]$TargetLibrary = "Delte dokumenter",
+    [Parameter(Mandatory = $false)] [string]$TargetFolder = "Prosjektdokumenter",
     [Parameter(Mandatory = $false)] [string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a"
 )
 
 $ErrorActionPreference = "Stop"
 
 try {
+    # Validate SharePoint URLs to catch typos early
+    foreach ($Url in @($ProjectUrl, $HubSiteUrl)) {
+        if ($Url -notmatch '^https://[a-zA-Z0-9\-]+\.sharepoint\.(com|us|de|cn)/') {
+            throw "Invalid SharePoint URL format: $Url. Expected format: https://tenant.sharepoint.com/sites/sitename"
+        }
+    }
+
     function Connect-SharePoint {
         param(
             [Parameter(Mandatory = $true)]
@@ -45,11 +53,22 @@ try {
     $TempDir = [string]([System.IO.Path]::GetTempPath()).TrimEnd('\', '/')
     $FileName = [string]([System.IO.Path]::GetFileName($TemplatePath))
     
-    Get-PnPFile -Url $TemplatePath -Path $TempDir -FileName $FileName -AsFile -Force | Out-Null
-    $LocalPath = Join-Path $TempDir $FileName
+    # Add unique suffix to prevent temp file collisions during concurrent execution
+    $UniqueSuffix = [System.Guid]::NewGuid().ToString().Substring(0, 8)
+    $SafeFileName = [System.IO.Path]::GetFileNameWithoutExtension($FileName) + "_$UniqueSuffix" + [System.IO.Path]::GetExtension($FileName)
+    
+    Get-PnPFile -Url $TemplatePath -Path $TempDir -FileName $SafeFileName -AsFile -Force | Out-Null
+    $LocalPath = Join-Path $TempDir $SafeFileName
 
     if (-not (Test-Path $LocalPath)) {
         throw "Failed to download template from $TemplatePath"
+    }
+
+    # Validate file is actually a PPTX (ZIP file with PK signature)
+    $FileBytes = [System.IO.File]::ReadAllBytes($LocalPath)
+    if ($FileBytes.Length -lt 2 -or $FileBytes[0] -ne 0x50 -or $FileBytes[1] -ne 0x4B) {
+        Remove-Item $LocalPath -Force
+        throw "Template file is not a valid PPTX file. Ensure the template path points to a .pptx file."
     }
 
     $AbsoluteTemplateUrl = "$HubSiteUrl$TemplatePath"
@@ -513,11 +532,31 @@ $TableRows
     # Upload the generated PPTX back to the project's document library
     Connect-SharePoint -Url $ProjectUrl | Out-Null
 
+    # Validate TargetFolder doesn't contain path traversal or absolute paths
+    if ($TargetFolder -match '\.\.' -or $TargetFolder -match '^[/\\]' -or $TargetFolder -match ':') {
+        throw "Invalid TargetFolder path. Must be a simple folder name without '..' or absolute paths."
+    }
+    
+    # Normalize and validate TargetLibrary exists
+    $TargetLibrary = $TargetLibrary.TrimStart('/', '\').Replace('\', '/')
+    try {
+        $Library = Get-PnPList -Identity $TargetLibrary -ErrorAction Stop
+        if ($null -eq $Library) {
+            throw "Library '$TargetLibrary' not found in project site."
+        }
+    }
+    catch {
+        throw "Failed to validate target library '$TargetLibrary': $_"
+    }
+    
+    # Construct full folder path
+    $FullFolderPath = if ($TargetFolder) { "$TargetLibrary/$TargetFolder" } else { $TargetLibrary }
+
     $BaseFileName = [string](Split-Path $TemplatePath -LeafBase)
     $FileName = "{0}_{1:yyMMddHHmmss}.pptx" -f $BaseFileName, (Get-Date)
-    Add-PnPFile -Path $NewPptx -Folder $TargetFolder -NewFileName $FileName | Out-Null
+    Add-PnPFile -Path $NewPptx -Folder $FullFolderPath -NewFileName $FileName | Out-Null
     
-    $FileUrl = "/$TargetFolder/$FileName"
+    $FileUrl = "$ProjectUrl/$FullFolderPath/$FileName"
     Write-Output "Lastet opp generert dokument til $FileUrl"
 
     # Clean up temporary files
