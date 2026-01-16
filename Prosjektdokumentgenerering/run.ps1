@@ -512,7 +512,18 @@ $TableRows
                 else {
                     # Add header row with field display names, separated by special marker ###HEADER###
                     $HeaderRow = ($FieldTitles -join "`t")
-                    $TableText = ($Lines -join "`n")
+                    
+                    # If no data rows, create a placeholder row with "Tekst" in each column
+                    if ($Lines.Count -eq 0) {
+                        $PlaceholderCells = @()
+                        for ($i = 0; $i -lt $FieldsArray.Count; $i++) {
+                            $PlaceholderCells += "Tekst"
+                        }
+                        $TableText = ($PlaceholderCells -join "`t")
+                    } else {
+                        $TableText = ($Lines -join "`n")
+                    }
+                    
                     $Map[$Token] = $WidthMetadata + "###HEADER###" + $HeaderRow + "`n" + $TableText
                 }
             }
