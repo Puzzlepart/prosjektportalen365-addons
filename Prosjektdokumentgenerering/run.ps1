@@ -2,10 +2,10 @@
 
 ###
 # How to start runbook from local context:
-# Start-AzAutomationRunbook -ResourceGroupName "Prosjektportalen" -AutomationAccountName "Prosjektportalen-Premium-Account" -Name "ProjectDocumentGeneration" -Parameters @{ProjectUrl="https://puzzlepart.sharepoint.com/sites/Vino001";TemplatePath="/sites/pp-vmp/Dokumentgenereringsmaler/MAL_Styringsdokument.pptx";HubSiteUrl="https://puzzlepart.sharepoint.com/sites/pp-vmp"}
+# Start-AzAutomationRunbook -ResourceGroupName "Prosjektportalen" -AutomationAccountName "Prosjektportalen-Premium-Account" -Name "ProjectDocumentGeneration" -Parameters @{ProjectUrl="https://puzzlepart.sharepoint.com/sites/Vino001";SiteRelativeTemplateFilePath="/Dokumentgenereringsmaler/MAL_Styringsdokument.pptx";HubSiteUrl="https://puzzlepart.sharepoint.com/sites/pp-vmp"}
 param(
     [Parameter(Mandatory = $true)] [string]$ProjectUrl,
-    [Parameter(Mandatory = $true)] [string]$TemplatePath,
+    [Parameter(Mandatory = $true)] [string]$SiteRelativeTemplateFilePath,  # Site-relative path (e.g., "/Dokumentgenereringsmaler/Template.pptx")
     [Parameter(Mandatory = $true)] [string]$HubSiteUrl,
     [Parameter(Mandatory = $false)] [string]$TargetLibrary = "Delte dokumenter",
     [Parameter(Mandatory = $false)] [string]$TargetFolder = "Prosjektdokumenter",
@@ -34,12 +34,10 @@ try {
     
         if ($null -ne $PSPrivateMetadata) {
             # Azure Automation runbook context - use managed identity
-            Write-Output "Using managed identity authentication for $Url"
             $PnpParams.Add("ManagedIdentity", $true)
         }
         else {
             # Local/interactive context - use interactive login with delegated permissions
-            Write-Output "Using interactive login for $Url"
             if ($ClientId) {
                 $PnpParams.Add("ClientId", $ClientId)
             }
@@ -51,17 +49,17 @@ try {
     Connect-SharePoint -Url $HubSiteUrl
 
     $TempDir = [string]([System.IO.Path]::GetTempPath()).TrimEnd('\', '/')
-    $FileName = [string]([System.IO.Path]::GetFileName($TemplatePath))
+    $FileName = [string]([System.IO.Path]::GetFileName($SiteRelativeTemplateFilePath))
     
     # Add unique suffix to prevent temp file collisions during concurrent execution
     $UniqueSuffix = [System.Guid]::NewGuid().ToString().Substring(0, 8)
     $SafeFileName = [System.IO.Path]::GetFileNameWithoutExtension($FileName) + "_$UniqueSuffix" + [System.IO.Path]::GetExtension($FileName)
     
-    Get-PnPFile -Url $TemplatePath -Path $TempDir -FileName $SafeFileName -AsFile -Force | Out-Null
+    Get-PnPFile -Url $SiteRelativeTemplateFilePath -Path $TempDir -FileName $SafeFileName -AsFile -Force | Out-Null
     $LocalPath = Join-Path $TempDir $SafeFileName
 
     if (-not (Test-Path $LocalPath)) {
-        throw "Failed to download template from $TemplatePath"
+        throw "Failed to download template from $SiteRelativeTemplateFilePath"
     }
 
     # Validate file is actually a PPTX (ZIP file with PK signature)
@@ -70,9 +68,6 @@ try {
         Remove-Item $LocalPath -Force
         throw "Template file is not a valid PPTX file. Ensure the template path points to a .pptx file."
     }
-
-    $AbsoluteTemplateUrl = "$HubSiteUrl$TemplatePath"
-    Write-Output "Lastet ned mal: $AbsoluteTemplateUrl"
 
     # Parse tokens in PPTX
     Add-Type -AssemblyName System.IO.Compression.FileSystem | Out-Null
@@ -563,12 +558,12 @@ $TableRows
     # Construct full folder path
     $FullFolderPath = if ($TargetFolder) { "$TargetLibrary/$TargetFolder" } else { $TargetLibrary }
 
-    $BaseFileName = [string](Split-Path $TemplatePath -LeafBase)
+    $BaseFileName = [string](Split-Path $SiteRelativeTemplateFilePath -LeafBase)
     $FileName = "{0}_{1:yyMMddHHmmss}.pptx" -f $BaseFileName, (Get-Date)
     Add-PnPFile -Path $NewPptx -Folder $FullFolderPath -NewFileName $FileName | Out-Null
     
     $FileUrl = "$ProjectUrl/$FullFolderPath/$FileName"
-    Write-Output "Lastet opp generert dokument til $FileUrl"
+    Write-Output $FileUrl
 
     # Clean up temporary files
     if (Test-Path $NewPptx) { Remove-Item $NewPptx -Force -ErrorAction SilentlyContinue }
