@@ -10,7 +10,7 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$model_name_images = "dall-e",
     [Parameter(Mandatory = $false)]
-    [string]$api_version = "2024-05-01-preview",
+    [string]$api_version = "2025-04-01-preview",
     [Parameter(Mandatory = $false)]
     [string]$api_version_images = "2024-02-15-preview",
     [Parameter(Mandatory = $false)]
@@ -77,9 +77,22 @@ $TargetLists = @(
     @{Name = "Endringsanalyse"; Max = 3 },
     @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
     @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 30 }
-    @{Name = "Ressursallokering"; Max = 7 }
+    @{Name = "Gevinstoppfølging"; Max = 30 },
+    @{Name = "Ressursallokering"; Max = 7 },
+    @{Name = "Kontaktliste"; Max = 10 }
 )
+
+$TargetDocSetLibs = @(
+    @{Name = "Avvik fra entreprenør"; Max = 4 },
+    @{Name = "Avklaringer fra entreprenør"; Max = 5 },
+    @{Name = "Kontrollørmelding fra byggherre"; Max = 3 },
+    @{Name = "Varsel og krav fra entreprenør"; Max = 5 },
+    @{Name = "Endringsordre fra byggherre"; Max = 7 },
+    @{Name = "Prisforespørsel fra byggherre"; Max = 3 },
+    @{Name = "Målebrev fra entreprenør"; Max = 2 },
+    @{Name = "Geometrisk kontroll fra entreprenør"; Max = 1 }
+)
+
 
 Write-Output "Script ready to generate demo content with AI in site '$SiteTitle'"
 
@@ -93,6 +106,12 @@ $TargetLists | ForEach-Object {
     . .\GenerateProjectListContent.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $ListTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -AdditionalPrompt $AdditionalPrompt
 }
 
-. .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt
+$TargetDocSetLibs | ForEach-Object {
+    $LibTitle = $_["Name"]
+    $PromptMaxElements = $_["Max"]
+    . .\GenerateProjectDocumentSetLibrary.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $LibTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -AdditionalPrompt $AdditionalPrompt
+}
 
-. .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt -ProjectStatusContentTypeId $ProjectStatusContentTypeId
+ . .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt
+
+ . .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt -ProjectStatusContentTypeId $ProjectStatusContentTypeId
