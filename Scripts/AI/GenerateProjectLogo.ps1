@@ -33,6 +33,6 @@ $UploadedFile = Add-PnPFile -Path $LogoPath -Folder "SiteAssets" -ErrorAction Si
 
 $SiteAssetsLogoPath = "$($Web.ServerRelativeUrl)/SiteAssets/$($LogoFileName)"
 
-$WebOutput = Set-PnPWebHeader -SiteLogoUrl $SiteAssetsLogoPath -SiteThumbnailUrl $SiteAssetsLogoPath -ErrorAction SilentlyContinue
+Set-PnPWeb -SiteLogoUrl $SiteAssetsLogoPath -ErrorAction SilentlyContinue
 
 Write-Output "`tProject logo set for project '$SiteTitle'. This will take some minutes to propagate."

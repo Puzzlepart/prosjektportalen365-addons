@@ -10,6 +10,9 @@ try {
     if ($null -eq $MatchingProjectInHub) {
         Write-Output "`tProject not found in hub site. Skipping project timeline items generation."
         return
+    }    elseif ($MatchingProjectInHub.Count -gt 1) {
+        Write-Output "`tMultiple projects found in hub site. Skipping project timeline items generation."
+        return
     }
 
     $FieldPrompt = Get-FieldPromptForList -ListTitle "Tidslinjeinnhold" -SkipFields @("GtSiteIdLookup")
@@ -46,6 +49,6 @@ try {
     
 }
 catch {
-    Write-Output "Failed to process project status report in hub site."
+    Write-Output "Failed to process project timeline items in hub site."
     Write-Output $_.Exception.Message
 }

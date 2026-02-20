@@ -4,6 +4,12 @@ param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersE
 
 Connect-SharePoint -Url $Url
 
+$List = Get-PnPList -Identity $ListTitle -ErrorAction SilentlyContinue
+if ($null -eq $List) {
+    Write-Output "`tList '$ListTitle' not found on site. Skipping..."
+    return
+}
+
 Write-Output "`tProcessing list '$ListTitle'. Generating prompt based on list configuration..."
 $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle -UsersEmails $UsersEmails
 
