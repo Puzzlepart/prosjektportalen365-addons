@@ -25,6 +25,7 @@ class AggregatedBenefitValue {
     [string]$GtMeasurementValue
     [string]$GtMeasurementComment
     [string]$GtcGoalAchievement
+    [string]$GtcPartOfProgram
 }
 
 function Connect-SharePoint($Url) {
@@ -80,6 +81,7 @@ function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
         $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Gevinst" -InternalName "GtcBenefitTitle" -Type Text
         $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Måleindikator" -InternalName "GtcMeasurementIndicator" -Type Text
         $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Måloppnåelse" -InternalName "GtcGoalAchievement" -Type Number
+        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Tilhører program" -InternalName "GtcPartOfProgram" -Type Note
 
         $FieldsToAdd = @(
             "GtProcess", # Endringsprosess
@@ -102,11 +104,11 @@ function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
             $AddedField = Add-PnPField -List $BenefitsListName -Field $field
         }
 
-        $NewView = Add-PnPView -List $BenefitsListName -Title "Alle gevinster" -Fields @("GtcProjectName", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
+        $NewView = Add-PnPView -List $BenefitsListName -Title "Alle gevinster" -Fields @("GtcProjectName", "GtcPartOfProgram", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
     }
 }
 
-function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl) {
+function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl, $PartOfProgram) {
     $BenefitsAggregationItems = @()
     
     try {        
@@ -164,6 +166,7 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl) {
             $benefitItem.GtcUniqueKey = "$SiteId-$changeId-$($gevinst.Id)-0-0"
             $benefitItem.GtcProjectName = $ProjectName
             $benefitItem.GtcProjectUrl = $ProjectUrl
+            $benefitItem.GtcPartOfProgram = $PartOfProgram
             if ($endring) {
                 $benefitItem.GtcChangeTitle = $endring.FieldValues["Title"]
                 $benefitItem.GtProcess = $endring.FieldValues["GtProcess"]
@@ -195,6 +198,7 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl) {
                 
                 $benefitItem.GtcProjectName = $ProjectName
                 $benefitItem.GtcProjectUrl = $ProjectUrl
+                $benefitItem.GtcPartOfProgram = $PartOfProgram
                 if ($endring) {
                     $benefitItem.GtcChangeTitle = $endring.FieldValues["Title"]
                     $benefitItem.GtProcess = $endring.FieldValues["GtProcess"]
@@ -310,15 +314,45 @@ if (-not $UseManagedIdentity) {
 
 
 Connect-SharePoint -Url $HubUrl
-Get-PnPListItem -List "Prosjekter" -PageSize 500 -Fields "Id", "Title", "GtSiteUrl" | ForEach-Object {
+$AllProjects = Get-PnPListItem -List "Prosjekter" -PageSize 500 -Fields "Id", "Title", "GtSiteUrl", "GtChildProjects"
+
+# Build program membership lookup: ProjectItemId -> list of program titles
+$ProgramMembership = @{}
+foreach ($proj in $AllProjects) {
+    $ChildProjectsValue = $proj.FieldValues["GtChildProjects"]
+    if (-not [string]::IsNullOrEmpty($ChildProjectsValue)) {
+        try {
+            $ChildIds = $ChildProjectsValue | ConvertFrom-Json
+            foreach ($ChildId in $ChildIds) {
+                $ChildIdInt = [int]$ChildId
+                if (-not $ProgramMembership.ContainsKey($ChildIdInt)) {
+                    $ProgramMembership[$ChildIdInt] = @()
+                }
+                $ProgramMembership[$ChildIdInt] += $proj.FieldValues["Title"]
+            }
+        }
+        catch {
+            Write-Warning "Failed to parse GtChildProjects for '$($proj.FieldValues["Title"])': $($_.Exception.Message)"
+        }
+    }
+}
+
+$AllProjects | ForEach-Object {
+    $ProjectItemId = $_.Id
     $ProjectName = $_.FieldValues["Title"]
     $ProjectUrl = $_.FieldValues["GtSiteUrl"]
+
+    # Determine program membership for this project
+    $PartOfProgram = ""
+    if ($ProgramMembership.ContainsKey($ProjectItemId)) {
+        $PartOfProgram = $ProgramMembership[$ProjectItemId] -join "; "
+    }
 
     Write-Output "Processing project site: $ProjectUrl"
     Connect-SharePoint -Url $ProjectUrl
 
     Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
-    $AggregationItems = Aggregate-BenefitsToHub -ProjectName $ProjectName -ProjectUrl $ProjectUrl -HubUrl $HubUrl
+    $AggregationItems = Aggregate-BenefitsToHub -ProjectName $ProjectName -ProjectUrl $ProjectUrl -HubUrl $HubUrl -PartOfProgram $PartOfProgram
     Write-Output "Built array with $($AggregationItems.Count) items for project '$ProjectName'"
         
     if ( $AggregationItems.Count -eq 0) {
