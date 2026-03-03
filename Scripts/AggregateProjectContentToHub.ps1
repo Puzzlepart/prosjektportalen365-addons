@@ -32,11 +32,12 @@ function Connect-SharePoint($Url) {
     $pnpParams = @{ 
         Url = $Url
     }
-    if ($null -ne $PSPrivateMetadata) {
-        #azure runbook context
+    if ($global:__UseManagedIdentity) {
+        Write-Output "Connecting to $Url using Managed Identity"
         $pnpParams.Add("ManagedIdentity", $true)
     }
     else {
+        Write-Output "Connecting to $Url using ClientId $($global:__ClientId)"
         $pnpParams.Add("ClientId", $global:__ClientId)
     }
 
@@ -279,8 +280,19 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl, $PartOfProg
 }
 
 $global:__ClientId = $ClientId
-$UseManagedIdentity = ($null -ne $PSPrivateMetadata)
+$global:__UseManagedIdentity = ($null -ne $PSPrivateMetadata) -or ($null -ne (Get-Command Get-AutomationVariable -ErrorAction SilentlyContinue)) -or ($env:IDENTITY_ENDPOINT -ne $null)
 $ErrorActionPreference = "Stop"
+
+if ($global:__UseManagedIdentity) {
+    Write-Output "Running in Azure Automation context (Managed Identity)"
+    Write-Output "PowerShell version: $($PSVersionTable.PSVersion)"
+    if ($PSVersionTable.PSVersion.Major -lt 7) {
+        Write-Error "Managed Identity authentication requires PowerShell 7.2+. Current version: $($PSVersionTable.PSVersion). Please update the runbook runtime to PowerShell 7.2 in Azure Automation."
+        exit 1
+    }
+} else {
+    Write-Output "Running in interactive context (ClientId: $ClientId)"
+}
 
 if ($null -eq (Get-Command Connect-PnPOnline -ErrorAction SilentlyContinue)) {
     Write-Output "You have to load the PnP.PowerShell module before running this script!"
@@ -291,7 +303,7 @@ $UniqueKeyFieldXml = '<Field Type="Text" Name="GtcUniqueKey" DisplayName="Unik n
 Connect-SharePoint -Url $HubUrl
 EnsureBenefitsListExists -Url $HubUrl -UniqueKeyFieldXml $UniqueKeyFieldXml
 
-if (-not $UseManagedIdentity) {
+if (-not $global:__UseManagedIdentity) {
     try {
         $AdminUrl = $HubUrl -replace "^(https://[^\.]+)\.sharepoint\.com.*$", '$1-admin.sharepoint.com/'
 
