@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp-nnd/",# = "https://prosjektportalen.sharepoint.com/sites/pp365",
+    [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp365",
     [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
 )
 
@@ -108,37 +108,48 @@ function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
         "GtMeasurementComment"      # Målkommentar
     )
 
-    # Get existing fields on the list to check what's already there
-    $ExistingFields = Get-PnPField -List $BenefitsListName | Select-Object -ExpandProperty InternalName
+    try {
+        # Get existing fields on the list to check what's already there
+        $ExistingFields = Get-PnPField -List $BenefitsListName | Select-Object -ExpandProperty InternalName
 
-    # Ensure the UniqueKey XML field exists
-    if ("GtcUniqueKey" -notin $ExistingFields) {
-        Write-Output "`tAdding field 'GtcUniqueKey' to '$BenefitsListName'"
-        $NewField = Add-PnPFieldFromXml -List $BenefitsListName -FieldXml $UniqueKeyFieldXml
-    }
+        # Ensure the UniqueKey XML field exists
+        if ("GtcUniqueKey" -notin $ExistingFields) {
+            Write-Output "`tAdding field 'GtcUniqueKey' to '$BenefitsListName'"
+            $NewField = Add-PnPFieldFromXml -List $BenefitsListName -FieldXml $UniqueKeyFieldXml
+        }
 
-    # Ensure all custom fields exist
-    foreach ($field in $CustomFields) {
-        if ($field.InternalName -notin $ExistingFields) {
-            Write-Output "`tAdding field '$($field.InternalName)' to '$BenefitsListName'"
-            $NewField = Add-PnPField -List $BenefitsListName -DisplayName $field.DisplayName -InternalName $field.InternalName -Type $field.Type
+        # Ensure all custom fields exist
+        foreach ($field in $CustomFields) {
+            if ($field.InternalName -notin $ExistingFields) {
+                Write-Output "`tAdding field '$($field.InternalName)' to '$BenefitsListName'"
+                $NewField = Add-PnPField -List $BenefitsListName -DisplayName $field.DisplayName -InternalName $field.InternalName -Type $field.Type
+            }
+        }
+
+        # Ensure all site columns exist on the list
+        foreach ($fieldName in $SiteColumnsToAdd) {
+            if ($fieldName -notin $ExistingFields) {
+                Write-Output "`tAdding site column '$fieldName' to '$BenefitsListName'"
+                $AddedField = Add-PnPField -List $BenefitsListName -Field $fieldName
+            }
+        }
+
+        # Ensure the default view exists
+        $ViewName = "Alle gevinster"
+        $ExistingView = Get-PnPView -List $BenefitsListName -Identity $ViewName -ErrorAction SilentlyContinue
+        if ($null -eq $ExistingView) {
+            Write-Output "`tCreating view '$ViewName' on '$BenefitsListName'"
+            $NewView = Add-PnPView -List $BenefitsListName -Title $ViewName -Fields @("GtcProjectName", "GtcPartOfProgram", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
         }
     }
-
-    # Ensure all site columns exist on the list
-    foreach ($fieldName in $SiteColumnsToAdd) {
-        if ($fieldName -notin $ExistingFields) {
-            Write-Output "`tAdding site column '$fieldName' to '$BenefitsListName'"
-            $AddedField = Add-PnPField -List $BenefitsListName -Field $fieldName
+    catch {
+        Write-Warning "Failed to ensure list schema for '$BenefitsListName': $($_.Exception.Message)"
+        if ($global:__UseManagedIdentity) {
+            Write-Warning "The Managed Identity may not have sufficient permissions (Sites.FullControl.All) on the hub site."
+            Write-Warning "Please run the AssignPermissionsToManagedIdentity.ps1 script to grant the required permissions,"
+            Write-Warning "or run this script once in interactive mode as a SharePoint admin to set up the list and columns."
         }
-    }
-
-    # Ensure the default view exists
-    $ViewName = "Alle gevinster"
-    $ExistingView = Get-PnPView -List $BenefitsListName -Identity $ViewName -ErrorAction SilentlyContinue
-    if ($null -eq $ExistingView) {
-        Write-Output "`tCreating view '$ViewName' on '$BenefitsListName'"
-        $NewView = Add-PnPView -List $BenefitsListName -Title $ViewName -Fields @("GtcProjectName", "GtcPartOfProgram", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
+        throw
     }
 }
 
@@ -151,7 +162,7 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl, $PartOfProg
         $SiteId = $CurrentSite.Id.ToString()
     }
     catch {
-        Write-Warning "Failed to get Site ID for project site $ProjectUrl. Skipping aggregation."
+        Write-Warning "Failed to access project site $ProjectUrl. You may not have sufficient permissions on this site. Skipping aggregation."
         return @()
     }
 
