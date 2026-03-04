@@ -1,5 +1,5 @@
 Param(
-    [Parameter(Mandatory = $false)][string]$HubUrl,# = "https://prosjektportalen.sharepoint.com/sites/pp365",
+    [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp-nnd/",# = "https://prosjektportalen.sharepoint.com/sites/pp365",
     [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
 )
 
@@ -33,11 +33,11 @@ function Connect-SharePoint($Url) {
         Url = $Url
     }
     if ($global:__UseManagedIdentity) {
-        Write-Output "Connecting to $Url using Managed Identity"
+        Write-Debug "Connecting to $Url using Managed Identity"
         $pnpParams.Add("ManagedIdentity", $true)
     }
     else {
-        Write-Output "Connecting to $Url using ClientId $($global:__ClientId)"
+        Write-Debug "Connecting to $Url using ClientId $($global:__ClientId)"
         $pnpParams.Add("ClientId", $global:__ClientId)
     }
 
@@ -74,38 +74,71 @@ function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
     if ($null -eq $BenefitsList) {
         Write-Output "Creating '$BenefitsListName' list in hub site $Url"
         $NewList = New-PnPList -Title $BenefitsListName -Template GenericList -EnableVersioning
+    }
+    else {
+        Write-Output "'$BenefitsListName' list already exists in hub site $Url. Ensuring all columns and view exist."
+    }
 
+    # Define custom fields to create directly on the list
+    $CustomFields = @(
+        @{ InternalName = "GtcProjectName"; DisplayName = "Prosjektnavn"; Type = "Text" },
+        @{ InternalName = "GtcProjectUrl"; DisplayName = "Prosjekt-URL"; Type = "Text" },
+        @{ InternalName = "GtcChangeTitle"; DisplayName = "Endring"; Type = "Text" },
+        @{ InternalName = "GtcBenefitTitle"; DisplayName = "Gevinst"; Type = "Text" },
+        @{ InternalName = "GtcMeasurementIndicator"; DisplayName = "Måleindikator"; Type = "Text" },
+        @{ InternalName = "GtcGoalAchievement"; DisplayName = "Måloppnåelse"; Type = "Number" },
+        @{ InternalName = "GtcPartOfProgram"; DisplayName = "Tilhører program"; Type = "Note" }
+    )
+
+    # Define site columns to add from the site
+    $SiteColumnsToAdd = @(
+        "GtProcess",                # Endringsprosess
+        "GtChallengeDescription",   # Beskrivelse av utfordring
+        "GtGainsType",              # Type gevinst
+        "GtPrereqProfitAchievement", # Forutsetning for gevinstrealisering
+        "GtGainsTurnover",          # Omsetning
+        "GtGainsResponsible",       # Ansvarlig for gevinst
+        "GtGainsOwner",             # Eier av gevinst
+        "GtRealizationTime",        # Tidslinje for gevinstrealisering
+        "GtStartValue",             # Startverdi
+        "GtDesiredValue",           # Ønsket verdi
+        "GtMeasurementUnit",        # Måleenhet
+        "GtMeasurementDate",        # Måledato
+        "GtMeasurementValue",       # Måleverdi
+        "GtMeasurementComment"      # Målkommentar
+    )
+
+    # Get existing fields on the list to check what's already there
+    $ExistingFields = Get-PnPField -List $BenefitsListName | Select-Object -ExpandProperty InternalName
+
+    # Ensure the UniqueKey XML field exists
+    if ("GtcUniqueKey" -notin $ExistingFields) {
+        Write-Output "`tAdding field 'GtcUniqueKey' to '$BenefitsListName'"
         $NewField = Add-PnPFieldFromXml -List $BenefitsListName -FieldXml $UniqueKeyFieldXml
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Prosjektnavn" -InternalName "GtcProjectName" -Type Text
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Prosjekt-URL" -InternalName "GtcProjectUrl" -Type Text
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Endring" -InternalName "GtcChangeTitle" -Type Text
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Gevinst" -InternalName "GtcBenefitTitle" -Type Text
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Måleindikator" -InternalName "GtcMeasurementIndicator" -Type Text
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Måloppnåelse" -InternalName "GtcGoalAchievement" -Type Number
-        $NewField = Add-PnPField -List $BenefitsListName -DisplayName "Tilhører program" -InternalName "GtcPartOfProgram" -Type Note
+    }
 
-        $FieldsToAdd = @(
-            "GtProcess", # Endringsprosess
-            "GtChallengeDescription", # Beskrivelse av utfordring
-            "GtGainsType", # Type gevinst
-            "GtPrereqProfitAchievement", # Forutsetning for gevinstrealisering
-            "GtGainsTurnover", # Omsetning
-            "GtGainsResponsible", # Ansvarlig for gevinst
-            "GtGainsOwner", # Eier av gevinst
-            "GtRealizationTime", # Tidslinje for gevinstrealisering
-            "GtStartValue", # Startverdi
-            "GtDesiredValue", # Ønsket verdi
-            "GtMeasurementUnit", # Måleenhet
-            "GtMeasurementDate", # Måledato
-            "GtMeasurementValue", # Måleverdi
-            "GtMeasurementComment" # Målkommentar
-        )
-        
-        foreach ($field in $FieldsToAdd) {
-            $AddedField = Add-PnPField -List $BenefitsListName -Field $field
+    # Ensure all custom fields exist
+    foreach ($field in $CustomFields) {
+        if ($field.InternalName -notin $ExistingFields) {
+            Write-Output "`tAdding field '$($field.InternalName)' to '$BenefitsListName'"
+            $NewField = Add-PnPField -List $BenefitsListName -DisplayName $field.DisplayName -InternalName $field.InternalName -Type $field.Type
         }
+    }
 
-        $NewView = Add-PnPView -List $BenefitsListName -Title "Alle gevinster" -Fields @("GtcProjectName", "GtcPartOfProgram", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
+    # Ensure all site columns exist on the list
+    foreach ($fieldName in $SiteColumnsToAdd) {
+        if ($fieldName -notin $ExistingFields) {
+            Write-Output "`tAdding site column '$fieldName' to '$BenefitsListName'"
+            $AddedField = Add-PnPField -List $BenefitsListName -Field $fieldName
+        }
+    }
+
+    # Ensure the default view exists
+    $ViewName = "Alle gevinster"
+    $ExistingView = Get-PnPView -List $BenefitsListName -Identity $ViewName -ErrorAction SilentlyContinue
+    if ($null -eq $ExistingView) {
+        Write-Output "`tCreating view '$ViewName' on '$BenefitsListName'"
+        $NewView = Add-PnPView -List $BenefitsListName -Title $ViewName -Fields @("GtcProjectName", "GtcPartOfProgram", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
     }
 }
 
@@ -328,19 +361,22 @@ if (-not $global:__UseManagedIdentity) {
 Connect-SharePoint -Url $HubUrl
 $AllProjects = Get-PnPListItem -List "Prosjekter" -PageSize 500 -Fields "Id", "Title", "GtSiteUrl", "GtChildProjects"
 
-# Build program membership lookup: ProjectItemId -> list of program titles
+# Build program membership lookup: ProjectSiteUrl -> list of program titles
 $ProgramMembership = @{}
 foreach ($proj in $AllProjects) {
     $ChildProjectsValue = $proj.FieldValues["GtChildProjects"]
     if (-not [string]::IsNullOrEmpty($ChildProjectsValue)) {
         try {
-            $ChildIds = $ChildProjectsValue | ConvertFrom-Json
-            foreach ($ChildId in $ChildIds) {
-                $ChildIdInt = [int]$ChildId
-                if (-not $ProgramMembership.ContainsKey($ChildIdInt)) {
-                    $ProgramMembership[$ChildIdInt] = @()
+            $ChildProjects = $ChildProjectsValue | ConvertFrom-Json
+            foreach ($ChildProject in $ChildProjects) {
+                $ChildUrl = $ChildProject.Path
+                if (-not [string]::IsNullOrEmpty($ChildUrl)) {
+                    $ChildUrl = $ChildUrl.TrimEnd("/")
+                    if (-not $ProgramMembership.ContainsKey($ChildUrl)) {
+                        $ProgramMembership[$ChildUrl] = @()
+                    }
+                    $ProgramMembership[$ChildUrl] += $proj.FieldValues["Title"]
                 }
-                $ProgramMembership[$ChildIdInt] += $proj.FieldValues["Title"]
             }
         }
         catch {
@@ -356,8 +392,9 @@ $AllProjects | ForEach-Object {
 
     # Determine program membership for this project
     $PartOfProgram = ""
-    if ($ProgramMembership.ContainsKey($ProjectItemId)) {
-        $PartOfProgram = $ProgramMembership[$ProjectItemId] -join "; "
+    $ProjectUrlTrimmed = if ($ProjectUrl) { $ProjectUrl.TrimEnd("/") } else { "" }
+    if ($ProjectUrlTrimmed -and $ProgramMembership.ContainsKey($ProjectUrlTrimmed)) {
+        $PartOfProgram = $ProgramMembership[$ProjectUrlTrimmed] -join "; "
     }
 
     Write-Output "Processing project site: $ProjectUrl"
