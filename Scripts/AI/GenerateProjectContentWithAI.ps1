@@ -83,14 +83,14 @@ $TargetLists = @(
 )
 
 $TargetDocSetLibs = @(
-    @{Name = "Avvik fra entreprenør"; Max = 4 },
     @{Name = "Avklaringer fra entreprenør"; Max = 5 },
-    @{Name = "Kontrollørmelding fra byggherre"; Max = 3 },
-    @{Name = "Varsel og krav fra entreprenør"; Max = 5 },
-    @{Name = "Endringsordre fra byggherre"; Max = 7 },
-    @{Name = "Prisforespørsel fra byggherre"; Max = 3 },
-    @{Name = "Målebrev fra entreprenør"; Max = 2 },
+    @{Name = "Avvik fra entreprenør"; Max = 4 },
+    @{Name = "Endringsordre fra byggherre"; Max = 4 },
     @{Name = "Geometrisk kontroll fra entreprenør"; Max = 1 }
+    @{Name = "Kontrollørmelding fra byggherre"; Max = 3 },
+    @{Name = "Målebrev fra entreprenør"; Max = 2 },
+    @{Name = "Prisforespørsel fra byggherre"; Max = 3 },
+    @{Name = "Varsel og krav fra entreprenør"; Max = 5 }
 )
 
 
