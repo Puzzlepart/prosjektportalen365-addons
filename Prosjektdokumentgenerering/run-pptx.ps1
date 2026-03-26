@@ -2,7 +2,7 @@
 
 ###
 # How to start runbook from local context:
-# Start-AzAutomationRunbook -ResourceGroupName "Prosjektportalen" -AutomationAccountName "Prosjektportalen-Premium-Account" -Name "ProjectDocumentGeneration" -Parameters @{ProjectUrl="https://puzzlepart.sharepoint.com/sites/Vino001";SiteRelativeTemplateFilePath="/Dokumentgenereringsmaler/MAL_Styringsdokument.pptx";HubSiteUrl="https://puzzlepart.sharepoint.com/sites/pp-vmp"}
+# Start-AzAutomationRunbook -ResourceGroupName "Prosjektportalen" -AutomationAccountName "Prosjektportalen-Premium-Account" -Name "ProjectPptxDocumentGeneration" -Parameters @{ProjectUrl="https://puzzlepart.sharepoint.com/sites/Vino001";SiteRelativeTemplateFilePath="/Dokumentgenereringsmaler/MAL_Styringsdokument.pptx";HubSiteUrl="https://puzzlepart.sharepoint.com/sites/pp-vmp"}
 param(
     [Parameter(Mandatory = $true)] [string]$ProjectUrl,
     [Parameter(Mandatory = $true)] [string]$SiteRelativeTemplateFilePath,  # Site-relative path (e.g., "/Dokumentgenereringsmaler/Template.pptx")
