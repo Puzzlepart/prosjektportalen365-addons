@@ -28,9 +28,30 @@ Erstattes med dagens dato i norsk format (dd.MM.yyyy).
 
 **Eksempel output:** `16.12.2025`
 
+### Prosjektstatus-tokens
+
+Henter feltverdier fra den siste publiserte statusrapporten for prosjektet. Statusrapporter ligger på hub-siden i listen `Prosjektstatus`.
+
+```
+{{Prosjektstatus:FeltNavn}}
+```
+
+**Eksempler:**
+```
+{{Prosjektstatus:GtOverallStatus}}
+{{Prosjektstatus:GtStatusRisk}}
+{{Prosjektstatus:GtStatusRiskComment}}
+{{Prosjektstatus:GtStatusBudget}}
+{{Prosjektstatus:GtStatusBudgetComment}}
+{{Prosjektstatus:GtStatusTime}}
+{{Prosjektstatus:GtStatusTimeComment}}
+```
+
+Skriptet finner automatisk den nyeste publiserte statusrapporten (`GtModerationStatus = "Publisert"`) for prosjektet basert på prosjektets `SiteId`. Hvis ingen publisert statusrapport finnes, erstattes tokenet med en tom streng.
+
 ### Liste-tokens
 
-Henter data fra SharePoint-lister og setter dem inn som tekst eller tabeller.
+Henter data fra SharePoint-lister på prosjektsiden og setter dem inn som tekst eller tabeller.
 
 #### Enkel liste (enkelt felt)
 Returnerer en ren tekstliste med hver verdi på en ny linje.
@@ -192,6 +213,16 @@ Skriptet bruker interaktiv pålogging når det kjøres lokalt. Eksempler:
     -SiteRelativeTemplateFilePath "/Dokumentgenereringsmaler/MAL_Styringsdokument.docx" `
     -HubSiteUrl "https://puzzlepart.sharepoint.com/sites/pp-vmp"
 ```
+
+## Bygg for Azure Automation
+
+Azure Automation støtter ikke referanser til andre `.ps1`-filer i runbooks. Kjør `Build.ps1` for å kombinere `Common.ps1` inn i hver runbook-fil:
+
+```powershell
+.\Build.ps1
+```
+
+Dette genererer selvstendige filer i `AutoRunbooks/`-mappen som kan importeres til Azure Automation.
 
 ## Tekniske detaljer
 

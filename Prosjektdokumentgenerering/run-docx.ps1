@@ -1,5 +1,3 @@
-#Requires -Modules PnP.PowerShell
-
 ###
 # How to start runbook from local context:
 # Start-AzAutomationRunbook -ResourceGroupName "Prosjektportalen" -AutomationAccountName "Prosjektportalen-Premium-Account" -Name "ProjectDocxDocumentGeneration" -Parameters @{ProjectUrl="https://puzzlepart.sharepoint.com/sites/Vino001";SiteRelativeTemplateFilePath="/Dokumentgenereringsmaler/MAL_Styringsdokument.docx";HubSiteUrl="https://puzzlepart.sharepoint.com/sites/pp-vmp"}
@@ -14,36 +12,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. .\Common.ps1
+
 try {
     # Validate SharePoint URLs to catch typos early
     foreach ($Url in @($ProjectUrl, $HubSiteUrl)) {
         if ($Url -notmatch '^https://[a-zA-Z0-9\-]+\.sharepoint\.(com|us|de|cn)/') {
             throw "Invalid SharePoint URL format: $Url. Expected format: https://tenant.sharepoint.com/sites/sitename"
         }
-    }
-
-    function Connect-SharePoint {
-        param(
-            [Parameter(Mandatory = $true)]
-            [string]$Url
-        )
-
-        $PnpParams = @{
-            Url = $Url
-        }
-
-        if ($null -ne $PSPrivateMetadata) {
-            # Azure Automation runbook context - use managed identity
-            $PnpParams.Add("ManagedIdentity", $true)
-        }
-        else {
-            # Local/interactive context - use interactive login with delegated permissions
-            if ($ClientId) {
-                $PnpParams.Add("ClientId", $ClientId)
-            }
-        }
-
-        Connect-PnPOnline @PnpParams
     }
 
     Connect-SharePoint -Url $HubSiteUrl
@@ -294,48 +270,48 @@ $TableRows
                 }
 
                 # For simple text replacement - find and replace split tokens
-                # Find all paragraphs and check which one contains the token
-                $ParagraphPattern = '(?s)<w:p[ >].*?</w:p>'
-                $AllParagraphs = [regex]::Matches($Content, $ParagraphPattern)
+                # Loop to handle multiple occurrences of the same token across paragraphs
+                $KeepSearching = $true
+                while ($KeepSearching) {
+                    $KeepSearching = $false
+                    $ParagraphPattern = '(?s)<w:p[ >].*?</w:p>'
+                    $AllParagraphs = [regex]::Matches($Content, $ParagraphPattern)
 
-                $FoundParagraph = $null
-                foreach ($Para in $AllParagraphs) {
-                    # Extract text from this paragraph and check if it contains the token
-                    $ParaTextMatches = [regex]::Matches($Para.Value, '<w:t[^>]*>([^<]*)</w:t>')
-                    $ParaText = ($ParaTextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
+                    foreach ($Para in $AllParagraphs) {
+                        # Extract text from this paragraph and check if it contains the token
+                        $ParaTextMatches = [regex]::Matches($Para.Value, '<w:t[^>]*>([^<]*)</w:t>')
+                        $ParaText = ($ParaTextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
 
-                    if ($ParaText -match [regex]::Escape($Key)) {
-                        $FoundParagraph = $Para.Value
-                        break
+                        if ($ParaText -match [regex]::Escape($Key)) {
+                            # Extract text from all <w:t> elements in the paragraph
+                            $TextMatches = [regex]::Matches($Para.Value, '<w:t[^>]*>([^<]*)</w:t>')
+                            $ParagraphText = ($TextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
+
+                            # Replace the token in the concatenated text
+                            $NewText = $ParagraphText -replace [regex]::Escape($Key), [System.Security.SecurityElement]::Escape($Value)
+
+                            # Find the first <w:r> element to preserve its properties
+                            $FirstRunMatch = [regex]::Match($Para.Value, '(?s)<w:r[^>]*>(?<props><w:rPr>.*?</w:rPr>)?<w:t[^>]*>')
+                            $RunProps = if ($FirstRunMatch.Success -and $FirstRunMatch.Groups['props'].Success) {
+                                $FirstRunMatch.Groups['props'].Value
+                            } else {
+                                '<w:rPr><w:lang w:val="nb-NO"/></w:rPr>'
+                            }
+
+                            # Get the paragraph properties (<w:pPr>) if present
+                            $ParagraphProps = ""
+                            if ($Para.Value -match '(?s)(<w:pPr>.*?</w:pPr>)') {
+                                $ParagraphProps = $matches[1]
+                            }
+
+                            # Rebuild paragraph: preserve <w:pPr> and create single run with replaced text
+                            $NewParagraph = "<w:p>$ParagraphProps<w:r>$RunProps<w:t xml:space=`"preserve`">$NewText</w:t></w:r></w:p>"
+
+                            $Content = $Content.Replace($Para.Value, $NewParagraph)
+                            $KeepSearching = $true
+                            break  # Re-parse since content changed
+                        }
                     }
-                }
-
-                if ($FoundParagraph) {
-                    # Extract text from all <w:t> elements in the paragraph
-                    $TextMatches = [regex]::Matches($FoundParagraph, '<w:t[^>]*>([^<]*)</w:t>')
-                    $ParagraphText = ($TextMatches | ForEach-Object { $_.Groups[1].Value }) -join ''
-
-                    # Replace the token in the concatenated text
-                    $NewText = $ParagraphText -replace [regex]::Escape($Key), [System.Security.SecurityElement]::Escape($Value)
-
-                    # Find the first <w:r> element to preserve its properties
-                    $FirstRunMatch = [regex]::Match($FoundParagraph, '(?s)<w:r>(?<props><w:rPr>.*?</w:rPr>)?<w:t[^>]*>')
-                    $RunProps = if ($FirstRunMatch.Success -and $FirstRunMatch.Groups['props'].Success) {
-                        $FirstRunMatch.Groups['props'].Value
-                    } else {
-                        '<w:rPr><w:lang w:val="nb-NO"/></w:rPr>'
-                    }
-
-                    # Get the paragraph properties (<w:pPr>) if present
-                    $ParagraphProps = ""
-                    if ($FoundParagraph -match '(?s)(<w:pPr>.*?</w:pPr>)') {
-                        $ParagraphProps = $matches[1]
-                    }
-
-                    # Rebuild paragraph: preserve <w:pPr> and create single run with replaced text
-                    $NewParagraph = "<w:p>$ParagraphProps<w:r>$RunProps<w:t xml:space=`"preserve`">$NewText</w:t></w:r></w:p>"
-
-                    $Content = $Content.Replace($FoundParagraph, $NewParagraph)
                 }
             }
 
@@ -354,181 +330,9 @@ $TableRows
         return $NewDocx
     }
 
-    # Fetch data from project and build token map from SharePoint lists
-    function Get-TokenMap {
-        param($ProjectUrl, $Tokens)
-
-        Connect-SharePoint -Url $ProjectUrl | Out-Null
-        $Map = @{}
-
-        foreach ($Token in $Tokens) {
-            # Handle {{Today}} token - replace with current date
-            if ($Token -eq '{{Today}}') {
-                $Map[$Token] = Get-Date -Format "dd.MM.yyyy"
-                continue
-            }
-
-            # Parse token format: {{List:ListName;Fields:Field1,Field2,Field3}} or {{List:ListName;Fields:Field1(0.1),Field2(0.2),Field3(0.7);Width:0.7}}
-            if ($Token -match '\{\{List:([^;]+);Fields:([^;]+)(?:;Width:([0-9.,]+))?\}\}') {
-                $ListName = $matches[1]
-                $FieldsSpec = $matches[2]
-                $TableWidthRatio = if ($matches[3]) {
-                    $WidthValue = $matches[3] -replace ',', '.'
-                    [double]$WidthValue
-                } else {
-                    0.95  # Default to 95% of available width
-                }
-
-                # Parse field names and optional width specifications
-                $FieldsArray = @()
-                $ColumnWidths = @()
-                $HasCustomWidths = $false
-
-                foreach ($FieldSpec in ($FieldsSpec -split ',' | ForEach-Object { $_.Trim() })) {
-                    # Match both dot and comma as decimal separator: FieldName(0.2) or FieldName(0,2)
-                    if ($FieldSpec -match '^([^(]+)\(([0-9.,]+)\)$') {
-                        # Field with width specification: FieldName(0.2)
-                        $FieldsArray += $matches[1].Trim()
-                        # Normalize decimal separator to dot for parsing
-                        $WidthString = $matches[2] -replace ',', '.'
-                        $ColumnWidths += [double]$WidthString
-                        $HasCustomWidths = $true
-                    } else {
-                        # Field without width specification
-                        $FieldsArray += $FieldSpec
-                        $ColumnWidths += 0
-                    }
-                }
-
-                # Validate widths sum to ~1.0 if custom widths are specified
-                if ($HasCustomWidths) {
-                    $WidthSum = ($ColumnWidths | Measure-Object -Sum).Sum
-                    if ($WidthSum -gt 0 -and [Math]::Abs($WidthSum - 1.0) -gt 0.01) {
-                        # Normalize widths
-                        $ColumnWidths = @($ColumnWidths | ForEach-Object { $_ / $WidthSum })
-                    }
-                }
-
-                # Store width metadata in token (will be parsed later during replacement)
-                $WidthMetadata = ""
-                if ($HasCustomWidths) {
-                    $WidthMetadata = "###WIDTHS###" + ($ColumnWidths -join "|") + "###"
-                }
-                # Store table width ratio
-                $WidthMetadata += "###TABLEWIDTH###$TableWidthRatio###"
-
-                # Fetch list fields to get display names
-                $FieldTitles = @()
-                try {
-                    $List = Get-PnPList -Identity $ListName -Includes Fields -ErrorAction Stop
-                    foreach ($FieldName in $FieldsArray) {
-                        $Field = $List.Fields | Where-Object { $_.InternalName -eq $FieldName } | Select-Object -First 1
-                        if ($Field) {
-                            $FieldTitles += $Field.Title
-                        } else {
-                            $FieldTitles += $FieldName
-                        }
-                    }
-                }
-                catch {
-                    Write-Warning "Failed to fetch field titles from list '$ListName': $_"
-                    $FieldTitles = $FieldsArray
-                }
-
-                # Fetch data from SharePoint list
-                try {
-                    $Rows = Get-PnPListItem -List $ListName -Fields $FieldsArray -ErrorAction Stop
-                }
-                catch {
-                    Write-Warning "Failed to fetch data from list '$ListName': $_"
-                    $Map[$Token] = ""
-                    continue
-                }
-                $Lines = @()
-
-                foreach ($R in $Rows) {
-                    $CellValues = @()
-                    foreach ($Field in $FieldsArray) {
-                        $Value = $R.FieldValues[$Field]
-
-                        $ExtractedValue = ""
-                        if ($null -eq $Value -or $Value -eq "") {
-                            $ExtractedValue = ""
-                        }
-                        elseif ($Value -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
-                            # Single lookup value
-                            $ExtractedValue = $Value.LookupValue
-                        }
-                        elseif ($Value -is [Array] -and $Value.Count -gt 0 -and $Value[0] -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
-                            # Array of lookup values - join them with comma
-                            $ExtractedValue = ($Value | ForEach-Object { $_.LookupValue }) -join ", "
-                        }
-                        elseif ($Value -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
-                            # Single taxonomy value - use Label property
-                            $ExtractedValue = $Value.Label
-                        }
-                        elseif ($Value -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValueCollection]) {
-                            # Multiple taxonomy values - join labels with comma
-                            $ExtractedValue = ($Value | ForEach-Object { $_.Label }) -join ", "
-                        }
-                        elseif ($Value -is [Array] -and $Value.Count -gt 0 -and $Value[0] -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
-                            # Array of taxonomy values - join labels with comma
-                            $ExtractedValue = ($Value | ForEach-Object { $_.Label }) -join ", "
-                        }
-                        elseif ($Value -is [System.Collections.Hashtable] -and $Value.ContainsKey('Label')) {
-                            # Taxonomy value as hashtable (alternative format)
-                            $ExtractedValue = $Value.Label
-                        }
-                        else {
-                            $ExtractedValue = "$Value"
-                        }
-
-                        $CellValues += $ExtractedValue
-                    }
-
-                    # If only one field, just use the value; otherwise tab-separate
-                    if ($FieldsArray.Count -eq 1) {
-                        $Lines += $CellValues[0]
-                    }
-                    else {
-                        $LineText = ($CellValues -join "`t")
-                        $Lines += $LineText
-                    }
-                }
-
-                # If only one field, join with newlines (plain text list); otherwise create table format
-                if ($FieldsArray.Count -eq 1) {
-                    $Map[$Token] = ($Lines -join "`n")
-                }
-                else {
-                    # Add header row with field display names, separated by special marker ###HEADER###
-                    $HeaderRow = ($FieldTitles -join "`t")
-
-                    # If no data rows, create a placeholder row with "Tekst" in each column
-                    if ($Lines.Count -eq 0) {
-                        $PlaceholderCells = @()
-                        for ($i = 0; $i -lt $FieldsArray.Count; $i++) {
-                            $PlaceholderCells += "Tekst"
-                        }
-                        $TableText = ($PlaceholderCells -join "`t")
-                    } else {
-                        $TableText = ($Lines -join "`n")
-                    }
-
-                    $Map[$Token] = $WidthMetadata + "###HEADER###" + $HeaderRow + "`n" + $TableText
-                }
-            }
-            else {
-                $Map[$Token] = ""
-            }
-        }
-
-        return $Map
-    }
-
     # Find all tokens in the template
     $TokensFound = Find-TokensInDocx -DocxPath $LocalPath
-    $TokenMap = Get-TokenMap -ProjectUrl $ProjectUrl -Tokens $TokensFound
+    $TokenMap = Get-TokenMap -ProjectUrl $ProjectUrl -HubSiteUrl $HubSiteUrl -Tokens $TokensFound
     $NewDocx = Replace-TokensInDocx -DocxPath $LocalPath -TokenMap $TokenMap
 
     # Upload the generated DOCX back to the project's document library
