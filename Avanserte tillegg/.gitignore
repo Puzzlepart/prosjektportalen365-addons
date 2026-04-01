@@ -1,0 +1,104 @@
+# Tenant-specific configuration files (contain sensitive information)
+config/*-config.json
+config/my-*.json
+config/prod-*.json
+config/dev-*.json
+config/test-*.json
+config/deployment-parameters.json
+
+# Keep template files
+!config/*.template.json
+
+# Deployment logs (contain tenant-specific information)
+logs/
+*.log
+
+# PowerShell modules and packages
+Modules/
+packages/
+
+# Azure deployment artifacts  
+*.zip
+*.bicep.json
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.DS_Store
+Thumbs.db
+
+# Visual Studio Code settings
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# Keep recommended VS Code extensions
+!.vscode/extensions.json
+
+# PowerShell private data
+PSPrivateMetadata/
+
+# Azure CLI cache
+.azure/
+
+# Node modules if any JS tooling is added
+node_modules/
+
+# Environment-specific override files
+.env
+.env.local
+.env.*.local
+
+# Generated documentation (if using docs generators)
+docs/generated/
+
+# Test results
+TestResults/
+*.trx
+
+# Coverage reports
+coverage/
+
+# Secrets and certificates
+*.pfx
+*.p12
+*.key
+*.pem
+secrets.json
+appsettings.*.json
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# IDE files
+*.swp
+*.swo
+*~
+
+# Archive files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Application specific
+bin/
+obj/
+out/
+dist/

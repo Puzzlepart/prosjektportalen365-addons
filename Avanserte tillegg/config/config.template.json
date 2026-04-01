@@ -1,0 +1,119 @@
+{
+  "subscriptionId": {
+    "Value": "REPLACE_WITH_YOUR_SUBSCRIPTION_ID",
+    "Description": "Azure subscription ID where resources will be deployed"
+  },
+  "resourceGroupName": {
+    "Value": "RG-Prosjektportalen365", 
+    "Description": "Name of the Azure resource group (will be created if not exists)"
+  },
+  "location": {
+    "Value": "westeurope",
+    "Description": "Azure region for resource deployment"
+  },
+  "automationAccountName": {
+    "Value": "PP365-Automation-Demo",
+    "Description": "Name of the Azure Automation Account"
+  },
+  "tags": {
+    "Value": {
+      "Environment": "Production",
+      "Application": "Prosjektportalen365",
+      "Purpose": "ProjectManagement"
+    },
+    "Description": "Resource tags to apply to all deployed Azure resources"
+  },
+  "tenant": {
+    "Value": "REPLACE_WITH_YOUR_TENANT.sharepoint.com",
+    "Description": "SharePoint tenant domain (e.g., contoso.sharepoint.com)"
+  },
+  "hubSiteUrl": {
+    "Value": "https://REPLACE_WITH_YOUR_TENANT.sharepoint.com/sites/prosjektportalen",
+    "Description": "Full URL to the Prosjektportalen hub site"
+  },
+  "serviceAccountEmail": {
+    "Value": "REPLACE_WITH_SERVICE_ACCOUNT@yourdomain.com",
+    "Description": "Email address for the SharePoint service account connection"
+  },
+  "createNewRegistration": {
+    "Value": true,
+    "Description": "Whether to create a new Azure AD app registration"
+  },
+  "displayName": {
+    "Value": "Prosjektportalen365 App",
+    "Description": "Display name for the Azure AD application"
+  },
+  "language": {
+    "Value": "nb-NO",
+    "Description": "Language code for localization (e.g., nb-NO, en-US, sv-SE)"
+  },
+  "completionPhaseName": {
+    "Value": "Ferdig",
+    "Description": "Localized text for the project completion phase"
+  },
+  "archiveStatusName": {
+    "Value": "Avsluttet",
+    "Description": "Localized text for the archived project status"
+  },
+  "defaultManagerRole": {
+    "Value": "Full Kontroll",
+    "Description": "Default SharePoint permission level for project managers"
+  },
+  "archiveBannerText": {
+    "Value": "Dette området er arkivert og skrivebeskyttet. Ta kontakt med administrator for å aktivere området igjen.",
+    "Description": "Message displayed on archived project sites"
+  },
+  "dateCalculationRules": {
+    "Value": {
+      "inspectionPeriodYears": 1,
+      "waiverPeriodYears": 3,
+      "complaintPeriodYears": 5
+    },
+    "Description": "Rules for calculating project milestone dates"
+  },
+  "folderStructure": {
+    "Value": {
+      "planningPhase": [
+        "01 Planlegging",
+        "02 Prosjektering"
+      ],
+      "buildingPhase": [
+        "03 Bygging",
+        "04 Ferdigstillelse",
+        "05 Oppfølging"
+      ]
+    },
+    "Description": "Standard folder structure for project document libraries"
+  },
+  "logLevel": {
+    "Value": "Info",
+    "Description": "Logging level for the automation scripts (Debug, Info, Warning, Error)"
+  },
+  "deploymentSettings": {
+    "Value": {
+      "projectPrefix": "PP365",
+      "environment": "prod",
+      "runbooksToDeploy": [
+        "ArchiveSite",
+        "GetSiteInformation", 
+        "UpdateProjectDates",
+        "UpdateProjectManager"
+      ],
+      "logicAppsToDeploy": [
+        "ChangeArchiveState",
+        "PhaseChanged", 
+        "ProjectInfoChanged"
+      ],
+      "deploySharePointConnector": true,
+      "deployAutomationConnector": true
+    },
+    "Description": "Selective deployment configuration - specify which components to deploy"
+  },
+  "sharePointSettings": {
+    "Value": {
+      "projectListGuid": "REPLACE_WITH_PROJECT_LIST_GUID",
+      "listViewGuid": "REPLACE_WITH_LIST_VIEW_GUID"
+    },
+    "Description": "SharePoint-specific configuration (GUIDs can be found in SharePoint list settings)"
+  }
+}

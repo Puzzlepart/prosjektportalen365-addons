@@ -1,0 +1,29 @@
+@description('Name of the automation account')
+param automationAccountName string
+
+@description('Location for the runbook resource')
+param location string = resourceGroup().location
+
+@description('Resource tags')
+param tags object = {}
+
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
+  name: automationAccountName
+}
+
+resource updateProjectDatesRunbook 'Microsoft.Automation/automationAccounts/runbooks@2024-10-23' = {
+  parent: automationAccount
+  name: 'UpdateProjectDates'
+  location: location
+  tags: tags
+  properties: {
+    logVerbose: false
+    logProgress: false
+    logActivityTrace: 0
+    runbookType: 'PowerShell72'
+    description: 'Updates project dates in SharePoint lists based on task dates from project sites'
+  }
+}
+
+output runbookName string = updateProjectDatesRunbook.name
+output runbookId string = updateProjectDatesRunbook.id
