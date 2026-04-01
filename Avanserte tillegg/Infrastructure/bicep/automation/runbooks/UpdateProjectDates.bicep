@@ -7,6 +7,9 @@ param location string = resourceGroup().location
 @description('Resource tags')
 param tags object = {}
 
+@description('URI to the runbook script file')
+param scriptUri string
+
 resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
@@ -22,6 +25,9 @@ resource updateProjectDatesRunbook 'Microsoft.Automation/automationAccounts/runb
     logActivityTrace: 0
     runbookType: 'PowerShell72'
     description: 'Updates project dates in SharePoint lists based on task dates from project sites'
+    publishContentLink: {
+      uri: scriptUri
+    }
   }
 }
 

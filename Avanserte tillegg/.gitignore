@@ -1,10 +1,5 @@
 # Tenant-specific configuration files (contain sensitive information)
-config/*-config.json
-config/my-*.json
-config/prod-*.json
-config/dev-*.json
-config/test-*.json
-config/deployment-parameters.json
+config/config.json
 
 # Keep template files
 !config/*.template.json

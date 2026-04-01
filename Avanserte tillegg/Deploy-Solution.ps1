@@ -554,82 +554,7 @@ function Grant-SharePointPermissionsToManagedIdentity {
     }
 }
 
-function Authorize-SharePointConnection {
-    param(
-        [string]$SubscriptionId,
-        [string]$ResourceGroupName,
-        [string]$ConnectionName = 'sharepointonline',
-        [switch]$WhatIf
-    )
 
-    Write-DeploymentLog "Checking SharePoint API connection authorization..." -Level Info
-
-    if ($WhatIf) {
-        Write-DeploymentLog "[WHATIF] Would authorize SharePoint connection '$ConnectionName'" -Level Warning
-        return
-    }
-
-    try {
-        $connectionPath = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Web/connections/$ConnectionName"
-
-        # Check current connection status
-        $connResult = Invoke-AzRestMethod -Path "$($connectionPath)?api-version=2016-06-01" -Method GET
-        if ($connResult.StatusCode -ne 200) {
-            Write-DeploymentLog "SharePoint connection '$ConnectionName' not found — skipping authorization" -Level Warning
-            return
-        }
-
-        $connData = $connResult.Content | ConvertFrom-Json
-        $currentStatus = $connData.properties.statuses | Where-Object { $_.status -eq 'Connected' }
-
-        if ($currentStatus) {
-            Write-DeploymentLog "SharePoint connection '$ConnectionName' is already authorized" -Level Info
-            return
-        }
-
-        # Get consent link
-        $consentPath = "$connectionPath/listConsentLinks?api-version=2016-06-01"
-        $consentBody = @{
-            parameters = @(
-                @{ parameterName = 'token'; redirectUrl = 'https://ema1.exp.azure.com/ema/default/authredirect' }
-            )
-        } | ConvertTo-Json -Depth 3
-
-        $consentResult = Invoke-AzRestMethod -Path $consentPath -Method POST -Payload $consentBody
-        if ($consentResult.StatusCode -eq 200) {
-            $consentLinks = ($consentResult.Content | ConvertFrom-Json).value
-            if ($consentLinks -and $consentLinks.link) {
-                Write-DeploymentLog "SharePoint connection requires manual authorization." -Level Warning
-                Write-DeploymentLog "Open this URL in a browser to authorize the connection:" -Level Warning
-                Write-DeploymentLog "  $($consentLinks.link)" -Level Warning
-                Write-Host ""
-                Write-Host "SharePoint API connection needs authorization." -ForegroundColor Yellow
-                Write-Host "Opening consent URL in your default browser..." -ForegroundColor Yellow
-                Start-Process $consentLinks.link
-                Write-Host "After authorizing, press Enter to continue..." -ForegroundColor Yellow
-                Read-Host | Out-Null
-
-                # Verify connection after consent
-                $verifyResult = Invoke-AzRestMethod -Path "$($connectionPath)?api-version=2016-06-01" -Method GET
-                if ($verifyResult.StatusCode -eq 200) {
-                    $verifyData = $verifyResult.Content | ConvertFrom-Json
-                    $connected = $verifyData.properties.statuses | Where-Object { $_.status -eq 'Connected' }
-                    if ($connected) {
-                        Write-DeploymentLog "SharePoint connection authorized successfully!" -Level Success
-                    } else {
-                        Write-DeploymentLog "Connection status could not be verified. Check Azure Portal if issues persist." -Level Warning
-                    }
-                }
-            }
-        } else {
-            Write-DeploymentLog "Could not get consent link (status $($consentResult.StatusCode)). Authorize manually in Azure Portal." -Level Warning
-        }
-    }
-    catch {
-        Write-DeploymentLog "Error authorizing SharePoint connection: $($_.Exception.Message)" -Level Warning
-        Write-DeploymentLog "Authorize manually: Azure Portal > Resource Group > $ConnectionName > Edit API Connection > Authorize" -Level Warning
-    }
-}
 
 # ============================================================================
 # PRESET CONFIGURATIONS
@@ -1304,13 +1229,17 @@ try {
             Write-DeploymentLog "Skipping managed identity setup as requested" -Level Info
         }
 
-        # Authorize SharePoint API connection if it was deployed
-        if ($deployConfig.deploymentSettings.deploySharePointConnector -and -not $WhatIf) {
-            Authorize-SharePointConnection `
-                -SubscriptionId $deployConfig.subscriptionId `
-                -ResourceGroupName $deployConfig.resourceGroupName `
-                -ConnectionName 'sharepointonline' `
-                -WhatIf:$WhatIf
+        # Remind user to authorize SharePoint API connection manually
+        if ($deployConfig.deploymentSettings.deploySharePointConnector) {
+            Write-Host ""
+            Write-DeploymentLog "MANUAL STEP REQUIRED: Authorize the SharePoint API connection" -Level Warning
+            Write-DeploymentLog "  1. Go to the Azure Portal" -Level Warning
+            Write-DeploymentLog "  2. Navigate to Resource Group '$($deployConfig.resourceGroupName)'" -Level Warning
+            Write-DeploymentLog "  3. Open the 'sharepointonline' API Connection resource" -Level Warning
+            Write-DeploymentLog "  4. Click 'Edit API Connection' in the left menu" -Level Warning
+            Write-DeploymentLog "  5. Click 'Authorize' and sign in" -Level Warning
+            Write-DeploymentLog "  6. Click 'Save'" -Level Warning
+            Write-Host ""
         }
 
         # Grant Logic App managed identities Automation Operator role on the automation account

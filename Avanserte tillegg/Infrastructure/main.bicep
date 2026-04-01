@@ -66,6 +66,9 @@ param folderStructure object = {
 @description('Logging level for automation scripts')
 param logLevel string = 'Info'
 
+@description('Base URL for runbook script files (raw GitHub URL ending with /)')
+param runbookScriptsBaseUrl string = 'https://raw.githubusercontent.com/Puzzlepart/prosjektportalen365-addons/master/Avanserte%20tillegg/Infrastructure/scripts/'
+
 @description('Array of runbooks to deploy')
 param runbooksToDeploy array = [
   'ArchiveSite'
@@ -126,6 +129,7 @@ module archiveSiteRunbook 'bicep/automation/runbooks/ArchiveSite.bicep' = if (co
     automationAccountName: automationAccountName
     location: location
     tags: tags
+    scriptUri: '${runbookScriptsBaseUrl}ArchiveSite.ps1'
   }
   dependsOn: [
     automationAccount
@@ -138,6 +142,7 @@ module getSiteInformationRunbook 'bicep/automation/runbooks/GetSiteInformation.b
     automationAccountName: automationAccountName
     location: location
     tags: tags
+    scriptUri: '${runbookScriptsBaseUrl}GetSiteInformation.ps1'
   }
   dependsOn: [
     automationAccount
@@ -150,6 +155,7 @@ module updateProjectDatesRunbook 'bicep/automation/runbooks/UpdateProjectDates.b
     automationAccountName: automationAccountName
     location: location
     tags: tags
+    scriptUri: '${runbookScriptsBaseUrl}UpdateProjectDates.ps1'
   }
   dependsOn: [
     automationAccount
@@ -162,6 +168,7 @@ module updateProjectManagerRunbook 'bicep/automation/runbooks/UpdateProjectManag
     automationAccountName: automationAccountName
     location: location
     tags: tags
+    scriptUri: '${runbookScriptsBaseUrl}UpdateProjectManager.ps1'
   }
   dependsOn: [
     automationAccount

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "13194814368769394039"
+      "templateHash": "14729324536492135797"
     },
     "description": "Main template for deploying Prosjektportalen Advanced Add-ons solution"
   },
@@ -133,6 +133,13 @@
       "defaultValue": "Info",
       "metadata": {
         "description": "Logging level for automation scripts"
+      }
+    },
+    "runbookScriptsBaseUrl": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/Puzzlepart/prosjektportalen365-addons/master/Avanserte%20tillegg/Infrastructure/scripts/",
+      "metadata": {
+        "description": "Base URL for runbook script files (raw GitHub URL ending with /)"
       }
     },
     "runbooksToDeploy": {
@@ -479,6 +486,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "scriptUri": {
+            "value": "[format('{0}ArchiveSite.ps1', parameters('runbookScriptsBaseUrl'))]"
           }
         },
         "template": {
@@ -488,7 +498,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "13179551616543884563"
+              "templateHash": "17239745627901364100"
             }
           },
           "parameters": {
@@ -511,6 +521,12 @@
               "metadata": {
                 "description": "Resource tags"
               }
+            },
+            "scriptUri": {
+              "type": "string",
+              "metadata": {
+                "description": "URI to the runbook script file"
+              }
             }
           },
           "resources": [
@@ -525,7 +541,10 @@
                 "logProgress": false,
                 "logActivityTrace": 0,
                 "runbookType": "PowerShell72",
-                "description": "Archives a SharePoint project site by changing permissions and moving to archive"
+                "description": "Archives a SharePoint project site by changing permissions and moving to archive",
+                "publishContentLink": {
+                  "uri": "[parameters('scriptUri')]"
+                }
               }
             }
           ],
@@ -564,6 +583,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "scriptUri": {
+            "value": "[format('{0}GetSiteInformation.ps1', parameters('runbookScriptsBaseUrl'))]"
           }
         },
         "template": {
@@ -573,7 +595,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15744482432290899179"
+              "templateHash": "16633247131446542212"
             }
           },
           "parameters": {
@@ -596,6 +618,12 @@
               "metadata": {
                 "description": "Resource tags"
               }
+            },
+            "scriptUri": {
+              "type": "string",
+              "metadata": {
+                "description": "URI to the runbook script file"
+              }
             }
           },
           "resources": [
@@ -610,7 +638,10 @@
                 "logProgress": false,
                 "logActivityTrace": 0,
                 "runbookType": "PowerShell72",
-                "description": "Retrieves SharePoint project site information including group ID, hub site URL, and phase"
+                "description": "Retrieves SharePoint project site information including group ID, hub site URL, and phase",
+                "publishContentLink": {
+                  "uri": "[parameters('scriptUri')]"
+                }
               }
             }
           ],
@@ -649,6 +680,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "scriptUri": {
+            "value": "[format('{0}UpdateProjectDates.ps1', parameters('runbookScriptsBaseUrl'))]"
           }
         },
         "template": {
@@ -658,7 +692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "16875549819503558316"
+              "templateHash": "5623095956217040791"
             }
           },
           "parameters": {
@@ -681,6 +715,12 @@
               "metadata": {
                 "description": "Resource tags"
               }
+            },
+            "scriptUri": {
+              "type": "string",
+              "metadata": {
+                "description": "URI to the runbook script file"
+              }
             }
           },
           "resources": [
@@ -695,7 +735,10 @@
                 "logProgress": false,
                 "logActivityTrace": 0,
                 "runbookType": "PowerShell72",
-                "description": "Updates project dates in SharePoint lists based on task dates from project sites"
+                "description": "Updates project dates in SharePoint lists based on task dates from project sites",
+                "publishContentLink": {
+                  "uri": "[parameters('scriptUri')]"
+                }
               }
             }
           ],
@@ -734,6 +777,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "scriptUri": {
+            "value": "[format('{0}UpdateProjectManager.ps1', parameters('runbookScriptsBaseUrl'))]"
           }
         },
         "template": {
@@ -743,7 +789,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "5636875770132188390"
+              "templateHash": "6354029005483131948"
             }
           },
           "parameters": {
@@ -766,6 +812,12 @@
               "metadata": {
                 "description": "Resource tags"
               }
+            },
+            "scriptUri": {
+              "type": "string",
+              "metadata": {
+                "description": "URI to the runbook script file"
+              }
             }
           },
           "resources": [
@@ -780,7 +832,10 @@
                 "logProgress": false,
                 "logActivityTrace": 0,
                 "runbookType": "PowerShell72",
-                "description": "Updates project manager information in SharePoint lists and project site permissions"
+                "description": "Updates project manager information in SharePoint lists and project site permissions",
+                "publishContentLink": {
+                  "uri": "[parameters('scriptUri')]"
+                }
               }
             }
           ],
