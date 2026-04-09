@@ -2,17 +2,17 @@
 
 This solution provides automated project lifecycle management capabilities for SharePoint-based project portals. It has been completely refactored from a single-tenant implementation to support deployment across any tenant with proper configuration.
 
-## 🌟 Features
+## Features
 
-- **🔄 Project Lifecycle Automation**: Automatically archive/unarchive projects based on completion status
-- **👤 Dynamic Manager Assignment**: Assign appropriate project managers based on project phase
-- **📅 Automated Date Calculations**: Calculate inspection, waiver, and complaint deadlines from handover dates
-- **🔔 Change Detection**: Monitor project property changes and trigger appropriate workflows
-- **🌐 Multi-Tenant Support**: Deploy to any SharePoint tenant with configuration files
-- **🛡️ Configurable Security**: Manage document folder permissions based on project phases
-- **📊 Comprehensive Logging**: Detailed execution logs and error reporting
+- **Project Lifecycle Automation**: Automatically archive/unarchive projects based on completion status
+- **Dynamic Manager Assignment**: Assign appropriate project managers based on project phase
+- **Automated Date Calculations**: Calculate inspection, waiver, and complaint deadlines from handover dates
+- **Change Detection**: Monitor project property changes and trigger appropriate workflows
+- **Multi-Tenant Support**: Deploy to any SharePoint tenant with configuration files
+- **Configurable Security**: Manage document folder permissions based on project phases
+- **Comprehensive Logging**: Detailed execution logs and error reporting
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -42,9 +42,9 @@ This solution provides automated project lifecycle management capabilities for S
 - **1 Automation Account**: Secure execution environment with managed identity
 - **Configuration System**: JSON-based tenant and business logic configuration
 
-## 🚀 Quick Start
+## Quick Start
 
-### ⚡ 5-Minute Setup
+### Setup
 
 1. **Prerequisites & Authentication**:
    ```powershell
@@ -74,7 +74,7 @@ This solution provides automated project lifecycle management capabilities for S
    .\Deploy-Solution.ps1 -ConfigurationFile "config\my-tenant-config.json"
    ```
 
-### 🎯 Deployment Options
+### Deployment Options
 
 The unified deployment script supports multiple modes:
 
@@ -126,7 +126,7 @@ Deploy only specific components:
 .\Deploy-Solution.ps1 -Preset Full ... -WhatIf
 ```
 
-⚙️ Configuration
+# Configuration
 
 ### Tenant Configuration
 
@@ -246,7 +246,36 @@ The solution supports different business rules and localization:
 - **Folder Structures**: Configure document folder paths for permission management
 - **Status Values**: Customize completion and archive status names
 
-## 🛠️ Advanced Usage
+### Post-deployment steps
+
+After deployment is complete, there are steps to follow. 
+
+- Authorize SharePoint connector
+- Create custom runtime for Runbooks and upload the bundled PnP.PowerShell package to the new custom runtime
+- Update Logic Apps*
+
+*Updating logic apps is only necessary if there are any custom customer configurations
+
+#### Authorize SharePoint connector
+
+1. Go to the Azure Portal
+2. Navigate to the Resource Group
+3. Open the 'sharepointonline' API Connection resource
+4. Click 'Edit API Connection' in the left menu
+5. Click 'Authorize' and sign in
+6. Click 'Save'
+
+#### Create custom runtime for Runbooks
+
+1. Go to the Azure Portal
+2. Navigate to the Resource Group
+3. Open the Automation Account
+4. Under 'Process Automation' select 'Runtime Environments'
+5. Create a new Runtime Environment, and upload PnP.PowerShell located in the `bundle` folder
+6. After creation, open 'Runbooks' under 'Runetime Environments'
+7. Update Runtime Environment to the new custom Runtime environment
+
+## Advanced Usage
 
 ### Prerequisites & Dependencies
 
@@ -303,7 +332,7 @@ Each PowerShell script can be run independently for testing or manual operations
 .\Infrastructure\scripts\GetSiteInformation.ps1 -Url "https://tenant.sharepoint.com/sites/project1" -OutputFormat "Summary"
 ```
 
-## 📋 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -358,10 +387,10 @@ Get-PnPList
 Test-Json -Json (Get-Content "config\my-tenant-config.json" -Raw) -SchemaFile "config\deployment-config.schema.json"
 ```
 
-## 📚 File Structure
+## File Structure
 
 ```
-├── Deploy-Solution.ps1              # 🚀 Unified deployment script (handles all scenarios)  
+├── Deploy-Solution.ps1              # Unified deployment script (handles all scenarios)  
 ├── Infrastructure/                  # Azure infrastructure and templates
 │   ├── main.bicep                  # Main orchestration template
 │   ├── deployment/                 # Additional deployment utilities
@@ -389,7 +418,7 @@ Test-Json -Json (Get-Content "config\my-tenant-config.json" -Raw) -SchemaFile "c
 └── logs/                          # Deployment logs (created automatically)
 ```
 
-## 🔒 Security Considerations
+## Security Considerations
 
 ### Managed Identity
 
@@ -411,7 +440,7 @@ The solution uses Azure Automation managed identity for secure authentication:
 - **Logging**: Logs contain project URLs and user emails (required for operation)
 - **Configuration**: Sensitive information stored in Azure Automation variables
 
-## 🤝 Contributing
+## Contributing
 
 To contribute improvements or bug fixes:
 
@@ -428,7 +457,7 @@ To contribute improvements or bug fixes:
 - Follow **existing logging patterns** for consistency
 - Test with **multiple tenant configurations**
 
-## 📞 Support
+## Support
 
 For issues and questions:
 
@@ -437,7 +466,7 @@ For issues and questions:
 3. **Validate configuration** against the JSON schema
 4. **Test individual scripts** before full deployment
 
-## 🔄 Version History
+## Version History
 
 ### v2.0.0 - Generic Multi-Tenant Version
 - ✅ Complete refactor for multi-tenant support
