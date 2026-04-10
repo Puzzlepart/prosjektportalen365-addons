@@ -1,7 +1,7 @@
 Param(
     [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp365",
     [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a", ## PP Client Id
-    [Parameter(Mandatory = $false)][datetime]$Since
+    [Parameter(Mandatory = $false)][Nullable[datetime]]$Since
 )
 
 class AggregatedBenefitValue {
@@ -72,23 +72,19 @@ function Calculate-Achievement($StartValue, $DesiredValue, $MeasurementValue, $F
 
 function Get-LastRunTimestamp {
     if ($Since) {
-        Write-Output "Using explicit -Since parameter: $Since"
         return $Since.ToUniversalTime()
     }
     if ($global:__UseManagedIdentity) {
         try {
             $lastRunStr = Get-AutomationVariable -Name "AggregationLastRun" -ErrorAction SilentlyContinue
             if (-not [string]::IsNullOrEmpty($lastRunStr)) {
-                $lastRun = [datetime]::Parse($lastRunStr).ToUniversalTime()
-                Write-Output "Last run timestamp from Automation Variable: $lastRun"
-                return $lastRun
+                return [datetime]::Parse($lastRunStr).ToUniversalTime()
             }
         }
         catch {
             Write-Warning "Could not read AggregationLastRun variable: $($_.Exception.Message)"
         }
     }
-    Write-Output "No previous run timestamp found. Running full sync."
     return $null
 }
 
@@ -103,11 +99,10 @@ function Test-ProjectSiteHasChanges($LastRun) {
         if ($null -eq $list) { continue }
         $changedItems = Get-PnPListItem -List $listName -Query "<View><RowLimit>1</RowLimit><Query><Where><Geq><FieldRef Name='Modified'/><Value Type='DateTime' IncludeTimeValue='TRUE'>$lastRunISO</Value></Geq></Where></Query></View>" -ErrorAction SilentlyContinue
         if ($changedItems -and @($changedItems).Count -gt 0) {
-            Write-Output "`tChanges detected in '$listName' since $lastRunISO"
-            return $true
+            return $listName
         }
     }
-    return $false
+    return $null
 }
 
 function Compare-ItemValues($ExistingFieldValues, $NewValues) {
@@ -486,6 +481,11 @@ Connect-SharePoint -Url $HubUrl
 $AllProjects = Get-PnPListItem -List "Prosjekter" -PageSize 500 -Fields "Id", "Title", "GtSiteUrl", "GtChildProjects"
 
 $LastRunTimestamp = Get-LastRunTimestamp
+if ($null -eq $LastRunTimestamp) {
+    Write-Output "No previous run timestamp found. Running full sync."
+} else {
+    Write-Output "Delta sync: processing changes since $LastRunTimestamp"
+}
 
 # Build program membership lookup: ProjectSiteUrl -> list of program titles
 $ProgramMembership = @{}
@@ -527,9 +527,13 @@ $AllProjects | ForEach-Object {
     Connect-SharePoint -Url $ProjectUrl
 
     # Delta sync: skip project sites with no changes since last run
-    if (-not (Test-ProjectSiteHasChanges -LastRun $LastRunTimestamp)) {
+    $ChangedList = Test-ProjectSiteHasChanges -LastRun $LastRunTimestamp
+    if (-not $ChangedList) {
         Write-Output "`tNo changes since last run, skipping."
         return
+    }
+    if ($ChangedList -is [string]) {
+        Write-Output "`tChanges detected in '$ChangedList' since last run"
     }
 
     Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
