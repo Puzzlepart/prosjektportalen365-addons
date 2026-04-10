@@ -1,6 +1,7 @@
 Param(
     [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp365",
-    [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a" ## PP Client Id
+    [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a", ## PP Client Id
+    [Parameter(Mandatory = $false)][datetime]$Since
 )
 
 class AggregatedBenefitValue {
@@ -68,12 +69,94 @@ function Calculate-Achievement($StartValue, $DesiredValue, $MeasurementValue, $F
         return $null
     }
 }
+
+function Get-LastRunTimestamp {
+    if ($Since) {
+        Write-Output "Using explicit -Since parameter: $Since"
+        return $Since.ToUniversalTime()
+    }
+    if ($global:__UseManagedIdentity) {
+        try {
+            $lastRunStr = Get-AutomationVariable -Name "AggregationLastRun" -ErrorAction SilentlyContinue
+            if (-not [string]::IsNullOrEmpty($lastRunStr)) {
+                $lastRun = [datetime]::Parse($lastRunStr).ToUniversalTime()
+                Write-Output "Last run timestamp from Automation Variable: $lastRun"
+                return $lastRun
+            }
+        }
+        catch {
+            Write-Warning "Could not read AggregationLastRun variable: $($_.Exception.Message)"
+        }
+    }
+    Write-Output "No previous run timestamp found. Running full sync."
+    return $null
+}
+
+function Test-ProjectSiteHasChanges($LastRun) {
+    if ($null -eq $LastRun) {
+        return $true
+    }
+    $lastRunISO = $LastRun.ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $SourceLists = @("Endringsanalyse", "Gevinstanalyse og gevinstrealiseringsplan", "Måleindikatorer", "Gevinstoppfølging")
+    foreach ($listName in $SourceLists) {
+        $list = Get-PnPList -Identity $listName -ErrorAction SilentlyContinue
+        if ($null -eq $list) { continue }
+        $changedItems = Get-PnPListItem -List $listName -Query "<View><RowLimit>1</RowLimit><Query><Where><Geq><FieldRef Name='Modified'/><Value Type='DateTime' IncludeTimeValue='TRUE'>$lastRunISO</Value></Geq></Where></Query></View>" -ErrorAction SilentlyContinue
+        if ($changedItems -and @($changedItems).Count -gt 0) {
+            Write-Output "`tChanges detected in '$listName' since $lastRunISO"
+            return $true
+        }
+    }
+    return $false
+}
+
+function Compare-ItemValues($ExistingFieldValues, $NewValues) {
+    foreach ($key in $NewValues.Keys) {
+        $newVal = $NewValues[$key]
+        $existingVal = $ExistingFieldValues[$key]
+
+        # Normalize person fields (SharePoint returns FieldUserValue objects)
+        if ($existingVal -is [Microsoft.SharePoint.Client.FieldUserValue]) {
+            $existingVal = $existingVal.Email
+        }
+        # Normalize lookup fields
+        if ($existingVal -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
+            $existingVal = $existingVal.LookupValue
+        }
+        # Normalize DateTime to ISO string
+        if ($existingVal -is [datetime]) {
+            $existingVal = $existingVal.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+        }
+
+        # Treat null and empty string as equivalent
+        $existingIsEmpty = ($null -eq $existingVal -or [string]::IsNullOrEmpty("$existingVal"))
+        $newIsEmpty = ($null -eq $newVal -or [string]::IsNullOrEmpty("$newVal"))
+        if ($existingIsEmpty -and $newIsEmpty) { continue }
+        if ($existingIsEmpty -ne $newIsEmpty) { return $true }
+
+        if ("$existingVal" -ne "$newVal") {
+            return $true
+        }
+    }
+    return $false
+}
+
 function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
     $BenefitsListName = "Gevinstoversikt"
     $BenefitsList = Get-PnPList -Identity $BenefitsListName -ErrorAction SilentlyContinue
     if ($null -eq $BenefitsList) {
         Write-Output "Creating '$BenefitsListName' list in hub site $Url"
-        $NewList = New-PnPList -Title $BenefitsListName -Template GenericList -EnableVersioning
+        try {
+            $NewList = New-PnPList -Title $BenefitsListName -Template GenericList -EnableVersioning
+        }
+        catch {
+            Write-Warning "Failed to create list '$BenefitsListName': $($_.Exception.Message)"
+            if ($global:__UseManagedIdentity) {
+                Write-Warning "The Managed Identity may not have sufficient permissions (Sites.FullControl.All) on the hub site."
+                Write-Warning "Please run this script once in interactive mode as a SharePoint admin to set up the list and columns."
+            }
+            throw
+        }
     }
     else {
         Write-Output "'$BenefitsListName' list already exists in hub site $Url. Ensuring all columns and view exist."
@@ -108,48 +191,83 @@ function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
         "GtMeasurementComment"      # Målkommentar
     )
 
-    try {
-        # Get existing fields on the list to check what's already there
-        $ExistingFields = Get-PnPField -List $BenefitsListName | Select-Object -ExpandProperty InternalName
+    # Schema modifications are non-breaking if the list already exists.
+    # When running with Managed Identity without Sites.FullControl.All, these may fail
+    # but the script can still continue if the list was previously set up interactively.
+    $SchemaErrors = @()
 
-        # Ensure the UniqueKey XML field exists
-        if ("GtcUniqueKey" -notin $ExistingFields) {
+    # Get existing fields on the list to check what's already there
+    try {
+        $ExistingFields = Get-PnPField -List $BenefitsListName | Select-Object -ExpandProperty InternalName
+    }
+    catch {
+        Write-Warning "Unable to read existing fields on '$BenefitsListName': $($_.Exception.Message)"
+        Write-Warning "Skipping schema verification. The script will attempt to continue with existing list schema."
+        return
+    }
+
+    # Ensure the UniqueKey XML field exists
+    if ("GtcUniqueKey" -notin $ExistingFields) {
+        try {
             Write-Output "`tAdding field 'GtcUniqueKey' to '$BenefitsListName'"
             $NewField = Add-PnPFieldFromXml -List $BenefitsListName -FieldXml $UniqueKeyFieldXml
         }
+        catch {
+            $SchemaErrors += "GtcUniqueKey"
+            Write-Warning "`tFailed to add field 'GtcUniqueKey': $($_.Exception.Message)"
+        }
+    }
 
-        # Ensure all custom fields exist
-        foreach ($field in $CustomFields) {
-            if ($field.InternalName -notin $ExistingFields) {
+    # Ensure all custom fields exist
+    foreach ($field in $CustomFields) {
+        if ($field.InternalName -notin $ExistingFields) {
+            try {
                 Write-Output "`tAdding field '$($field.InternalName)' to '$BenefitsListName'"
                 $NewField = Add-PnPField -List $BenefitsListName -DisplayName $field.DisplayName -InternalName $field.InternalName -Type $field.Type
             }
+            catch {
+                $SchemaErrors += $field.InternalName
+                Write-Warning "`tFailed to add field '$($field.InternalName)': $($_.Exception.Message)"
+            }
         }
+    }
 
-        # Ensure all site columns exist on the list
-        foreach ($fieldName in $SiteColumnsToAdd) {
-            if ($fieldName -notin $ExistingFields) {
+    # Ensure all site columns exist on the list
+    foreach ($fieldName in $SiteColumnsToAdd) {
+        if ($fieldName -notin $ExistingFields) {
+            try {
                 Write-Output "`tAdding site column '$fieldName' to '$BenefitsListName'"
                 $AddedField = Add-PnPField -List $BenefitsListName -Field $fieldName
             }
+            catch {
+                $SchemaErrors += $fieldName
+                Write-Warning "`tFailed to add site column '$fieldName': $($_.Exception.Message)"
+            }
         }
+    }
 
-        # Ensure the default view exists
-        $ViewName = "Alle gevinster"
-        $ExistingView = Get-PnPView -List $BenefitsListName -Identity $ViewName -ErrorAction SilentlyContinue
-        if ($null -eq $ExistingView) {
+    # Ensure the default view exists
+    $ViewName = "Alle gevinster"
+    $ExistingView = Get-PnPView -List $BenefitsListName -Identity $ViewName -ErrorAction SilentlyContinue
+    if ($null -eq $ExistingView) {
+        try {
             Write-Output "`tCreating view '$ViewName' on '$BenefitsListName'"
             $NewView = Add-PnPView -List $BenefitsListName -Title $ViewName -Fields @("GtcProjectName", "GtcPartOfProgram", "GtcChangeTitle", "GtcBenefitTitle", "GtGainsType", "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit", "GtMeasurementValue", "GtcGoalAchievement") -RowLimit 500 -Paged -Aggregations "GtMeasurementValue" -SetAsDefault
         }
+        catch {
+            $SchemaErrors += "View: $ViewName"
+            Write-Warning "`tFailed to create view '$ViewName': $($_.Exception.Message)"
+        }
     }
-    catch {
-        Write-Warning "Failed to ensure list schema for '$BenefitsListName': $($_.Exception.Message)"
+
+    if ($SchemaErrors.Count -gt 0) {
+        Write-Warning "Some schema modifications could not be applied to '$BenefitsListName': $($SchemaErrors -join ', ')"
         if ($global:__UseManagedIdentity) {
             Write-Warning "The Managed Identity may not have sufficient permissions (Sites.FullControl.All) on the hub site."
-            Write-Warning "Please run the AssignPermissionsToManagedIdentity.ps1 script to grant the required permissions,"
-            Write-Warning "or run this script once in interactive mode as a SharePoint admin to set up the list and columns."
+            Write-Warning "Please run this script once in interactive mode as a SharePoint admin to set up the list and columns,"
+            Write-Warning "or run the AssignPermissionsToManagedIdentity.ps1 script to grant the required permissions."
         }
-        throw
+        Write-Warning "Continuing with existing list schema..."
     }
 }
 
@@ -208,7 +326,7 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl, $PartOfProg
         if ($relatedIndicators.Count -eq 0) {
             # No measurement indicators for this benefit, but we still include it
             $benefitItem = [AggregatedBenefitValue]::new()
-            $benefitItem.GtcUniqueKey = "$SiteId-$changeId-$($gevinst.Id)-0-0"
+            $benefitItem.GtcUniqueKey = "$SiteId-$changeId-$($gevinst.Id)-0"
             $benefitItem.GtcProjectName = $ProjectName
             $benefitItem.GtcProjectUrl = $ProjectUrl
             $benefitItem.GtcPartOfProgram = $PartOfProgram
@@ -234,12 +352,7 @@ function Aggregate-BenefitsToHub($ProjectName, $ProjectUrl, $HubUrl, $PartOfProg
             foreach ($indicator in $relatedIndicators) {
                 $benefitItem = [AggregatedBenefitValue]::new()
                 
-                # Build unique key - check if there's a followup for this measurement indicator
-                $followupId = "0"
-                if ($MostRecentFollowups.ContainsKey($indicator.Id)) {
-                    $followupId = $MostRecentFollowups[$indicator.Id].Id
-                }
-                $benefitItem.GtcUniqueKey = "$SiteId-$changeId-$($gevinst.Id)-$($indicator.Id)-$followupId"
+                $benefitItem.GtcUniqueKey = "$SiteId-$changeId-$($gevinst.Id)-$($indicator.Id)"
                 
                 $benefitItem.GtcProjectName = $ProjectName
                 $benefitItem.GtcProjectUrl = $ProjectUrl
@@ -372,6 +485,8 @@ if (-not $global:__UseManagedIdentity) {
 Connect-SharePoint -Url $HubUrl
 $AllProjects = Get-PnPListItem -List "Prosjekter" -PageSize 500 -Fields "Id", "Title", "GtSiteUrl", "GtChildProjects"
 
+$LastRunTimestamp = Get-LastRunTimestamp
+
 # Build program membership lookup: ProjectSiteUrl -> list of program titles
 $ProgramMembership = @{}
 foreach ($proj in $AllProjects) {
@@ -411,6 +526,12 @@ $AllProjects | ForEach-Object {
     Write-Output "Processing project site: $ProjectUrl"
     Connect-SharePoint -Url $ProjectUrl
 
+    # Delta sync: skip project sites with no changes since last run
+    if (-not (Test-ProjectSiteHasChanges -LastRun $LastRunTimestamp)) {
+        Write-Output "`tNo changes since last run, skipping."
+        return
+    }
+
     Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
     $AggregationItems = Aggregate-BenefitsToHub -ProjectName $ProjectName -ProjectUrl $ProjectUrl -HubUrl $HubUrl -PartOfProgram $PartOfProgram
     Write-Output "Built array with $($AggregationItems.Count) items for project '$ProjectName'"
@@ -418,6 +539,10 @@ $AllProjects | ForEach-Object {
     if ( $AggregationItems.Count -eq 0) {
         return
     }
+
+    # Connect to hub once per project batch, not per item
+    Connect-SharePoint -Url $HubUrl
+
     foreach ($AggregationItem in $AggregationItems) {
         # Convert the object to a hashtable for SharePoint operations
         $ItemValues = @{}
@@ -428,9 +553,13 @@ $AllProjects | ForEach-Object {
         $ItemValues["Title"] = $AggregationItem.GtcProjectName + " - " + $AggregationItem.GtcBenefitTitle
             
         try {
-            Connect-SharePoint -Url $HubUrl
             $ExistingItem = Get-PnPListItem -List "Gevinstoversikt" -Query "<View><Query><Where><Eq><FieldRef Name='GtcUniqueKey'/><Value Type='Text'>$($AggregationItem.GtcUniqueKey)</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
             if ($null -ne $ExistingItem) {
+                # Skip update if no field values have changed
+                if (-not (Compare-ItemValues -ExistingFieldValues $ExistingItem.FieldValues -NewValues $ItemValues)) {
+                    Write-Output "`tItem '$($AggregationItem.GtcBenefitTitle)' unchanged, skipping."
+                    continue
+                }
                 Write-Output "`tUpdating existing item '$($AggregationItem.GtcBenefitTitle)' with key '$($AggregationItem.GtcUniqueKey)'"
                 $GevinstItem = Set-PnPListItem -List "Gevinstoversikt" -Identity $ExistingItem.Id -Values $ItemValues -ErrorAction Stop
             }
@@ -442,5 +571,17 @@ $AllProjects | ForEach-Object {
         catch {
             Write-Warning "`tFailed to process item, see error: $($_.Exception.Message)"
         }
+    }
+}
+
+# Save last run timestamp for next delta sync
+if ($global:__UseManagedIdentity) {
+    try {
+        $now = (Get-Date).ToUniversalTime().ToString("o")
+        Set-AutomationVariable -Name "AggregationLastRun" -Value $now
+        Write-Output "Saved last run timestamp: $now"
+    }
+    catch {
+        Write-Warning "Failed to save AggregationLastRun variable: $($_.Exception.Message)"
     }
 }
