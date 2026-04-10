@@ -1,0 +1,22 @@
+{
+  "subscriptionId": {
+    "Value": "REPLACE_WITH_YOUR_SUBSCRIPTION_ID",
+    "Description": "Azure subscription ID where resources will be deployed"
+  },
+  "resourceGroupName": {
+    "Value": "RG-Prosjektportalen365",
+    "Description": "Name of the Azure resource group (will be created if not exists)"
+  },
+  "location": {
+    "Value": "westeurope",
+    "Description": "Azure region for resource deployment"
+  },
+  "tags": {
+    "Value": {
+      "Environment": "Production",
+      "Application": "Prosjektportalen365",
+      "Purpose": "ProjectManagement"
+    },
+    "Description": "Resource tags to apply to all deployed Azure resources"
+  }
+}

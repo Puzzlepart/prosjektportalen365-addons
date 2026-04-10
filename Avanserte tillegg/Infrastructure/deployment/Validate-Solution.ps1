@@ -6,9 +6,13 @@ Write-Host "=== Solution Validation Report ===" -ForegroundColor Cyan
 $filesExpected = @{
     "main.bicep" = "Main Bicep orchestration template"
     "Deploy-Solution.ps1" = "Deployment script"
-    "config/config.template.json" = "Configuration template"
-    "createentraidapp.ps1" = "Managed identity script"
-    "Examples-Selective-Deployment.ps1" = "Deployment examples"
+    "config/config.json" = "Root configuration (deployment orchestration)"
+    "config/azure.json" = "Azure configuration (subscription, resource group)"
+    "config/sharepoint.json" = "SharePoint configuration (tenant, hub site)"
+    "config/automation.json" = "Automation configuration (language, log level)"
+    "config/runbooks.json" = "Runbook settings (all runbooks)"
+    "config/logic-apps.json" = "Logic app settings (all logic apps)"
+    "config/connectors.json" = "Connector settings (all connectors)"
 }
 
 Write-Host "`n1. File Structure Check:" -ForegroundColor Yellow
@@ -31,24 +35,38 @@ $bicepFiles | ForEach-Object {
 # Check configuration schema
 Write-Host "`n3. Configuration Schema Check:" -ForegroundColor Yellow
 try {
-    $configContent = Get-Content "config/config.template.json" -Raw | ConvertFrom-Json
-    Write-Host "  ✓ Configuration JSON is valid" -ForegroundColor Green
+    $rootConfig = Get-Content "config/config.json" -Raw | ConvertFrom-Json
+    Write-Host "  ✓ Root config.json is valid JSON" -ForegroundColor Green
     
-    # Check for new selective deployment settings
-    if ($configContent.deploymentSettings) {
-        Write-Host "  ✓ Selective deployment settings found" -ForegroundColor Green
-        $deploySettings = $configContent.deploymentSettings.Value
-        Write-Host "    - Project Prefix: $($deploySettings.projectPrefix)" -ForegroundColor White
-        Write-Host "    - Environment: $($deploySettings.environment)" -ForegroundColor White
-        Write-Host "    - Runbooks to Deploy: $($deploySettings.runbooksToDeploy -join ', ')" -ForegroundColor White
-        Write-Host "    - Logic Apps to Deploy: $($deploySettings.logicAppsToDeploy -join ', ')" -ForegroundColor White
-        Write-Host "    - SharePoint Connector: $($deploySettings.deploySharePointConnector)" -ForegroundColor White
-        Write-Host "    - Automation Connector: $($deploySettings.deployAutomationConnector)" -ForegroundColor White
+    # Check for component selection settings
+    if ($rootConfig.components) {
+        Write-Host "  ✓ Component selection settings found" -ForegroundColor Green
+        $components = $rootConfig.components.Value
+        if ($null -eq $components) { $components = $rootConfig.components }
+        Write-Host "    - Runbooks: $($components.runbooks -join ', ')" -ForegroundColor White
+        Write-Host "    - Logic Apps: $($components.logicApps -join ', ')" -ForegroundColor White
+        if ($components.connectors) {
+            Write-Host "    - SharePoint Connector: $($components.connectors.SharePointOnline)" -ForegroundColor White
+            Write-Host "    - Automation Connector: $($components.connectors.Automation)" -ForegroundColor White
+        }
     } else {
-        Write-Host "  ✗ Selective deployment settings missing" -ForegroundColor Red
+        Write-Host "  ✗ Component selection settings missing from config.json" -ForegroundColor Red
+    }
+    
+    # Validate type-level config files
+    foreach ($typeFile in @('azure.json', 'sharepoint.json', 'automation.json', 'runbooks.json', 'logic-apps.json', 'connectors.json')) {
+        $typePath = "config/$typeFile"
+        if (Test-Path $typePath) {
+            try {
+                $null = Get-Content $typePath -Raw | ConvertFrom-Json
+                Write-Host "  ✓ $typeFile is valid JSON" -ForegroundColor Green
+            } catch {
+                Write-Host "  ✗ $typeFile has invalid JSON: $($_.Exception.Message)" -ForegroundColor Red
+            }
+        }
     }
 } catch {
-    Write-Host "  ✗ Configuration JSON is invalid: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "  ✗ Root config.json is invalid: $($_.Exception.Message)" -ForegroundColor Red
 }
 
 # Test main.bicep parameters
@@ -96,21 +114,27 @@ Write-Host "`n5. Deploy-Solution.ps1 Check:" -ForegroundColor Yellow
 try {
     $deployContent = Get-Content "Deploy-Solution.ps1" -Raw
     
-    # Check for correct file path
-    if ($deployContent -match 'Join-Path \$PSScriptRoot "main\.bicep"') {
-        Write-Host "  ✓ Correct main.bicep path reference found" -ForegroundColor Green
+    # Check for hierarchical config loading
+    if ($deployContent -match 'Read-HierarchicalConfig') {
+        Write-Host "  ✓ Hierarchical config loading function found" -ForegroundColor Green
     } else {
-        Write-Host "  ✗ Incorrect main.bicep path reference" -ForegroundColor Red
+        Write-Host "  ✗ Hierarchical config loading function missing" -ForegroundColor Red
+    }
+    
+    if ($deployContent -match 'Read-ConfigFile') {
+        Write-Host "  ✓ Config file reader function found" -ForegroundColor Green
+    } else {
+        Write-Host "  ✗ Config file reader function missing" -ForegroundColor Red
     }
     
     # Check for bicep parameter mapping
-    if ($deployContent -match 'runbooksToDeploy.*=.*\$deploymentSettings\.runbooksToDeploy') {
+    if ($deployContent -match 'runbooksToDeploy.*=.*deploymentSettings\.runbooksToDeploy') {
         Write-Host "  ✓ Runbooks parameter mapping found" -ForegroundColor Green
     } else {
         Write-Host "  ✗ Runbooks parameter mapping missing" -ForegroundColor Red
     }
     
-    if ($deployContent -match 'logicAppsToDeploy.*=.*\$deploymentSettings\.logicAppsToDeploy') {
+    if ($deployContent -match 'logicAppsToDeploy.*=.*deploymentSettings\.logicAppsToDeploy') {
         Write-Host "  ✓ Logic Apps parameter mapping found" -ForegroundColor Green
     } else {
         Write-Host "  ✗ Logic Apps parameter mapping missing" -ForegroundColor Red
@@ -121,9 +145,9 @@ try {
 }
 
 Write-Host "`n=== Validation Complete ===" -ForegroundColor Cyan
-Write-Host "`nTo test selective deployment:" -ForegroundColor Yellow
-Write-Host "1. Copy config/config.template.json to config/tenant-config.json" -ForegroundColor White
-Write-Host "2. Update the configuration with your tenant details" -ForegroundColor White  
-Write-Host "3. Modify 'deploymentSettings' to specify which components to deploy" -ForegroundColor White
-Write-Host "4. Run: .\Deploy-Solution.ps1 -ConfigurationFile config\tenant-config.json -ValidateOnly" -ForegroundColor White
-Write-Host "5. For examples, see Examples-Selective-Deployment.ps1" -ForegroundColor White
+Write-Host "`nTo set up a new tenant:" -ForegroundColor Yellow
+Write-Host "1. Copy files from config/templates/ to config/" -ForegroundColor White
+Write-Host "2. Update azure.json with your subscription and resource group" -ForegroundColor White
+Write-Host "3. Update sharepoint.json with your tenant and hub site URL" -ForegroundColor White
+Write-Host "4. Edit config.json to select which components to deploy" -ForegroundColor White
+Write-Host "5. Run: .\Deploy-Solution.ps1 -ConfigurationFile config\config.json -ValidateOnly" -ForegroundColor White

@@ -1,0 +1,22 @@
+{
+  "tenant": {
+    "Value": "REPLACE_WITH_YOUR_TENANT.sharepoint.com",
+    "Description": "SharePoint tenant domain (e.g., contoso.sharepoint.com)"
+  },
+  "hubSiteUrl": {
+    "Value": "https://REPLACE_WITH_YOUR_TENANT.sharepoint.com/sites/prosjektportalen",
+    "Description": "Full URL to the Prosjektportalen hub site"
+  },
+  "serviceAccountEmail": {
+    "Value": "REPLACE_WITH_SERVICE_ACCOUNT@yourdomain.com",
+    "Description": "Email address for the SharePoint service account connection"
+  },
+  "projectListGuid": {
+    "Value": "REPLACE_WITH_PROJECT_LIST_GUID",
+    "Description": "GUID of the SharePoint project list (found in list settings)"
+  },
+  "listViewGuid": {
+    "Value": "REPLACE_WITH_LIST_VIEW_GUID",
+    "Description": "GUID of the SharePoint list view (found in list view settings)"
+  }
+}

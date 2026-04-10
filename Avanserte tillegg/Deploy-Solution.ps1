@@ -244,14 +244,13 @@ Write-Host ""
 
 Write-Host "Checking Azure authentication..." -ForegroundColor Cyan
 
-# Check if already connected to Azure
+# Check if already connected to Azure with a valid token
 try {
-    $currentContext = Get-AzContext -ErrorAction SilentlyContinue
-    if (-not $currentContext) {
-        Write-Host "Not connected to Azure. Initiating login..." -ForegroundColor Yellow
-        Connect-AzAccount -ErrorAction Stop
-        $currentContext = Get-AzContext
-    }
+
+    Write-Host "Not connected to Azure. Initiating login..." -ForegroundColor Yellow
+    Connect-AzAccount -ErrorAction Stop
+    $currentContext = Get-AzContext
+
     
     Write-Host "Connected to Azure as: $($currentContext.Account.Id)" -ForegroundColor Green
     Write-Host "Current subscription: $($currentContext.Subscription.Name) ($($currentContext.Subscription.Id))" -ForegroundColor Green
@@ -643,7 +642,7 @@ function Show-DeploymentExamples {
 📋 CONFIGURATION FILE DEPLOYMENT:
    ────────────────────────────────────────────────────────────────────────────────
 
-   # Deploy using configuration file (all parameters come from config)
+   # Deploy using hierarchical config directory
    .\Deploy-Solution.ps1 -ConfigurationFile "config\config.json"
    
    # Deploy with config file but override specific parameters
@@ -652,11 +651,14 @@ function Show-DeploymentExamples {
    # Validate configuration without deploying
    .\Deploy-Solution.ps1 -ConfigurationFile "config\config.json" -ValidateOnly
    
-   📝 Required properties in configuration file:
-   • subscriptionId: Azure subscription GUID
-   • tenant: SharePoint tenant (e.g., "contoso.sharepoint.com")
-   • hubSiteUrl: Full URL to hub site
-   • serviceAccountEmail: Service account email address
+   📝 Hierarchical config directory:
+     config.json          - Root: prefix, environment, component selection
+     azure.json           - Azure: subscription, resource group, location
+     sharepoint.json      - SharePoint: tenant, hub site, service account
+     automation.json      - Automation: language, log level
+     runbooks.json        - All runbook settings (grouped by name)
+     logic-apps.json      - All logic app settings (grouped by name)
+     connectors.json      - All connector settings (grouped by name)
 
 🔧 CUSTOM SELECTIVE DEPLOYMENT:
    ────────────────────────────────────────────────────────────────────────────────────
@@ -720,8 +722,21 @@ if ($ShowExamples) {
 # CONFIGURATION PROCESSING
 # ============================================================================
 
-function Convert-NewConfigFormat {
-    param($ConfigObject)
+function Read-ConfigFile {
+    <#
+    .SYNOPSIS
+        Reads a JSON config file and strips the Value/Description wrapper format.
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [string]$Path
+    )
+    
+    if (-not (Test-Path $Path -PathType Leaf)) {
+        return $null
+    }
+    
+    $raw = Get-Content -Path $Path -Raw | ConvertFrom-Json
     
     function ConvertObject($obj) {
         if ($null -eq $obj) { return $null }
@@ -730,8 +745,6 @@ function Convert-NewConfigFormat {
             $result = @{}
             foreach ($property in $obj.PSObject.Properties) {
                 $value = $property.Value
-                
-                # Check if this property uses the new format (has Value and Description)
                 if ($value -is [PSCustomObject] -and 
                     $value.PSObject.Properties.Name -contains 'Value') {
                     $result[$property.Name] = ConvertObject($value.Value)
@@ -751,31 +764,157 @@ function Convert-NewConfigFormat {
         }
     }
     
-    return ConvertObject($ConfigObject)
+    return ConvertObject($raw)
+}
+
+function Read-HierarchicalConfig {
+    <#
+    .SYNOPSIS
+        Loads the hierarchical configuration directory.
+    .DESCRIPTION
+        Given a root config.json path, derives the config directory and loads:
+        - config.json      (projectPrefix, environment, component selection)
+        - azure.json       (subscriptionId, resourceGroupName, location, tags)
+        - sharepoint.json  (tenant, hubSiteUrl, serviceAccountEmail, list GUIDs)
+        - automation.json  (language, logLevel)
+        - runbooks.json    (all runbook settings keyed by runbook name)
+        - logic-apps.json  (all logic app settings keyed by logic app name)
+        - connectors.json  (all connector settings keyed by connector name)
+        Only settings for selected components are merged into the result.
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [string]$RootConfigPath
+    )
+    
+    $configDir = Split-Path $RootConfigPath -Parent
+    
+    # Load root config
+    $rootConfig = Read-ConfigFile -Path $RootConfigPath
+    if (-not $rootConfig) {
+        throw "Failed to read root configuration file: $RootConfigPath"
+    }
+    
+    # Load area-level configs
+    $azureConfig = Read-ConfigFile -Path (Join-Path $configDir 'azure.json')
+    if (-not $azureConfig) {
+        throw "Missing required config file: $(Join-Path $configDir 'azure.json')"
+    }
+    
+    $spConfig = Read-ConfigFile -Path (Join-Path $configDir 'sharepoint.json')
+    if (-not $spConfig) {
+        throw "Missing required config file: $(Join-Path $configDir 'sharepoint.json')"
+    }
+    
+    $autoConfig = Read-ConfigFile -Path (Join-Path $configDir 'automation.json')
+    
+    # Resolve component selection
+    $components = $rootConfig.components
+    $runbookNames = @($components.runbooks)
+    $logicAppNames = @($components.logicApps)
+    $deploySharePointConnector = $components.connectors.SharePointOnline -eq $true
+    $deployAutomationConnector = $components.connectors.Automation -eq $true
+    
+    # Load type-level configs
+    $runbooksConfig = Read-ConfigFile -Path (Join-Path $configDir 'runbooks.json')
+    $logicAppsConfig = Read-ConfigFile -Path (Join-Path $configDir 'logic-apps.json')
+    $connectorsConfig = Read-ConfigFile -Path (Join-Path $configDir 'connectors.json')
+    
+    # Merge settings from selected components only
+    $componentSettings = @{}
+    
+    foreach ($runbook in $runbookNames) {
+        if ($runbooksConfig -and $runbooksConfig.PSObject.Properties.Name -contains $runbook) {
+            $rbSettings = $runbooksConfig.$runbook
+            if ($rbSettings -is [PSCustomObject]) {
+                foreach ($prop in $rbSettings.PSObject.Properties) {
+                    $componentSettings[$prop.Name] = $prop.Value
+                }
+            }
+        }
+        Write-DeploymentLog "  Component: runbook/$runbook" -Level Info
+    }
+    
+    foreach ($logicApp in $logicAppNames) {
+        if ($logicAppsConfig -and $logicAppsConfig.PSObject.Properties.Name -contains $logicApp) {
+            $laSettings = $logicAppsConfig.$logicApp
+            if ($laSettings -is [PSCustomObject]) {
+                foreach ($prop in $laSettings.PSObject.Properties) {
+                    $componentSettings[$prop.Name] = $prop.Value
+                }
+            }
+        }
+        Write-DeploymentLog "  Component: logic-app/$logicApp" -Level Info
+    }
+    
+    if ($deploySharePointConnector) {
+        Write-DeploymentLog "  Component: connector/SharePointOnline" -Level Info
+    }
+    if ($deployAutomationConnector) {
+        Write-DeploymentLog "  Component: connector/Automation" -Level Info
+    }
+    
+    # Build unified deployment config
+    $config = [PSCustomObject]@{
+        # azure.json
+        subscriptionId    = $azureConfig.subscriptionId
+        resourceGroupName = $azureConfig.resourceGroupName
+        location          = $azureConfig.location
+        tags              = $azureConfig.tags
+        # sharepoint.json
+        tenant              = $spConfig.tenant
+        hubSiteUrl          = $spConfig.hubSiteUrl
+        serviceAccountEmail = $spConfig.serviceAccountEmail
+        sharePointSettings  = [PSCustomObject]@{
+            projectListGuid = $spConfig.projectListGuid
+            listViewGuid    = $spConfig.listViewGuid
+        }
+        # automation.json
+        language = if ($autoConfig) { $autoConfig.language } else { $null }
+        logLevel = if ($autoConfig) { $autoConfig.logLevel } else { $null }
+        # root config.json
+        deploymentSettings = [PSCustomObject]@{
+            projectPrefix             = $rootConfig.projectPrefix
+            environment               = $rootConfig.environment
+            runbooksToDeploy          = $runbookNames
+            logicAppsToDeploy         = $logicAppNames
+            deploySharePointConnector = $deploySharePointConnector
+            deployAutomationConnector = $deployAutomationConnector
+        }
+        # Merged from runbooks.json / logic-apps.json (selected components only)
+        completionPhaseName  = $componentSettings['completionPhaseName']
+        finishedPhaseText    = $componentSettings['finishedPhaseText']
+        archiveStatusName    = $componentSettings['archiveStatusName']
+        archiveBannerText    = $componentSettings['archiveBannerText']
+        defaultManagerRole   = $componentSettings['defaultManagerRole']
+        folderStructure      = $componentSettings['folderStructure']
+        dateCalculationRules = $componentSettings['dateCalculationRules']
+    }
+    
+    return $config
 }
 
 function Get-DeploymentConfiguration {
-    # Handle different parameter sets
     if ($PSCmdlet.ParameterSetName -eq 'ConfigFile') {
-        Write-DeploymentLog "Loading configuration from: $ConfigurationFile"
-        $rawConfig = Get-Content -Path $ConfigurationFile -Raw | ConvertFrom-Json
+        Write-DeploymentLog "Loading hierarchical configuration from: $ConfigurationFile"
         
-        # Convert new config format to old format for backward compatibility
-        $config = Convert-NewConfigFormat -ConfigObject $rawConfig
+        $config = Read-HierarchicalConfig -RootConfigPath $ConfigurationFile
         
-        # Override with command line parameters if provided
+        # CLI parameter overrides
         if ($SubscriptionId) { $config.subscriptionId = $SubscriptionId }
-        if ($ResourceGroupName) { $config.resourceGroupName = $ResourceGroupName }
-        if ($Location) { $config.location = $Location }
+        if ($ResourceGroupName -ne 'RG-Prosjektportalen365') { $config.resourceGroupName = $ResourceGroupName }
+        if ($Location -ne 'norwayeast') { $config.location = $Location }
         if ($SharePointTenant) { $config.tenant = $SharePointTenant }
         if ($HubSiteUrl) { $config.hubSiteUrl = $HubSiteUrl }
+        if ($ProjectPrefix -ne 'PP365') { $config.deploymentSettings.projectPrefix = $ProjectPrefix }
+        if ($Environment -ne 'prod') { $config.deploymentSettings.environment = $Environment }
         
-        # Validate required properties exist in config file
+        # Validate required properties
         $requiredProperties = @(
-            @{Name = 'subscriptionId'; DisplayName = 'Subscription ID'},
-            @{Name = 'tenant'; DisplayName = 'SharePoint Tenant'},
-            @{Name = 'hubSiteUrl'; DisplayName = 'Hub Site URL'},
-            @{Name = 'serviceAccountEmail'; DisplayName = 'Service Account Email'}
+            @{Name = 'subscriptionId'; DisplayName = 'Subscription ID (azure.json)'},
+            @{Name = 'tenant'; DisplayName = 'SharePoint Tenant (sharepoint.json)'},
+            @{Name = 'hubSiteUrl'; DisplayName = 'Hub Site URL (sharepoint.json)'},
+            @{Name = 'serviceAccountEmail'; DisplayName = 'Service Account Email (sharepoint.json)'}
         )
         
         $missingProperties = @()
@@ -786,61 +925,34 @@ function Get-DeploymentConfiguration {
         }
         
         if ($missingProperties.Count -gt 0) {
-            Write-Host "Configuration file is missing required properties:" -ForegroundColor Red
+            Write-Host "Configuration is missing required properties:" -ForegroundColor Red
             foreach ($missing in $missingProperties) {
                 Write-Host "  - $missing" -ForegroundColor Red
             }
-            Write-Host "Please update your configuration file or provide these parameters on the command line." -ForegroundColor Yellow
-            throw "Configuration file validation failed. Missing required properties: $($missingProperties -join ', ')"
+            throw "Configuration validation failed. Missing: $($missingProperties -join ', ')"
         }
         
-        # Ensure required nested objects exist with defaults
-        if (-not $config.deploymentSettings) {
-            $config.deploymentSettings = @{
-                projectPrefix = if ($ProjectPrefix -ne 'PP365') { $ProjectPrefix } else { 'PP365' }
-                environment = if ($Environment -ne 'prod') { $Environment } else { 'prod' }
-                runbooksToDeploy = @('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager')
-                logicAppsToDeploy = @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged')
-                deploySharePointConnector = $true
-                deployAutomationConnector = $true
-            }
+        # Format validation
+        if ($config.subscriptionId -notmatch '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$') {
+            throw "Invalid subscriptionId in azure.json. Must be a valid GUID."
+        }
+        if ($config.tenant -notmatch '^[a-zA-Z0-9][a-zA-Z0-9-]*\.sharepoint\.com$') {
+            throw "Invalid tenant in sharepoint.json. Must be like 'contoso.sharepoint.com'"
+        }
+        if ($config.hubSiteUrl -notmatch '^https://[a-zA-Z0-9][a-zA-Z0-9-]*\.sharepoint\.com/sites/[a-zA-Z0-9-]+$') {
+            throw "Invalid hubSiteUrl in sharepoint.json. Must be like 'https://contoso.sharepoint.com/sites/sitename'"
+        }
+        if ($config.serviceAccountEmail -notmatch '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') {
+            throw "Invalid serviceAccountEmail in sharepoint.json. Must be a valid email address."
         }
         
-        # Add default values for optional properties if missing
-        if (-not $config.resourceGroupName) { $config.resourceGroupName = $ResourceGroupName }
-        if (-not $config.location) { $config.location = $Location }
-        if (-not $config.completionPhaseName) { $config.completionPhaseName = $FinishedPhaseText }
-        
-        Write-DeploymentLog "Configuration loaded successfully from file" -Level Success
-        
-        # Validate loaded configuration values
-        if ($config.subscriptionId -and $config.subscriptionId -notmatch '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$') {
-            Write-Host "Invalid subscriptionId in config file. Must be a valid GUID." -ForegroundColor Red
-            throw "Invalid subscriptionId format in configuration file"
-        }
-        
-        if ($config.tenant -and $config.tenant -notmatch '^[a-zA-Z0-9][a-zA-Z0-9-]*\.sharepoint\.com$') {
-            Write-Host "Invalid tenant in config file. Must be like 'contoso.sharepoint.com'" -ForegroundColor Red
-            throw "Invalid tenant format in configuration file"
-        }
-        
-        if ($config.hubSiteUrl -and $config.hubSiteUrl -notmatch '^https://[a-zA-Z0-9][a-zA-Z0-9-]*\.sharepoint\.com/sites/[a-zA-Z0-9-]+$') {
-            Write-Host "Invalid hubSiteUrl in config file. Must be like 'https://contoso.sharepoint.com/sites/sitename'" -ForegroundColor Red
-            throw "Invalid hubSiteUrl format in configuration file"
-        }
-        
-        if ($config.serviceAccountEmail -and $config.serviceAccountEmail -notmatch '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') {
-            Write-Host "Invalid serviceAccountEmail in config file. Must be a valid email address." -ForegroundColor Red
-            throw "Invalid serviceAccountEmail format in configuration file"
-        }
-        
+        Write-DeploymentLog "Hierarchical configuration loaded successfully" -Level Success
         return $config
         
     } elseif ($PSCmdlet.ParameterSetName -eq 'Preset') {
         Write-DeploymentLog "Using preset configuration: $Preset"
         $presetConfig = Get-PresetConfiguration -PresetName $Preset
         
-        # Build configuration from preset and parameters
         $config = @{
             subscriptionId = $SubscriptionId
             resourceGroupName = $ResourceGroupName
@@ -858,13 +970,41 @@ function Get-DeploymentConfiguration {
             }
         }
         
-        # Add SharePoint settings if provided
         if ($ProjectListGuid) {
-            $config.sharePointSettings = @{
-                projectListGuid = $ProjectListGuid
+            $config.sharePointSettings = @{ projectListGuid = $ProjectListGuid }
+            if ($ListViewGuid) { $config.sharePointSettings.listViewGuid = $ListViewGuid }
+        }
+        
+        # Load component settings from type-level config files if available
+        $defaultConfigDir = Join-Path $PSScriptRoot 'config'
+        if (Test-Path $defaultConfigDir) {
+            $runbooksConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'runbooks.json')
+            $logicAppsConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'logic-apps.json')
+            $autoConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'automation.json')
+            
+            foreach ($runbook in @($presetConfig.runbooksToDeploy)) {
+                if ($runbooksConfig -and $runbooksConfig.PSObject.Properties.Name -contains $runbook) {
+                    $rbSettings = $runbooksConfig.$runbook
+                    if ($rbSettings -is [PSCustomObject]) {
+                        foreach ($prop in $rbSettings.PSObject.Properties) {
+                            if (-not $config.ContainsKey($prop.Name)) { $config[$prop.Name] = $prop.Value }
+                        }
+                    }
+                }
             }
-            if ($ListViewGuid) {
-                $config.sharePointSettings.listViewGuid = $ListViewGuid  
+            foreach ($logicApp in @($presetConfig.logicAppsToDeploy)) {
+                if ($logicAppsConfig -and $logicAppsConfig.PSObject.Properties.Name -contains $logicApp) {
+                    $laSettings = $logicAppsConfig.$logicApp
+                    if ($laSettings -is [PSCustomObject]) {
+                        foreach ($prop in $laSettings.PSObject.Properties) {
+                            if (-not $config.ContainsKey($prop.Name)) { $config[$prop.Name] = $prop.Value }
+                        }
+                    }
+                }
+            }
+            if ($autoConfig) {
+                if ($autoConfig.language -and -not $config.ContainsKey('language')) { $config['language'] = $autoConfig.language }
+                if ($autoConfig.logLevel -and -not $config.ContainsKey('logLevel')) { $config['logLevel'] = $autoConfig.logLevel }
             }
         }
         
@@ -875,7 +1015,6 @@ function Get-DeploymentConfiguration {
         # Interactive parameter set
         Write-DeploymentLog "Using interactive parameter configuration"
         
-        # Determine selective deployment arrays
         $runbooks = if ($RunbooksToDeploy) { $RunbooksToDeploy } else { @('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager') }
         $logicApps = if ($LogicAppsToDeploy) { $LogicAppsToDeploy } else { @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged') }
         
@@ -897,13 +1036,41 @@ function Get-DeploymentConfiguration {
             completionPhaseName = $FinishedPhaseText
         }
         
-        # Add SharePoint settings if provided
         if ($ProjectListGuid) {
-            $config.sharePointSettings = @{
-                projectListGuid = $ProjectListGuid
+            $config.sharePointSettings = @{ projectListGuid = $ProjectListGuid }
+            if ($ListViewGuid) { $config.sharePointSettings.listViewGuid = $ListViewGuid }
+        }
+        
+        # Load component settings from type-level config files if available
+        $defaultConfigDir = Join-Path $PSScriptRoot 'config'
+        if (Test-Path $defaultConfigDir) {
+            $runbooksConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'runbooks.json')
+            $logicAppsConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'logic-apps.json')
+            $autoConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'automation.json')
+            
+            foreach ($runbook in $runbooks) {
+                if ($runbooksConfig -and $runbooksConfig.PSObject.Properties.Name -contains $runbook) {
+                    $rbSettings = $runbooksConfig.$runbook
+                    if ($rbSettings -is [PSCustomObject]) {
+                        foreach ($prop in $rbSettings.PSObject.Properties) {
+                            if (-not $config.ContainsKey($prop.Name)) { $config[$prop.Name] = $prop.Value }
+                        }
+                    }
+                }
             }
-            if ($ListViewGuid) {
-                $config.sharePointSettings.listViewGuid = $ListViewGuid
+            foreach ($logicApp in $logicApps) {
+                if ($logicAppsConfig -and $logicAppsConfig.PSObject.Properties.Name -contains $logicApp) {
+                    $laSettings = $logicAppsConfig.$logicApp
+                    if ($laSettings -is [PSCustomObject]) {
+                        foreach ($prop in $laSettings.PSObject.Properties) {
+                            if (-not $config.ContainsKey($prop.Name)) { $config[$prop.Name] = $prop.Value }
+                        }
+                    }
+                }
+            }
+            if ($autoConfig) {
+                if ($autoConfig.language -and -not $config.ContainsKey('language')) { $config['language'] = $autoConfig.language }
+                if ($autoConfig.logLevel -and -not $config.ContainsKey('logLevel')) { $config['logLevel'] = $autoConfig.logLevel }
             }
         }
         
@@ -1089,7 +1256,7 @@ Write-DeploymentLog "Starting deployment..." -Level Success
 Write-DeploymentLog "Logging to: $LogPath" -Level Info
 
 try {
-    # Build bicep parameters
+    # Build bicep parameters from hierarchical config
     $bicepParams = @{
         projectPrefix = $deployConfig.deploymentSettings.projectPrefix
         environment = $deployConfig.deploymentSettings.environment
@@ -1102,39 +1269,29 @@ try {
         deployAutomationConnector = $deployConfig.deploymentSettings.deployAutomationConnector
     }
     
-    # Add optional SharePoint parameters
+    # Add optional parameters from area/component configs (only if set)
     if ($deployConfig.sharePointSettings.projectListGuid) {
         $bicepParams.projectListGuid = $deployConfig.sharePointSettings.projectListGuid
     }
     if ($deployConfig.sharePointSettings.listViewGuid) {
         $bicepParams.listViewGuid = $deployConfig.sharePointSettings.listViewGuid
     }
-    if ($deployConfig.completionPhaseName) {
-        $bicepParams.finishedPhaseText = $deployConfig.completionPhaseName
-    }
     
-    # Add configuration parameters
-    if ($deployConfig.language) {
-        $bicepParams.language = $deployConfig.language
-    }
-    if ($deployConfig.archiveStatusName) {
-        $bicepParams.archiveStatusName = $deployConfig.archiveStatusName
-    }
-    if ($deployConfig.defaultManagerRole) {
-        $bicepParams.defaultManagerRole = $deployConfig.defaultManagerRole
-    }
-    if ($deployConfig.archiveBannerText) {
-        $bicepParams.archiveBannerText = $deployConfig.archiveBannerText
-    }
-    if ($deployConfig.dateCalculationRules) {
-        $bicepParams.dateCalculationRules = $deployConfig.dateCalculationRules
-    }
-    if ($deployConfig.folderStructure) {
-        $bicepParams.folderStructure = $deployConfig.folderStructure
-    }
-    if ($deployConfig.logLevel) {
-        $bicepParams.logLevel = $deployConfig.logLevel
-    }
+    # Phase text (from runbooks.json ArchiveSite or logic-apps.json PhaseChanged)
+    $phaseText = if ($deployConfig.finishedPhaseText) { $deployConfig.finishedPhaseText } elseif ($deployConfig.completionPhaseName) { $deployConfig.completionPhaseName } else { $null }
+    if ($phaseText) { $bicepParams.finishedPhaseText = $phaseText }
+    
+    # Automation settings (from automation.json)
+    if ($deployConfig.language) { $bicepParams.language = $deployConfig.language }
+    if ($deployConfig.logLevel) { $bicepParams.logLevel = $deployConfig.logLevel }
+    
+    # Component-level settings (from runbooks.json / logic-apps.json)
+    if ($deployConfig.archiveStatusName) { $bicepParams.archiveStatusName = $deployConfig.archiveStatusName }
+    if ($deployConfig.defaultManagerRole) { $bicepParams.defaultManagerRole = $deployConfig.defaultManagerRole }
+    if ($deployConfig.archiveBannerText) { $bicepParams.archiveBannerText = $deployConfig.archiveBannerText }
+    if ($deployConfig.dateCalculationRules) { $bicepParams.dateCalculationRules = $deployConfig.dateCalculationRules }
+    if ($deployConfig.folderStructure) { $bicepParams.folderStructure = $deployConfig.folderStructure }
+    if ($deployConfig.tags) { $bicepParams.tags = $deployConfig.tags }
     
     # Ensure resource group exists
     $rg = Get-AzResourceGroup -Name $deployConfig.resourceGroupName -ErrorAction SilentlyContinue
