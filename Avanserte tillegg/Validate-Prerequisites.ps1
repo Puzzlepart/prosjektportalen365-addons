@@ -129,60 +129,125 @@ function Test-PowerShellModules {
     }
 }
 
+function Read-ConfigFileValue {
+    <#
+    .SYNOPSIS
+        Reads a JSON config file and strips the Value/Description wrapper format.
+    #>
+    param([Parameter(Mandatory)][string]$Path)
+    
+    if (-not (Test-Path $Path -PathType Leaf)) { return $null }
+    
+    $raw = Get-Content -Path $Path -Raw | ConvertFrom-Json
+    
+    function ConvertObject($obj) {
+        if ($null -eq $obj) { return $null }
+        if ($obj -is [PSCustomObject]) {
+            $result = @{}
+            foreach ($property in $obj.PSObject.Properties) {
+                $value = $property.Value
+                if ($value -is [PSCustomObject] -and $value.PSObject.Properties.Name -contains 'Value') {
+                    $result[$property.Name] = ConvertObject($value.Value)
+                } else {
+                    $result[$property.Name] = ConvertObject($value)
+                }
+            }
+            return [PSCustomObject]$result
+        } elseif ($obj.GetType().Name -eq 'Object[]' -or $obj -is [Array]) {
+            return @($obj | ForEach-Object { ConvertObject($_) })
+        } else {
+            return $obj
+        }
+    }
+    
+    return ConvertObject($raw)
+}
+
 function Test-ConfigurationFile {
-    Write-Host "`n📄 Testing Configuration File..." -ForegroundColor Cyan
+    Write-Host "`n📄 Testing Configuration Files..." -ForegroundColor Cyan
+    
+    $configDir = Split-Path $ConfigurationFile -Parent
     
     try {
-        $configContent = Get-Content -Path $ConfigurationFile -Raw
-        $config = $configContent | ConvertFrom-Json
+        # Validate root config.json
+        $rootContent = Get-Content -Path $ConfigurationFile -Raw
+        $null = $rootContent | ConvertFrom-Json
+        Add-ValidationResult -Category "Configuration" -Test "Root config.json Format" -Success $true -Message "Valid JSON format" -Details $ConfigurationFile
         
-        Add-ValidationResult -Category "Configuration" -Test "File Format" -Success $true -Message "Valid JSON format" -Details "Configuration file is properly formatted"
+        # Validate required config files exist
+        $requiredFiles = @(
+            @{ Name = 'azure.json'; Section = 'azure' },
+            @{ Name = 'sharepoint.json'; Section = 'sharepoint' }
+        )
         
-        # Validate required sections
-        $requiredSections = @('azure', 'sharepoint')
-        foreach ($section in $requiredSections) {
-            $hasSection = $null -ne $config.$section
-            Add-ValidationResult -Category "Configuration" -Test "$section Section" -Success $hasSection -Message $(if ($hasSection) { "Present" } else { "Missing" }) -Details "Required configuration section" -Recommendation $(if (!$hasSection) { "Add $section section to config file" } else { "" })
+        foreach ($reqFile in $requiredFiles) {
+            $filePath = Join-Path $configDir $reqFile.Name
+            $exists = Test-Path $filePath -PathType Leaf
+            Add-ValidationResult -Category "Configuration" -Test "$($reqFile.Section) Config File" -Success $exists -Message $(if ($exists) { "Present: $($reqFile.Name)" } else { "Missing: $($reqFile.Name)" }) -Details "Required configuration file" -Recommendation $(if (!$exists) { "Create $($reqFile.Name) in config directory (see config/templates/)" } else { "" })
+            
+            if ($exists) {
+                try {
+                    $null = Get-Content -Path $filePath -Raw | ConvertFrom-Json
+                    Add-ValidationResult -Category "Configuration" -Test "$($reqFile.Section) JSON Format" -Success $true -Message "Valid JSON" -Details $reqFile.Name
+                } catch {
+                    Add-ValidationResult -Category "Configuration" -Test "$($reqFile.Section) JSON Format" -Success $false -Message "Invalid JSON: $($_.Exception.Message)" -Recommendation "Fix JSON syntax in $($reqFile.Name)"
+                }
+            }
         }
         
-        # Validate Azure configuration
-        if ($config.azure) {
-            $azureConfig = $config.azure
-            
-            # Subscription ID format
+        # Validate optional type-level config files
+        foreach ($typeFile in @('runbooks.json', 'logic-apps.json', 'connectors.json', 'automation.json')) {
+            $filePath = Join-Path $configDir $typeFile
+            if (Test-Path $filePath -PathType Leaf) {
+                try {
+                    $null = Get-Content -Path $filePath -Raw | ConvertFrom-Json
+                    Add-ValidationResult -Category "Configuration" -Test "$typeFile Format" -Success $true -Message "Valid JSON" -Details $typeFile
+                } catch {
+                    Add-ValidationResult -Category "Configuration" -Test "$typeFile Format" -Success $false -Message "Invalid JSON: $($_.Exception.Message)" -Recommendation "Fix JSON syntax in $typeFile"
+                }
+            }
+        }
+        
+        # Load and validate Azure configuration
+        $azureConfig = Read-ConfigFileValue -Path (Join-Path $configDir 'azure.json')
+        if ($azureConfig) {
             $subIdPattern = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
             $validSubId = $azureConfig.subscriptionId -match $subIdPattern
             Add-ValidationResult -Category "Configuration" -Test "Subscription ID Format" -Success $validSubId -Message $azureConfig.subscriptionId -Details "Must be valid GUID format" -Recommendation $(if (!$validSubId) { "Use valid subscription GUID" } else { "" })
             
-            # Resource group name
             $validRgName = $azureConfig.resourceGroupName -and $azureConfig.resourceGroupName.Length -le 63
             Add-ValidationResult -Category "Configuration" -Test "Resource Group Name" -Success $validRgName -Message $azureConfig.resourceGroupName -Details "Must be 1-63 characters" -Recommendation $(if (!$validRgName) { "Use valid resource group name (1-63 chars)" } else { "" })
             
-            # Location
             $validLocations = @('eastus', 'westeurope', 'northeurope', 'norwayeast', 'uksouth', 'australiaeast', 'japaneast', 'southeastasia')
             $validLocation = $azureConfig.location -in $validLocations
             Add-ValidationResult -Category "Configuration" -Test "Azure Location" -Success $validLocation -Message $azureConfig.location -Details "Must be supported Azure region" -Recommendation $(if (!$validLocation) { "Use supported region: $($validLocations -join ', ')" } else { "" })
         }
         
-        # Validate SharePoint configuration
-        if ($config.sharepoint) {
-            $spConfig = $config.sharepoint
-            
-            # Tenant domain format
+        # Load and validate SharePoint configuration
+        $spConfig = Read-ConfigFileValue -Path (Join-Path $configDir 'sharepoint.json')
+        if ($spConfig) {
             $tenantPattern = '^[a-zA-Z0-9][a-zA-Z0-9-]*\.sharepoint\.com$'
             $validTenant = $spConfig.tenant -match $tenantPattern
             Add-ValidationResult -Category "Configuration" -Test "SharePoint Tenant Format" -Success $validTenant -Message $spConfig.tenant -Details "Must be valid SharePoint domain" -Recommendation $(if (!$validTenant) { "Use format: tenant.sharepoint.com" } else { "" })
             
-            # Hub site URL format
             $hubUrlPattern = '^https://[a-zA-Z0-9][a-zA-Z0-9-]*\.sharepoint\.com/sites/[a-zA-Z0-9-]+/?$'
             $validHubUrl = $spConfig.hubSiteUrl -match $hubUrlPattern
             Add-ValidationResult -Category "Configuration" -Test "Hub Site URL Format" -Success $validHubUrl -Message $spConfig.hubSiteUrl -Details "Must be valid SharePoint site URL" -Recommendation $(if (!$validHubUrl) { "Use format: https://tenant.sharepoint.com/sites/sitename" } else { "" })
         }
         
+        # Build unified config for downstream validation functions
+        $config = [PSCustomObject]@{
+            subscriptionId    = if ($azureConfig) { $azureConfig.subscriptionId } else { $null }
+            resourceGroupName = if ($azureConfig) { $azureConfig.resourceGroupName } else { $null }
+            location          = if ($azureConfig) { $azureConfig.location } else { $null }
+            tenant            = if ($spConfig) { $spConfig.tenant } else { $null }
+            hubSiteUrl        = if ($spConfig) { $spConfig.hubSiteUrl } else { $null }
+        }
+        
         return $config
         
     } catch {
-        Add-ValidationResult -Category "Configuration" -Test "File Format" -Success $false -Message "Invalid JSON: $($_.Exception.Message)" -Recommendation "Fix JSON syntax errors in configuration file"
+        Add-ValidationResult -Category "Configuration" -Test "File Format" -Success $false -Message "Error reading config: $($_.Exception.Message)" -Recommendation "Fix configuration files in config directory"
         return $null
     }
 }

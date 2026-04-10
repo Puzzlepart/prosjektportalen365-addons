@@ -1,0 +1,30 @@
+{
+  "projectPrefix": {
+    "Value": "PP365",
+    "Description": "Project name prefix used for naming Azure resources (2-10 characters)"
+  },
+  "environment": {
+    "Value": "prod",
+    "Description": "Environment identifier (e.g., prod, test, dev). Used in resource naming."
+  },
+  "components": {
+    "Value": {
+      "runbooks": [
+        "ArchiveSite",
+        "GetSiteInformation",
+        "UpdateProjectDates",
+        "UpdateProjectManager"
+      ],
+      "logicApps": [
+        "ChangeArchiveState",
+        "PhaseChanged",
+        "ProjectInfoChanged"
+      ],
+      "connectors": {
+        "SharePointOnline": true,
+        "Automation": true
+      }
+    },
+    "Description": "Components to deploy. Remove items from arrays or set connector flags to false to skip deployment."
+  }
+}

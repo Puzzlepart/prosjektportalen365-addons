@@ -58,20 +58,25 @@ This solution provides automated project lifecycle management capabilities for S
    ```
 
 2. **Configure your tenant**:
-   ```powershell
-   # Copy configuration template
-   Copy-Item "config\config.template.json" "config\my-tenant-config.json"
    
-   # Edit my-tenant-config.json with your tenant details
-   ```
+   Edit the JSON files in `config/` with your tenant details:
+   - `config.json` — Select which components to deploy
+   - `azure.json` — Azure subscription and resource group
+   - `sharepoint.json` — SharePoint tenant and hub site URL
+   - `automation.json` — Automation language and log level
+   - `runbooks.json` — Runbook-specific settings
+   - `logic-apps.json` — Logic app-specific settings
+   - `connectors.json` — Connector display names
+   
+   Clean templates are available in `config/templates/` for reference.
 
 3. **Deploy the solution**:
    ```powershell
    # Quick deployment with preset (recommended)
    .\Deploy-Solution.ps1 -Preset Full -SubscriptionId "your-subscription-id" -SharePointTenant "yourtenant.sharepoint.com" -HubSiteUrl "https://yourtenant.sharepoint.com/sites/prosjektportalen" -SharePointConnectionEmail "admin@yourdomain.com"
    
-   # Or deploy with configuration file
-   .\Deploy-Solution.ps1 -ConfigurationFile "config\my-tenant-config.json"
+   # Or deploy with configuration file directory
+   .\Deploy-Solution.ps1 -ConfigurationFile "config\config.json"
    ```
 
 ### Deployment Options
@@ -97,10 +102,10 @@ Choose from pre-configured deployment scenarios:
 ```
 
 #### **Configuration File Deployment**
-For standardized deployments and team collaboration:
+For standardized deployments and team collaboration. Point to the root `config.json` — all other files in the same directory are loaded automatically:
 
 ```powershell
-.\Deploy-Solution.ps1 -ConfigurationFile "config\tenant-config.json"
+.\Deploy-Solution.ps1 -ConfigurationFile "config\config.json"
 ```
 
 #### **Custom Selective Deployment**
@@ -128,106 +133,122 @@ Deploy only specific components:
 
 # Configuration
 
-### Tenant Configuration
+### Hierarchical Configuration
 
-The solution supports flexible configuration through JSON files. All configuration properties use a structured format with `"Value"` (the actual setting) and `"Description"` (documentation) for each property. See the templates in the `config/` directory:
+The solution uses a **hierarchical configuration structure** — one file per concern, all stored in the `config/` directory. Each file uses the `"Value"`/`"Description"` format for self-documentation.
 
-- **`config.template.json`**: Basic template with Norwegian defaults
-- **`deployment-config.schema.json`**: JSON schema for validation
+When you deploy with `-ConfigurationFile config\config.json`, the deployment script automatically loads all sibling config files from the same directory.
 
-#### Key Configuration Sections
+#### Configuration Files
+
+| File | Purpose |
+|------|--------|
+| `config.json` | Root — project prefix, environment, component selection |
+| `azure.json` | Azure subscription, resource group, location, tags |
+| `sharepoint.json` | SharePoint tenant URL, hub site, service account |
+| `automation.json` | Shared automation settings (language, log level) |
+| `runbooks.json` | Per-runbook settings (keyed by runbook name) |
+| `logic-apps.json` | Per-logic-app settings (keyed by logic app name) |
+| `connectors.json` | Per-connector settings (keyed by connector name) |
+
+Template files are provided in `config/templates/` for new tenant setup.
+
+#### Root config.json — Component Selection
 
 ```json
 {
-  "azure": {
-    "subscriptionId": "...",
-    "resourceGroupName": "...",
-    "location": "westeurope",
-    "automationAccountName": "PP365-Automation"
+  "projectPrefix": {
+    "Value": "PP365",
+    "Description": "Prefix for Azure resources"
   },
-  "sharepoint": {
-    "tenant": "yourtenant.sharepoint.com", 
-    "hubSiteUrl": "https://yourtenant.sharepoint.com/sites/prosjektportalen"
+  "environment": {
+    "Value": "prod",
+    "Description": "Deployment environment"
   },
-  "deploymentSettings": {
+  "components": {
     "Value": {
-      "projectPrefix": "PP365",
-      "environment": "prod",
-      "runbooksToDeploy": [
-        "ArchiveSite",
-        "GetSiteInformation", 
-        "UpdateProjectDates",
-        "UpdateProjectManager"
-      ],
-      "logicAppsToDeploy": [
-        "ChangeArchiveState",
-        "PhaseChanged", 
-        "ProjectInfoChanged"
-      ],
-      "deploySharePointConnector": true,
-      "deployAutomationConnector": true
+      "runbooks": ["ArchiveSite", "GetSiteInformation", "UpdateProjectDates", "UpdateProjectManager"],
+      "logicApps": ["ChangeArchiveState", "PhaseChanged", "ProjectInfoChanged"],
+      "connectors": {
+        "SharePointOnline": true,
+        "Automation": true
+      }
     },
-    "Description": "Controls which components are deployed"
-  },
-  "businessLogic": {
-    "language": "nb-NO",
-    "completionPhaseName": "Ferdig",
-    "archiveStatusName": "Avsluttet",
-    "dateCalculationRules": {
-      "inspectionPeriodYears": 1,
-      "waiverPeriodYears": 3,
-      "complaintPeriodYears": 5
-    }
+    "Description": "Which components to deploy"
   }
 }
 ```
 
-### Selective Deployment Configuration
+#### Type-Level Files — Per-Component Settings
 
-The `deploymentSettings` section enables fine-grained control over which components are deployed:
+Type-level files group settings by component name. Only settings for the components selected in `config.json` are loaded.
+
+**runbooks.json** example:
+```json
+{
+  "ArchiveSite": {
+    "Value": {
+      "archiveStatusName": "Avsluttet",
+      "archiveBannerText": "This site is archived...",
+      "completionPhaseName": "Ferdig"
+    },
+    "Description": "Archive site runbook settings"
+  },
+  "UpdateProjectDates": {
+    "Value": {
+      "dateCalculationRules": {
+        "inspectionPeriodYears": 1,
+        "waiverPeriodYears": 3,
+        "complaintPeriodYears": 5
+      }
+    },
+    "Description": "Date calculation runbook settings"
+  }
+}
+```
+
+### Selective Deployment
+
+Edit the `components` section in `config.json` to control what gets deployed:
 
 #### Available Components
 
 **Runbooks** (PowerShell automation scripts):
-- `ArchiveSite` - Archive SharePoint sites
-- `GetSiteInformation` - Retrieve site metadata  
-- `UpdateProjectDates` - Update project milestone dates
-- `UpdateProjectManager` - Assign project manager permissions
+- `ArchiveSite` — Archive SharePoint sites
+- `GetSiteInformation` — Retrieve site metadata  
+- `UpdateProjectDates` — Update project milestone dates
+- `UpdateProjectManager` — Assign project manager permissions
 
 **Logic Apps** (Workflow automation):
-- `ChangeArchiveState` - Handle site archiving workflows
-- `PhaseChanged` - Process project phase changes
-- `ProjectInfoChanged` - React to project information updates
+- `ChangeArchiveState` — Handle site archiving workflows
+- `PhaseChanged` — Process project phase changes
+- `ProjectInfoChanged` — React to project information updates
 
 **Connectors** (API connections):
-- `deploySharePointConnector` - SharePoint Online API connection
-- `deployAutomationConnector` - Azure Automation API connection
+- `SharePointOnline` — SharePoint Online API connection
+- `Automation` — Azure Automation API connection
 
-#### Example Configurations
+#### Example: Minimal Deployment
 
 ```json
-// Minimal deployment for testing
-"deploymentSettings": {
-  "runbooksToDeploy": ["GetSiteInformation"],
-  "logicAppsToDeploy": [],
-  "deploySharePointConnector": false,
-  "deployAutomationConnector": true
+"components": {
+  "Value": {
+    "runbooks": ["GetSiteInformation"],
+    "logicApps": [],
+    "connectors": { "SharePointOnline": false, "Automation": true }
+  }
 }
+```
 
-// Archive-only functionality
-"deploymentSettings": {
-  "runbooksToDeploy": ["ArchiveSite"],
-  "logicAppsToDeploy": ["ChangeArchiveState"],
-  "deploySharePointConnector": false,
-  "deployAutomationConnector": true
-}
+#### Example: Archive Only
 
-// Full deployment (default)
-"deploymentSettings": {
-  "runbooksToDeploy": ["ArchiveSite", "GetSiteInformation", "UpdateProjectDates", "UpdateProjectManager"],
-  "logicAppsToDeploy": ["ChangeArchiveState", "PhaseChanged", "ProjectInfoChanged"],
-  "deploySharePointConnector": true,
-  "deployAutomationConnector": true
+```json
+"components": {
+  "Value": {
+    "runbooks": ["ArchiveSite"],
+    "logicApps": ["ChangeArchiveState"],
+    "connectors": { "SharePointOnline": false, "Automation": true }
+  }
 }
 ```
 
@@ -293,10 +314,10 @@ After deployment is complete, there are steps to follow.
 
 ```powershell
 # Validate prerequisites before deployment
-.\Validate-Prerequisites.ps1 -ConfigurationFile "config\my-tenant-config.json"
+.\Validate-Prerequisites.ps1 -ConfigurationFile "config\config.json"
 
 # Validate deployment configuration without deploying
-.\Deploy-Solution.ps1 -ConfigurationFile "config\my-tenant-config.json" -ValidateOnly
+.\Deploy-Solution.ps1 -ConfigurationFile "config\config.json" -ValidateOnly
 
 # Preview what would be deployed
 .\Deploy-Solution.ps1 -Preset Full ... -WhatIf
@@ -383,8 +404,8 @@ Get-AzResourceGroup -Name "YourResourceGroup"
 Get-PnPConnection
 Get-PnPList
 
-# Validate configuration
-Test-Json -Json (Get-Content "config\my-tenant-config.json" -Raw) -SchemaFile "config\deployment-config.schema.json"
+# Validate configuration files
+Get-ChildItem "config\*.json" | ForEach-Object { $null = Get-Content $_.FullName -Raw | ConvertFrom-Json; Write-Host "OK: $($_.Name)" }
 ```
 
 ## File Structure
@@ -411,9 +432,15 @@ Test-Json -Json (Get-Content "config\my-tenant-config.json" -Raw) -SchemaFile "c
 │       ├── GetSiteInformation.ps1
 │       ├── UpdateProjectDates.ps1
 │       └── UpdateProjectManager.ps1
-├── config/                         # Configuration templates
-│   ├── deployment-config.schema.json
-│   └── config.template.json
+├── config/                         # Hierarchical configuration
+│   ├── config.json                 # Root: component selection & environment
+│   ├── azure.json                  # Azure subscription & resource group
+│   ├── sharepoint.json             # SharePoint tenant & hub site
+│   ├── automation.json             # Shared automation settings
+│   ├── runbooks.json               # Per-runbook settings
+│   ├── logic-apps.json             # Per-logic-app settings
+│   ├── connectors.json             # Per-connector settings
+│   └── templates/                  # Template files for new tenants
 ├── README.md                       # This file
 └── logs/                          # Deployment logs (created automatically)
 ```

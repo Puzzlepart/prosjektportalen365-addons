@@ -1,0 +1,10 @@
+{
+  "language": {
+    "Value": "nb-NO",
+    "Description": "Language code for localization (e.g., nb-NO, en-US, sv-SE)"
+  },
+  "logLevel": {
+    "Value": "Info",
+    "Description": "Logging level for the automation scripts (Debug, Info, Warning, Error)"
+  }
+}
