@@ -11,7 +11,6 @@ Modules/
 packages/
 
 # Azure deployment artifacts  
-*.zip
 *.bicep.json
 
 # Temporary files
@@ -88,7 +87,6 @@ Desktop.ini
 *.jar
 *.rar
 *.tar
-*.zip
 
 # Application specific
 bin/
