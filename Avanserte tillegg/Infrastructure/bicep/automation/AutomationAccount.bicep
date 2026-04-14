@@ -113,7 +113,7 @@ resource dateCalculationRulesVariable 'Microsoft.Automation/automationAccounts/v
   name: 'DateCalculationRules'
   properties: {
     description: 'Rules for calculating project milestone dates as JSON'
-    value: '"${string(dateCalculationRules)}"'
+    value: '"${replace(string(dateCalculationRules), '"', '\\"')}"'
     isEncrypted: false
   }
 }
@@ -123,7 +123,7 @@ resource folderStructureVariable 'Microsoft.Automation/automationAccounts/variab
   name: 'FolderStructure'
   properties: {
     description: 'Standard folder structure for project document libraries as JSON'
-    value: '"${string(folderStructure)}"'
+    value: '"${replace(string(folderStructure), '"', '\\"')}"'
     isEncrypted: false
   }
 }

@@ -4,3 +4,4 @@ Prosjektmaler/*/release/*
 Resources.json
 Resources-research.json
 node_modules
+.DS_Store

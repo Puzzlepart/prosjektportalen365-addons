@@ -48,12 +48,14 @@ This solution provides automated project lifecycle management capabilities for S
 
 1. **Prerequisites & Authentication**:
    ```powershell
-   # Install required modules (if not already installed)
-   Install-Module -Name Az -Scope CurrentUser -Force
+   # Install Azure CLI (if not already installed)
+   # See: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
+
+   # Install PnP.PowerShell module (if not already installed)
    Install-Module -Name PnP.PowerShell -Scope CurrentUser -Force
    
    # Authenticate to Azure and SharePoint
-   Connect-AzAccount
+   az login
    Connect-PnPOnline -Url "https://yourtenant.sharepoint.com/sites/prosjektportalen" -Interactive
    ```
 
@@ -397,8 +399,8 @@ Each PowerShell script can be run independently for testing or manual operations
 
 ```powershell
 # Test Azure connectivity
-Get-AzContext
-Get-AzResourceGroup -Name "YourResourceGroup"
+az account show
+az group show --name "YourResourceGroup"
 
 # Test SharePoint connectivity  
 Get-PnPConnection

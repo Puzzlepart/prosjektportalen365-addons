@@ -140,24 +140,20 @@ Register-ArgumentCompleter -CommandName 'Deploy-Solution.ps1' -ParameterName 'Co
 Register-ArgumentCompleter -CommandName 'Deploy-Solution.ps1' -ParameterName 'SubscriptionId' -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     try {
-        if (Get-Module -Name Az.Accounts -ListAvailable -ErrorAction SilentlyContinue) {
-            $context = Get-AzContext -ListAvailable -ErrorAction SilentlyContinue | Select-Object -First 5
-            if ($context) {
-                $context | ForEach-Object {
-                    if ($_.Subscription.Id -like "$wordToComplete*") {
-                        [System.Management.Automation.CompletionResult]::new(
-                            $_.Subscription.Id, 
-                            "$($_.Subscription.Name) ($($_.Subscription.Id))",
-                            'ParameterValue',
-                            $_.Subscription.Name
-                        )
-                    }
-                }
+        $subs = az account list --query "[].{id:id, name:name}" -o json 2>$null | ConvertFrom-Json
+        if ($subs) {
+            $subs | Where-Object { $_.id -like "$wordToComplete*" } | Select-Object -First 5 | ForEach-Object {
+                [System.Management.Automation.CompletionResult]::new(
+                    $_.id,
+                    "$($_.name) ($($_.id))",
+                    'ParameterValue',
+                    $_.name
+                )
             }
         }
     }
     catch {
-        # Silently fail and provide no completions if Az module issues
+        # Silently fail and provide no completions if az CLI issues
     }
 }
 
@@ -172,26 +168,41 @@ $InformationPreference = 'Continue'
 
 Write-Host "Checking PowerShell modules and parameters..." -ForegroundColor Cyan
 
-# Check required modules
-$requiredModules = @('Az', 'PnP.PowerShell')
-$missingModules = @()
+# Check required tools
+$missingTools = @()
 
-foreach ($module in $requiredModules) {
-    if (-not (Get-Module -Name $module -ListAvailable -ErrorAction SilentlyContinue)) {
-        $missingModules += $module
-        Write-Host "Missing required module: $module" -ForegroundColor Red
+# Check Azure CLI
+try {
+    $azVersion = az version 2>$null | ConvertFrom-Json
+    if ($azVersion) {
+        Write-Host "Found Azure CLI: $($azVersion.'azure-cli')" -ForegroundColor Green
+    } else {
+        $missingTools += 'Azure CLI (az)'
+        Write-Host "Missing required tool: Azure CLI (az)" -ForegroundColor Red
     }
-    else {
-        Write-Host "Found module: $module" -ForegroundColor Green
-    }
+} catch {
+    $missingTools += 'Azure CLI (az)'
+    Write-Host "Missing required tool: Azure CLI (az)" -ForegroundColor Red
 }
 
-if ($missingModules.Count -gt 0) {
-    Write-Host "Missing required PowerShell modules. Please install them using:" -ForegroundColor Red
-    foreach ($module in $missingModules) {
-        Write-Host "  Install-Module -Name $module -Force" -ForegroundColor Yellow
+# Check PnP.PowerShell module
+if (-not (Get-Module -Name 'PnP.PowerShell' -ListAvailable -ErrorAction SilentlyContinue)) {
+    $missingTools += 'PnP.PowerShell'
+    Write-Host "Missing required module: PnP.PowerShell" -ForegroundColor Red
+} else {
+    Write-Host "Found module: PnP.PowerShell" -ForegroundColor Green
+}
+
+if ($missingTools.Count -gt 0) {
+    Write-Host "Missing required tools. Please install them:" -ForegroundColor Red
+    foreach ($tool in $missingTools) {
+        if ($tool -eq 'Azure CLI (az)') {
+            Write-Host "  Azure CLI: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli" -ForegroundColor Yellow
+        } else {
+            Write-Host "  Install-Module -Name $tool -Force" -ForegroundColor Yellow
+        }
     }
-    throw "Missing required PowerShell modules: $($missingModules -join ', ')"
+    throw "Missing required tools: $($missingTools -join ', ')"
 }
 
 # Validate parameters that were removed from attributes for performance
@@ -244,30 +255,35 @@ Write-Host ""
 
 Write-Host "Checking Azure authentication..." -ForegroundColor Cyan
 
-# Check if already connected to Azure with a valid token
 try {
+    # Check if already logged in
+    $currentAccount = az account show 2>$null | ConvertFrom-Json
+    if (-not $currentAccount) {
+        Write-Host "Not connected to Azure. Initiating login..." -ForegroundColor Yellow
+        az login | Out-Null
+        $currentAccount = az account show 2>$null | ConvertFrom-Json
+        if (-not $currentAccount) {
+            throw "Azure login failed"
+        }
+    }
 
-    Write-Host "Not connected to Azure. Initiating login..." -ForegroundColor Yellow
-    Connect-AzAccount -ErrorAction Stop
-    $currentContext = Get-AzContext
+    Write-Host "Connected to Azure as: $($currentAccount.user.name)" -ForegroundColor Green
+    Write-Host "Current subscription: $($currentAccount.name) ($($currentAccount.id))" -ForegroundColor Green
 
-    
-    Write-Host "Connected to Azure as: $($currentContext.Account.Id)" -ForegroundColor Green
-    Write-Host "Current subscription: $($currentContext.Subscription.Name) ($($currentContext.Subscription.Id))" -ForegroundColor Green
-    
     # Set subscription context if SubscriptionId is provided and different from current
     if ($SubscriptionId) {
-        if ($currentContext.Subscription.Id -ne $SubscriptionId) {
+        if ($currentAccount.id -ne $SubscriptionId) {
             Write-Host "Switching to subscription: $SubscriptionId" -ForegroundColor Yellow
             try {
-                Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction Stop | Out-Null
-                $newContext = Get-AzContext
-                Write-Host "Successfully switched to subscription: $($newContext.Subscription.Name)" -ForegroundColor Green
+                az account set --subscription $SubscriptionId 2>$null
+                if ($LASTEXITCODE -ne 0) { throw "az account set failed" }
+                $newAccount = az account show 2>$null | ConvertFrom-Json
+                Write-Host "Successfully switched to subscription: $($newAccount.name)" -ForegroundColor Green
             }
             catch {
                 Write-Host "Failed to switch to subscription $SubscriptionId. Error: $($_.Exception.Message)" -ForegroundColor Red
                 Write-Host "Available subscriptions:" -ForegroundColor Yellow
-                Get-AzSubscription | Format-Table Name, Id, State -AutoSize
+                az account list --query "[].{Name:name, Id:id, State:state}" -o table
                 throw "Invalid or inaccessible subscription ID: $SubscriptionId"
             }
         }
@@ -275,23 +291,23 @@ try {
             Write-Host "Already using target subscription" -ForegroundColor Green
         }
     }
-    
+
     # Verify subscription access and get details
-    $subscription = Get-AzSubscription -SubscriptionId (Get-AzContext).Subscription.Id -ErrorAction Stop
-    Write-Host "Subscription verified: $($subscription.Name) (State: $($subscription.State))" -ForegroundColor Green
-    
+    $subscription = az account show 2>$null | ConvertFrom-Json
+    Write-Host "Subscription verified: $($subscription.name) (State: $($subscription.state))" -ForegroundColor Green
+
     # Check if subscription is active
-    if ($subscription.State -ne 'Enabled') {
-        throw "Subscription '$($subscription.Name)' is not in an active state (Current state: $($subscription.State))"
+    if ($subscription.state -ne 'Enabled') {
+        throw "Subscription '$($subscription.name)' is not in an active state (Current state: $($subscription.state))"
     }
-    
+
     Write-Host "Azure authentication successful!" -ForegroundColor Green
     Write-Host ""
 }
 catch {
     Write-Host "Azure authentication failed: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host "Please ensure you have:" -ForegroundColor Yellow
-    Write-Host "1. Az PowerShell module installed (Install-Module -Name Az)" -ForegroundColor Yellow
+    Write-Host "1. Azure CLI installed (https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)" -ForegroundColor Yellow
     Write-Host "2. Proper access to the target Azure subscription" -ForegroundColor Yellow
     Write-Host "3. Valid Azure credentials" -ForegroundColor Yellow
     throw "Azure authentication failed: $($_.Exception.Message)"
@@ -308,59 +324,51 @@ function Enable-AutomationAccountManagedIdentity {
         [string]$AutomationAccountName,
         [switch]$WhatIf
     )
-    
+
     Write-DeploymentLog "Enabling system-assigned managed identity on Automation Account: $AutomationAccountName"
-    
+
     if ($WhatIf) {
         Write-DeploymentLog "[WHATIF] Would enable managed identity on $AutomationAccountName" -Level Warning
         return $null
     }
-    
+
     try {
         # Check if Automation Account exists
-        $automationAccount = Get-AzAutomationAccount -ResourceGroupName $ResourceGroupName -Name $AutomationAccountName -ErrorAction SilentlyContinue
+        $automationAccount = az automation account show --resource-group $ResourceGroupName --name $AutomationAccountName 2>$null | ConvertFrom-Json
         if (-not $automationAccount) {
             Write-DeploymentLog "Automation Account '$AutomationAccountName' not found in resource group '$ResourceGroupName'" -Level Error
             throw "Automation Account not found"
         }
-        
+
         # Enable managed identity using REST API
-        $resourceId = "/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/$AutomationAccountName"
-        
+        $resourceUrl = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Automation/automationAccounts/${AutomationAccountName}?api-version=2020-01-13-preview"
+
         # Get current automation account properties
-        $currentAccount = Invoke-AzRestMethod -Path "$($resourceId)?api-version=2020-01-13-preview" -Method GET
-        
-        if ($currentAccount.StatusCode -eq 200) {
-            $accountData = ($currentAccount.Content | ConvertFrom-Json)
-            
+        $currentAccountJson = az rest --method GET --url $resourceUrl 2>$null
+
+        if ($currentAccountJson) {
+            $accountData = $currentAccountJson | ConvertFrom-Json
+
             # Check if managed identity is already enabled
             if ($accountData.identity -and $accountData.identity.type -eq "SystemAssigned" -and $accountData.identity.principalId) {
                 Write-DeploymentLog "Managed identity already enabled" -Level Warning
                 return $accountData.identity.principalId
             }
-            
-            # Enable managed identity
-            if (-not $accountData.identity) {
-                $accountData.identity = @{
-                    type = "SystemAssigned"
-                }
-            } else {
-                $accountData.identity.type = "SystemAssigned"
-            }
-            
-            $body = $accountData | ConvertTo-Json -Depth 10
-            $result = Invoke-AzRestMethod -Path "$($resourceId)?api-version=2020-01-13-preview" -Method PATCH -Payload $body
-            
-            if ($result.StatusCode -eq 200) {
-                $updatedAccount = ($result.Content | ConvertFrom-Json)
+
+            # Enable managed identity via PATCH
+            $patchBody = @{ identity = @{ type = "SystemAssigned" } } | ConvertTo-Json -Depth 10 -Compress
+            $resultJson = az rest --method PATCH --url $resourceUrl --body $patchBody 2>$null
+
+            if ($resultJson) {
+                $updatedAccount = $resultJson | ConvertFrom-Json
                 Write-DeploymentLog "Successfully enabled managed identity" -Level Success
                 return $updatedAccount.identity.principalId
             } else {
-                Write-DeploymentLog "Failed to enable managed identity: $($result.StatusCode) - $($result.Content)" -Level Error
+                Write-DeploymentLog "Failed to enable managed identity" -Level Error
                 throw "Failed to enable managed identity"
             }
         } else {
-            Write-DeploymentLog "Failed to get Automation Account details: $($currentAccount.StatusCode)" -Level Error
+            Write-DeploymentLog "Failed to get Automation Account details" -Level Error
             throw "Failed to get Automation Account"
         }
     }
@@ -396,23 +404,24 @@ function Set-AzureRoleAssignments {
     
     foreach ($role in $requiredRoles) {
         Write-DeploymentLog "Assigning role: $($role.RoleDefinitionName) at scope: $($role.Scope)"
-        
+
         if ($WhatIf) {
             Write-DeploymentLog "[WHATIF] Would assign role: $($role.RoleDefinitionName)" -Level Warning
             continue
         }
-        
+
         try {
             # Check if role assignment already exists
-            $existingAssignment = Get-AzRoleAssignment -ObjectId $PrincipalId -RoleDefinitionName $role.RoleDefinitionName -Scope $role.Scope -ErrorAction SilentlyContinue
-            
-            if ($existingAssignment) {
+            $existingAssignment = az role assignment list --assignee $PrincipalId --role $role.RoleDefinitionName --scope $role.Scope 2>$null | ConvertFrom-Json
+
+            if ($existingAssignment -and $existingAssignment.Count -gt 0) {
                 Write-DeploymentLog "Role assignment already exists: $($role.RoleDefinitionName)" -Level Warning
                 continue
             }
-            
+
             # Create role assignment
-            $assignment = New-AzRoleAssignment -ObjectId $PrincipalId -RoleDefinitionName $role.RoleDefinitionName -Scope $role.Scope
+            az role assignment create --assignee-object-id $PrincipalId --assignee-principal-type ServicePrincipal --role $role.RoleDefinitionName --scope $role.Scope 2>$null | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw "az role assignment create failed" }
             Write-DeploymentLog "Successfully assigned role: $($role.RoleDefinitionName)" -Level Success
         }
         catch {
@@ -458,27 +467,28 @@ function Initialize-ManagedIdentities {
         # Create user-assigned managed identity if requested
         if ($CreateUserAssignedIdentity) {
             $identityName = "$AutomationAccountName-identity"
-            $location = (Get-AzResourceGroup -Name $DeployConfig.resourceGroupName).Location
-            
+            $rgInfo = az group show --name $DeployConfig.resourceGroupName 2>$null | ConvertFrom-Json
+            $location = $rgInfo.location
+
             Write-DeploymentLog "Creating user-assigned managed identity: $identityName"
-            
+
             if ($WhatIf) {
                 Write-DeploymentLog "[WHATIF] Would create user-assigned managed identity: $identityName" -Level Warning
             } else {
                 try {
                     # Check if identity already exists
-                    $existingIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $DeployConfig.resourceGroupName -Name $identityName -ErrorAction SilentlyContinue
-                    
+                    $existingIdentity = az identity show --resource-group $DeployConfig.resourceGroupName --name $identityName 2>$null | ConvertFrom-Json
+
                     if ($existingIdentity) {
                         Write-DeploymentLog "User-assigned managed identity '$identityName' already exists" -Level Warning
-                        $userAssignedPrincipalId = $existingIdentity.PrincipalId
+                        $userAssignedPrincipalId = $existingIdentity.principalId
                     } else {
                         # Create new user-assigned managed identity
-                        $identity = New-AzUserAssignedIdentity -ResourceGroupName $DeployConfig.resourceGroupName -Name $identityName -Location $location
+                        $identity = az identity create --resource-group $DeployConfig.resourceGroupName --name $identityName --location $location 2>$null | ConvertFrom-Json
                         Write-DeploymentLog "Successfully created user-assigned managed identity" -Level Success
-                        $userAssignedPrincipalId = $identity.PrincipalId
+                        $userAssignedPrincipalId = $identity.principalId
                     }
-                    
+
                     if ($userAssignedPrincipalId) {
                         # Assign roles to user-assigned identity as well
                         Set-AzureRoleAssignments -PrincipalId $userAssignedPrincipalId -SubscriptionId $DeployConfig.subscriptionId -ResourceGroupName $DeployConfig.resourceGroupName -WhatIf:$WhatIf
@@ -520,36 +530,43 @@ function Grant-SharePointPermissionsToManagedIdentity {
         $sharePointAppId = '00000003-0000-0ff1-ce00-000000000000'
 
         # Look up the SharePoint service principal to get the AppRoleId for Sites.FullControl.All
-        $spResource = Get-AzADServicePrincipal -ApplicationId $sharePointAppId -ErrorAction Stop
-        $fullControlRole = $spResource.AppRole | Where-Object { $_.Value -eq 'Sites.FullControl.All' }
+        $spResource = az ad sp show --id $sharePointAppId 2>$null | ConvertFrom-Json
+        if (-not $spResource) {
+            Write-DeploymentLog "Could not find SharePoint service principal" -Level Error
+            return
+        }
+        $fullControlRole = $spResource.appRoles | Where-Object { $_.value -eq 'Sites.FullControl.All' }
 
         if (-not $fullControlRole) {
             Write-DeploymentLog "Could not find Sites.FullControl.All app role on SharePoint service principal" -Level Error
             return
         }
 
-        # Check if assignment already exists
-        $existingAssignments = Get-AzADServicePrincipalAppRoleAssignment -ServicePrincipalId $PrincipalId -ErrorAction SilentlyContinue
-        $alreadyAssigned = $existingAssignments | Where-Object { $_.AppRoleId -eq $fullControlRole.Id -and $_.ResourceId -eq $spResource.Id }
+        # Check if assignment already exists using Microsoft Graph
+        $graphUrl = "https://graph.microsoft.com/v1.0/servicePrincipals/$PrincipalId/appRoleAssignments"
+        $existingAssignments = az rest --method GET --url $graphUrl 2>$null | ConvertFrom-Json
+        $alreadyAssigned = $existingAssignments.value | Where-Object { $_.appRoleId -eq $fullControlRole.id -and $_.resourceId -eq $spResource.id }
 
         if ($alreadyAssigned) {
             Write-DeploymentLog "SharePoint Sites.FullControl.All already granted to $AutomationAccountName" -Level Info
             return
         }
 
-        New-AzADServicePrincipalAppRoleAssignment `
-            -ServicePrincipalId $PrincipalId `
-            -ResourceId $spResource.Id `
-            -AppRoleId $fullControlRole.Id `
-            -ErrorAction Stop
+        # Create app role assignment via Microsoft Graph
+        $assignmentBody = @{
+            principalId = $PrincipalId
+            resourceId  = $spResource.id
+            appRoleId   = $fullControlRole.id
+        } | ConvertTo-Json -Compress
+        az rest --method POST --url $graphUrl --body $assignmentBody --headers "Content-Type=application/json" 2>$null | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "Failed to create app role assignment" }
 
         Write-DeploymentLog "Granted SharePoint Sites.FullControl.All to $AutomationAccountName" -Level Success
     }
     catch {
         Write-DeploymentLog "Failed to grant SharePoint permissions: $($_.Exception.Message)" -Level Warning
         Write-DeploymentLog "You may need to grant permissions manually. Use the Azure Portal or run:" -Level Warning
-        Write-DeploymentLog "  Connect-MgGraph -Scopes AppRoleAssignment.ReadWrite.All" -Level Warning
-        Write-DeploymentLog "  New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId '$PrincipalId' -ResourceId '<SharePoint SP Id>' -AppRoleId '<Sites.FullControl.All Id>'" -Level Warning
+        Write-DeploymentLog "  az rest --method POST --url 'https://graph.microsoft.com/v1.0/servicePrincipals/$PrincipalId/appRoleAssignments' --body '<body>'" -Level Warning
     }
 }
 
@@ -1122,16 +1139,16 @@ function Test-Prerequisites {
         return $issues
     }
     
-    # Test Azure PowerShell connection
+    # Test Azure CLI connection
     try {
-        $azContext = Get-AzContext -ErrorAction SilentlyContinue
-        if (-not $azContext) {
-            $issues += "Not connected to Azure. Please run 'Connect-AzAccount'"
-        } elseif ($Config.subscriptionId -and $azContext.Subscription.Id -ne $Config.subscriptionId) {
-            $issues += "Connected to wrong subscription. Expected: $($Config.subscriptionId), Current: $($azContext.Subscription.Id)"
+        $azAccount = az account show 2>$null | ConvertFrom-Json
+        if (-not $azAccount) {
+            $issues += "Not connected to Azure. Please run 'az login'"
+        } elseif ($Config.subscriptionId -and $azAccount.id -ne $Config.subscriptionId) {
+            $issues += "Connected to wrong subscription. Expected: $($Config.subscriptionId), Current: $($azAccount.id)"
         }
     } catch {
-        $issues += "Azure PowerShell module not available or not connected: $($_.Exception.Message)"
+        $issues += "Azure CLI not available or not connected: $($_.Exception.Message)"
     }
     
     # Test SharePoint connection (only if SharePoint connector will be deployed)
@@ -1294,10 +1311,20 @@ try {
     if ($deployConfig.tags) { $bicepParams.tags = $deployConfig.tags }
     
     # Ensure resource group exists
-    $rg = Get-AzResourceGroup -Name $deployConfig.resourceGroupName -ErrorAction SilentlyContinue
+    $rg = az group show --name $deployConfig.resourceGroupName 2>$null | ConvertFrom-Json
     if (-not $rg) {
         Write-DeploymentLog "Resource group '$($deployConfig.resourceGroupName)' not found. Creating in '$($deployConfig.location)'..." -Level Warning
-        $rg = New-AzResourceGroup -Name $deployConfig.resourceGroupName -Location $deployConfig.location -Tag ($bicepParams.ContainsKey('tags') ? $bicepParams.tags : @{})
+        $tagArgs = @()
+        if ($bicepParams.ContainsKey('tags') -and $bicepParams.tags) {
+            foreach ($key in $bicepParams.tags.Keys) {
+                $tagArgs += "$key=$($bicepParams.tags[$key])"
+            }
+        }
+        if ($tagArgs.Count -gt 0) {
+            az group create --name $deployConfig.resourceGroupName --location $deployConfig.location --tags @tagArgs 2>$null | Out-Null
+        } else {
+            az group create --name $deployConfig.resourceGroupName --location $deployConfig.location 2>$null | Out-Null
+        }
         Write-DeploymentLog "Resource group '$($deployConfig.resourceGroupName)' created." -Level Success
     } else {
         Write-DeploymentLog "Resource group '$($deployConfig.resourceGroupName)' already exists." -Level Info
@@ -1305,57 +1332,52 @@ try {
 
     # Check if automation modules already exist on the account
     $automationAccountName = "$($deployConfig.deploymentSettings.projectPrefix)-$($deployConfig.deploymentSettings.environment)-automation"
-    $modulesToCheck = [ordered]@{
-        'Az.Accounts'    = 'https://www.powershellgallery.com/api/v2/Packages/Az.Accounts/2.19.0'
-        'Az.Resources'   = 'https://www.powershellgallery.com/api/v2/Packages/Az.Resources/7.1.0'
-        'PnP.PowerShell' = 'https://www.powershellgallery.com/api/v2/Packages/PnP.PowerShell/2.12.0'
-    }
-
     # Deploy using bicep
     $templatePath = Join-Path $PSScriptRoot "Infrastructure\main.bicep"
     
     Write-DeploymentLog "Deploying bicep template: $templatePath" -Level Info
     Write-DeploymentLog "Resource Group: $($deployConfig.resourceGroupName)" -Level Info
-    
-    $deployment = New-AzResourceGroupDeployment `
-        -ResourceGroupName $deployConfig.resourceGroupName `
-        -TemplateFile $templatePath `
-        -TemplateParameterObject $bicepParams `
-        -Verbose
-    
-    if ($deployment.ProvisioningState -eq 'Succeeded') {
+
+    # Build parameters file for az deployment
+    $paramsFilePath = Join-Path $PSScriptRoot "logs\deployment-params-$(Get-Date -Format 'yyyyMMdd-HHmmss').json"
+    $paramsObject = @{ '$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'; contentVersion = '1.0.0.0'; parameters = @{} }
+    foreach ($key in $bicepParams.Keys) {
+        $paramsObject.parameters[$key] = @{ value = $bicepParams[$key] }
+    }
+    $paramsObject | ConvertTo-Json -Depth 10 | Set-Content -Path $paramsFilePath -Encoding UTF8
+
+    $deployStderrFile = Join-Path $PSScriptRoot "logs\deployment-stderr-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+    $deploymentJson = $null
+    $deploymentJson = az deployment group create `
+        --resource-group $deployConfig.resourceGroupName `
+        --template-file $templatePath `
+        --parameters "@$paramsFilePath" `
+        -o json 2>$deployStderrFile
+
+    $deployExitCode = $LASTEXITCODE
+
+    # Clean up params file
+    Remove-Item -Path $paramsFilePath -Force -ErrorAction SilentlyContinue
+
+    if ($deployExitCode -ne 0 -or -not $deploymentJson) {
+        $stderrContent = if (Test-Path $deployStderrFile) { Get-Content $deployStderrFile -Raw } else { '(no stderr captured)' }
+        Remove-Item -Path $deployStderrFile -Force -ErrorAction SilentlyContinue
+        Write-DeploymentLog "az deployment group create failed (exit code: $deployExitCode)" -Level Error
+        Write-DeploymentLog "Error details: $stderrContent" -Level Error
+        throw "az deployment group create failed (exit code: $deployExitCode).`n$stderrContent"
+    }
+
+    Remove-Item -Path $deployStderrFile -Force -ErrorAction SilentlyContinue
+    $deployment = $deploymentJson | ConvertFrom-Json
+
+    if ($deployment -and $deployment.properties.provisioningState -eq 'Succeeded') {
         Write-DeploymentLog "Bicep deployment completed successfully!" -Level Success
 
-        # Install automation modules (skip if already present)
-        Write-DeploymentLog "Checking automation account modules..." -Level Info
-        foreach ($modName in $modulesToCheck.Keys) {
-            $existing = Get-AzAutomationModule -ResourceGroupName $deployConfig.resourceGroupName -AutomationAccountName $automationAccountName -Name $modName -ErrorAction SilentlyContinue
-            if ($existing -and $existing.ProvisioningState -eq 'Succeeded') {
-                Write-DeploymentLog "  Module '$modName' already exists. Skipping." -Level Info
-                continue
-            }
-            $modUri = $modulesToCheck[$modName]
-            Write-DeploymentLog "  Installing module '$modName'..." -Level Info
-            New-AzAutomationModule -ResourceGroupName $deployConfig.resourceGroupName -AutomationAccountName $automationAccountName -Name $modName -ContentLinkUri $modUri | Out-Null
-            # Wait for module provisioning to complete before installing the next one
-            $maxWait = 300; $elapsed = 0
-            do {
-                Start-Sleep -Seconds 10; $elapsed += 10
-                $modState = (Get-AzAutomationModule -ResourceGroupName $deployConfig.resourceGroupName -AutomationAccountName $automationAccountName -Name $modName).ProvisioningState
-            } while ($modState -notin @('Succeeded', 'Failed') -and $elapsed -lt $maxWait)
-            if ($modState -eq 'Succeeded') {
-                Write-DeploymentLog "  Module '$modName' installed successfully." -Level Success
-            } else {
-                Write-DeploymentLog "  Module '$modName' provisioning ended with state: $modState" -Level Warning
-            }
-        }
-        Write-DeploymentLog "Module installation complete." -Level Success
-        
         # Log deployment outputs
-        if ($deployment.Outputs) {
+        if ($deployment.properties.outputs) {
             Write-DeploymentLog "Deployment outputs:" -Level Info
-            foreach ($output in $deployment.Outputs.GetEnumerator()) {
-                Write-DeploymentLog "  $($output.Key): $($output.Value.Value)" -Level Info
+            foreach ($output in $deployment.properties.outputs.PSObject.Properties) {
+                Write-DeploymentLog "  $($output.Name): $($output.Value.value)" -Level Info
             }
         }
         
@@ -1408,23 +1430,23 @@ try {
 
             foreach ($laName in $logicAppNames) {
                 try {
-                    $la = Get-AzResource -ResourceGroupName $deployConfig.resourceGroupName -ResourceType 'Microsoft.Logic/workflows' -Name $laName -ErrorAction SilentlyContinue
+                    $la = az resource show --resource-group $deployConfig.resourceGroupName --resource-type 'Microsoft.Logic/workflows' --name $laName 2>$null | ConvertFrom-Json
                     if (-not $la) { continue }
 
-                    $laDetail = Get-AzResource -ResourceId $la.ResourceId -ErrorAction SilentlyContinue
-                    $principalId = $laDetail.Identity.PrincipalId
+                    $principalId = $la.identity.principalId
                     if (-not $principalId) {
                         Write-DeploymentLog "  Logic App '$laName' has no managed identity — skipping role assignment" -Level Warning
                         continue
                     }
 
-                    $existing = Get-AzRoleAssignment -ObjectId $principalId -RoleDefinitionName 'Automation Operator' -Scope $automationScope -ErrorAction SilentlyContinue
-                    if ($existing) {
+                    $existing = az role assignment list --assignee $principalId --role 'Automation Operator' --scope $automationScope 2>$null | ConvertFrom-Json
+                    if ($existing -and $existing.Count -gt 0) {
                         Write-DeploymentLog "  Logic App '$laName' already has Automation Operator role" -Level Info
                         continue
                     }
 
-                    New-AzRoleAssignment -ObjectId $principalId -RoleDefinitionName 'Automation Operator' -Scope $automationScope -ErrorAction Stop | Out-Null
+                    az role assignment create --assignee-object-id $principalId --assignee-principal-type ServicePrincipal --role 'Automation Operator' --scope $automationScope 2>$null | Out-Null
+                    if ($LASTEXITCODE -ne 0) { throw "az role assignment create failed" }
                     Write-DeploymentLog "  Granted Automation Operator to '$laName' ($principalId)" -Level Success
                 }
                 catch {
@@ -1434,10 +1456,11 @@ try {
         }
         
         Write-DeploymentLog "Deployment log saved to: $LogPath" -Level Success
-        Write-DeploymentLog "View deployment details in Azure Portal: https://portal.azure.com/#blade/HubsExtension/DeploymentDetailsBlade/id/$($deployment.Id)" -Level Info
-        
+        Write-DeploymentLog "View deployment details in Azure Portal: https://portal.azure.com/#blade/HubsExtension/DeploymentDetailsBlade/id/$($deployment.id)" -Level Info
+
     } else {
-        throw "Deployment failed with state: $($deployment.ProvisioningState)"
+        $failState = if ($deployment) { $deployment.properties.provisioningState } else { 'Unknown (no response)' }
+        throw "Deployment failed with state: $failState"
     }
     
 } catch {
