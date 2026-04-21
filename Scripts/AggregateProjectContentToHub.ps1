@@ -93,7 +93,7 @@ function Test-ProjectSiteHasChanges($LastRun) {
         return $true
     }
     $lastRunISO = $LastRun.ToString("yyyy-MM-ddTHH:mm:ssZ")
-    $SourceLists = @("Endringsanalyse", "Gevinstanalyse og gevinstrealiseringsplan", "Måleindikatorer", "Gevinstoppfølging")
+    $SourceLists = @("Endringsanalyse", "Gevinstanalyse og gevinstrealiseringsplan", "Måleindikatorer", "Gevinstoppfølging", "Prosjektegenskaper")
     foreach ($listName in $SourceLists) {
         $list = Get-PnPList -Identity $listName -ErrorAction SilentlyContinue
         if ($null -eq $list) { continue }
@@ -134,6 +134,75 @@ function Compare-ItemValues($ExistingFieldValues, $NewValues) {
         }
     }
     return $false
+}
+
+function Get-DynamicProjectPropertyFields {
+    $BenefitsListName = "Gevinstoversikt"
+    # All fields already handled by the AggregatedBenefitValue class and script logic
+    $KnownFields = @(
+        "GtcUniqueKey", "GtcProjectName", "GtcProjectUrl", "GtcChangeTitle", "GtProcess",
+        "GtChallengeDescription", "GtcBenefitTitle", "GtGainsType", "GtPrereqProfitAchievement",
+        "GtGainsTurnover", "GtGainsResponsible", "GtGainsOwner", "GtRealizationTime",
+        "GtcMeasurementIndicator", "GtStartValue", "GtDesiredValue", "GtMeasurementUnit",
+        "GtMeasurementDate", "GtMeasurementValue", "GtMeasurementComment",
+        "GtcGoalAchievement", "GtcPartOfProgram"
+    )
+    try {
+        $AllFields = Get-PnPField -List $BenefitsListName -ErrorAction SilentlyContinue
+        $DynamicFields = $AllFields | Where-Object {
+            $_.InternalName.StartsWith("Gt") -and
+            $_.InternalName -notin $KnownFields -and
+            $_.Hidden -eq $false
+        } | Select-Object -ExpandProperty InternalName
+        if ($DynamicFields) {
+            return @($DynamicFields)
+        }
+    }
+    catch {
+        Write-Warning "Unable to discover dynamic fields on '$BenefitsListName': $($_.Exception.Message)"
+    }
+    return @()
+}
+
+function Get-DynamicProjectPropertyValues($DynamicFields) {
+    if ($DynamicFields.Count -eq 0) {
+        return @{}
+    }
+    try {
+        $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
+        if ($null -eq $ProjectProperties) {
+            return @{}
+        }
+    }
+    catch {
+        return @{}
+    }
+    $Values = @{}
+    foreach ($fieldName in $DynamicFields) {
+        $val = $ProjectProperties.FieldValues[$fieldName]
+        if ($null -eq $val) { continue }
+        # Handle User fields
+        if ($val -is [Microsoft.SharePoint.Client.FieldUserValue]) {
+            $Values[$fieldName] = $val.Email
+        }
+        # Handle Lookup fields
+        elseif ($val -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
+            $Values[$fieldName] = $val.LookupValue
+        }
+        # Handle Taxonomy fields
+        elseif ($val -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
+            $Values[$fieldName] = $val.Label
+        }
+        # Handle DateTime fields
+        elseif ($val -is [datetime]) {
+            $Values[$fieldName] = $val.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+        }
+        # Handle everything else as string
+        elseif (-not [string]::IsNullOrEmpty("$val")) {
+            $Values[$fieldName] = "$val"
+        }
+    }
+    return $Values
 }
 
 function EnsureBenefitsListExists($Url, $UniqueKeyFieldXml) {
@@ -455,6 +524,14 @@ $UniqueKeyFieldXml = '<Field Type="Text" Name="GtcUniqueKey" DisplayName="Unik n
 Connect-SharePoint -Url $HubUrl
 EnsureBenefitsListExists -Url $HubUrl -UniqueKeyFieldXml $UniqueKeyFieldXml
 
+# Discover dynamic Gt* fields on the hub benefits list that should be stamped from project properties
+$DynamicProjectPropertyFields = Get-DynamicProjectPropertyFields
+if ($DynamicProjectPropertyFields.Count -gt 0) {
+    Write-Output "Discovered $($DynamicProjectPropertyFields.Count) dynamic project property field(s) to stamp: $($DynamicProjectPropertyFields -join ', ')"
+} else {
+    Write-Output "No dynamic project property fields found on 'Gevinstoversikt'."
+}
+
 if (-not $global:__UseManagedIdentity) {
     try {
         $AdminUrl = $HubUrl -replace "^(https://[^\.]+)\.sharepoint\.com.*$", '$1-admin.sharepoint.com/'
@@ -536,6 +613,12 @@ $AllProjects | ForEach-Object {
         Write-Output "`tChanges detected in '$ChangedList' since last run"
     }
 
+    # Read dynamic project property values from the project's Prosjektegenskaper list
+    $DynamicPropertyValues = Get-DynamicProjectPropertyValues -DynamicFields $DynamicProjectPropertyFields
+    if ($DynamicPropertyValues.Count -gt 0) {
+        Write-Output "`tRead $($DynamicPropertyValues.Count) dynamic property value(s) from project properties"
+    }
+
     Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
     $AggregationItems = Aggregate-BenefitsToHub -ProjectName $ProjectName -ProjectUrl $ProjectUrl -HubUrl $HubUrl -PartOfProgram $PartOfProgram
     Write-Output "Built array with $($AggregationItems.Count) items for project '$ProjectName'"
@@ -555,6 +638,13 @@ $AllProjects | ForEach-Object {
         }
         # Add Title field for SharePoint (using unique key as title)
         $ItemValues["Title"] = $AggregationItem.GtcProjectName + " - " + $AggregationItem.GtcBenefitTitle
+
+        # Stamp dynamic project property values (only for keys not already set)
+        foreach ($dpKey in $DynamicPropertyValues.Keys) {
+            if (-not $ItemValues.ContainsKey($dpKey)) {
+                $ItemValues[$dpKey] = $DynamicPropertyValues[$dpKey]
+            }
+        }
             
         try {
             $ExistingItem = Get-PnPListItem -List "Gevinstoversikt" -Query "<View><Query><Where><Eq><FieldRef Name='GtcUniqueKey'/><Value Type='Text'>$($AggregationItem.GtcUniqueKey)</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
