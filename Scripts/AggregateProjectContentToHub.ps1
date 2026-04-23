@@ -1,7 +1,8 @@
 Param(
     [Parameter(Mandatory = $false)][string]$HubUrl = "https://prosjektportalen.sharepoint.com/sites/pp365",
     [Parameter(Mandatory = $false)][string]$ClientId = "da6c31a6-b557-4ac3-9994-7315da06ea3a", ## PP Client Id
-    [Parameter(Mandatory = $false)][Nullable[datetime]]$Since
+    [Parameter(Mandatory = $false)][Nullable[datetime]]$Since,
+    [Parameter(Mandatory = $false)][bool]$Force = $false
 )
 
 class AggregatedBenefitValue {
@@ -168,17 +169,43 @@ function Get-DynamicProjectPropertyValues($DynamicFields) {
     if ($DynamicFields.Count -eq 0) {
         return @{}
     }
+    
+    # Check which dynamic fields actually exist on the project's Prosjektegenskaper list
+    try {
+        $ProjectPropertyFields = Get-PnPField -List "Prosjektegenskaper" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty InternalName
+    }
+    catch {
+        Write-Warning "`tCould not read fields from 'Prosjektegenskaper': $($_.Exception.Message)"
+        return @{}
+    }
+    if ($null -eq $ProjectPropertyFields) {
+        Write-Output "`t'Prosjektegenskaper' list not found or has no fields, skipping dynamic properties."
+        return @{}
+    }
+
+    $MatchingFields = $DynamicFields | Where-Object { $_ -in $ProjectPropertyFields }
+    $NonMatchingFields = $DynamicFields | Where-Object { $_ -notin $ProjectPropertyFields }
+    if ($NonMatchingFields) {
+        Write-Output "`tDynamic field(s) not found in 'Prosjektegenskaper': $($NonMatchingFields -join ', ')"
+    }
+    if (-not $MatchingFields -or @($MatchingFields).Count -eq 0) {
+        return @{}
+    }
+
     try {
         $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
         if ($null -eq $ProjectProperties) {
+            Write-Output "`tNo item found in 'Prosjektegenskaper' (Id 1), skipping dynamic properties."
             return @{}
         }
     }
     catch {
+        Write-Warning "`tFailed to read 'Prosjektegenskaper' item: $($_.Exception.Message)"
         return @{}
     }
+
     $Values = @{}
-    foreach ($fieldName in $DynamicFields) {
+    foreach ($fieldName in @($MatchingFields)) {
         $val = $ProjectProperties.FieldValues[$fieldName]
         if ($null -eq $val) { continue }
         # Handle User fields
@@ -504,6 +531,14 @@ $global:__ClientId = $ClientId
 $global:__UseManagedIdentity = ($null -ne $PSPrivateMetadata) -or ($null -ne (Get-Command Get-AutomationVariable -ErrorAction SilentlyContinue)) -or ($env:IDENTITY_ENDPOINT -ne $null)
 $ErrorActionPreference = "Stop"
 
+# Validate and clean HubUrl - must be a site URL (https://tenant.sharepoint.com/sites/sitename)
+$HubUrl = $HubUrl.TrimEnd("/")
+$HubUrlPath = ([uri]$HubUrl).AbsolutePath.TrimEnd("/") -split "/"
+if ($HubUrlPath.Count -ne 3) {
+    Write-Error "HubUrl must be a site URL in the format https://tenant.sharepoint.com/sites/sitename. Got: $HubUrl"
+    exit 1
+}
+
 if ($global:__UseManagedIdentity) {
     Write-Output "Running in Azure Automation context (Managed Identity)"
     Write-Output "PowerShell version: $($PSVersionTable.PSVersion)"
@@ -604,19 +639,26 @@ $AllProjects | ForEach-Object {
     Connect-SharePoint -Url $ProjectUrl
 
     # Delta sync: skip project sites with no changes since last run
-    $ChangedList = Test-ProjectSiteHasChanges -LastRun $LastRunTimestamp
-    if (-not $ChangedList) {
-        Write-Output "`tNo changes since last run, skipping."
-        return
-    }
-    if ($ChangedList -is [string]) {
-        Write-Output "`tChanges detected in '$ChangedList' since last run"
+    if (-not $Force) {
+        $ChangedList = Test-ProjectSiteHasChanges -LastRun $LastRunTimestamp
+        if (-not $ChangedList) {
+            Write-Output "`tNo changes since last run, skipping."
+            return
+        }
+        if ($ChangedList -is [string]) {
+            Write-Output "`tChanges detected in '$ChangedList' since last run"
+        }
+    } else {
+        Write-Output "`tForce mode: processing regardless of changes"
     }
 
     # Read dynamic project property values from the project's Prosjektegenskaper list
     $DynamicPropertyValues = Get-DynamicProjectPropertyValues -DynamicFields $DynamicProjectPropertyFields
     if ($DynamicPropertyValues.Count -gt 0) {
-        Write-Output "`tRead $($DynamicPropertyValues.Count) dynamic property value(s) from project properties"
+        Write-Output "`tRead $($DynamicPropertyValues.Count) dynamic property value(s) from project properties: $($DynamicPropertyValues.Keys -join ', ')"
+    }
+    elseif ($DynamicProjectPropertyFields.Count -gt 0) {
+        Write-Output "`tNo dynamic property values found for this project (looked for: $($DynamicProjectPropertyFields -join ', '))"
     }
 
     Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
@@ -649,8 +691,8 @@ $AllProjects | ForEach-Object {
         try {
             $ExistingItem = Get-PnPListItem -List "Gevinstoversikt" -Query "<View><Query><Where><Eq><FieldRef Name='GtcUniqueKey'/><Value Type='Text'>$($AggregationItem.GtcUniqueKey)</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
             if ($null -ne $ExistingItem) {
-                # Skip update if no field values have changed
-                if (-not (Compare-ItemValues -ExistingFieldValues $ExistingItem.FieldValues -NewValues $ItemValues)) {
+                # Skip update if no field values have changed (unless -Force is set)
+                if (-not $Force -and -not (Compare-ItemValues -ExistingFieldValues $ExistingItem.FieldValues -NewValues $ItemValues)) {
                     Write-Output "`tItem '$($AggregationItem.GtcBenefitTitle)' unchanged, skipping."
                     continue
                 }
