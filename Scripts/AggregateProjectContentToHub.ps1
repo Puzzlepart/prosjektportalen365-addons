@@ -148,24 +148,41 @@ function Get-DynamicProjectPropertyFields {
         "GtMeasurementDate", "GtMeasurementValue", "GtMeasurementComment",
         "GtcGoalAchievement", "GtcPartOfProgram"
     )
+    $Result = @{ Fields = @(); TaxonomyTextCompanions = @{} }
     try {
         $AllFields = Get-PnPField -List $BenefitsListName -ErrorAction SilentlyContinue
+        $AllFieldNames = $AllFields | Select-Object -ExpandProperty InternalName
+        # Identify taxonomy fields on the list
+        $TaxonomyFieldNames = $AllFields | Where-Object { $_.TypeAsString -eq "TaxonomyFieldType" -or $_.TypeAsString -eq "TaxonomyFieldTypeMulti" } | Select-Object -ExpandProperty InternalName
         $DynamicFields = $AllFields | Where-Object {
             $_.InternalName.StartsWith("Gt") -and
             $_.InternalName -notin $KnownFields -and
-            $_.Hidden -eq $false
+            $_.Hidden -eq $false -and
+            # Exclude auto-generated taxonomy companion text fields (e.g. GtcDepartmentText for GtcDepartment)
+            -not ($_.InternalName.EndsWith("Text") -and ($_.InternalName -replace "Text$") -in $TaxonomyFieldNames)
         } | Select-Object -ExpandProperty InternalName
         if ($DynamicFields) {
-            return @($DynamicFields)
+            $Result.Fields = @($DynamicFields)
+        }
+        # Build mapping: taxonomy field -> companion text field (if it exists on the list)
+        foreach ($taxField in $TaxonomyFieldNames) {
+            if ($taxField -in $Result.Fields) {
+                $textCompanion = "${taxField}Text"
+                if ($textCompanion -in $AllFieldNames) {
+                    $Result.TaxonomyTextCompanions[$taxField] = $textCompanion
+                }
+            }
         }
     }
     catch {
         Write-Warning "Unable to discover dynamic fields on '$BenefitsListName': $($_.Exception.Message)"
     }
-    return @()
+    return $Result
 }
 
-function Get-DynamicProjectPropertyValues($DynamicFields) {
+function Get-DynamicProjectPropertyValues($DynamicFieldInfo) {
+    $DynamicFields = $DynamicFieldInfo.Fields
+    $TaxonomyTextCompanions = $DynamicFieldInfo.TaxonomyTextCompanions
     if ($DynamicFields.Count -eq 0) {
         return @{}
     }
@@ -208,17 +225,23 @@ function Get-DynamicProjectPropertyValues($DynamicFields) {
     foreach ($fieldName in @($MatchingFields)) {
         $val = $ProjectProperties.FieldValues[$fieldName]
         if ($null -eq $val) { continue }
+        # Handle Taxonomy fields - use Label|TermGuid for the taxonomy field, and plain label for the companion text field
+        if ($val -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
+            if (-not [string]::IsNullOrEmpty($val.Label) -and -not [string]::IsNullOrEmpty($val.TermGuid)) {
+                $Values[$fieldName] = "$($val.Label)|$($val.TermGuid)"
+                # Also populate the companion text field if it exists on the central list
+                if ($TaxonomyTextCompanions.ContainsKey($fieldName)) {
+                    $Values[$TaxonomyTextCompanions[$fieldName]] = $val.Label
+                }
+            }
+        }
         # Handle User fields
-        if ($val -is [Microsoft.SharePoint.Client.FieldUserValue]) {
+        elseif ($val -is [Microsoft.SharePoint.Client.FieldUserValue]) {
             $Values[$fieldName] = $val.Email
         }
         # Handle Lookup fields
         elseif ($val -is [Microsoft.SharePoint.Client.FieldLookupValue]) {
             $Values[$fieldName] = $val.LookupValue
-        }
-        # Handle Taxonomy fields
-        elseif ($val -is [Microsoft.SharePoint.Client.Taxonomy.TaxonomyFieldValue]) {
-            $Values[$fieldName] = $val.Label
         }
         # Handle DateTime fields
         elseif ($val -is [datetime]) {
@@ -560,9 +583,12 @@ Connect-SharePoint -Url $HubUrl
 EnsureBenefitsListExists -Url $HubUrl -UniqueKeyFieldXml $UniqueKeyFieldXml
 
 # Discover dynamic Gt* fields on the hub benefits list that should be stamped from project properties
-$DynamicProjectPropertyFields = Get-DynamicProjectPropertyFields
-if ($DynamicProjectPropertyFields.Count -gt 0) {
-    Write-Output "Discovered $($DynamicProjectPropertyFields.Count) dynamic project property field(s) to stamp: $($DynamicProjectPropertyFields -join ', ')"
+$DynamicFieldInfo = Get-DynamicProjectPropertyFields
+if ($DynamicFieldInfo.Fields.Count -gt 0) {
+    Write-Output "Discovered $($DynamicFieldInfo.Fields.Count) dynamic project property field(s) to stamp: $($DynamicFieldInfo.Fields -join ', ')"
+    if ($DynamicFieldInfo.TaxonomyTextCompanions.Count -gt 0) {
+        Write-Output "Taxonomy text companion field(s): $(($DynamicFieldInfo.TaxonomyTextCompanions.GetEnumerator() | ForEach-Object { "$($_.Key) -> $($_.Value)" }) -join ', ')"
+    }
 } else {
     Write-Output "No dynamic project property fields found on 'Gevinstoversikt'."
 }
@@ -653,12 +679,12 @@ $AllProjects | ForEach-Object {
     }
 
     # Read dynamic project property values from the project's Prosjektegenskaper list
-    $DynamicPropertyValues = Get-DynamicProjectPropertyValues -DynamicFields $DynamicProjectPropertyFields
+    $DynamicPropertyValues = Get-DynamicProjectPropertyValues -DynamicFieldInfo $DynamicFieldInfo
     if ($DynamicPropertyValues.Count -gt 0) {
         Write-Output "`tRead $($DynamicPropertyValues.Count) dynamic property value(s) from project properties: $($DynamicPropertyValues.Keys -join ', ')"
     }
-    elseif ($DynamicProjectPropertyFields.Count -gt 0) {
-        Write-Output "`tNo dynamic property values found for this project (looked for: $($DynamicProjectPropertyFields -join ', '))"
+    elseif ($DynamicFieldInfo.Fields.Count -gt 0) {
+        Write-Output "`tNo dynamic property values found for this project (looked for: $($DynamicFieldInfo.Fields -join ', '))"
     }
 
     Write-Output "Aggregating benefits from $ProjectUrl to $HubUrl"
