@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "14729324536492135797"
+      "templateHash": "4887631758720806318"
     },
     "description": "Main template for deploying Prosjektportalen Advanced Add-ons solution"
   },
@@ -45,6 +45,12 @@
       "defaultValue": "Project Portal Automation",
       "metadata": {
         "description": "Display name for the Azure Automation connection"
+      }
+    },
+    "office365ConnectionDisplayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Display name for the Office 365 connection (usually an email address)"
       }
     },
     "hubSiteUrl": {
@@ -159,7 +165,8 @@
       "defaultValue": [
         "ChangeArchiveState",
         "PhaseChanged",
-        "ProjectInfoChanged"
+        "ProjectInfoChanged",
+        "RequestProjectAccess"
       ],
       "metadata": {
         "description": "Array of logic apps to deploy"
@@ -177,6 +184,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Deploy Azure Automation connector"
+      }
+    },
+    "deployOffice365Connector": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploy Office 365 connector"
       }
     },
     "tags": {
@@ -197,7 +211,8 @@
     "automationConnectionName": "azureautomation",
     "changeArchiveStateLogicAppName": "[format('{0}-{1}-ChangeArchiveState', parameters('projectPrefix'), parameters('environment'))]",
     "phaseChangedLogicAppName": "[format('{0}-{1}-PhaseChanged', parameters('projectPrefix'), parameters('environment'))]",
-    "projectInfoChangedLogicAppName": "[format('{0}-{1}-ProjectInfoChanged', parameters('projectPrefix'), parameters('environment'))]"
+    "projectInfoChangedLogicAppName": "[format('{0}-{1}-ProjectInfoChanged', parameters('projectPrefix'), parameters('environment'))]",
+    "requestProjectAccessLogicAppName": "[format('{0}-{1}-RequestProjectAccess', parameters('projectPrefix'), parameters('environment'))]"
   },
   "resources": [
     {
@@ -248,7 +263,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "12648579241770843138"
+              "templateHash": "12435933874566378519"
             }
           },
           "parameters": {
@@ -416,7 +431,7 @@
               "name": "[format('{0}/{1}', parameters('automationAccountName'), 'DateCalculationRules')]",
               "properties": {
                 "description": "Rules for calculating project milestone dates as JSON",
-                "value": "[format('\"{0}\"', string(parameters('dateCalculationRules')))]",
+                "value": "[format('\"{0}\"', replace(string(parameters('dateCalculationRules')), '\"', '\\\"'))]",
                 "isEncrypted": false
               },
               "dependsOn": [
@@ -429,7 +444,7 @@
               "name": "[format('{0}/{1}', parameters('automationAccountName'), 'FolderStructure')]",
               "properties": {
                 "description": "Standard folder structure for project document libraries as JSON",
-                "value": "[format('\"{0}\"', string(parameters('folderStructure')))]",
+                "value": "[format('\"{0}\"', replace(string(parameters('folderStructure')), '\"', '\\\"'))]",
                 "isEncrypted": false
               },
               "dependsOn": [
@@ -1079,6 +1094,118 @@
             "connectionName": {
               "type": "string",
               "value": "[parameters('azureAutomationConnectionName')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('deployOffice365Connector')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "office365-connection",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "office365ConnectionName": {
+            "value": "office365"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "displayName": {
+            "value": "[parameters('office365ConnectionDisplayName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "8097752431038262618"
+            }
+          },
+          "parameters": {
+            "office365ConnectionName": {
+              "type": "string",
+              "defaultValue": "office365",
+              "metadata": {
+                "description": "Name of the Office 365 connection"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location for the connection resource"
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Display name for the Office 365 connection (usually an email address)"
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Subscription ID"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Resource tags"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/connections",
+              "apiVersion": "2016-06-01",
+              "name": "[parameters('office365ConnectionName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "kind": "V1",
+              "properties": {
+                "displayName": "[parameters('displayName')]",
+                "statuses": [
+                  {
+                    "status": "Ready"
+                  }
+                ],
+                "customParameterValues": {},
+                "nonSecretParameterValues": {},
+                "api": {
+                  "name": "[parameters('office365ConnectionName')]",
+                  "displayName": "Office 365 Outlook",
+                  "description": "Microsoft Office 365 is a cloud-based service that is designed to help meet your organization's needs for robust security, reliability, and user productivity.",
+                  "iconUri": "[format('https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1769/1.0.1769.4361/{0}/icon.png', parameters('office365ConnectionName'))]",
+                  "id": "[format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/{2}', parameters('subscriptionId'), parameters('location'), parameters('office365ConnectionName'))]",
+                  "type": "Microsoft.Web/locations/managedApis"
+                },
+                "testLinks": []
+              }
+            }
+          ],
+          "outputs": {
+            "connectionId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Web/connections', parameters('office365ConnectionName'))]"
+            },
+            "connectionName": {
+              "type": "string",
+              "value": "[parameters('office365ConnectionName')]"
             }
           }
         }
@@ -2042,6 +2169,761 @@
         "[resourceId('Microsoft.Resources/deployments', 'automation-connection')]",
         "[resourceId('Microsoft.Resources/deployments', 'sharepoint-connection')]"
       ]
+    },
+    {
+      "condition": "[and(and(contains(parameters('logicAppsToDeploy'), 'RequestProjectAccess'), parameters('deploySharePointConnector')), parameters('deployOffice365Connector'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "requestProjectAccess-logicapp",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "logicAppName": {
+            "value": "[variables('requestProjectAccessLogicAppName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "sharePointConnectionId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'sharepoint-connection'), '2025-04-01').outputs.connectionId.value]"
+          },
+          "office365ConnectionId": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'office365-connection'), '2025-04-01').outputs.connectionId.value]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.41.2.15936",
+              "templateHash": "7465033731099282194"
+            }
+          },
+          "parameters": {
+            "logicAppName": {
+              "type": "string",
+              "defaultValue": "RequestProjectAccess",
+              "metadata": {
+                "description": "Name of the RequestProjectAccess Logic App"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Location for the logic app"
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Subscription ID"
+              }
+            },
+            "sharePointConnectionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Connection ID for SharePoint Online connection"
+              }
+            },
+            "office365ConnectionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Connection ID for Office 365 connection"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Resource tags"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Logic/workflows",
+              "apiVersion": "2017-07-01",
+              "name": "[parameters('logicAppName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "state": "Enabled",
+                "definition": {
+                  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                  "contentVersion": "1.0.0.0",
+                  "parameters": {
+                    "sendEmail": {
+                      "defaultValue": true,
+                      "type": "Bool"
+                    },
+                    "$connections": {
+                      "defaultValue": {},
+                      "type": "Object"
+                    }
+                  },
+                  "triggers": {
+                    "When_an_HTTP_request_is_received": {
+                      "type": "Request",
+                      "kind": "Http",
+                      "inputs": {
+                        "method": "POST",
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "listName": {
+                              "type": "string"
+                            },
+                            "listId": {
+                              "type": "string"
+                            },
+                            "listTitle": {
+                              "type": "string"
+                            },
+                            "webUrl": {
+                              "type": "string"
+                            },
+                            "siteId": {
+                              "type": "string"
+                            },
+                            "siteTitle": {
+                              "type": "string"
+                            },
+                            "selectedItems": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "GtProjectManager": {
+                                    "type": "string"
+                                  },
+                                  "Author": {
+                                    "type": "string"
+                                  },
+                                  "Editor": {
+                                    "type": "string"
+                                  },
+                                  "FileSystemObjectType": {
+                                    "type": "integer"
+                                  },
+                                  "Id": {
+                                    "type": "integer"
+                                  },
+                                  "ServerRedirectedEmbedUri": {},
+                                  "ServerRedirectedEmbedUrl": {
+                                    "type": "string"
+                                  },
+                                  "ContentTypeId": {
+                                    "type": "string"
+                                  },
+                                  "Title": {
+                                    "type": "string"
+                                  },
+                                  "OData__ColorTag": {},
+                                  "ComplianceAssetId": {},
+                                  "GtProjectFinanceName": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectNumber": {
+                                    "type": "string"
+                                  },
+                                  "GtArchiveReference": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectServiceArea": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectType": {
+                                    "type": "string"
+                                  },
+                                  "GtUNSustDevGoals": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectPhase": {},
+                                  "GtProjectManagerId": {
+                                    "type": "integer"
+                                  },
+                                  "GtProjectManagerStringId": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectOwnerId": {},
+                                  "GtProjectOwnerStringId": {},
+                                  "GtProjectSupportId": {},
+                                  "GtProjectSupportStringId": {},
+                                  "GtGainsResponsibleId": {},
+                                  "GtGainsResponsibleStringId": {},
+                                  "GtStartDate": {
+                                    "type": "string"
+                                  },
+                                  "GtEndDate": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectGoals": {
+                                    "type": "string"
+                                  },
+                                  "GtBudgetTotal": {},
+                                  "GtCostsTotal": {},
+                                  "GtProjectForecast": {},
+                                  "GtBudgetLastReportDate": {},
+                                  "GtGroupId": {
+                                    "type": "string"
+                                  },
+                                  "GtSiteId": {
+                                    "type": "string"
+                                  },
+                                  "GtSiteUrl": {
+                                    "type": "string"
+                                  },
+                                  "GtLastSyncTime": {},
+                                  "GtProjectLifecycleStatus": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectPhaseText": {},
+                                  "GtProjectServiceAreaText": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectTypeText": {
+                                    "type": "string"
+                                  },
+                                  "GtUNSustDevGoalsText": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectAdminRoles": {
+                                    "type": "string"
+                                  },
+                                  "GtProjectTemplate": {
+                                    "type": "string"
+                                  },
+                                  "GtParentProjects": {
+                                    "type": "string"
+                                  },
+                                  "GtChildProjects": {
+                                    "type": "string"
+                                  },
+                                  "GtIsParentProject": {
+                                    "type": "boolean"
+                                  },
+                                  "GtIsProgram": {
+                                    "type": "boolean"
+                                  },
+                                  "GtInstalledVersion": {
+                                    "type": "string"
+                                  },
+                                  "GtCurrentVersion": {
+                                    "type": "string"
+                                  },
+                                  "GtBAEndDateOriginal": {},
+                                  "GtBAProjectPolitical": {},
+                                  "GtBAProjectPoliticalComment": {},
+                                  "GtBAProjectPoliticalLink": {},
+                                  "GtProjectExtensions": {},
+                                  "GtProjectListContent": {},
+                                  "ID": {
+                                    "type": "integer"
+                                  },
+                                  "Modified": {
+                                    "type": "string"
+                                  },
+                                  "Created": {
+                                    "type": "string"
+                                  },
+                                  "AuthorId": {
+                                    "type": "integer"
+                                  },
+                                  "EditorId": {
+                                    "type": "integer"
+                                  },
+                                  "OData__UIVersionString": {
+                                    "type": "string"
+                                  },
+                                  "Attachments": {
+                                    "type": "boolean"
+                                  },
+                                  "GUID": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "GtProjectManager",
+                                  "Author",
+                                  "Editor",
+                                  "FileSystemObjectType",
+                                  "Id",
+                                  "ServerRedirectedEmbedUri",
+                                  "ServerRedirectedEmbedUrl",
+                                  "ContentTypeId",
+                                  "Title",
+                                  "OData__ColorTag",
+                                  "ComplianceAssetId",
+                                  "GtProjectFinanceName",
+                                  "GtProjectNumber",
+                                  "GtArchiveReference",
+                                  "GtProjectServiceArea",
+                                  "GtProjectType",
+                                  "GtUNSustDevGoals",
+                                  "GtProjectPhase",
+                                  "GtProjectManagerId",
+                                  "GtProjectManagerStringId",
+                                  "GtProjectOwnerId",
+                                  "GtProjectOwnerStringId",
+                                  "GtProjectSupportId",
+                                  "GtProjectSupportStringId",
+                                  "GtGainsResponsibleId",
+                                  "GtGainsResponsibleStringId",
+                                  "GtStartDate",
+                                  "GtEndDate",
+                                  "GtProjectGoals",
+                                  "GtBudgetTotal",
+                                  "GtCostsTotal",
+                                  "GtProjectForecast",
+                                  "GtBudgetLastReportDate",
+                                  "GtGroupId",
+                                  "GtSiteId",
+                                  "GtSiteUrl",
+                                  "GtLastSyncTime",
+                                  "GtProjectLifecycleStatus",
+                                  "GtProjectPhaseText",
+                                  "GtProjectServiceAreaText",
+                                  "GtProjectTypeText",
+                                  "GtUNSustDevGoalsText",
+                                  "GtProjectAdminRoles",
+                                  "GtProjectTemplate",
+                                  "GtParentProjects",
+                                  "GtChildProjects",
+                                  "GtIsParentProject",
+                                  "GtIsProgram",
+                                  "GtInstalledVersion",
+                                  "GtCurrentVersion",
+                                  "GtBAEndDateOriginal",
+                                  "GtBAProjectPolitical",
+                                  "GtBAProjectPoliticalComment",
+                                  "GtBAProjectPoliticalLink",
+                                  "GtProjectExtensions",
+                                  "GtProjectListContent",
+                                  "ID",
+                                  "Modified",
+                                  "Created",
+                                  "AuthorId",
+                                  "EditorId",
+                                  "OData__UIVersionString",
+                                  "Attachments",
+                                  "GUID"
+                                ]
+                              }
+                            },
+                            "currentUser": {
+                              "type": "object",
+                              "properties": {
+                                "displayName": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                },
+                                "loginName": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "timestamp": {
+                              "type": "string"
+                            },
+                            "actionName": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "actions": {
+                    "Iterate_Projects": {
+                      "foreach": "@triggerBody()?['selectedItems']",
+                      "actions": {
+                        "Get_Project_Manager": {
+                          "type": "Query",
+                          "inputs": {
+                            "from": "@body('Build_Users_array')",
+                            "where": "@equals(items('Iterate_Projects')?['GtProjectManagerId'], item()?['ID'])"
+                          }
+                        },
+                        "Append_to_projectArray": {
+                          "runAfter": {
+                            "Get_Project_Owner": [
+                              "Succeeded"
+                            ]
+                          },
+                          "type": "AppendToArrayVariable",
+                          "inputs": {
+                            "name": "ProjectArray",
+                            "value": {
+                              "Project": "@{item()?['Title']}",
+                              "GtProjectOwnerName": "@{first(body('Get_Project_Owner'))?['Title']}",
+                              "GtProjectOwnerEmail": "@{first(body('Get_Project_Owner'))?['Email']}",
+                              "GtProjectManagerName": "@{first(body('Get_Project_Manager'))?['Title']}",
+                              "GtProjectManagerEmail": "@{first(body('Get_Project_Manager'))?['Email']}",
+                              "ProjectUrl": "@{item()?['GtSiteUrl']}"
+                            }
+                          }
+                        },
+                        "Get_Project_Owner": {
+                          "runAfter": {
+                            "Get_Project_Manager": [
+                              "Succeeded"
+                            ]
+                          },
+                          "type": "Query",
+                          "inputs": {
+                            "from": "@body('Build_Users_array')",
+                            "where": "@equals(items('Iterate_Projects')?['GtProjectOwnerId'], item()?['ID'])"
+                          }
+                        }
+                      },
+                      "runAfter": {
+                        "Build_Users_array": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "Foreach"
+                    },
+                    "Get_Users_(HTTP)": {
+                      "runAfter": {
+                        "Initialize_variables": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "ApiConnection",
+                      "inputs": {
+                        "host": {
+                          "connection": {
+                            "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                          }
+                        },
+                        "method": "post",
+                        "body": {
+                          "method": "GET",
+                          "uri": "/_api/web/siteusers\n"
+                        },
+                        "path": "/datasets/@{encodeURIComponent(encodeURIComponent(triggerBody()?['webUrl']))}/httprequest"
+                      }
+                    },
+                    "Build_Users_array": {
+                      "runAfter": {
+                        "Get_Users_(HTTP)": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "Select",
+                      "inputs": {
+                        "from": "@body('Get_Users_(HTTP)')?['d']?['results']",
+                        "select": {
+                          "ID": "@item()?['Id']",
+                          "Title": "@item()?['Title']",
+                          "Email": "@item()?['Email']"
+                        }
+                      }
+                    },
+                    "Initialize_variables": {
+                      "runAfter": {},
+                      "type": "InitializeVariable",
+                      "inputs": {
+                        "variables": [
+                          {
+                            "name": "projectArray",
+                            "type": "array"
+                          },
+                          {
+                            "name": "approvers",
+                            "type": "array"
+                          }
+                        ]
+                      }
+                    },
+                    "For_the_Project": {
+                      "foreach": "@variables('ProjectArray')",
+                      "actions": {
+                        "Send_approval_email_one_project": {
+                          "runAfter": {
+                            "If_manager_not_empty": [
+                              "Succeeded"
+                            ]
+                          },
+                          "type": "ApiConnectionWebhook",
+                          "inputs": {
+                            "host": {
+                              "connection": {
+                                "name": "@parameters('$connections')['office365']['connectionId']"
+                              }
+                            },
+                            "body": {
+                              "NotificationUrl": "@listCallbackUrl()",
+                              "Message": {
+                                "To": "@join(variables('approvers'), ';')",
+                                "HeaderText": "Tilgangsforespørsel @{items('For_the_Project')?['Project']}.",
+                                "Body": "Hei,\n\n@{triggerBody()?['currentUser']?['displayName']} (@{triggerBody()?['currentUser']?['email']}) har forespurt tilgang i @{items('For_the_Project')?['Project']}.",
+                                "Importance": "Normal",
+                                "UseOnlyHTMLMessage": false,
+                                "HideHTMLMessage": true,
+                                "ShowHTMLConfirmationDialog": false,
+                                "Subject": "Tilgangsforespørsel @{items('For_the_Project')?['Project']}.",
+                                "Options": "Godkjenn,Avslå"
+                              }
+                            },
+                            "path": "/approvalmail/$subscriptions"
+                          }
+                        },
+                        "If_owner_not_empty": {
+                          "actions": {
+                            "Append_Owner_to_approvers": {
+                              "type": "AppendToArrayVariable",
+                              "inputs": {
+                                "name": "approvers",
+                                "value": "@items('For_the_Project')?['GtProjectOwnerEmail']"
+                              }
+                            }
+                          },
+                          "else": {
+                            "actions": {}
+                          },
+                          "expression": {
+                            "and": [
+                              {
+                                "equals": [
+                                  "@not(empty(items('For_the_Project')?['GtProjectOwnerEmail']))",
+                                  "@true"
+                                ]
+                              }
+                            ]
+                          },
+                          "type": "If"
+                        },
+                        "If_manager_not_empty": {
+                          "actions": {
+                            "Append_to_Manager_approvers": {
+                              "type": "AppendToArrayVariable",
+                              "inputs": {
+                                "name": "approvers",
+                                "value": "@items('For_the_Project')?['GtProjectManagerEmail']"
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "If_owner_not_empty": [
+                              "Succeeded"
+                            ]
+                          },
+                          "else": {
+                            "actions": {}
+                          },
+                          "expression": {
+                            "and": [
+                              {
+                                "equals": [
+                                  "@not(empty(items('For_the_Project')?['GtProjectManagerEmail']))",
+                                  "@true"
+                                ]
+                              }
+                            ]
+                          },
+                          "type": "If"
+                        },
+                        "If_Approved": {
+                          "actions": {
+                            "Get_Visitor_group": {
+                              "type": "ApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connection": {
+                                    "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                  }
+                                },
+                                "method": "post",
+                                "body": {
+                                  "method": "GET",
+                                  "uri": "_api/web?$select=AssociatedVisitorGroup/Id&$expand=AssociatedVisitorGroup"
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(items('For_the_Project')?['ProjectUrl']))}/httprequest"
+                              }
+                            },
+                            "Add_user_to_visitor_group": {
+                              "runAfter": {
+                                "Ensure_user": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "type": "ApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connection": {
+                                    "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                  }
+                                },
+                                "method": "post",
+                                "body": {
+                                  "method": "POST",
+                                  "uri": "_api/web/sitegroups(@{body('Get_Visitor_group')?['d']?['AssociatedVisitorGroup']?['Id']})/users",
+                                  "headers": {
+                                    "Accept": "application/json;odata=verbose",
+                                    "Content-Type": "application/json;odata=verbose"
+                                  },
+                                  "body": "{\n  \"__metadata\": { \"type\": \"SP.User\" },\n  \"LoginName\": \"@{body('Ensure_user')?['d']?['LoginName']}\"\n}"
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(items('For_the_Project')?['ProjectUrl']))}/httprequest"
+                              }
+                            },
+                            "Ensure_user": {
+                              "runAfter": {
+                                "Get_Visitor_group": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "type": "ApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connection": {
+                                    "name": "@parameters('$connections')['sharepointonline']['connectionId']"
+                                  }
+                                },
+                                "method": "post",
+                                "body": {
+                                  "method": "POST",
+                                  "uri": "_api/web/ensureuser",
+                                  "headers": {
+                                    "Accept": "application/json;odata=verbose",
+                                    "Content-Type": "application/json;odata=verbose"
+                                  },
+                                  "body": "{ \"logonName\": \"@{triggerBody()?['currentUser']?['loginName']}\" }"
+                                },
+                                "path": "/datasets/@{encodeURIComponent(encodeURIComponent(items('For_the_Project')?['ProjectUrl']))}/httprequest"
+                              }
+                            },
+                            "Send_approved_email": {
+                              "runAfter": {
+                                "Add_user_to_visitor_group": [
+                                  "Succeeded"
+                                ]
+                              },
+                              "type": "ApiConnection",
+                              "inputs": {
+                                "host": {
+                                  "connection": {
+                                    "name": "@parameters('$connections')['office365']['connectionId']"
+                                  }
+                                },
+                                "method": "post",
+                                "body": {
+                                  "To": "@triggerBody()?['currentUser']?['email']",
+                                  "Subject": "Tilgangsforespørsel til @{items('For_the_Project')?['Project']} godkjent",
+                                  "Body": "<p class=\"editor-paragraph\">Hei @{triggerBody()?['currentUser']?['displayName']},</p><br><p class=\"editor-paragraph\">Din tilgangsforespørsel til @{items('For_the_Project')?['Project']} er godkjent.</p><br><p class=\"editor-paragraph\"><a href=\"@{items('For_the_Project')?['ProjectUrl']}\" class=\"editor-link\">Trykk her for å gå til prosjektet</a></p>",
+                                  "Importance": "Normal"
+                                },
+                                "path": "/v2/Mail"
+                              }
+                            }
+                          },
+                          "runAfter": {
+                            "Send_approval_email_one_project": [
+                              "Succeeded"
+                            ]
+                          },
+                          "else": {
+                            "actions": {
+                              "Send_rejected_email": {
+                                "type": "ApiConnection",
+                                "inputs": {
+                                  "host": {
+                                    "connection": {
+                                      "name": "@parameters('$connections')['office365']['connectionId']"
+                                    }
+                                  },
+                                  "method": "post",
+                                  "body": {
+                                    "To": "@triggerBody()?['currentUser']?['email']",
+                                    "Subject": "Tilgangsforespørsel til @{items('For_the_Project')?['Project']} avslått",
+                                    "Body": "<p class=\"editor-paragraph\">Hei @{triggerBody()?['currentUser']?['displayName']},</p><br><p class=\"editor-paragraph\">Din tilgangsforespørsel til  @{items('For_the_Project')?['Project']} er avslått.</p>",
+                                    "Importance": "Normal"
+                                  },
+                                  "path": "/v2/Mail"
+                                }
+                              }
+                            }
+                          },
+                          "expression": {
+                            "and": [
+                              {
+                                "equals": [
+                                  "@body('Send_approval_email_one_project')?['SelectedOption']",
+                                  "Godkjenn"
+                                ]
+                              }
+                            ]
+                          },
+                          "type": "If"
+                        }
+                      },
+                      "runAfter": {
+                        "Iterate_Projects": [
+                          "Succeeded"
+                        ]
+                      },
+                      "type": "Foreach"
+                    }
+                  },
+                  "outputs": {}
+                },
+                "parameters": {
+                  "$connections": {
+                    "value": {
+                      "sharepointonline": {
+                        "id": "[format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/sharepointonline', parameters('subscriptionId'), parameters('location'))]",
+                        "connectionId": "[parameters('sharePointConnectionId')]",
+                        "connectionName": "sharepointonline",
+                        "connectionProperties": {}
+                      },
+                      "office365": {
+                        "id": "[format('/subscriptions/{0}/providers/Microsoft.Web/locations/{1}/managedApis/office365', parameters('subscriptionId'), parameters('location'))]",
+                        "connectionId": "[parameters('office365ConnectionId')]",
+                        "connectionName": "office365",
+                        "connectionProperties": {}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "logicAppId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Logic/workflows', parameters('logicAppName'))]"
+            },
+            "logicAppName": {
+              "type": "string",
+              "value": "[parameters('logicAppName')]"
+            },
+            "triggerUrl": {
+              "type": "string",
+              "value": "[listCallbackURL(resourceId('Microsoft.Logic/workflows/triggers', parameters('logicAppName'), 'When_an_HTTP_request_is_received'), '2017-07-01').value]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'office365-connection')]",
+        "[resourceId('Microsoft.Resources/deployments', 'sharepoint-connection')]"
+      ]
     }
   ],
   "outputs": {
@@ -2065,6 +2947,10 @@
       "type": "string",
       "value": "[if(parameters('deployAutomationConnector'), reference(resourceId('Microsoft.Resources/deployments', 'automation-connection'), '2025-04-01').outputs.connectionId.value, '')]"
     },
+    "office365ConnectionId": {
+      "type": "string",
+      "value": "[if(parameters('deployOffice365Connector'), reference(resourceId('Microsoft.Resources/deployments', 'office365-connection'), '2025-04-01').outputs.connectionId.value, '')]"
+    },
     "changeArchiveStateLogicAppId": {
       "type": "string",
       "value": "[if(and(contains(parameters('logicAppsToDeploy'), 'ChangeArchiveState'), parameters('deployAutomationConnector')), reference(resourceId('Microsoft.Resources/deployments', 'changeArchiveState-logicapp'), '2025-04-01').outputs.logicAppId.value, '')]"
@@ -2085,6 +2971,14 @@
       "type": "string",
       "value": "[if(and(and(contains(parameters('logicAppsToDeploy'), 'ProjectInfoChanged'), parameters('deploySharePointConnector')), parameters('deployAutomationConnector')), reference(resourceId('Microsoft.Resources/deployments', 'projectInfoChanged-logicapp'), '2025-04-01').outputs.logicAppId.value, '')]"
     },
+    "requestProjectAccessLogicAppId": {
+      "type": "string",
+      "value": "[if(and(and(contains(parameters('logicAppsToDeploy'), 'RequestProjectAccess'), parameters('deploySharePointConnector')), parameters('deployOffice365Connector')), reference(resourceId('Microsoft.Resources/deployments', 'requestProjectAccess-logicapp'), '2025-04-01').outputs.logicAppId.value, '')]"
+    },
+    "requestProjectAccessTriggerUrl": {
+      "type": "string",
+      "value": "[if(and(and(contains(parameters('logicAppsToDeploy'), 'RequestProjectAccess'), parameters('deploySharePointConnector')), parameters('deployOffice365Connector')), reference(resourceId('Microsoft.Resources/deployments', 'requestProjectAccess-logicapp'), '2025-04-01').outputs.triggerUrl.value, '')]"
+    },
     "deploymentSummary": {
       "type": "object",
       "value": {
@@ -2092,7 +2986,8 @@
         "runbooksDeployed": "[parameters('runbooksToDeploy')]",
         "logicAppsDeployed": "[parameters('logicAppsToDeploy')]",
         "sharePointConnectorDeployed": "[parameters('deploySharePointConnector')]",
-        "automationConnectorDeployed": "[parameters('deployAutomationConnector')]"
+        "automationConnectorDeployed": "[parameters('deployAutomationConnector')]",
+        "office365ConnectorDeployed": "[parameters('deployOffice365Connector')]"
       }
     }
   }

@@ -19,6 +19,9 @@ param sharePointConnectionDisplayName string
 @description('Display name for the Azure Automation connection')
 param automationConnectionDisplayName string = 'Project Portal Automation'
 
+@description('Display name for the Office 365 connection (usually an email address)')
+param office365ConnectionDisplayName string
+
 @description('SharePoint hub site URL (e.g., https://contoso.sharepoint.com/sites/projectportal)')
 param hubSiteUrl string
 
@@ -82,6 +85,7 @@ param logicAppsToDeploy array = [
   'ChangeArchiveState'
   'PhaseChanged'
   'ProjectInfoChanged'
+  'RequestProjectAccess'
 ]
 
 @description('Deploy SharePoint Online connector')
@@ -89,6 +93,9 @@ param deploySharePointConnector bool = true
 
 @description('Deploy Azure Automation connector')
 param deployAutomationConnector bool = true
+
+@description('Deploy Office 365 connector')
+param deployOffice365Connector bool = true
 
 @description('Resource tags')
 param tags object = {
@@ -104,6 +111,7 @@ var automationConnectionName = 'azureautomation'
 var changeArchiveStateLogicAppName = '${projectPrefix}-${environment}-ChangeArchiveState'
 var phaseChangedLogicAppName = '${projectPrefix}-${environment}-PhaseChanged'
 var projectInfoChangedLogicAppName = '${projectPrefix}-${environment}-ProjectInfoChanged'
+var requestProjectAccessLogicAppName = '${projectPrefix}-${environment}-RequestProjectAccess'
 
 // Deploy Azure Automation Account (always deployed as foundation)
 module automationAccount 'bicep/automation/AutomationAccount.bicep' = {
@@ -196,6 +204,16 @@ module automationConnection 'bicep/connectors/Automation.bicep' = if (deployAuto
   }
 }
 
+module office365Connection 'bicep/connectors/Office365.bicep' = if (deployOffice365Connector) {
+  name: 'office365-connection'
+  params: {
+    office365ConnectionName: 'office365'
+    location: location
+    displayName: office365ConnectionDisplayName
+    tags: tags
+  }
+}
+
 // Deploy Logic Apps (conditionally based on logicAppsToDeploy parameter)
 module changeArchiveStateLogicApp 'bicep/logic-apps/ChangeArchiveState.bicep' = if (contains(logicAppsToDeploy, 'ChangeArchiveState') && deployAutomationConnector) {
   name: 'changeArchiveState-logicapp'
@@ -244,6 +262,17 @@ module projectInfoChangedLogicApp 'bicep/logic-apps/ProjectInfoChanged.bicep' = 
   ]
 }
 
+module requestProjectAccessLogicApp 'bicep/logic-apps/RequestProjectAccess.bicep' = if (contains(logicAppsToDeploy, 'RequestProjectAccess') && deploySharePointConnector && deployOffice365Connector) {
+  name: 'requestProjectAccess-logicapp'
+  params: {
+    logicAppName: requestProjectAccessLogicAppName
+    location: location
+    sharePointConnectionId: sharePointConnection!.outputs.connectionId
+    office365ConnectionId: office365Connection!.outputs.connectionId
+    tags: tags
+  }
+}
+
 // Outputs (conditional based on deployments)
 output automationAccountName string = automationAccount.outputs.automationAccountName
 output automationAccountId string = automationAccount.outputs.automationAccountId
@@ -251,6 +280,7 @@ output managedIdentityPrincipalId string = automationAccount.outputs.managedIden
 
 output sharePointConnectionId string = deploySharePointConnector ? sharePointConnection!.outputs.connectionId : ''
 output automationConnectionId string = deployAutomationConnector ? automationConnection!.outputs.connectionId : ''
+output office365ConnectionId string = deployOffice365Connector ? office365Connection!.outputs.connectionId : ''
 
 output changeArchiveStateLogicAppId string = (contains(logicAppsToDeploy, 'ChangeArchiveState') && deployAutomationConnector) ? changeArchiveStateLogicApp!.outputs.logicAppId : ''
 output changeArchiveStateTriggerUrl string = (contains(logicAppsToDeploy, 'ChangeArchiveState') && deployAutomationConnector) ? changeArchiveStateLogicApp!.outputs.triggerUrl : ''
@@ -260,6 +290,9 @@ output phaseChangedTriggerUrl string = (contains(logicAppsToDeploy, 'PhaseChange
 
 output projectInfoChangedLogicAppId string = (contains(logicAppsToDeploy, 'ProjectInfoChanged') && deploySharePointConnector && deployAutomationConnector) ? projectInfoChangedLogicApp!.outputs.logicAppId : ''
 
+output requestProjectAccessLogicAppId string = (contains(logicAppsToDeploy, 'RequestProjectAccess') && deploySharePointConnector && deployOffice365Connector) ? requestProjectAccessLogicApp!.outputs.logicAppId : ''
+output requestProjectAccessTriggerUrl string = (contains(logicAppsToDeploy, 'RequestProjectAccess') && deploySharePointConnector && deployOffice365Connector) ? requestProjectAccessLogicApp!.outputs.triggerUrl : ''
+
 // Summary output showing what was deployed
 output deploymentSummary object = {
   automationAccount: automationAccountName
@@ -267,4 +300,5 @@ output deploymentSummary object = {
   logicAppsDeployed: logicAppsToDeploy
   sharePointConnectorDeployed: deploySharePointConnector
   automationConnectorDeployed: deployAutomationConnector
+  office365ConnectorDeployed: deployOffice365Connector
 }
