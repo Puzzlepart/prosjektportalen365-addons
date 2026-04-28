@@ -72,7 +72,7 @@ param(
     
     [Parameter(ParameterSetName = 'Interactive')]
     [Parameter(ParameterSetName = 'Preset')]
-    [ValidateSet('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged')]
+    [ValidateSet('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess')]
     [string[]]$LogicAppsToDeploy,
     
     [Parameter(ParameterSetName = 'Interactive')]
@@ -590,7 +590,7 @@ function Get-PresetConfiguration {
         }
         'Full' = @{
             runbooksToDeploy = @('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager')
-            logicAppsToDeploy = @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged')
+            logicAppsToDeploy = @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess')
             deploySharePointConnector = $true
             deployAutomationConnector = $true
             createManagedIdentity = $true
@@ -614,7 +614,7 @@ function Get-PresetConfiguration {
         }
         'UpdateOnly' = @{
             runbooksToDeploy = @('UpdateProjectDates', 'UpdateProjectManager')
-            logicAppsToDeploy = @('PhaseChanged', 'ProjectInfoChanged')
+            logicAppsToDeploy = @('PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess')
             deploySharePointConnector = $true
             deployAutomationConnector = $true
             createManagedIdentity = $true
@@ -622,7 +622,7 @@ function Get-PresetConfiguration {
         }
         'LogicAppsOnly' = @{
             runbooksToDeploy = @()
-            logicAppsToDeploy = @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged')
+            logicAppsToDeploy = @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess')
             deploySharePointConnector = $true
             deployAutomationConnector = $true
             createManagedIdentity = $true
@@ -1033,7 +1033,7 @@ function Get-DeploymentConfiguration {
         Write-DeploymentLog "Using interactive parameter configuration"
         
         $runbooks = if ($RunbooksToDeploy) { $RunbooksToDeploy } else { @('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager') }
-        $logicApps = if ($LogicAppsToDeploy) { $LogicAppsToDeploy } else { @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged') }
+        $logicApps = if ($LogicAppsToDeploy) { $LogicAppsToDeploy } else { @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess') }
         
         $config = @{
             subscriptionId = $SubscriptionId

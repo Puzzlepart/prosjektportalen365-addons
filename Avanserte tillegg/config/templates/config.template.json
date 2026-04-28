@@ -18,7 +18,8 @@
       "logicApps": [
         "ChangeArchiveState",
         "PhaseChanged",
-        "ProjectInfoChanged"
+        "ProjectInfoChanged",
+        "RequestProjectAccess"
       ],
       "connectors": {
         "SharePointOnline": true,
