@@ -23,9 +23,13 @@
       ],
       "connectors": {
         "SharePointOnline": true,
-        "Automation": true
+        "Automation": true,
+        "Office365": true
       }
     },
     "Description": "Components to deploy. Remove items from arrays or set connector flags to false to skip deployment."
   }
 }
+
+
+

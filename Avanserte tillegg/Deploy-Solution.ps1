@@ -62,18 +62,48 @@ param(
     [string]$Environment = 'prod',
     
     # ============================================================================
-    # SELECTIVE DEPLOYMENT PARAMETERS
+    # COMPONENT SWITCHES — Runbooks
     # ============================================================================
     
     [Parameter(ParameterSetName = 'Interactive')]
     [Parameter(ParameterSetName = 'Preset')]
-    [ValidateSet('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager')]
-    [string[]]$RunbooksToDeploy,
+    [switch]$ArchiveSite,
     
     [Parameter(ParameterSetName = 'Interactive')]
     [Parameter(ParameterSetName = 'Preset')]
-    [ValidateSet('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess')]
-    [string[]]$LogicAppsToDeploy,
+    [switch]$GetSiteInformation,
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$UpdateProjectDates,
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$UpdateProjectManager,
+    
+    # ============================================================================
+    # COMPONENT SWITCHES — Logic Apps
+    # ============================================================================
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$ChangeArchiveState,
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$PhaseChanged,
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$ProjectInfoChanged,
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$RequestProjectAccess,
+    
+    # ============================================================================
+    # CONNECTOR SKIP SWITCHES
+    # ============================================================================
     
     [Parameter(ParameterSetName = 'Interactive')]
     [Parameter(ParameterSetName = 'Preset')]
@@ -82,6 +112,10 @@ param(
     [Parameter(ParameterSetName = 'Interactive')]
     [Parameter(ParameterSetName = 'Preset')]
     [switch]$SkipAutomationConnector,
+    
+    [Parameter(ParameterSetName = 'Interactive')]
+    [Parameter(ParameterSetName = 'Preset')]
+    [switch]$SkipOffice365Connector,
     
     # ============================================================================
     # SHAREPOINT CONFIGURATION
@@ -680,11 +714,11 @@ function Show-DeploymentExamples {
 🔧 CUSTOM SELECTIVE DEPLOYMENT:
    ────────────────────────────────────────────────────────────────────────────────────
 
-   # Deploy only specific runbooks
-   .\.\Deploy-Solution.ps1 -SubscriptionId "guid" -SharePointTenant "contoso.sharepoint.com" -HubSiteUrl "https://contoso.sharepoint.com/sites/projectportal" -SharePointConnectionEmail "admin@contoso.com" -RunbooksToDeploy "ArchiveSite","UpdateProjectManager"
+   # Deploy only the ArchiveSite runbook and ChangeArchiveState logic app
+   .\Deploy-Solution.ps1 -SubscriptionId "guid" -SharePointTenant "contoso.sharepoint.com" -HubSiteUrl "https://contoso.sharepoint.com/sites/projectportal" -SharePointConnectionEmail "admin@contoso.com" -ArchiveSite -ChangeArchiveState
 
-   # Deploy specific logic apps without SharePoint connector
-   .\Deploy-Solution.ps1 -SubscriptionId "guid" -SharePointTenant "contoso.sharepoint.com" -HubSiteUrl "https://contoso.sharepoint.com/sites/projectportal" -SharePointConnectionEmail "admin@contoso.com" -LogicAppsToDeploy "PhaseChanged" -SkipSharePointConnector
+   # Deploy PhaseChanged logic app without SharePoint connector
+   .\Deploy-Solution.ps1 -SubscriptionId "guid" -SharePointTenant "contoso.sharepoint.com" -HubSiteUrl "https://contoso.sharepoint.com/sites/projectportal" -SharePointConnectionEmail "admin@contoso.com" -PhaseChanged -SkipSharePointConnector
 
 ⚙️  AVAILABLE PRESETS:
    ────────────────────────────────────────────────────────────────────────────────────
@@ -897,6 +931,7 @@ function Read-HierarchicalConfig {
             logicAppsToDeploy         = $logicAppNames
             deploySharePointConnector = $deploySharePointConnector
             deployAutomationConnector = $deployAutomationConnector
+            deployOffice365Connector  = if ($components.connectors.PSObject.Properties.Name -contains 'Office365') { $components.connectors.Office365 -eq $true } else { $true }
         }
         # Merged from runbooks.json / logic-apps.json (selected components only)
         completionPhaseName  = $componentSettings['completionPhaseName']
@@ -909,6 +944,50 @@ function Read-HierarchicalConfig {
     }
     
     return $config
+}
+
+# ============================================================================
+# RESOLVE COMPONENT SWITCHES TO ARRAYS
+# ============================================================================
+
+function Resolve-ComponentSwitches {
+    <#
+    .SYNOPSIS
+        Resolves individual component switch parameters into runbook/logicApp arrays.
+        When no component switches are specified, all components are deployed.
+    #>
+
+    $allRunbooks = @('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager')
+    $allLogicApps = @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess')
+
+    $anyRunbookSwitch = $ArchiveSite.IsPresent -or $GetSiteInformation.IsPresent -or $UpdateProjectDates.IsPresent -or $UpdateProjectManager.IsPresent
+    $anyLogicAppSwitch = $ChangeArchiveState.IsPresent -or $PhaseChanged.IsPresent -or $ProjectInfoChanged.IsPresent -or $RequestProjectAccess.IsPresent
+    $anySwitchUsed = $anyRunbookSwitch -or $anyLogicAppSwitch
+
+    # If no switches are used, deploy everything
+    if (-not $anySwitchUsed) {
+        return @{
+            Runbooks  = $allRunbooks
+            LogicApps = $allLogicApps
+        }
+    }
+
+    $runbooks = @()
+    if ($ArchiveSite.IsPresent)       { $runbooks += 'ArchiveSite' }
+    if ($GetSiteInformation.IsPresent) { $runbooks += 'GetSiteInformation' }
+    if ($UpdateProjectDates.IsPresent) { $runbooks += 'UpdateProjectDates' }
+    if ($UpdateProjectManager.IsPresent) { $runbooks += 'UpdateProjectManager' }
+
+    $logicApps = @()
+    if ($ChangeArchiveState.IsPresent)  { $logicApps += 'ChangeArchiveState' }
+    if ($PhaseChanged.IsPresent)        { $logicApps += 'PhaseChanged' }
+    if ($ProjectInfoChanged.IsPresent)  { $logicApps += 'ProjectInfoChanged' }
+    if ($RequestProjectAccess.IsPresent) { $logicApps += 'RequestProjectAccess' }
+
+    return @{
+        Runbooks  = $runbooks
+        LogicApps = $logicApps
+    }
 }
 
 function Get-DeploymentConfiguration {
@@ -970,6 +1049,12 @@ function Get-DeploymentConfiguration {
         Write-DeploymentLog "Using preset configuration: $Preset"
         $presetConfig = Get-PresetConfiguration -PresetName $Preset
         
+        # Component switches override the preset when any switch is specified
+        $resolved = Resolve-ComponentSwitches
+        $anySwitchUsed = $ArchiveSite.IsPresent -or $GetSiteInformation.IsPresent -or $UpdateProjectDates.IsPresent -or $UpdateProjectManager.IsPresent -or $ChangeArchiveState.IsPresent -or $PhaseChanged.IsPresent -or $ProjectInfoChanged.IsPresent -or $RequestProjectAccess.IsPresent
+        $runbooks  = if ($anySwitchUsed) { $resolved.Runbooks  } else { $presetConfig.runbooksToDeploy }
+        $logicApps = if ($anySwitchUsed) { $resolved.LogicApps } else { $presetConfig.logicAppsToDeploy }
+        
         $config = @{
             subscriptionId = $SubscriptionId
             resourceGroupName = $ResourceGroupName
@@ -980,10 +1065,11 @@ function Get-DeploymentConfiguration {
             deploymentSettings = @{
                 projectPrefix = $ProjectPrefix
                 environment = $Environment
-                runbooksToDeploy = $presetConfig.runbooksToDeploy
-                logicAppsToDeploy = $presetConfig.logicAppsToDeploy
-                deploySharePointConnector = $presetConfig.deploySharePointConnector
-                deployAutomationConnector = $presetConfig.deployAutomationConnector
+                runbooksToDeploy = $runbooks
+                logicAppsToDeploy = $logicApps
+                deploySharePointConnector = if ($anySwitchUsed) { -not $SkipSharePointConnector.IsPresent } else { $presetConfig.deploySharePointConnector }
+                deployAutomationConnector = if ($anySwitchUsed) { -not $SkipAutomationConnector.IsPresent } else { $presetConfig.deployAutomationConnector }
+                deployOffice365Connector = -not $SkipOffice365Connector.IsPresent
             }
         }
         
@@ -999,7 +1085,7 @@ function Get-DeploymentConfiguration {
             $logicAppsConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'logic-apps.json')
             $autoConfig = Read-ConfigFile -Path (Join-Path $defaultConfigDir 'automation.json')
             
-            foreach ($runbook in @($presetConfig.runbooksToDeploy)) {
+            foreach ($runbook in @($runbooks)) {
                 if ($runbooksConfig -and $runbooksConfig.PSObject.Properties.Name -contains $runbook) {
                     $rbSettings = $runbooksConfig.$runbook
                     if ($rbSettings -is [PSCustomObject]) {
@@ -1009,7 +1095,7 @@ function Get-DeploymentConfiguration {
                     }
                 }
             }
-            foreach ($logicApp in @($presetConfig.logicAppsToDeploy)) {
+            foreach ($logicApp in @($logicApps)) {
                 if ($logicAppsConfig -and $logicAppsConfig.PSObject.Properties.Name -contains $logicApp) {
                     $laSettings = $logicAppsConfig.$logicApp
                     if ($laSettings -is [PSCustomObject]) {
@@ -1032,8 +1118,9 @@ function Get-DeploymentConfiguration {
         # Interactive parameter set
         Write-DeploymentLog "Using interactive parameter configuration"
         
-        $runbooks = if ($RunbooksToDeploy) { $RunbooksToDeploy } else { @('ArchiveSite', 'GetSiteInformation', 'UpdateProjectDates', 'UpdateProjectManager') }
-        $logicApps = if ($LogicAppsToDeploy) { $LogicAppsToDeploy } else { @('ChangeArchiveState', 'PhaseChanged', 'ProjectInfoChanged', 'RequestProjectAccess') }
+        $resolved = Resolve-ComponentSwitches
+        $runbooks = $resolved.Runbooks
+        $logicApps = $resolved.LogicApps
         
         $config = @{
             subscriptionId = $SubscriptionId
@@ -1049,6 +1136,7 @@ function Get-DeploymentConfiguration {
                 logicAppsToDeploy = $logicApps
                 deploySharePointConnector = -not $SkipSharePointConnector.IsPresent
                 deployAutomationConnector = -not $SkipAutomationConnector.IsPresent
+                deployOffice365Connector = -not $SkipOffice365Connector.IsPresent
             }
             completionPhaseName = $FinishedPhaseText
         }
@@ -1111,6 +1199,7 @@ Write-DeploymentLog "Runbooks to deploy: $($deployConfig.deploymentSettings.runb
 Write-DeploymentLog "Logic Apps to deploy: $($deployConfig.deploymentSettings.logicAppsToDeploy -join ', ')" -Level Info
 Write-DeploymentLog "SharePoint Connector: $($deployConfig.deploymentSettings.deploySharePointConnector)" -Level Info
 Write-DeploymentLog "Automation Connector: $($deployConfig.deploymentSettings.deployAutomationConnector)" -Level Info
+Write-DeploymentLog "Office 365 Connector: $($deployConfig.deploymentSettings.deployOffice365Connector)" -Level Info
 
 if ($WhatIf) {
     Write-DeploymentLog "WhatIf mode - showing configuration only, no deployment will occur" -Level Warning
@@ -1279,11 +1368,13 @@ try {
         environment = $deployConfig.deploymentSettings.environment
         location = $deployConfig.location
         sharePointConnectionDisplayName = $deployConfig.serviceAccountEmail
+        office365ConnectionDisplayName = $deployConfig.serviceAccountEmail
         hubSiteUrl = $deployConfig.hubSiteUrl
         runbooksToDeploy = $deployConfig.deploymentSettings.runbooksToDeploy
         logicAppsToDeploy = $deployConfig.deploymentSettings.logicAppsToDeploy
         deploySharePointConnector = $deployConfig.deploymentSettings.deploySharePointConnector
         deployAutomationConnector = $deployConfig.deploymentSettings.deployAutomationConnector
+        deployOffice365Connector = $deployConfig.deploymentSettings.deployOffice365Connector
     }
     
     # Add optional parameters from area/component configs (only if set)
@@ -1368,7 +1459,14 @@ try {
     }
 
     Remove-Item -Path $deployStderrFile -Force -ErrorAction SilentlyContinue
-    $deployment = $deploymentJson | ConvertFrom-Json
+
+    # az CLI may emit non-JSON warning lines on stdout; keep only the JSON object
+    $rawOutput = if ($deploymentJson -is [array]) { $deploymentJson -join "`n" } else { "$deploymentJson" }
+    $jsonStart = $rawOutput.IndexOf('{')
+    if ($jsonStart -gt 0) {
+        $rawOutput = $rawOutput.Substring($jsonStart)
+    }
+    $deployment = $rawOutput | ConvertFrom-Json
 
     if ($deployment -and $deployment.properties.provisioningState -eq 'Succeeded') {
         Write-DeploymentLog "Bicep deployment completed successfully!" -Level Success
@@ -1408,13 +1506,24 @@ try {
             Write-DeploymentLog "Skipping managed identity setup as requested" -Level Info
         }
 
-        # Remind user to authorize SharePoint API connection manually
+        # Remind user to authorize API connections manually
         if ($deployConfig.deploymentSettings.deploySharePointConnector) {
             Write-Host ""
             Write-DeploymentLog "MANUAL STEP REQUIRED: Authorize the SharePoint API connection" -Level Warning
             Write-DeploymentLog "  1. Go to the Azure Portal" -Level Warning
             Write-DeploymentLog "  2. Navigate to Resource Group '$($deployConfig.resourceGroupName)'" -Level Warning
             Write-DeploymentLog "  3. Open the 'sharepointonline' API Connection resource" -Level Warning
+            Write-DeploymentLog "  4. Click 'Edit API Connection' in the left menu" -Level Warning
+            Write-DeploymentLog "  5. Click 'Authorize' and sign in" -Level Warning
+            Write-DeploymentLog "  6. Click 'Save'" -Level Warning
+            Write-Host ""
+        }
+
+        if ($deployConfig.deploymentSettings.deployOffice365Connector) {
+            Write-DeploymentLog "MANUAL STEP REQUIRED: Authorize the Office 365 API connection" -Level Warning
+            Write-DeploymentLog "  1. Go to the Azure Portal" -Level Warning
+            Write-DeploymentLog "  2. Navigate to Resource Group '$($deployConfig.resourceGroupName)'" -Level Warning
+            Write-DeploymentLog "  3. Open the 'office365' API Connection resource" -Level Warning
             Write-DeploymentLog "  4. Click 'Edit API Connection' in the left menu" -Level Warning
             Write-DeploymentLog "  5. Click 'Authorize' and sign in" -Level Warning
             Write-DeploymentLog "  6. Click 'Save'" -Level Warning

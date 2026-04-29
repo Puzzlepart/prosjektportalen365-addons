@@ -130,8 +130,8 @@ module automationAccount 'bicep/automation/AutomationAccount.bicep' = {
   }
 }
 
-// Deploy runbook scripts (conditionally based on runbooksToDeploy parameter)
-module archiveSiteRunbook 'bicep/automation/runbooks/ArchiveSite.bicep' = if (contains(runbooksToDeploy, 'ArchiveSite')) {
+// Deploy runbook scripts (conditionally based on runbooksToDeploy parameter OR if required by logic apps)
+module archiveSiteRunbook 'bicep/automation/runbooks/ArchiveSite.bicep' = if (contains(runbooksToDeploy, 'ArchiveSite') || contains(logicAppsToDeploy, 'ChangeArchiveState') || contains(logicAppsToDeploy, 'PhaseChanged')) {
   name: 'archiveSite-runbook'
   params: {
     automationAccountName: automationAccountName
@@ -144,7 +144,7 @@ module archiveSiteRunbook 'bicep/automation/runbooks/ArchiveSite.bicep' = if (co
   ]
 }
 
-module getSiteInformationRunbook 'bicep/automation/runbooks/GetSiteInformation.bicep' = if (contains(runbooksToDeploy, 'GetSiteInformation')) {
+module getSiteInformationRunbook 'bicep/automation/runbooks/GetSiteInformation.bicep' = if (contains(runbooksToDeploy, 'GetSiteInformation') || contains(logicAppsToDeploy, 'ChangeArchiveState') || contains(logicAppsToDeploy, 'PhaseChanged')) {
   name: 'getSiteInfo-runbook'
   params: {
     automationAccountName: automationAccountName
@@ -157,7 +157,7 @@ module getSiteInformationRunbook 'bicep/automation/runbooks/GetSiteInformation.b
   ]
 }
 
-module updateProjectDatesRunbook 'bicep/automation/runbooks/UpdateProjectDates.bicep' = if (contains(runbooksToDeploy, 'UpdateProjectDates')) {
+module updateProjectDatesRunbook 'bicep/automation/runbooks/UpdateProjectDates.bicep' = if (contains(runbooksToDeploy, 'UpdateProjectDates') || contains(logicAppsToDeploy, 'ProjectInfoChanged')) {
   name: 'updateDates-runbook'
   params: {
     automationAccountName: automationAccountName
@@ -170,7 +170,7 @@ module updateProjectDatesRunbook 'bicep/automation/runbooks/UpdateProjectDates.b
   ]
 }
 
-module updateProjectManagerRunbook 'bicep/automation/runbooks/UpdateProjectManager.bicep' = if (contains(runbooksToDeploy, 'UpdateProjectManager')) {
+module updateProjectManagerRunbook 'bicep/automation/runbooks/UpdateProjectManager.bicep' = if (contains(runbooksToDeploy, 'UpdateProjectManager') || contains(logicAppsToDeploy, 'PhaseChanged') || contains(logicAppsToDeploy, 'ProjectInfoChanged')) {
   name: 'updateManager-runbook'
   params: {
     automationAccountName: automationAccountName
@@ -226,6 +226,8 @@ module changeArchiveStateLogicApp 'bicep/logic-apps/ChangeArchiveState.bicep' = 
   }
   dependsOn: [
     automationAccount
+    archiveSiteRunbook
+    getSiteInformationRunbook
   ]
 }
 
@@ -241,6 +243,9 @@ module phaseChangedLogicApp 'bicep/logic-apps/PhaseChanged.bicep' = if (contains
   }
   dependsOn: [
     automationAccount
+    getSiteInformationRunbook
+    archiveSiteRunbook
+    updateProjectManagerRunbook
   ]
 }
 
@@ -259,6 +264,8 @@ module projectInfoChangedLogicApp 'bicep/logic-apps/ProjectInfoChanged.bicep' = 
   }
   dependsOn: [
     automationAccount
+    updateProjectManagerRunbook
+    updateProjectDatesRunbook
   ]
 }
 
