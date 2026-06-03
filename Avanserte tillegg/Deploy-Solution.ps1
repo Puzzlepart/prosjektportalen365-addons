@@ -446,7 +446,7 @@ function Set-AzureRoleAssignments {
 
         try {
             # Check if role assignment already exists
-            $existingAssignment = az role assignment list --assignee $PrincipalId --role $role.RoleDefinitionName --scope $role.Scope 2>$null | ConvertFrom-Json
+            $existingAssignment = az role assignment list --assignee $PrincipalId --role $role.RoleDefinitionName --scope $role.Scope 2>$null | ConvertFrom-Json -AsHashtable
 
             if ($existingAssignment -and $existingAssignment.Count -gt 0) {
                 Write-DeploymentLog "Role assignment already exists: $($role.RoleDefinitionName)" -Level Warning
@@ -1539,7 +1539,7 @@ try {
 
             foreach ($laName in $logicAppNames) {
                 try {
-                    $la = az resource show --resource-group $deployConfig.resourceGroupName --resource-type 'Microsoft.Logic/workflows' --name $laName 2>$null | ConvertFrom-Json
+                    $la = az resource show --resource-group $deployConfig.resourceGroupName --resource-type 'Microsoft.Logic/workflows' --name $laName 2>$null | ConvertFrom-Json -AsHashtable
                     if (-not $la) { continue }
 
                     $principalId = $la.identity.principalId
@@ -1548,7 +1548,7 @@ try {
                         continue
                     }
 
-                    $existing = az role assignment list --assignee $principalId --role 'Automation Operator' --scope $automationScope 2>$null | ConvertFrom-Json
+                    $existing = az role assignment list --assignee $principalId --role 'Automation Operator' --scope $automationScope 2>$null | ConvertFrom-Json -AsHashtable
                     if ($existing -and $existing.Count -gt 0) {
                         Write-DeploymentLog "  Logic App '$laName' already has Automation Operator role" -Level Info
                         continue
