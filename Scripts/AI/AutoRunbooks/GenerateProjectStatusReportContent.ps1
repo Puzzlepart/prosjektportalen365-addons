@@ -235,6 +235,9 @@ function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @
                 $FieldPromptValue += ", verdien skal være et heltall"
             }
         }
+        elseif ($_.TypeAsString -eq "Currency") {
+            $FieldPromptValue += ", verdien skal være et tall uten valutasymbol, mellomrom eller tusenskille (f.eks. 2500000). Utelat feltet helt dersom beløpet ikke er kjent - ikke skriv tekst som 'ukjent' eller 'ikke oppgitt'"
+        }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
             $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"            
         }
@@ -329,6 +332,132 @@ function ConvertPSObjectToHashtable {
     }
 }
 
+function ConvertTo-NumericFieldValue($Value) {
+    # Returns the value as a number for Currency/Number fields, or $null when it is not a clean
+    # number (e.g. the AI wrote "Ikke oppgitt i kildene" in a currency field). Non-numeric values
+    # are dropped so the rest of the item still saves instead of failing on "Ugyldig valutaverdi".
+    if ($null -eq $Value) { return $null }
+    if ($Value -is [int] -or $Value -is [long] -or $Value -is [double] -or $Value -is [decimal]) {
+        return $Value
+    }
+    $Text = "$Value".Trim()
+    $Text = $Text -replace '[\s ]', ''       # spaces / non-breaking spaces (thousand separators)
+    $Text = $Text -replace '(?i)(nok|kroner|kr)', ''
+    $Text = $Text -replace ',-$', ''
+    if ($Text -match '\p{L}') { return $null }     # leftover letters => not a clean number
+    $Text = $Text -replace '[^\d,.\-]', ''         # strip currency symbols etc.
+    if ($Text -eq '' -or $Text -eq '-') { return $null }
+    if ($Text.Contains('.') -and $Text.Contains(',')) {
+        $Text = ($Text -replace '\.', '') -replace ',', '.'   # '.' thousands, ',' decimal
+    }
+    elseif ($Text.Contains(',')) {
+        $Text = $Text -replace ',', '.'
+    }
+    $Parsed = 0.0
+    if ([double]::TryParse($Text, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$Parsed)) {
+        return $Parsed
+    }
+    return $null
+}
+
+function Get-ListFieldMetadata($ListTitle) {
+    # Returns metadata used to normalize AI-generated values before writing them:
+    #   InternalNames     - set of valid internal field names
+    #   DisplayToInternal - display title -> internal name (the AI sometimes returns display
+    #                       names like 'Tittel'/'Interessentgrupper' instead of internal names)
+    #   TaxonomyFields    - internal name -> $true when the field is multi-value taxonomy.
+    #                       Taxonomy fields cannot be set through Add/Set-PnPListItem -Values and
+    #                       must be written separately with Set-PnPTaxonomyFieldValue.
+    #   NumericFields     - internal name -> $true for Currency/Number fields, whose values are
+    #                       coerced to a number (non-numeric text is dropped).
+    $Fields = Get-PnPField -List $ListTitle
+    $Metadata = @{
+        InternalNames     = @{}
+        DisplayToInternal = @{}
+        TaxonomyFields    = @{}
+        NumericFields     = @{}
+    }
+    foreach ($Field in $Fields) {
+        $Metadata.InternalNames[$Field.InternalName] = $true
+        if (-not $Metadata.DisplayToInternal.ContainsKey($Field.Title)) {
+            $Metadata.DisplayToInternal[$Field.Title] = $Field.InternalName
+        }
+        if ($Field.TypeAsString -eq "TaxonomyFieldType" -or $Field.TypeAsString -eq "TaxonomyFieldTypeMulti") {
+            $Metadata.TaxonomyFields[$Field.InternalName] = ($Field.TypeAsString -eq "TaxonomyFieldTypeMulti")
+        }
+        if ($Field.TypeAsString -eq "Currency" -or $Field.TypeAsString -eq "Number") {
+            $Metadata.NumericFields[$Field.InternalName] = $true
+        }
+    }
+    return $Metadata
+}
+
+function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
+    # Creates (when $Identity is omitted) or updates a list item from an AI-generated value set,
+    # remapping display names to internal names and writing taxonomy fields via Set-PnPTaxonomyFieldValue.
+    if ($null -eq $FieldMetadata) {
+        $FieldMetadata = Get-ListFieldMetadata -ListTitle $ListTitle
+    }
+
+    # Remap display names to internal names; drop empty and unknown fields; coerce numeric fields
+    $CleanValues = @{}
+    foreach ($Key in @($Values.Keys)) {
+        if (-not $Values[$Key]) { continue }
+        if ($FieldMetadata.InternalNames.ContainsKey($Key)) { $InternalName = $Key }
+        elseif ($FieldMetadata.DisplayToInternal.ContainsKey($Key)) { $InternalName = $FieldMetadata.DisplayToInternal[$Key] }
+        else { continue }
+
+        $FieldValue = $Values[$Key]
+        if ($FieldMetadata.NumericFields.ContainsKey($InternalName)) {
+            $FieldValue = ConvertTo-NumericFieldValue -Value $FieldValue
+            if ($null -eq $FieldValue) { continue }
+        }
+        $CleanValues[$InternalName] = $FieldValue
+    }
+
+    # Pull taxonomy fields out - they are written after the item exists
+    $TaxonomyValues = @{}
+    foreach ($TaxName in @($FieldMetadata.TaxonomyFields.Keys)) {
+        if ($CleanValues.ContainsKey($TaxName)) {
+            $TaxonomyValues[$TaxName] = $CleanValues[$TaxName]
+            $CleanValues.Remove($TaxName)
+        }
+    }
+
+    if ($null -ne $Identity) {
+        $Item = Set-PnPListItem -List $ListTitle -Identity $Identity -Values $CleanValues
+    }
+    else {
+        $Item = Add-PnPListItem -List $ListTitle -Values $CleanValues
+    }
+
+    foreach ($TaxName in $TaxonomyValues.Keys) {
+        $RawTax = $TaxonomyValues[$TaxName]
+        if ($RawTax -is [array]) { $TermIds = $RawTax }
+        else { $TermIds = ($RawTax -split '[;,]') }
+        # @() keeps this an array - a single GUID would otherwise collapse to a string,
+        # making $TermIds[0] index the first character instead of the term id.
+        $TermIds = @($TermIds | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+
+        if ($FieldMetadata.TaxonomyFields[$TaxName]) {
+            # Multi-value: Set-PnPTaxonomyFieldValue -Terms expects @{ termId = label }
+            $Terms = @{}
+            foreach ($TermId in $TermIds) {
+                $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
+                if ($null -ne $Term) { $Terms[$TermId] = $Term.Name }
+            }
+            if ($Terms.Count -gt 0) {
+                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -Terms $Terms
+            }
+        }
+        elseif ($TermIds.Count -gt 0) {
+            Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -TermId $TermIds[0]
+        }
+    }
+
+    return $Item
+}
+
 try {
     Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
     Connect-SharePoint -Url $HubSiteUrl
@@ -344,17 +473,14 @@ try {
     $GeneratedItems | ForEach-Object {
         Write-Output "`t`tCreating list item '$($_.Title)' for list 'Prosjektstatus'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-        @($HashtableValues.keys) | ForEach-Object { 
-            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
-        }
-        
+
         $HashtableValues["Title"] = "Ny statusrapport for $SiteTitle"
         $HashtableValues["GtSiteId"] = $SiteId
         $HashtableValues["GtModerationStatus"] = "Publisert"
         $HashtableValues["GtLastReportDate"] = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffffff")
 
         try {
-            $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
+            $ItemResult = Set-ProjectListItem -ListTitle "Prosjektstatus" -Values $HashtableValues
         }
         catch {
             Write-Output "Failed to create list item for list 'Prosjektstatus'"

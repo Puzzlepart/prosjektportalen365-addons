@@ -17,9 +17,6 @@ try {
     $GeneratedItems | ForEach-Object {
         Write-Output "`t`tCreating list item '$($_.Title)' for list 'Prosjektstatus'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-        @($HashtableValues.keys) | ForEach-Object { 
-            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
-        }
 
         $HashtableValues["Title"] = "Ny statusrapport for $SiteTitle"
         $HashtableValues["GtSiteId"] = $SiteId
@@ -27,7 +24,7 @@ try {
         $HashtableValues["GtLastReportDate"] = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffffff")
 
         try {
-            $ItemResult = Add-PnPListItem -List "Prosjektstatus" -Values $HashtableValues
+            $ItemResult = Set-ProjectListItem -ListTitle "Prosjektstatus" -Values $HashtableValues
             Write-Output "`t`tList item created successfully with ID: $($ItemResult.Id)"
         }
         catch {

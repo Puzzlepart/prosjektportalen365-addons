@@ -235,6 +235,9 @@ function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @
                 $FieldPromptValue += ", verdien skal være et heltall"
             }
         }
+        elseif ($_.TypeAsString -eq "Currency") {
+            $FieldPromptValue += ", verdien skal være et tall uten valutasymbol, mellomrom eller tusenskille (f.eks. 2500000). Utelat feltet helt dersom beløpet ikke er kjent - ikke skriv tekst som 'ukjent' eller 'ikke oppgitt'"
+        }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
             $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"            
         }
@@ -329,6 +332,34 @@ function ConvertPSObjectToHashtable {
     }
 }
 
+function ConvertTo-NumericFieldValue($Value) {
+    # Returns the value as a number for Currency/Number fields, or $null when it is not a clean
+    # number (e.g. the AI wrote "Ikke oppgitt i kildene" in a currency field). Non-numeric values
+    # are dropped so the rest of the item still saves instead of failing on "Ugyldig valutaverdi".
+    if ($null -eq $Value) { return $null }
+    if ($Value -is [int] -or $Value -is [long] -or $Value -is [double] -or $Value -is [decimal]) {
+        return $Value
+    }
+    $Text = "$Value".Trim()
+    $Text = $Text -replace '[\s ]', ''       # spaces / non-breaking spaces (thousand separators)
+    $Text = $Text -replace '(?i)(nok|kroner|kr)', ''
+    $Text = $Text -replace ',-$', ''
+    if ($Text -match '\p{L}') { return $null }     # leftover letters => not a clean number
+    $Text = $Text -replace '[^\d,.\-]', ''         # strip currency symbols etc.
+    if ($Text -eq '' -or $Text -eq '-') { return $null }
+    if ($Text.Contains('.') -and $Text.Contains(',')) {
+        $Text = ($Text -replace '\.', '') -replace ',', '.'   # '.' thousands, ',' decimal
+    }
+    elseif ($Text.Contains(',')) {
+        $Text = $Text -replace ',', '.'
+    }
+    $Parsed = 0.0
+    if ([double]::TryParse($Text, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$Parsed)) {
+        return $Parsed
+    }
+    return $null
+}
+
 function Get-ListFieldMetadata($ListTitle) {
     # Returns metadata used to normalize AI-generated values before writing them:
     #   InternalNames     - set of valid internal field names
@@ -337,11 +368,14 @@ function Get-ListFieldMetadata($ListTitle) {
     #   TaxonomyFields    - internal name -> $true when the field is multi-value taxonomy.
     #                       Taxonomy fields cannot be set through Add/Set-PnPListItem -Values and
     #                       must be written separately with Set-PnPTaxonomyFieldValue.
+    #   NumericFields     - internal name -> $true for Currency/Number fields, whose values are
+    #                       coerced to a number (non-numeric text is dropped).
     $Fields = Get-PnPField -List $ListTitle
     $Metadata = @{
         InternalNames     = @{}
         DisplayToInternal = @{}
         TaxonomyFields    = @{}
+        NumericFields     = @{}
     }
     foreach ($Field in $Fields) {
         $Metadata.InternalNames[$Field.InternalName] = $true
@@ -350,6 +384,9 @@ function Get-ListFieldMetadata($ListTitle) {
         }
         if ($Field.TypeAsString -eq "TaxonomyFieldType" -or $Field.TypeAsString -eq "TaxonomyFieldTypeMulti") {
             $Metadata.TaxonomyFields[$Field.InternalName] = ($Field.TypeAsString -eq "TaxonomyFieldTypeMulti")
+        }
+        if ($Field.TypeAsString -eq "Currency" -or $Field.TypeAsString -eq "Number") {
+            $Metadata.NumericFields[$Field.InternalName] = $true
         }
     }
     return $Metadata
@@ -362,16 +399,20 @@ function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
         $FieldMetadata = Get-ListFieldMetadata -ListTitle $ListTitle
     }
 
-    # Remap display names to internal names; drop empty and unknown fields
+    # Remap display names to internal names; drop empty and unknown fields; coerce numeric fields
     $CleanValues = @{}
     foreach ($Key in @($Values.Keys)) {
         if (-not $Values[$Key]) { continue }
-        if ($FieldMetadata.InternalNames.ContainsKey($Key)) {
-            $CleanValues[$Key] = $Values[$Key]
+        if ($FieldMetadata.InternalNames.ContainsKey($Key)) { $InternalName = $Key }
+        elseif ($FieldMetadata.DisplayToInternal.ContainsKey($Key)) { $InternalName = $FieldMetadata.DisplayToInternal[$Key] }
+        else { continue }
+
+        $FieldValue = $Values[$Key]
+        if ($FieldMetadata.NumericFields.ContainsKey($InternalName)) {
+            $FieldValue = ConvertTo-NumericFieldValue -Value $FieldValue
+            if ($null -eq $FieldValue) { continue }
         }
-        elseif ($FieldMetadata.DisplayToInternal.ContainsKey($Key)) {
-            $CleanValues[$FieldMetadata.DisplayToInternal[$Key]] = $Values[$Key]
-        }
+        $CleanValues[$InternalName] = $FieldValue
     }
 
     # Pull taxonomy fields out - they are written after the item exists
