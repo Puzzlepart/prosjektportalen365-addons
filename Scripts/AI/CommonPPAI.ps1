@@ -262,7 +262,7 @@ function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, [string]$Conten
             }
         }
         elseif ($_.TypeAsString -eq "Currency") {
-            $FieldPromptValue += ", verdien skal være et tall uten valutasymbol, mellomrom eller tusenskille (f.eks. 2500000). Utelat feltet helt dersom beløpet ikke er kjent - ikke skriv tekst som 'ukjent' eller 'ikke oppgitt'"
+            $FieldPromptValue += ", verdien skal være et tall uten valutasymbol, mellomrom eller tusenskille (f.eks. 2500000). Dette er eksempelinnhold - finn på et realistisk beløp dersom det ikke fremgår av kildene. Ikke la feltet stå tomt og ikke skriv tekst som 'ukjent' eller 'ikke oppgitt'"
         }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
             $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"            
