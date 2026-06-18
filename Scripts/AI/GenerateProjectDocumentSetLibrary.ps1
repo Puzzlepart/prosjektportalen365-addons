@@ -37,7 +37,7 @@ $GeneratedItems = Get-OpenAIResults -Prompt $Prompt -ForceArray -openai $OpenAIS
 
 $count = 0
 $GeneratedItems.items | ForEach-Object {
-    $DocSetTitle = $_.Title
+    $DocSetTitle = Get-SafeFileName -Name $_.Title
     if ($null -eq $DocSetTitle -or "" -eq $DocSetTitle) {
         $DocSetTitle = ($ListTitle + " " + ++$count)
     }
@@ -56,7 +56,9 @@ $GeneratedItems.items | ForEach-Object {
 
         # Set field values on the created document set
         if ($HashtableValues.Count -gt 0) {
-            $DocSetItem = Get-PnPListItem -List $ListTitle -Query "<View><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>$DocSetTitle</Value></Eq></Where></Query></View>"
+            # Escape the title for safe inclusion in the CAML query (e.g. a legal '&' in the name)
+            $DocSetTitleXml = [System.Security.SecurityElement]::Escape($DocSetTitle)
+            $DocSetItem = Get-PnPListItem -List $ListTitle -Query "<View><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>$DocSetTitleXml</Value></Eq></Where></Query></View>"
             if ($null -ne $DocSetItem) {
                 $ItemId = if ($DocSetItem -is [array]) { $DocSetItem[0].Id } else { $DocSetItem.Id }
                 Set-PnPListItem -List $ListTitle -Identity $ItemId -Values $HashtableValues | Out-Null

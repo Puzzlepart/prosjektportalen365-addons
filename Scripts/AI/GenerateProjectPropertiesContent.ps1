@@ -21,11 +21,8 @@ else {
     $GeneratedItems | ForEach-Object {
         Write-Output "`t`tUpdating list item '$($_.Title)' for list 'Prosjektegenskaper'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-        @($HashtableValues.keys) | ForEach-Object { 
-            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
-        }
         try {
-            $ItemResult = Set-PnPListItem -List "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
+            $ItemResult = Set-ProjectListItem -ListTitle "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
         }
         catch {
             Write-Output "Failed to update list item 'Prosjektegenskaper'"
@@ -45,13 +42,13 @@ else {
 
     Connect-SharePoint -Url $HubSiteUrl
     $MatchingProjectInHub = Get-PnPListItem -List "Prosjekter" -Query "<View><Query><Where><Eq><FieldRef Name='GtSiteUrl' /><Value Type='Text'>$Url</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
-        
+
     if ($null -ne $MatchingProjectInHub) {
         Write-Output "`t`tUpdating existing project item"
-        $HubProject = Set-PnPListItem -List "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues
+        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues
     }
     else {
         Write-Output "`t`tAdding new project item"
-        $HubProject = Add-PnPListItem -List "Prosjekter" -Values $HashtableValues
+        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Values $HashtableValues
     }
 }

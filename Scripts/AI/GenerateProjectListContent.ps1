@@ -19,6 +19,10 @@ Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.mode
 
 $GeneratedItems = Get-OpenAIResults -Prompt $Prompt -ForceArray -openai $OpenAISettings
 
+# Resolve field metadata once so each item can be normalized (display->internal names) and have
+# its taxonomy fields written via Set-PnPTaxonomyFieldValue (see Set-ProjectListItem in CommonPPAI.ps1).
+$FieldMetadata = Get-ListFieldMetadata -ListTitle $ListTitle
+
 $count = 0
 $GeneratedItems.items | ForEach-Object {
     $ListItemTitle = $_.Title
@@ -27,11 +31,8 @@ $GeneratedItems.items | ForEach-Object {
     }
     Write-Output "`t`tCreating list item '$ListItemTitle' for list '$ListTitle'"
     $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-    @($HashtableValues.keys) | ForEach-Object { 
-        if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
-    }
     try {
-        $ItemResult = Add-PnPListItem -List $ListTitle -Values $HashtableValues
+        $ItemResult = Set-ProjectListItem -ListTitle $ListTitle -Values $HashtableValues -FieldMetadata $FieldMetadata
     }
     catch {
         Write-Output "Failed to create list item for list '$ListTitle'"

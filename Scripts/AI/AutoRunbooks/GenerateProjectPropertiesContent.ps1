@@ -329,8 +329,96 @@ function ConvertPSObjectToHashtable {
     }
 }
 
+function Get-ListFieldMetadata($ListTitle) {
+    # Returns metadata used to normalize AI-generated values before writing them:
+    #   InternalNames     - set of valid internal field names
+    #   DisplayToInternal - display title -> internal name (the AI sometimes returns display
+    #                       names like 'Tittel'/'Interessentgrupper' instead of internal names)
+    #   TaxonomyFields    - internal name -> $true when the field is multi-value taxonomy.
+    #                       Taxonomy fields cannot be set through Add/Set-PnPListItem -Values and
+    #                       must be written separately with Set-PnPTaxonomyFieldValue.
+    $Fields = Get-PnPField -List $ListTitle
+    $Metadata = @{
+        InternalNames     = @{}
+        DisplayToInternal = @{}
+        TaxonomyFields    = @{}
+    }
+    foreach ($Field in $Fields) {
+        $Metadata.InternalNames[$Field.InternalName] = $true
+        if (-not $Metadata.DisplayToInternal.ContainsKey($Field.Title)) {
+            $Metadata.DisplayToInternal[$Field.Title] = $Field.InternalName
+        }
+        if ($Field.TypeAsString -eq "TaxonomyFieldType" -or $Field.TypeAsString -eq "TaxonomyFieldTypeMulti") {
+            $Metadata.TaxonomyFields[$Field.InternalName] = ($Field.TypeAsString -eq "TaxonomyFieldTypeMulti")
+        }
+    }
+    return $Metadata
+}
+
+function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
+    # Creates (when $Identity is omitted) or updates a list item from an AI-generated value set,
+    # remapping display names to internal names and writing taxonomy fields via Set-PnPTaxonomyFieldValue.
+    if ($null -eq $FieldMetadata) {
+        $FieldMetadata = Get-ListFieldMetadata -ListTitle $ListTitle
+    }
+
+    # Remap display names to internal names; drop empty and unknown fields
+    $CleanValues = @{}
+    foreach ($Key in @($Values.Keys)) {
+        if (-not $Values[$Key]) { continue }
+        if ($FieldMetadata.InternalNames.ContainsKey($Key)) {
+            $CleanValues[$Key] = $Values[$Key]
+        }
+        elseif ($FieldMetadata.DisplayToInternal.ContainsKey($Key)) {
+            $CleanValues[$FieldMetadata.DisplayToInternal[$Key]] = $Values[$Key]
+        }
+    }
+
+    # Pull taxonomy fields out - they are written after the item exists
+    $TaxonomyValues = @{}
+    foreach ($TaxName in @($FieldMetadata.TaxonomyFields.Keys)) {
+        if ($CleanValues.ContainsKey($TaxName)) {
+            $TaxonomyValues[$TaxName] = $CleanValues[$TaxName]
+            $CleanValues.Remove($TaxName)
+        }
+    }
+
+    if ($null -ne $Identity) {
+        $Item = Set-PnPListItem -List $ListTitle -Identity $Identity -Values $CleanValues
+    }
+    else {
+        $Item = Add-PnPListItem -List $ListTitle -Values $CleanValues
+    }
+
+    foreach ($TaxName in $TaxonomyValues.Keys) {
+        $RawTax = $TaxonomyValues[$TaxName]
+        if ($RawTax -is [array]) { $TermIds = $RawTax }
+        else { $TermIds = ($RawTax -split '[;,]') }
+        # @() keeps this an array - a single GUID would otherwise collapse to a string,
+        # making $TermIds[0] index the first character instead of the term id.
+        $TermIds = @($TermIds | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+
+        if ($FieldMetadata.TaxonomyFields[$TaxName]) {
+            # Multi-value: Set-PnPTaxonomyFieldValue -Terms expects @{ termId = label }
+            $Terms = @{}
+            foreach ($TermId in $TermIds) {
+                $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
+                if ($null -ne $Term) { $Terms[$TermId] = $Term.Name }
+            }
+            if ($Terms.Count -gt 0) {
+                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -Terms $Terms
+            }
+        }
+        elseif ($TermIds.Count -gt 0) {
+            Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -TermId $TermIds[0]
+        }
+    }
+
+    return $Item
+}
+
 Connect-SharePoint -Url $Url
-    
+
 $ProjectProperties = Get-PnPListItem -List "Prosjektegenskaper" -Id 1 -ErrorAction SilentlyContinue
 if ($null -eq $ProjectProperties) {
     Write-Output "`tProject properties not found. Please create a project properties list item in the Prosjektegenskaper list before running this script."
@@ -348,11 +436,8 @@ else {
     $GeneratedItems | ForEach-Object {
         Write-Output "`t`tUpdating list item '$($_.Title)' for list 'Prosjektegenskaper'"
         $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-        @($HashtableValues.keys) | ForEach-Object { 
-            if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
-        }
         try {
-            $ItemResult = Set-PnPListItem -List "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
+            $ItemResult = Set-ProjectListItem -ListTitle "Prosjektegenskaper" -Identity 1 -Values $HashtableValues
         }
         catch {
             Write-Output "Failed to update list item 'Prosjektegenskaper'"
@@ -372,13 +457,13 @@ else {
 
     Connect-SharePoint -Url $HubSiteUrl
     $MatchingProjectInHub = Get-PnPListItem -List "Prosjekter" -Query "<View><Query><Where><Eq><FieldRef Name='GtSiteUrl' /><Value Type='Text'>$Url</Value></Eq></Where></Query></View>" -ErrorAction SilentlyContinue
-        
+
     if ($null -ne $MatchingProjectInHub) {
         Write-Output "`t`tUpdating existing project item"
-        $HubProject = Set-PnPListItem -List "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues
+        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues
     }
     else {
         Write-Output "`t`tAdding new project item"
-        $HubProject = Add-PnPListItem -List "Prosjekter" -Values $HashtableValues
+        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Values $HashtableValues
     }
 }
