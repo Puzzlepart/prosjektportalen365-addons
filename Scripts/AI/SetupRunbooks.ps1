@@ -1,7 +1,8 @@
 param(
     [string]$SubscriptionName = "Azure CSP",
     [string]$ResourceGroupName = "Prosjektportalen-Premium",
-    [string]$AutomationAccountName = "PP-Premium-Automation"
+    [string]$AutomationAccountName = "PP-Premium-Automation",
+    [switch]$SkipDeploy
 )
 
 $AutoRunbooks = @(
@@ -30,6 +31,11 @@ $Runbooks | Where-Object { $AutoRunbooks.Contains($_.Name) } | ForEach-Object {
     $UpdatedRunbookContent = $RunbookContent.Replace(". .\CommonPPAI.ps1", $CommonPPAI)
 
     Out-File -FilePath "$PSScriptRoot\AutoRunbooks\$RunbookName" -InputObject $UpdatedRunbookContent
+}
+
+if ($SkipDeploy) {
+    Write-Host "SkipDeploy specified. Built AutoRunbooks files only - skipping Azure Automation deployment."
+    return
 }
 
 # Script is using Azure Az module anno april 2024, e.g. >= 12.0.0
