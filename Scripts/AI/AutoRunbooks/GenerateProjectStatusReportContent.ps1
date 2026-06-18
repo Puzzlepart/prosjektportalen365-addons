@@ -1,4 +1,4 @@
-param($OpenAISettings, $SiteTitle, $SiteId, $HubSiteUrl, $AdditionalPrompt)
+param($OpenAISettings, [string]$SiteTitle, [string]$SiteId, [string]$HubSiteUrl, [string]$AdditionalPrompt, [string]$ProjectStatusContentTypeId)
 
 function Connect-SharePoint($Url) {
     $pnpParams = @{ 
@@ -9,7 +9,6 @@ function Connect-SharePoint($Url) {
         $pnpParams.Add("ManagedIdentity", $true)
     }
     else {
-        $pnpParams.Add("Interactive", $true)
         $pnpParams.Add("ClientId", $global:__ClientId)
     }
 
@@ -51,14 +50,16 @@ function Invoke-ImageOpenAI {
     $body = [ordered]@{
         prompt = $InputMessage
         size   = '1024x1024'
-        style  = 'vivid'
-        n      = 1
+        quality = 'medium'
+        output_compression = 100
+        output_format = 'png'
+        n = 1
     } | ConvertTo-Json
 
     # Send a request to generate an answer
     $url = "$($openaiapibase)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
-    return $response.data.url
+    return $response.data
 }
 
 function Invoke-OpenAI {
@@ -72,6 +73,10 @@ function Invoke-OpenAI {
         [ValidateSet('JSON', 'Text')]
         [string]$ResponseFormat = 'JSON'
     )
+
+    if ($global:__OutputPrompt) {
+        Write-Host $InputMessage
+    }
     
     $messages = @(
         @{
@@ -83,13 +88,13 @@ function Invoke-OpenAI {
     if ($ResponseFormat -eq 'Text') {
         $messages += @{
             role    = 'system'
-            content = "Du er en hjelpsom assistent som svarer kun med tekst. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring."
+            content = "Du er en hjelpsom prosjektleder-assistent som svarer kun med tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst."
         }
     }
     else {
         $messages += @{
             role    = 'system'
-            content = "You are a helpful assistant responding only with JSON. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
+            content = "You are a helpful project manager assistant responding only with JSON. You are an expert on project management and project execution. Your job is to help the user execution projects in a profession and efficient way. Do not use markdown formatting or any other formatting. Respond with raw JSON. The JSON response will be sent to SharePoint to create list items using Add-PnPListItem from PnP.PowerShell."
         }
 
         if ($ForceArray.IsPresent) {
@@ -118,24 +123,38 @@ function Invoke-OpenAI {
         'api-key' = $openaiapikey
     }
 
+    # Build input array for Responses API
+    $input = @()
+    foreach ($msg in $messages) {
+        $input += @{
+            role    = $msg.role
+            content = $msg.content
+        }
+    }
+
     if ($ResponseFormat -eq 'Text') {
         # Adjust these values to fine-tune completions
         $body = [ordered]@{
-            messages    = $messages
-            temperature = 0.1
-        } | ConvertTo-Json
+            model = $openai.model_name
+            input = $input
+        } | ConvertTo-Json -Depth 10
     }
     else {
         # Adjust these values to fine-tune completions
         $body = [ordered]@{
-            response_format = @{type = 'json_object' }
-            messages        = $messages
-            temperature     = 0.1
-        } | ConvertTo-Json
+            model = $openai.model_name
+            input = $input
+            text = @{
+                format = @{
+                    type = 'json_object'
+                }
+            }
+            max_output_tokens = 16384
+        } | ConvertTo-Json -Depth 10
 
     }
     # Send a request to generate an answer
-    $url = "$($openaiapibase)/openai/deployments/$($openai.model_name)/chat/completions?api-version=$($openai.api_version)"
+    $url = "$($openaiapibase)/openai/responses?api-version=$($openai.api_version)"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
     return $response
 }
@@ -152,7 +171,8 @@ function Get-OpenAIResults {
 
     try {
         $AIResults = Invoke-OpenAI -InputMessage $Prompt -ForceArray:$ForceArray.IsPresent -openai $openai -ResponseFormat $ResponseFormat
-        $ProcessedResults = $AIResults.choices[0].message.content
+        $MessageOutput = $AIResults.output | Where-Object { $_.type -eq 'message' }
+        $ProcessedResults = $MessageOutput.content[0].text
         if ($ResponseFormat -eq 'JSON') {
             return ConvertFrom-Json $ProcessedResults
         }
@@ -206,13 +226,21 @@ function Get-IdeaPrompt($Url, $Id) {
     return $IdeaPrompt
 }
 
-function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @()) {    
+function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, [string]$ContentTypeId, $SkipFields = @()) {    
     if ($UsersEmails.Count -lt 1) {
         $Connection = Get-PnPConnection
         $UsersEmails = Get-SiteUsersEmails -Url $Connection.Url
-    }    
+    }
+    
+    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName -eq "DocumentSetDescription" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
 
-    $Fields = Get-PnPField -List $ListTitle | Where-Object { $_.Hidden -eq $false -and -not $_.SchemaXml.Contains('ShowInNewForm="FALSE"') -and -not $_.SchemaXml.Contains('ShowInEditForm="FALSE"') -and ($_.InternalName -eq "Title" -or $_.InternalName.StartsWith("Gt") -and $_.InternalName -ne "GtProjectAdminRoles" -and $_.InternalName -ne "GtProjectLifecycleStatus" -and -not $_.InternalName.StartsWith("GtAi")) }
+    # Filter fields based on ContentTypeId if provided
+    if ($null -ne $ContentTypeId -and $ContentTypeId -ne "") {
+        $ContentType = Get-PnPContentType -List $ListTitle -Includes "FieldLinks", "Parent", "Fields" -ErrorAction SilentlyContinue | Where-Object {$_.Parent.Id.StringValue -eq $ContentTypeId}
+        if ($null -ne $ContentType) {
+            $Fields = $Fields | Where-Object { $_.Id -in $ContentType.Fields.Id }
+        }
+    }
 
     $FieldPrompt = ""
     $Fields | ForEach-Object {
@@ -236,7 +264,7 @@ function Get-FieldPromptForList($ListTitle, [array]$UsersEmails, $SkipFields = @
             }
         }
         elseif ($_.TypeAsString -eq "Currency") {
-            $FieldPromptValue += ", verdien skal være et tall uten valutasymbol, mellomrom eller tusenskille (f.eks. 2500000). Utelat feltet helt dersom beløpet ikke er kjent - ikke skriv tekst som 'ukjent' eller 'ikke oppgitt'"
+            $FieldPromptValue += ", verdien skal være et tall uten valutasymbol, mellomrom eller tusenskille (f.eks. 2500000). Dette er eksempelinnhold - finn på et realistisk beløp dersom det ikke fremgår av kildene. Ikke la feltet stå tomt og ikke skriv tekst som 'ukjent' eller 'ikke oppgitt'"
         }
         elseif ($_.TypeAsString -eq "User" -or $_.TypeAsString -eq "UserMulti") {
             $FieldPromptValue += ", verdi skal være en av følgende e-postadresser: $($UsersEmails -join ", ")'"            
@@ -332,6 +360,17 @@ function ConvertPSObjectToHashtable {
     }
 }
 
+function Get-SafeFileName($Name) {
+    # SharePoint file/folder names (a document set is a folder) cannot contain " * : < > ? / \ |
+    # and must not have leading/trailing spaces, dots or hyphens. A '/' in particular makes
+    # SharePoint treat the name as a path, which fails with "operation can only be performed on a file".
+    if ($null -eq $Name) { return $Name }
+    $Safe = [regex]::Replace($Name, '["*:<>?/\\|]', '-')
+    $Safe = [regex]::Replace($Safe, '\s+', ' ')
+    $Safe = $Safe.Trim(' ', '.', '-')
+    return $Safe
+}
+
 function ConvertTo-NumericFieldValue($Value) {
     # Returns the value as a number for Currency/Number fields, or $null when it is not a clean
     # number (e.g. the AI wrote "Ikke oppgitt i kildene" in a currency field). Non-numeric values
@@ -341,7 +380,7 @@ function ConvertTo-NumericFieldValue($Value) {
         return $Value
     }
     $Text = "$Value".Trim()
-    $Text = $Text -replace '[\s ]', ''       # spaces / non-breaking spaces (thousand separators)
+    $Text = $Text -replace '[\s ]', ''       # spaces / non-breaking spaces (thousand separators)
     $Text = $Text -replace '(?i)(nok|kroner|kr)', ''
     $Text = $Text -replace ',-$', ''
     if ($Text -match '\p{L}') { return $null }     # leftover letters => not a clean number
@@ -462,7 +501,7 @@ try {
     Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
     Connect-SharePoint -Url $HubSiteUrl
 
-    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus"
+    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus" -ContentTypeId $ProjectStatusContentTypeId
         
     $Prompt = "Gi meg et eksempel på rapportering av Prosjektstatus for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         
@@ -481,13 +520,16 @@ try {
 
         try {
             $ItemResult = Set-ProjectListItem -ListTitle "Prosjektstatus" -Values $HashtableValues
+            Write-Output "`t`tList item created successfully with ID: $($ItemResult.Id)"
         }
         catch {
             Write-Output "Failed to create list item for list 'Prosjektstatus'"
             Write-Output $_.Exception.Message
             Write-Output "Using the following prompt: $Prompt"
             Write-Output "Using the following values as input:"
-            $HashtableValues
+            $HashtableValues.GetEnumerator() | Sort-Object Name | ForEach-Object {
+                Write-Output "`t$($_.Key): $($_.Value) (Type: $($_.Value.GetType().Name))"
+            }
         }
     }
     
