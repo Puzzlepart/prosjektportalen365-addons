@@ -476,19 +476,31 @@ function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
         # making $TermIds[0] index the first character instead of the term id.
         $TermIds = @($TermIds | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
 
-        if ($FieldMetadata.TaxonomyFields[$TaxName]) {
-            # Multi-value: Set-PnPTaxonomyFieldValue -Terms expects @{ termId = label }
-            $Terms = @{}
-            foreach ($TermId in $TermIds) {
-                $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
-                if ($null -ne $Term) { $Terms[$TermId] = $Term.Name }
+        # Keep only term ids that actually resolve in the term store. The AI can return a made-up
+        # GUID, and values generated for one list's term set may not exist for another list (e.g.
+        # when project properties are reused for the hub 'Prosjekter' list).
+        $ValidTerms = @{}
+        foreach ($TermId in $TermIds) {
+            $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
+            if ($null -ne $Term) { $ValidTerms[$TermId] = $Term.Name }
+        }
+        if ($ValidTerms.Count -lt 1) {
+            Write-Output "`t`t`tSkipping taxonomy field '$TaxName' - no valid term in the term store for: $($TermIds -join ', ')"
+            continue
+        }
+
+        try {
+            if ($FieldMetadata.TaxonomyFields[$TaxName]) {
+                # Multi-value: Set-PnPTaxonomyFieldValue -Terms expects @{ termId = label }
+                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -Terms $ValidTerms
             }
-            if ($Terms.Count -gt 0) {
-                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -Terms $Terms
+            else {
+                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -TermId @($ValidTerms.Keys)[0]
             }
         }
-        elseif ($TermIds.Count -gt 0) {
-            Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -TermId $TermIds[0]
+        catch {
+            # e.g. the term exists in the store but not in this field's bound term set
+            Write-Output "`t`t`tCould not set taxonomy field '$TaxName': $($_.Exception.Message)"
         }
     }
 
