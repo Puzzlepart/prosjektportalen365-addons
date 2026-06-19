@@ -29,7 +29,7 @@ else {
 
 $FieldPrompt = Get-FieldPromptForList -ListTitle $ListTitle -UsersEmails $UsersEmails
 
-$Prompt = "Gi meg $PromptMaxElements ulike eksempler på dokumentsett i dokumentbiblioteket '$ListTitle' for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva dokumentsettet handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. "
+$Prompt = "Gi meg $PromptMaxElements ulike eksempler på dokumentsett i dokumentbiblioteket '$ListTitle' for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som en ren JSON array - outputen din skal starte med '[' og avsluttes med ']'. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være unikt, det skal si noe om hva dokumentsettet handler om, og skal ikke være det samme som prosjektnavnet. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn. I tillegg skal hvert objekt ha egenskapen 'Files' som er en liste med 1-3 realistiske filnavn (inkluder filendelse, f.eks. .pdf, .docx eller .xlsx) som passer innholdet i dokumentsettet. Ikke generer innhold til filene, kun filnavn. "
     
 Write-Output "`tPrompt ready. Asking for suggestions from $($OpenAISettings.model_name)..."
 
@@ -43,26 +43,47 @@ $GeneratedItems.items | ForEach-Object {
     }
     Write-Output "`t`tCreating document set '$DocSetTitle' in library '$ListTitle'"
 
+    # 'Files' is an extra AI-provided property (not a list field) - capture it before it is dropped
+    $DemoFiles = $_.Files
     $HashtableValues = ConvertPSObjectToHashtable -InputObject $_
-    # Remove Title since it is used as the document set folder name
+    # Remove Title (used as the document set folder name) and Files (not a list field)
     $HashtableValues.Remove("Title")
-    @($HashtableValues.keys) | ForEach-Object { 
-        if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) } 
+    $HashtableValues.Remove("Files")
+    @($HashtableValues.keys) | ForEach-Object {
+        if (-not $HashtableValues[$_]) { $HashtableValues.Remove($_) }
     }
 
     try {
         # Create the document set in the library
         $DocSetFolder = Add-PnPDocumentSet -List $ListTitle -Name $DocSetTitle -ContentType $ContentTypeName
 
+        # Look up the created document set item (used for field values and as the target folder for files)
+        # Escape the title for safe inclusion in the CAML query (e.g. a legal '&' in the name)
+        $DocSetTitleXml = [System.Security.SecurityElement]::Escape($DocSetTitle)
+        $DocSetItem = Get-PnPListItem -List $ListTitle -Query "<View><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>$DocSetTitleXml</Value></Eq></Where></Query></View>"
+        if ($DocSetItem -is [array]) { $DocSetItem = $DocSetItem[0] }
+
         # Set field values on the created document set
-        if ($HashtableValues.Count -gt 0) {
-            # Escape the title for safe inclusion in the CAML query (e.g. a legal '&' in the name)
-            $DocSetTitleXml = [System.Security.SecurityElement]::Escape($DocSetTitle)
-            $DocSetItem = Get-PnPListItem -List $ListTitle -Query "<View><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>$DocSetTitleXml</Value></Eq></Where></Query></View>"
-            if ($null -ne $DocSetItem) {
-                $ItemId = if ($DocSetItem -is [array]) { $DocSetItem[0].Id } else { $DocSetItem.Id }
-                Set-PnPListItem -List $ListTitle -Identity $ItemId -Values $HashtableValues | Out-Null
-                Write-Output "`t`t`tField values set on document set '$DocSetTitle'"
+        if ($null -ne $DocSetItem -and $HashtableValues.Count -gt 0) {
+            Set-PnPListItem -List $ListTitle -Identity $DocSetItem.Id -Values $HashtableValues | Out-Null
+            Write-Output "`t`t`tField values set on document set '$DocSetTitle'"
+        }
+
+        # Create 1-3 placeholder files (no real content) with realistic names/types in the document set
+        $TargetFolder = if ($null -ne $DocSetItem) { $DocSetItem.FieldValues["FileRef"] } else { $DocSetFolder }
+        $DemoFiles = @($DemoFiles | ForEach-Object { "$_".Trim() } | Where-Object { $_ } | Select-Object -First 3)
+        if ($DemoFiles.Count -lt 1) { $DemoFiles = @("$DocSetTitle.pdf") }
+        foreach ($DemoFile in $DemoFiles) {
+            $FileName = Get-SafeFileName -Name $DemoFile
+            if ([string]::IsNullOrWhiteSpace($FileName)) { continue }
+            if ($FileName -notmatch '\.[A-Za-z0-9]{1,5}$') { $FileName = "$FileName.pdf" }
+            try {
+                Add-PnPFile -Folder $TargetFolder -FileName $FileName -Content " " | Out-Null
+                Write-Output "`t`t`tCreated file '$FileName' in document set '$DocSetTitle'"
+            }
+            catch {
+                Write-Output "`t`t`tFailed to create file '$FileName' in document set '$DocSetTitle'"
+                Write-Output $_.Exception.Message
             }
         }
     }
