@@ -45,10 +45,10 @@ else {
 
     if ($null -ne $MatchingProjectInHub) {
         Write-Output "`t`tUpdating existing project item"
-        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues
+        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Identity $MatchingProjectInHub -Values $HashtableValues -TaxonomyAsText
     }
     else {
         Write-Output "`t`tAdding new project item"
-        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Values $HashtableValues
+        $HubProject = Set-ProjectListItem -ListTitle "Prosjekter" -Values $HashtableValues -TaxonomyAsText
     }
 }

@@ -429,9 +429,12 @@ function Get-ListFieldMetadata($ListTitle) {
     return $Metadata
 }
 
-function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
+function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata, [switch]$TaxonomyAsText) {
     # Creates (when $Identity is omitted) or updates a list item from an AI-generated value set,
     # remapping display names to internal names and writing taxonomy fields via Set-PnPTaxonomyFieldValue.
+    # With -TaxonomyAsText the managed metadata columns are NOT set; instead each term name is written
+    # to the matching '<InternalName>Text' column (used by the hub 'Prosjekter' list, which stores the
+    # text representation of taxonomy values rather than the managed metadata field itself).
     if ($null -eq $FieldMetadata) {
         $FieldMetadata = Get-ListFieldMetadata -ListTitle $ListTitle
     }
@@ -459,6 +462,29 @@ function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
             $TaxonomyValues[$TaxName] = $CleanValues[$TaxName]
             $CleanValues.Remove($TaxName)
         }
+    }
+
+    # When the list stores taxonomy values as text (the hub 'Prosjekter' list), resolve each term
+    # id to its name and write it to the '<InternalName>Text' column instead of setting the MMD field.
+    if ($TaxonomyAsText) {
+        foreach ($TaxName in @($TaxonomyValues.Keys)) {
+            $TextFieldName = "$($TaxName)Text"
+            if (-not $FieldMetadata.InternalNames.ContainsKey($TextFieldName)) { continue }
+            $RawTax = $TaxonomyValues[$TaxName]
+            if ($RawTax -is [array]) { $TermIds = $RawTax }
+            else { $TermIds = ($RawTax -split '[;,]') }
+            $TermIds = @($TermIds | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+            $TermNames = @()
+            foreach ($TermId in $TermIds) {
+                $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
+                if ($null -ne $Term) { $TermNames += $Term.Name }
+            }
+            if ($TermNames.Count -gt 0) {
+                $CleanValues[$TextFieldName] = ($TermNames -join "; ")
+            }
+        }
+        # Do not set the managed metadata columns on this list
+        $TaxonomyValues = @{}
     }
 
     if ($null -ne $Identity) {
