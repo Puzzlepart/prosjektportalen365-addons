@@ -48,6 +48,7 @@ function Invoke-ImageOpenAI {
 
     # Adjust these values to fine-tune completions
     $body = [ordered]@{
+        model = $openai.model_name_images
         prompt = $InputMessage
         size   = '1024x1024'
         quality = 'medium'
@@ -57,7 +58,7 @@ function Invoke-ImageOpenAI {
     } | ConvertTo-Json
 
     # Send a request to generate an answer
-    $url = "$($openaiapibase)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
+    $url = "$($openaiapibase)/openai/v1/images/generations"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
     return $response.data
 }
@@ -154,7 +155,7 @@ function Invoke-OpenAI {
 
     }
     # Send a request to generate an answer
-    $url = "$($openaiapibase)/openai/responses?api-version=$($openai.api_version)"
+    $url = "$($openaiapibase)/openai/v1/responses"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
     return $response
 }
@@ -431,9 +432,12 @@ function Get-ListFieldMetadata($ListTitle) {
     return $Metadata
 }
 
-function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
+function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata, [switch]$TaxonomyAsText) {
     # Creates (when $Identity is omitted) or updates a list item from an AI-generated value set,
     # remapping display names to internal names and writing taxonomy fields via Set-PnPTaxonomyFieldValue.
+    # With -TaxonomyAsText the managed metadata columns are NOT set; instead each term name is written
+    # to the matching '<InternalName>Text' column (used by the hub 'Prosjekter' list, which stores the
+    # text representation of taxonomy values rather than the managed metadata field itself).
     if ($null -eq $FieldMetadata) {
         $FieldMetadata = Get-ListFieldMetadata -ListTitle $ListTitle
     }
@@ -463,6 +467,29 @@ function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
         }
     }
 
+    # When the list stores taxonomy values as text (the hub 'Prosjekter' list), resolve each term
+    # id to its name and write it to the '<InternalName>Text' column instead of setting the MMD field.
+    if ($TaxonomyAsText) {
+        foreach ($TaxName in @($TaxonomyValues.Keys)) {
+            $TextFieldName = "$($TaxName)Text"
+            if (-not $FieldMetadata.InternalNames.ContainsKey($TextFieldName)) { continue }
+            $RawTax = $TaxonomyValues[$TaxName]
+            if ($RawTax -is [array]) { $TermIds = $RawTax }
+            else { $TermIds = ($RawTax -split '[;,]') }
+            $TermIds = @($TermIds | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
+            $TermNames = @()
+            foreach ($TermId in $TermIds) {
+                $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
+                if ($null -ne $Term) { $TermNames += $Term.Name }
+            }
+            if ($TermNames.Count -gt 0) {
+                $CleanValues[$TextFieldName] = ($TermNames -join "; ")
+            }
+        }
+        # Do not set the managed metadata columns on this list
+        $TaxonomyValues = @{}
+    }
+
     if ($null -ne $Identity) {
         $Item = Set-PnPListItem -List $ListTitle -Identity $Identity -Values $CleanValues
     }
@@ -478,19 +505,31 @@ function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata) {
         # making $TermIds[0] index the first character instead of the term id.
         $TermIds = @($TermIds | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
 
-        if ($FieldMetadata.TaxonomyFields[$TaxName]) {
-            # Multi-value: Set-PnPTaxonomyFieldValue -Terms expects @{ termId = label }
-            $Terms = @{}
-            foreach ($TermId in $TermIds) {
-                $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
-                if ($null -ne $Term) { $Terms[$TermId] = $Term.Name }
+        # Keep only term ids that actually resolve in the term store. The AI can return a made-up
+        # GUID, and values generated for one list's term set may not exist for another list (e.g.
+        # when project properties are reused for the hub 'Prosjekter' list).
+        $ValidTerms = @{}
+        foreach ($TermId in $TermIds) {
+            $Term = Get-PnPTerm -Identity $TermId -ErrorAction SilentlyContinue
+            if ($null -ne $Term) { $ValidTerms[$TermId] = $Term.Name }
+        }
+        if ($ValidTerms.Count -lt 1) {
+            Write-Output "`t`t`tSkipping taxonomy field '$TaxName' - no valid term in the term store for: $($TermIds -join ', ')"
+            continue
+        }
+
+        try {
+            if ($FieldMetadata.TaxonomyFields[$TaxName]) {
+                # Multi-value: Set-PnPTaxonomyFieldValue -Terms expects @{ termId = label }
+                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -Terms $ValidTerms
             }
-            if ($Terms.Count -gt 0) {
-                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -Terms $Terms
+            else {
+                Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -TermId @($ValidTerms.Keys)[0]
             }
         }
-        elseif ($TermIds.Count -gt 0) {
-            Set-PnPTaxonomyFieldValue -ListItem $Item -InternalFieldName $TaxName -TermId $TermIds[0]
+        catch {
+            # e.g. the term exists in the store but not in this field's bound term set
+            Write-Output "`t`t`tCould not set taxonomy field '$TaxName': $($_.Exception.Message)"
         }
     }
 

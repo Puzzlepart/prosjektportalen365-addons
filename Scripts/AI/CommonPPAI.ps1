@@ -46,6 +46,7 @@ function Invoke-ImageOpenAI {
 
     # Adjust these values to fine-tune completions
     $body = [ordered]@{
+        model = $openai.model_name_images
         prompt = $InputMessage
         size   = '1024x1024'
         quality = 'medium'
@@ -55,7 +56,7 @@ function Invoke-ImageOpenAI {
     } | ConvertTo-Json
 
     # Send a request to generate an answer
-    $url = "$($openaiapibase)/openai/deployments/$($openai.model_name_images)/images/generations?api-version=$($openai.api_version_images)"
+    $url = "$($openaiapibase)/openai/v1/images/generations"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
     return $response.data
 }
@@ -152,7 +153,7 @@ function Invoke-OpenAI {
 
     }
     # Send a request to generate an answer
-    $url = "$($openaiapibase)/openai/responses?api-version=$($openai.api_version)"
+    $url = "$($openaiapibase)/openai/v1/responses"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
     return $response
 }
