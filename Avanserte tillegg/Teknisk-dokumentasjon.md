@@ -16,9 +16,11 @@ Dette dokumentet beskriver den tekniske implementasjonen av komponentene i **Ava
   - [PhaseChanged](#phasechanged)
   - [ChangeArchiveState](#changearchivestate)
   - [RequestProjectAccess](#requestprojectaccess)
+- [Avhengigheter mellom komponenter ved deploy](#avhengigheter-mellom-komponenter-ved-deploy)
 - [SharePoint-felter som brukes](#sharepoint-felter-som-brukes)
 - [Konfigurasjon](#konfigurasjon)
 - [Autentisering og tilganger](#autentisering-og-tilganger)
+- [Forutsetninger for deployment](#forutsetninger-for-deployment)
 - [Feilsøking](#feilsøking)
 
 ---
@@ -49,16 +51,16 @@ Dette dokumentet beskriver den tekniske implementasjonen av komponentene i **Ava
                     └─────────────────┘
 ```
 
-Alle ressurser provisjoneres via Bicep-maler under [Infrastructure/bicep](Infrastructure/bicep/) og deployes med [Deploy-Solution.ps1](Deploy-Solution.ps1). Automation-kontoen og Logic Apps kjører med **System-Assigned Managed Identity**, som gis rettigheter i SharePoint (App-Only/Sites.FullControl.All via Entra ID-appen som opprettes av [Scripts/createentraidapp.ps1](Scripts/createentraidapp.ps1) og [Scripts/createManagedIdentity.ps1](Scripts/createManagedIdentity.ps1)).
+Alle ressurser provisjoneres via Bicep-maler under [Infrastructure/bicep](Infrastructure/bicep/) og deployes med [Deploy-Solution.ps1](Deploy-Solution.ps1). Automation-kontoen og Logic Apps kjører med **System-Assigned Managed Identity**, som gis rettigheter i SharePoint (Microsoft Graph app-rolle `Sites.FullControl.All` mot ressursen `Office 365 SharePoint Online`) via [Scripts/createManagedIdentity.ps1](Scripts/createManagedIdentity.ps1) eller automatisk fra `Deploy-Solution.ps1` (`Grant-SharePointPermissionsToManagedIdentity`).
 
 ## Byggeklosser
 
 | Type | Antall | Plassering |
 | --- | --- | --- |
-| PowerShell-runbooks | 4 | `Infrastructure/scripts/*.ps1` (kilde) → inlines til `Infrastructure/bicep/automation/runbooks/*.bicep` ved deploy |
+| PowerShell-runbooks | 4 | `Infrastructure/scripts/*.ps1` (kilde), lastes ned av Azure Automation fra en rå GitHub-URL ved deploy (`publishContentLink.uri`) |
 | Logic Apps (workflows) | 4 | `Infrastructure/bicep/logic-apps/*.bicep` |
 | API-connectors | 3 (SharePointOnline, Automation, Office365) | `Infrastructure/bicep/connectors/*.bicep` |
-| Automation Account | 1 | `Infrastructure/bicep/automation/AutomationAccount.bicep` |
+| Automation Account | 1 | `Infrastructure/bicep/automation/AutomationAccount.bicep` (alltid deployet som grunnlag) |
 
 Runbooks kjører **PnP.PowerShell** i en egendefinert runtime-environment (pakket i `bundle/`), og kobler til SharePoint med `Connect-PnPOnline -ManagedIdentity` når de kjører inne i Azure Automation (`$PSPrivateMetadata -ne $null`). Ved lokal testing/kjøring brukes `-UseWebLogin` i stedet.
 
@@ -191,7 +193,7 @@ Setter riktig prosjektleder basert på fase, og styrer tilganger til mapper med 
 
 ## Logic Apps (orkestrering)
 
-Alle Logic Apps er definert som Consumption-workflows (`Microsoft.Logic/workflows`) med `SystemAssigned` identity, og starter Automation-jobber via `ApiConnection`-actions mot `azureautomation`-connectoren (`.../jobs`, med `runbookName` i query-string).
+Alle Logic Apps er definert som Consumption-workflows (`Microsoft.Logic/workflows@2019-05-01`) med `SystemAssigned` identity, og starter Automation-jobber via `ApiConnection`-actions mot `azureautomation`-connectoren (`.../jobs`, med `runbookName` i query-string).
 
 ### ProjectInfoChanged
 
@@ -243,7 +245,25 @@ Den eneste manuelle/brukerinitierte flyten, og den mest omfattende. Kalles fra e
        - `Get_Visitor_group`: henter sidens `AssociatedVisitorGroup` via REST.
        - `Ensure_user`: sikrer at brukeren (`currentUser`) finnes som SharePoint-bruker på prosjektområdet.
        - `Add_user_to_visitor_group`: legger brukeren til i besøksgruppen (`sitegroups(id)/users`), dvs. gir lesetilgang til prosjektområdet.
+     - Hvis avslått: sender en avslags-e-post til brukeren som ba om tilgang.
 - Alle SharePoint-kall mot det enkelte prosjektområdet gjøres med SharePoint-connectorens generiske `httprequest`-dataset (`/datasets/{webUrl}/httprequest`), ikke med en fast connection-URL — det gjør at samme Logic App kan nå ethvert prosjektområde i tenanten.
+
+---
+
+## Avhengigheter mellom komponenter ved deploy
+
+I [Infrastructure/main.bicep](Infrastructure/main.bicep) blir enkelte runbooks deployet automatisk når en Logic App som er avhengig av dem velges, selv om runbooken ikke er eksplisitt valgt selv. Automation-kontoen deployes alltid som grunnlag.
+
+| Valgt Logic App | Runbooks som deployes automatisk i tillegg | Nødvendige connector-flagg |
+| --- | --- | --- |
+| `ChangeArchiveState` | `ArchiveSite`, `GetSiteInformation` | `Automation: true` |
+| `PhaseChanged` | `ArchiveSite`, `GetSiteInformation`, `UpdateProjectManager` | `Automation: true` |
+| `ProjectInfoChanged` | `UpdateProjectDates`, `UpdateProjectManager` | `SharePointOnline: true`, `Automation: true` |
+| `RequestProjectAccess` | Ingen | `SharePointOnline: true`, `Office365: true` |
+
+Velges kun en runbook uten en tilhørende Logic App (f.eks. bare `-ArchiveSite`), deployes ikke andre runbooks automatisk, og ingen Logic App kobles til den. Runbooken må da trigges manuelt (f.eks. via Azure Automation-portalen) med nødvendige parametere.
+
+Hvis et påkrevd connector-flagg er `false` (eller tilhørende `-Skip...Connector`-svitsj brukes), hoppes hele Logic App-et over, uavhengig av om det er valgt i `logicAppsToDeploy`.
 
 ---
 
@@ -285,9 +305,21 @@ Konfigurasjon skjer på to nivåer:
 
 - Automation-kontoen og alle Logic Apps kjører med **System-Assigned Managed Identity**.
 - Runbooks kobler til SharePoint med `Connect-PnPOnline -Url <site> -ManagedIdentity` når `$PSPrivateMetadata` finnes (dvs. når de faktisk kjører i Azure Automation).
-- Identiteten må ha tilstrekkelige rettigheter i SharePoint (Sites.FullControl.All / Entra ID app-registrering, se [Scripts/createentraidapp.ps1](Scripts/createentraidapp.ps1) og [Scripts/createManagedIdentity.ps1](Scripts/createManagedIdentity.ps1)) samt Teams-administrasjon for arkivering/reaktivering av team.
+- Identiteten må ha Microsoft Graph app-rollen `Sites.FullControl.All` mot ressursen `Office 365 SharePoint Online` (AppId `00000003-0000-0ff1-ce00-000000000000`), samt Teams-administrasjon for arkivering/reaktivering av team. `Deploy-Solution.ps1` sin funksjon `Grant-SharePointPermissionsToManagedIdentity` gjør dette automatisk via `az ad sp show` + `az rest` mot Microsoft Graph.
 - `SharePointOnline`-API-connectoren (brukt av `ProjectInfoChanged` og `RequestProjectAccess`) må autoriseres manuelt mot en tjenestekonto etter deploy (se [README.md](README.md#authorize-sharepoint-connector)) — dette er en delegert (bruker-)kobling, ikke managed identity.
 - `Office365`-connectoren (brukt av `RequestProjectAccess` for godkjenningseposter) krever tilsvarende autorisasjon av en avsenderkonto.
+
+---
+
+## Forutsetninger for deployment
+
+`Deploy-Solution.ps1` krever:
+
+- **PowerShell 7.0+**
+- **Azure CLI** (`az`), inkludert den medfølgende **Bicep CLI**-en, samt **`automation`-extensionen** til Azure CLI (installeres separat, f.eks. `az extension add --name automation`) siden `az automation account show` brukes til å sjekke/konfigurere Automation-kontoen
+- **PnP.PowerShell**-modulen (`Install-Module PnP.PowerShell -Scope CurrentUser`), brukt til `Connect-PnPOnline`/`Get-PnPConnection`/`Get-PnPTenantSite` ved SharePoint-tilkobling og validering
+
+Skriptet sjekker `az` og `PnP.PowerShell` ved oppstart, og feiler tidlig med tydelig melding hvis noe mangler. Det krever **ikke** `Az`-PowerShell-modulene (`Az.Accounts`, `Az.Resources`, `Az.Automation`) – de er kun avhengigheter for det separate skriptet [Scripts/createManagedIdentity.ps1](Scripts/createManagedIdentity.ps1), som er et alternativt/eldre verktøy for å sette opp managed identity.
 
 ---
 
@@ -298,4 +330,5 @@ Konfigurasjon skjer på to nivåer:
 - **Fast 60-sekunders pause ved opplåsing:** `ArchiveSite.ps1` venter `Start-Sleep -Seconds 60` etter `Set-PnPTenantSite -LockState Unlock` for å gi SharePoint tid til å propagere endringen før øvrige skriveoperasjoner. Kortere ventetid kan gi "Access denied"-feil på påfølgende steg.
 - **Prosjektleder/dato ikke oppdatert:** Sjekk at riktig rad finnes i **Prosjekter**-listen i hub-området med `GtSiteUrl` som eksakt match mot prosjektområdets URL — alle runbooks er avhengige av dette oppslaget for å speile data til hub-nivå.
 - **`ProjectInfoChanged` trigges ikke:** Triggeren er en pollende `onchangeditems`-spørring (hvert minutt) mot en spesifikk `listViewGuid`. Kontroller at visningen som er konfigurert i bicep-parameteren faktisk inneholder de overvåkede kolonnene, og at endringen er eldre enn ett minutt før du feilsøker videre.
+- **`az deployment group create` feiler med `ResourceGroupNotFound`:** `Deploy-Solution.ps1` prøver å opprette ressursgruppen automatisk (`az group create`), men undertrykker feil fra kallet (`2>$null`) uten å sjekke exit-kode. Kjør `az group create --name <navn> --location <region>` manuelt for å se den faktiske feilen (f.eks. manglende MFA/rettigheter) hvis dette skjer.
 - **Se også** [Brukerveiledning.md](Brukerveiledning.md) for beskrivelse av brukeropplevd atferd, og [Infrastructure/deployment/Validate-Solution.ps1](Infrastructure/deployment/Validate-Solution.ps1) / [Validate-Prerequisites.ps1](Validate-Prerequisites.ps1) for validering av en deployert løsning.

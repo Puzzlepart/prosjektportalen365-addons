@@ -13,6 +13,13 @@ Etter script er kjørt kreves noen manuelle steg.
 1. Connectors må autentiseres med servicekonto.
 2. PnP.PowerShell må legges til i Runtime for Runbooks. Grunnet kompatibilitet må PnP.PowerShell v 2.12.0 brukes og runtime må være PowerShell v7.2. PnP.PowerShell finnes i mappen `bundle`
 
+Avhengigheter for deploy:
+
+- PowerShell 7.0+
+- Azure CLI
+- Bicep CLI
+- PnP.PowerShell
+
 ## Komponenter
 
 | Komponent | Funksjon | Trigger | Type | Flagg |

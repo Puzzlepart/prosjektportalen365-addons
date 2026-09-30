@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/spfx-serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://innlandet.sharepoint.com/sites/prosjektportalen-test/Lists/Prosjekter",
+      "customActions": {
+        "4b68bc48-3443-41cf-a2d2-fd3f51f80e34": {
+          "location": "ClientSideExtension.ListViewCommandSet",
+          "properties": {
+            "azureFunctionUrl": "https://prod-15.norwayeast.logic.azure.com:443/workflows/de3db553acec4a669938992003ff2265/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=OQ9twXZkpMNG36kUG0FsxjDVIV-UIvN01qlsaDW55qc"
+          }
+        }
+      }
+    },
+    "reactivateProject": {
+      "pageUrl": "https://innlandet.sharepoint.com/sites/prosjektportalen-test/Lists/Prosjekter",
+      "customActions": {
+        "4b68bc48-3443-41cf-a2d2-fd3f51f80e34": {
+          "location": "ClientSideExtension.ListViewCommandSet",
+          "properties": {
+            "azureFunctionUrl": "https://prod-15.norwayeast.logic.azure.com:443/workflows/de3db553acec4a669938992003ff2265/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=OQ9twXZkpMNG36kUG0FsxjDVIV-UIvN01qlsaDW55qc"
+          }
+        }
+      }
+    }
+  }
+}
