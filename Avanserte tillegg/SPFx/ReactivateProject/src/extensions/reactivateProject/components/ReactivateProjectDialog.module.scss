@@ -1,0 +1,57 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.dialogContent {
+    min-width: 20vw;
+}
+
+.projectSummary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    row-gap: 4px;
+    margin: 0 0 16px;
+
+    dt {
+        @include ms-font-s;
+        color: "[theme:neutralSecondary, default: #605e5c]";
+    }
+
+    dd {
+        margin: 0;
+        font-weight: 600;
+        word-break: break-word;
+    }
+}
+
+.dialogFooterContainer {
+    margin: 0;
+
+    // Fluent v8 lays out DialogFooter children as a flex row (.ms-Dialog-actionsRight)
+    // and wraps each child in .ms-Dialog-action. Without letting that wrapper grow,
+    // this footer shrink-wraps its content and the justify-content below has no free
+    // space to distribute, so the version tag collapses onto the buttons.
+    :global(.ms-Dialog-action) {
+        flex: 1;
+    }
+
+    .dialogFooter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 20px;
+
+        .versionTag {
+            span {
+                @include ms-font-s;
+            }
+        }
+
+        .footerButtons {
+            display: flex;
+
+            button {
+                margin-left: 5px;
+            }
+        }
+    }
+}

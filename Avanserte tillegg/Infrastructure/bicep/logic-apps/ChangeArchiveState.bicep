@@ -19,7 +19,7 @@ param automationConnectionId string
 @description('Resource tags')
 param tags object = {}
 
-resource changeArchiveStateLogicApp 'Microsoft.Logic/workflows@2017-07-01' = {
+resource changeArchiveStateLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
   location: location
   tags: tags
