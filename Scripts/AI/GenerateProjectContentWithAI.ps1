@@ -18,7 +18,14 @@ Param(
     [Parameter(Mandatory = $false)]
     [string]$AdditionalPrompt,
     [Parameter(Mandatory = $false)]
-    [int]$IdeaReference
+    [int]$IdeaReference,
+    # Folder (or single file) with customer documents (txt/md/html/docx/pptx/xlsx, pdf via pdftotext) and optionally 'urls.txt'/.url files.
+    # They are condensed into 'prosjektbrief.md' in the same folder, which is added to every prompt.
+    [Parameter(Mandatory = $false)]
+    [string]$ContextPath,
+    # Only generate/show the project brief from -ContextPath, so it can be reviewed before the full run
+    [Parameter(Mandatory = $false)]
+    [switch]$BriefOnly
 )
 
 $global:__ClientId = $ClientId
@@ -66,6 +73,17 @@ $UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
 
 if ($IdeaReference -gt 0) {
     $AdditionalPrompt = Get-IdeaPrompt -Url $HubSiteUrl -ID $IdeaReference
+}
+
+if ($ContextPath) {
+    $ProjectBrief = Get-ProjectContextPrompt -ContextPath $ContextPath -SiteTitle $SiteTitle -openai $OpenAISettings
+    if ($ProjectBrief) {
+        $AdditionalPrompt = "$AdditionalPrompt Bruk følgende prosjektbeskrivelse som grunnlag, og gjør innholdet så konkret og realistisk som mulig ut fra den (navn på organisasjoner og steder, leveranser, datoer, beløp og fagterminologi): <<<$ProjectBrief>>>"
+    }
+    if ($BriefOnly) {
+        Write-Output "BriefOnly specified. Review/edit 'prosjektbrief.md' in '$ContextPath', then run again without -BriefOnly."
+        return
+    }
 }
 
 $TargetLists = @(

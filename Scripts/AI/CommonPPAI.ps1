@@ -69,7 +69,7 @@ function Invoke-OpenAI {
         $InputMessage,
         [switch]$ForceArray,
         $openai,
-        [ValidateSet('JSON', 'Text')]
+        [ValidateSet('JSON', 'Text', 'Markdown')]
         [string]$ResponseFormat = 'JSON'
     )
 
@@ -88,6 +88,12 @@ function Invoke-OpenAI {
         $messages += @{
             role    = 'system'
             content = "Du er en hjelpsom prosjektleder-assistent som svarer kun med tekst. Du er høflig, hjelpsom og du er god på prosjektledelse og prosjektgjennomføring. Ikke bruk markdown-format eller annen formatering. Svar med ren tekst."
+        }
+    }
+    elseif ($ResponseFormat -eq 'Markdown') {
+        $messages += @{
+            role    = 'system'
+            content = "Du er en hjelpsom prosjektleder-assistent. Du er god på prosjektledelse og prosjektgjennomføring. Svar i Markdown, og bruk kun overskrifter og punktlister - ikke fet/kursiv skrift, tabeller, lenker eller kodeblokker."
         }
     }
     else {
@@ -131,7 +137,7 @@ function Invoke-OpenAI {
         }
     }
 
-    if ($ResponseFormat -eq 'Text') {
+    if ($ResponseFormat -ne 'JSON') {
         # Adjust these values to fine-tune completions
         $body = [ordered]@{
             model = $openai.model_name
@@ -164,7 +170,7 @@ function Get-OpenAIResults {
         [string]$Prompt,
         [switch]$ForceArray,
         $openai,
-        [ValidateSet('JSON', 'Text')]
+        [ValidateSet('JSON', 'Text', 'Markdown')]
         [string]$ResponseFormat = 'JSON'
     )
 
@@ -532,4 +538,158 @@ function Set-ProjectListItem($ListTitle, $Values, $Identity, $FieldMetadata, [sw
     }
 
     return $Item
+}
+
+function ConvertFrom-HtmlToText($Html) {
+    $Text = [regex]::Replace($Html, '(?is)<(script|style|noscript|svg)[^>]*>.*?</\1>', ' ')
+    $Text = [regex]::Replace($Text, '(?i)<br\s*/?>|</(p|div|li|tr|h\d|section|article)>', "`n")
+    $Text = [regex]::Replace($Text, '<[^>]+>', ' ')
+    $Text = [System.Net.WebUtility]::HtmlDecode($Text)
+    $Text = [regex]::Replace($Text, '[ \t ]+', ' ')
+    $Text = [regex]::Replace($Text, '\s*\n\s*', "`n")
+    return $Text.Trim()
+}
+
+function Get-OfficeXmlText($Path, $EntryPattern, $ParagraphTag) {
+    # Reads the text of an Office Open XML file (docx/pptx/xlsx) without Office installed
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $Zip = [System.IO.Compression.ZipFile]::OpenRead($Path)
+    try {
+        $Entries = $Zip.Entries | Where-Object { $_.FullName -match $EntryPattern } | Sort-Object { [int]([regex]::Match($_.FullName, '(\d+)\.xml$').Groups[1].Value) }
+        $Parts = foreach ($Entry in $Entries) {
+            $Reader = New-Object System.IO.StreamReader($Entry.Open())
+            try { $Xml = $Reader.ReadToEnd() } finally { $Reader.Dispose() }
+            $Xml = $Xml -replace "</$ParagraphTag>", "`n" -replace '<w:tab/>', "`t"
+            [System.Net.WebUtility]::HtmlDecode(($Xml -replace '<[^>]+>', ''))
+        }
+        return ($Parts -join "`n").Trim()
+    }
+    finally {
+        $Zip.Dispose()
+    }
+}
+
+function Get-PdfText($Path) {
+    if (Get-Command pdftotext -ErrorAction SilentlyContinue) {
+        return (& pdftotext -layout -enc UTF-8 $Path - | Out-String).Trim()
+    }
+    # Word can open PDFs, but blocks on a hidden "Word will now convert your PDF" dialog when automated
+    throw "PDF needs 'pdftotext' on PATH. Alternatively open the PDF in Word and save it as .docx in the context folder."
+}
+
+function Get-WordDocumentText($Path) {
+    # Reads doc/rtf via a local Word installation
+    $Word = New-Object -ComObject Word.Application
+    try {
+        $Word.Visible = $false
+        $Word.DisplayAlerts = 0
+        # FileName, ConfirmConversions, ReadOnly, AddToRecentFiles
+        $Doc = $Word.Documents.Open($Path, $false, $true, $false)
+        try { return ($Doc.Content.Text -replace "`r", "`n").Trim() } finally { $Doc.Close(0) }
+    }
+    finally {
+        $Word.Quit()
+        [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($Word)
+    }
+}
+
+function Get-ContextFileText($Path) {
+    switch ([System.IO.Path]::GetExtension($Path).ToLower()) {
+        { $_ -in ".txt", ".md", ".csv", ".json", ".xml" } { return (Get-Content -LiteralPath $Path -Raw -Encoding UTF8) }
+        { $_ -in ".html", ".htm" } { return ConvertFrom-HtmlToText (Get-Content -LiteralPath $Path -Raw -Encoding UTF8) }
+        ".docx" { return Get-OfficeXmlText -Path $Path -EntryPattern '^word/document\.xml$' -ParagraphTag 'w:p' }
+        ".pptx" { return Get-OfficeXmlText -Path $Path -EntryPattern '^ppt/slides/slide\d+\.xml$' -ParagraphTag 'a:p' }
+        ".xlsx" { return Get-OfficeXmlText -Path $Path -EntryPattern '^xl/sharedStrings\.xml$' -ParagraphTag 'si' }
+        ".pdf" { return Get-PdfText -Path $Path }
+        { $_ -in ".doc", ".rtf" } { return Get-WordDocumentText -Path $Path }
+        default { Write-Warning "Unsupported context file type, skipping: $Path"; return $null }
+    }
+}
+
+function Get-ContextUrlText($Url) {
+    $Response = Invoke-WebRequest -Uri $Url -TimeoutSec 60
+    $ContentType = "$($Response.Headers['Content-Type'])"
+    if ($ContentType -match 'html|text|json|xml') {
+        return ConvertFrom-HtmlToText "$($Response.Content)"
+    }
+    # Binary content (e.g. a PDF) - save to a temp file and extract it as a file
+    $Extension = [System.IO.Path]::GetExtension(([uri]$Url).AbsolutePath)
+    if (-not $Extension -and $ContentType -match 'pdf') { $Extension = ".pdf" }
+    $TempFile = Join-Path $env:TEMP ("ppai-context-" + [guid]::NewGuid() + $Extension)
+    [System.IO.File]::WriteAllBytes($TempFile, $Response.RawContentStream.ToArray())
+    try { return Get-ContextFileText -Path $TempFile } finally { Remove-Item -LiteralPath $TempFile -ErrorAction SilentlyContinue }
+}
+
+function Get-ProjectContextSources($ContextPath) {
+    # Returns the text of all sources in $ContextPath (a folder or a single file), each headed by its source name.
+    # URLs are read from 'urls.txt' (one per line) and from Internet shortcut (.url) files.
+    $Item = Get-Item -LiteralPath $ContextPath
+    $Files = if ($Item.PSIsContainer) { Get-ChildItem -LiteralPath $Item.FullName -File -Recurse } else { @($Item) }
+
+    $Sources = @()
+    foreach ($File in $Files) {
+        if ($File.Name -like "prosjektbrief.*" -or $File.Name.StartsWith('~$')) { continue }
+
+        $Urls = @()
+        if ($File.Name -eq "urls.txt") {
+            $Urls = @(Get-Content -LiteralPath $File.FullName | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^https?://' })
+        }
+        elseif ($File.Extension -eq ".url") {
+            $Urls = @(Get-Content -LiteralPath $File.FullName | Where-Object { $_ -match '^URL=' } | ForEach-Object { $_.Substring(4).Trim() })
+        }
+        else {
+            try {
+                Write-Host "`tReading context file '$($File.Name)'"
+                $Text = Get-ContextFileText -Path $File.FullName
+                if ($Text) { $Sources += "### Kilde: $($File.Name)`n$Text" }
+            }
+            catch {
+                Write-Warning "Could not read context file '$($File.FullName)': $($_.Exception.Message)"
+            }
+            continue
+        }
+
+        foreach ($Url in $Urls) {
+            try {
+                Write-Host "`tReading context URL '$Url'"
+                $Text = Get-ContextUrlText -Url $Url
+                if ($Text) { $Sources += "### Kilde: $Url`n$Text" }
+            }
+            catch {
+                Write-Warning "Could not read context URL '$Url': $($_.Exception.Message)"
+            }
+        }
+    }
+    return ($Sources -join "`n`n")
+}
+
+function Get-ProjectContextPrompt($ContextPath, $SiteTitle, $openai, [int]$MaxSourceChars = 400000) {
+    # Condenses customer documents/URLs in $ContextPath into a project brief that is used as extra prompt
+    # context for the generated demo content. The brief is cached as 'prosjektbrief.md' next to the sources:
+    # review/edit it before the full run, or delete it to generate it again.
+    $Item = Get-Item -LiteralPath $ContextPath
+    $BriefFolder = if ($Item.PSIsContainer) { $Item.FullName } else { $Item.DirectoryName }
+    $BriefPath = Join-Path $BriefFolder "prosjektbrief.md"
+    if (Test-Path -LiteralPath $BriefPath) {
+        Write-Host "`tUsing existing project brief '$BriefPath'"
+        return (Get-Content -LiteralPath $BriefPath -Raw -Encoding UTF8)
+    }
+
+    $SourceText = Get-ProjectContextSources -ContextPath $ContextPath
+    if (-not $SourceText) {
+        Write-Warning "No readable context found in '$ContextPath'"
+        return $null
+    }
+    if ($SourceText.Length -gt $MaxSourceChars) {
+        Write-Warning "Context is $($SourceText.Length) characters - truncating to $MaxSourceChars"
+        $SourceText = $SourceText.Substring(0, $MaxSourceChars)
+    }
+
+    $Prompt = "Lag en prosjektbrief som skal brukes som grunnlag for å generere realistisk demoinnhold i Prosjektportalen for et demoprosjekt som heter '$SiteTitle'. Demoprosjektet er basert på et ekte prosjekt som er beskrevet i kildematerialet under (dokumenter og nettsider fra kunden). Skriv en strukturert og faktatett oppsummering på ca. 1500-2500 ord i Markdown. Start med overskriften '# Prosjektbrief: $SiteTitle', og bruk deretter én ##-overskrift per tema, med punktlister der det passer. Temaene er: Bakgrunn og formål; Mål og effektmål; Omfang og avgrensninger; Organisering og roller; Interessenter; Leveranser og faser; Milepæler og viktige datoer; Økonomi og budsjett; Risikoer og usikkerheter; Gevinster og måleindikatorer; Kommunikasjon; Status og pågående aktiviteter; Fagbegreper og terminologi. Ta med konkrete navn på organisasjoner, steder, systemer, leveranser, datoer og beløp når de finnes i kildene. Omtal personer med rolle og organisasjon, ikke med personnavn. Der kildene mangler informasjon kan du foreslå realistiske antakelser, men merk dem med '(antatt)'. Kildemateriale:`n<<<`n$SourceText`n>>>"
+
+    Write-Host "`tSummarizing $($SourceText.Length) characters of context into a project brief with $($openai.model_name)..."
+    $Brief = Get-OpenAIResults -Prompt $Prompt -openai $openai -ResponseFormat Markdown
+    Set-Content -LiteralPath $BriefPath -Value $Brief -Encoding UTF8
+    Write-Host "`tProject brief saved to '$BriefPath'"
+    return $Brief
 }
