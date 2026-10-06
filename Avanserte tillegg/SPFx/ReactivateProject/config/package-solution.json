@@ -1,0 +1,47 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+    "solution": {
+        "title": "Reaktiver prosjekter i Prosjektportalen",
+        "name": "pp-reactivate-project",
+        "id": "ed1a6e3e-a522-44df-8656-10be8a401e33",
+        "version": "1.2.0.0",
+        "includeClientSideAssets": true,
+        "skipFeatureDeployment": true,
+        "isDomainIsolated": false,
+        "developer": {
+            "name": "",
+            "websiteUrl": "",
+            "privacyUrl": "",
+            "termsOfUseUrl": "",
+            "mpnId": "Undefined-1.23.2"
+        },
+        "metadata": {
+            "shortDescription": {
+                "default": "Løsning for å reaktivere prosjekt i Prosjektportalen"
+            },
+            "longDescription": {
+                "default": "Løsning for å reaktivere prosjekt i Prosjektportalen for å fjerne read-only"
+            },
+            "screenshotPaths": [],
+            "videoUrl": "",
+            "categories": []
+        },
+        "features": [
+            {
+                "title": "Reactivate project - Deployment of custom action",
+                "description": "Deploys a custom action with ClientSideComponentId association",
+                "id": "27ceec51-0bf8-4914-b081-b24edc3e6a0e",
+                "version": "1.2.0.0",
+                "assets": {
+                    "elementManifests": [
+                        "elements.xml",
+                        "ClientSideInstance.xml"
+                    ]
+                }
+            }
+        ]
+    },
+    "paths": {
+        "zippedPackage": "solution/pp-reactivate-project.sppkg"
+    }
+}

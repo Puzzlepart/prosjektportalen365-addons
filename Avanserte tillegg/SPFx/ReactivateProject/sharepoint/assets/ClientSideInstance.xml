@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <ClientSideComponentInstance
+        Title="ReactivateProject"
+        Location="ClientSideExtension.ListViewCommandSet"
+        ListTemplateId="100"
+        Properties="{&quot;azureFunctionUrl&quot;:&quot;[LEGG_INN_URL_HER]&quot;}"
+        ComponentId="4b68bc48-3443-41cf-a2d2-fd3f51f80e34" />
+</Elements>
