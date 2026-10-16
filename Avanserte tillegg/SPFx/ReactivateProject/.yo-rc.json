@@ -1,0 +1,20 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.15.0",
+    "sdksVersions": {},
+    "version": "1.23.2",
+    "libraryName": "reactivate-project",
+    "libraryId": "ed1a6e3e-a522-44df-8656-10be8a401e33",
+    "environment": "spo",
+    "packageManager": "npm",
+    "useGulp": true,
+    "solutionName": "reactivate-project",
+    "solutionShortDescription": "reactivate-project description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "extension",
+    "extensionType": "ListViewCommandSet"
+  }
+}

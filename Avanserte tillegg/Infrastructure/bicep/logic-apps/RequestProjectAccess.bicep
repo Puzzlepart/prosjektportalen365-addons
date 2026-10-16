@@ -16,7 +16,7 @@ param office365ConnectionId string
 @description('Resource tags')
 param tags object = {}
 
-resource requestProjectAccessLogicApp 'Microsoft.Logic/workflows@2017-07-01' = {
+resource requestProjectAccessLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
   location: location
   tags: tags

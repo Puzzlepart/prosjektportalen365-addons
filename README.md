@@ -9,6 +9,7 @@ Vi vil samle åpne løsninger for [Prosjektportalen 365](https://github.com/Puzz
 - [Prosjektmaler](Prosjektmaler/README.md)
 - [Skript for Prosjektportalen](Scripts/README.md)
 - [Prosjektrapport](Prosjektrapport/README.md)
+- [Avanserte tillegg](Avanserte%20tillegg/README.md)
 
 Se mer informasjon og skjermbilder i de respektive mappene over.
 
