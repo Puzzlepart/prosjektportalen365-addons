@@ -1,4 +1,4 @@
-param($OpenAISettings, [string]$SiteTitle, [string]$SiteId, [string]$HubSiteUrl, [string]$AdditionalPrompt, [string]$ProjectStatusContentTypeId)
+param($OpenAISettings, [string]$SiteTitle, [string]$SiteId, [string]$HubSiteUrl, [string]$AdditionalPrompt, [string]$ProjectStatusContentTypeId, $UsersEmails)
 
 . .\CommonPPAI.ps1
 
@@ -6,7 +6,7 @@ try {
     Write-Output "`tProcessing project status report in hub site. Generating prompt based on list configuration..."
     Connect-SharePoint -Url $HubSiteUrl
 
-    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus" -ContentTypeId $ProjectStatusContentTypeId
+    $FieldPrompt = Get-FieldPromptForList -ListTitle "Prosjektstatus" -UsersEmails $UsersEmails -ContentTypeId $ProjectStatusContentTypeId
         
     $Prompt = "Gi meg et eksempel på rapportering av Prosjektstatus for et prosjekt som heter '$SiteTitle'. $AdditionalPrompt VIKTIG: Returner elementene som et JSON objekt. Ikke ta med markdown formatering eller annen formatering. Feltene er følgende: $FieldPrompt. Verdien i tittel-feltet skal være 'Ny statusrapport for $SiteTitle'. Bruk internnavnene på feltene i JSON-objektet nøyaktig - ikke legg på for eksempel Id på slutten av et internt feltnavn."
         

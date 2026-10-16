@@ -25,7 +25,10 @@ Param(
     [string]$ContextPath,
     # Only generate/show the project brief from -ContextPath, so it can be reviewed before the full run
     [Parameter(Mandatory = $false)]
-    [switch]$BriefOnly
+    [switch]$BriefOnly,
+    # Don't look up members of the hub's M365 group (fails if the hub isn't group-connected); use the user running the script for all person fields
+    [Parameter(Mandatory = $false)]
+    [switch]$SkipUsers
 )
 
 $global:__ClientId = $ClientId
@@ -69,7 +72,13 @@ if ($null -ne $ProjectProperties) {
     $ProjectPropertiesContentTypeId = $ProjectTemplateParameters.ProjectContentTypeId || "0x0100805E9E4FEAAB4F0EABAB2600D30DB70C"
 }
 
-$UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
+if ($SkipUsers) {
+    $CurrentUser = (Get-PnPWeb -Includes CurrentUser).CurrentUser
+    $UsersEmails = @($CurrentUser.Email ? $CurrentUser.Email : $CurrentUser.LoginName.Split("|")[-1])
+}
+else {
+    $UsersEmails = Get-SiteUsersEmails -Url $HubSiteUrl
+}
 
 if ($IdeaReference -gt 0) {
     $AdditionalPrompt = Get-IdeaPrompt -Url $HubSiteUrl -ID $IdeaReference
@@ -130,6 +139,6 @@ $TargetDocSetLibs | ForEach-Object {
     . .\GenerateProjectDocumentSetLibrary.ps1 -OpenAISettings $OpenAISettings -Url $Url -SiteTitle $SiteTitle -ListTitle $LibTitle -PromptMaxElements $PromptMaxElements -UsersEmails $UsersEmails -AdditionalPrompt $AdditionalPrompt
 }
 
- . .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt
+ . .\GenerateProjectTimelineContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt -UsersEmails $UsersEmails
 
- . .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt -ProjectStatusContentTypeId $ProjectStatusContentTypeId
+ . .\GenerateProjectStatusReportContent.ps1 -OpenAISettings $OpenAISettings -SiteTitle $SiteTitle -SiteId $SiteId -HubSiteUrl $HubSiteUrl -AdditionalPrompt $AdditionalPrompt -ProjectStatusContentTypeId $ProjectStatusContentTypeId -UsersEmails $UsersEmails

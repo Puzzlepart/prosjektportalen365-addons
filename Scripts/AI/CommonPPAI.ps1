@@ -26,6 +26,23 @@ function Get-OpenAIKeyBase($CredentialName = "openai_api") {
     return $Credential
 }
 
+function Invoke-OpenAIRequest($Url, $Headers, [string]$Body, [int]$MaxAttempts = 3) {
+    for ($Attempt = 1; ; $Attempt++) {
+        try {
+            return Invoke-RestMethod -Uri $Url -Headers $Headers -Body ([System.Text.Encoding]::UTF8.GetBytes($Body)) -Method Post -ContentType 'application/json'
+        }
+        catch {
+            # Retry dropped connections (no HTTP response), throttling and server errors. Anything else (bad request, auth) fails at once.
+            $StatusCode = [int]$_.Exception.Response.StatusCode
+            if (($StatusCode -ne 0 -and $StatusCode -ne 429 -and $StatusCode -lt 500) -or $Attempt -ge $MaxAttempts) {
+                throw
+            }
+            Write-Warning "OpenAI request failed (attempt $Attempt of $MaxAttempts): $($_.Exception.Message). Retrying..."
+            Start-Sleep -Seconds (15 * $Attempt)
+        }
+    }
+}
+
 function Invoke-ImageOpenAI {
     [CmdletBinding()]
     param (
@@ -57,7 +74,7 @@ function Invoke-ImageOpenAI {
 
     # Send a request to generate an answer
     $url = "$($openaiapibase)/openai/v1/images/generations"
-    $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json' -ResponseHeadersVariable submissionHeaders
+    $response = Invoke-OpenAIRequest -Url $url -Headers $headers -Body $body
     return $response.data
 }
 
@@ -160,7 +177,7 @@ function Invoke-OpenAI {
     }
     # Send a request to generate an answer
     $url = "$($openaiapibase)/openai/v1/responses"
-    $response = Invoke-RestMethod -Uri $url -Headers $headers -Body ([System.Text.Encoding]::UTF8.GetBytes($body)) -Method Post -ContentType 'application/json'
+    $response = Invoke-OpenAIRequest -Url $url -Headers $headers -Body $body
     return $response
 }
 

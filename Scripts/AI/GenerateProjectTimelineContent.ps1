@@ -1,4 +1,4 @@
-param($OpenAISettings, $SiteTitle, $SiteId, $HubSiteUrl, $AdditionalPrompt)
+param($OpenAISettings, $SiteTitle, $SiteId, $HubSiteUrl, $AdditionalPrompt, $UsersEmails)
 
 . .\CommonPPAI.ps1
 
@@ -15,7 +15,7 @@ try {
         return
     }
 
-    $FieldPrompt = Get-FieldPromptForList -ListTitle "Tidslinjeinnhold" -SkipFields @("GtSiteIdLookup")
+    $FieldPrompt = Get-FieldPromptForList -ListTitle "Tidslinjeinnhold" -UsersEmails $UsersEmails -SkipFields @("GtSiteIdLookup")
         
     $StartDate = $MatchingProjectInHub.FieldValues["GtStartDate"]
     $EndDate = $MatchingProjectInHub.FieldValues["GtEndDate"]

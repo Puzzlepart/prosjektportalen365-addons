@@ -3,7 +3,8 @@ param(
     [Parameter(Mandatory = $true)][string]$Url,
     [string]$AdditionalPrompt,
     [string]$ContextPath,
-    [switch]$BriefOnly
+    [switch]$BriefOnly,
+    [switch]$SkipUsers
 )
 
 $params = @{
@@ -16,6 +17,7 @@ $params = @{
 # Only passed when set, since not every script accepts these parameters
 if ($ContextPath) { $params.ContextPath = $ContextPath }
 if ($BriefOnly) { $params.BriefOnly = $true }
+if ($SkipUsers) { $params.SkipUsers = $true }
 
 # Properly handle script path to avoid colon issues
 $scriptPath = Join-Path $PSScriptRoot $ScriptName
