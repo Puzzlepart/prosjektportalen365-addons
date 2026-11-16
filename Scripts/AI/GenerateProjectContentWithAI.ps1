@@ -102,9 +102,10 @@ $TargetLists = @(
     @{Name = "Prosjektlogg"; Max = 20 },
     @{Name = "Usikkerhet"; Max = 8 },
     @{Name = "Endringsanalyse"; Max = 3 },
-    @{Name = "Gevinstanalyse og gevinstrealiseringsplan"; Max = 5 },
+    # GenerateProjectListContent.ps1 falls back to the pre-1.14.0 "Gevinst..." titles on older projects
+    @{Name = "Nytteanalyse og plan for nyttestyring"; Max = 5 },
     @{Name = "Måleindikatorer"; Max = 6 },
-    @{Name = "Gevinstoppfølging"; Max = 30 },
+    @{Name = "Nytteoppfølging"; Max = 30 },
     @{Name = "Ressursallokering"; Max = 7 },
     @{Name = "Kontaktliste"; Max = 10 }
 )

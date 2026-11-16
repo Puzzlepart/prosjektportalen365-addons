@@ -1,10 +1,33 @@
-param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails, $AdditionalPrompt) 
+param($OpenAISettings, $Url, $SiteTitle, $ListTitle, $PromptMaxElements, $UsersEmails, $AdditionalPrompt)
 
 . .\CommonPPAI.ps1
 
 Connect-SharePoint -Url $Url
 
+# Lists renamed in PP365 1.14.0 (gevinst -> nytte). Projects set up earlier keep the old title until
+# they are upgraded with UpgradeAllSitesToLatest.ps1 -GevinstTilNytte, and callers may still pass
+# either title, so try the other one when the requested list is missing.
+$RenamedLists = @(
+    , @("Nytteanalyse og plan for nyttestyring", "Gevinstanalyse og gevinstrealiseringsplan")
+    , @("Nytteoppfølging", "Gevinstoppfølging")
+)
+
 $List = Get-PnPList -Identity $ListTitle -ErrorAction SilentlyContinue
+if ($null -eq $List) {
+    $AlternateTitle = $null
+    foreach ($Pair in $RenamedLists) {
+        if ($Pair -contains $ListTitle) {
+            $AlternateTitle = $Pair | Where-Object { $_ -ne $ListTitle } | Select-Object -First 1
+        }
+    }
+    if ($AlternateTitle) {
+        $List = Get-PnPList -Identity $AlternateTitle -ErrorAction SilentlyContinue
+        if ($null -ne $List) {
+            Write-Output "`tList '$ListTitle' not found on site. Using '$AlternateTitle' instead."
+            $ListTitle = $AlternateTitle
+        }
+    }
+}
 if ($null -eq $List) {
     Write-Output "`tList '$ListTitle' not found on site. Skipping..."
     return
